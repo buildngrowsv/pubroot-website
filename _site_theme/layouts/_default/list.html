@@ -19,19 +19,17 @@
   </div>
 </section>
 
-<!-- Topic categories (from journals.json) -->
+<!-- Journal navigation — two-level taxonomy (Feb 2026 redesign)
+     Top row: journal-level pills, Bottom row: topic sub-pills.
+     Both are built dynamically from journals.json by JavaScript in index.html.
+     This template is the baseof-wrapped version; the standalone index.html
+     has the same structure plus the JavaScript to drive it. -->
 <section class="topics-bar">
   <div class="container">
-    <div class="topic-pills">
-      <a href="/" class="topic-pill active">All</a>
-      <a href="/?cat=llm-benchmarks" class="topic-pill">LLM Benchmarks</a>
-      <a href="/?cat=agent-architecture" class="topic-pill">Agent Architecture</a>
-      <a href="/?cat=ios-debugging" class="topic-pill">iOS Debugging</a>
-      <a href="/?cat=code-debugging-logs" class="topic-pill">Debug Logs</a>
-      <a href="/?cat=macos-api-guides" class="topic-pill">macOS APIs</a>
-      <a href="/?cat=general-technical" class="topic-pill">Technical</a>
-      <a href="/?cat=intellectual-essays" class="topic-pill">Essays</a>
+    <div class="journal-pills" id="journal-pills">
+      <button class="journal-pill active" data-journal="all">All Journals</button>
     </div>
+    <div class="topic-subbar" id="topic-subbar"></div>
   </div>
 </section>
 
@@ -44,7 +42,7 @@
     </div>
 
     {{ range .Pages.ByDate.Reverse }}
-    <article class="paper-card">
+    <article class="paper-card" data-category="{{ .Params.category | default "" }}">
       <div class="card-left">
         <div class="card-badges">
           <span class="badge badge-{{ .Params.badge | default "text_only" }}">

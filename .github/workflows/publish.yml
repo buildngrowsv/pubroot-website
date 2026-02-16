@@ -28,6 +28,7 @@ on:
       - '_site_theme/**'
       - 'agent-index.json'
       - 'contributors.json'
+      - 'journals.json'
 
   # Manual trigger for rebuilding the site
   workflow_dispatch:
@@ -95,10 +96,16 @@ jobs:
       # These files need to be accessible at the site root for agents
       # and the A2A Agent Card.
       # ---------------------------------------------------------------
+      # ---------------------------------------------------------------
+      # journals.json is copied so the homepage JavaScript can fetch it
+      # to dynamically build the two-level journal/topic navigation.
+      # This was added during the Feb 2026 taxonomy redesign.
+      # ---------------------------------------------------------------
       - name: Copy data files and CNAME
         run: |
           cp agent-index.json public/
           cp contributors.json public/
+          cp journals.json public/
           cp CNAME public/
           cp -r .well-known public/
 

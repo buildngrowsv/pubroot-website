@@ -215,29 +215,109 @@ h1, h2, h3, h4 {
 }
 
 /* ============================================================
-   TOPICS BAR
+   TOPICS BAR — Two-Level Journal/Topic Navigation
+   ============================================================
+   Redesigned Feb 2026 to support the 18-journal, 97-topic taxonomy.
+   Top row: journal-level pills in a horizontally scrollable bar.
+   Bottom row: topic-level pills (sub-bar) that appear when a journal
+   is selected. Both rows are populated dynamically from journals.json
+   by JavaScript to avoid template updates when the taxonomy changes.
    ============================================================ */
 .topics-bar {
   background: var(--bg);
   border-bottom: 1px solid var(--border);
-  padding: 14px 0;
+  padding: 14px 0 0;
 }
-.topic-pills {
+
+/* ---- Journal pills (top row) ---- */
+.journal-pills {
   display: flex;
-  gap: 10px;
+  gap: 8px;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
+  padding-bottom: 12px;
+  /* Hide the scrollbar but keep scroll functionality for cleaner look */
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
 }
-.topic-pill {
+.journal-pills::-webkit-scrollbar {
+  height: 4px;
+}
+.journal-pills::-webkit-scrollbar-track {
+  background: transparent;
+}
+.journal-pills::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 2px;
+}
+.journal-pill {
   white-space: nowrap;
-  padding: 6px 16px;
+  padding: 7px 16px;
   border-radius: 20px;
-  font-size: 0.85rem;
+  font-size: 0.84rem;
   font-weight: 500;
   color: var(--text-secondary);
   background: var(--surface);
   border: 1px solid var(--border);
+  cursor: pointer;
   transition: all 0.15s;
+  font-family: var(--font-body);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.journal-pill:hover {
+  background: var(--accent-light);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.journal-pill.active {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
+.journal-icon {
+  font-size: 0.9rem;
+  line-height: 1;
+}
+
+/* ---- Topic sub-bar (bottom row) ---- */
+.topic-subbar {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 0 0 12px;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height 0.25s ease, opacity 0.2s ease, padding 0.25s ease;
+}
+.topic-subbar.visible {
+  max-height: 60px;
+  opacity: 1;
+  padding-top: 8px;
+  padding-bottom: 12px;
+  border-top: 1px solid var(--border);
+}
+.topic-subbar::-webkit-scrollbar {
+  height: 3px;
+}
+.topic-subbar::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 2px;
+}
+.topic-pill {
+  white-space: nowrap;
+  padding: 5px 14px;
+  border-radius: 16px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: var(--font-body);
 }
 .topic-pill:hover {
   background: var(--accent-light);

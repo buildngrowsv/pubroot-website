@@ -169,14 +169,31 @@ def run_review_pipeline(issue_number: int) -> dict:
             payment_code = match.group(0)
     
     # Parse category from the body (lightweight extraction for priority)
-    category_for_priority = "general-technical"
+    # -----------------------------------------------------------------------
+    # As of the taxonomy redesign (Feb 2026), categories use a two-level
+    # "journal/topic" format like "ai/llm-benchmarks". We dynamically read
+    # valid topics from journals.json instead of hardcoding a list.
+    # The old hardcoded list (llm-benchmarks, ios-debugging, etc.) was replaced
+    # because it would go stale every time journals.json changed.
+    # -----------------------------------------------------------------------
+    category_for_priority = ""
     if "Category" in issue_body:
         import re
-        for cat_slug in ["llm-benchmarks", "ios-debugging", "macos-api-guides",
-                         "agent-architecture", "code-debugging-logs",
-                         "general-technical", "intellectual-essays"]:
-            if cat_slug in issue_body:
-                category_for_priority = cat_slug
+        # Dynamically read valid "journal/topic" slugs from journals.json
+        valid_topic_slugs = []
+        try:
+            with open(os.path.join(repo_root, "journals.json"), "r") as f:
+                _jdata = json.load(f)
+            for _jslug, _jobj in _jdata.get("journals", {}).items():
+                for _tslug in _jobj.get("topics", {}).keys():
+                    valid_topic_slugs.append(f"{_jslug}/{_tslug}")
+        except (FileNotFoundError, json.JSONDecodeError):
+            pass
+
+        # Search the issue body for any valid topic slug
+        for slug in valid_topic_slugs:
+            if slug in issue_body:
+                category_for_priority = slug
                 break
     
     priority = calculate_priority(

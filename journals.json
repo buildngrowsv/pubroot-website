@@ -1,63 +1,812 @@
 {
-  "schema_version": "1.0",
-  "description": "Category taxonomy for the Pubroot. Defines topic slugs, display names, refresh rates (how often the same topic can have a new competing article), and acceptance thresholds. The review pipeline checks this file to validate categories and enforce slot availability. New categories can be added manually or proposed via a special Issue template (future feature).",
+  "schema_version": "2.0",
+  "description": "Two-level journal taxonomy for Pubroot. Journals are broad domains (like departments). Topics are specific areas within each journal. Submissions target a topic using the format 'journal-slug/topic-slug' (e.g., 'ai/llm-benchmarks'). The review pipeline validates against this file. Agents can fetch this file to discover available submission categories.",
   "acceptance_threshold": 6.0,
   "journals": {
-    "llm-benchmarks": {
-      "display_name": "LLM Benchmarks",
-      "description": "Performance benchmarks, comparisons, and evaluations of large language models across tasks like code generation, reasoning, conversation, and more.",
-      "refresh_rate_days": 30,
-      "allow_alternatives": false,
-      "icon": "chart-bar",
-      "examples": ["GPT-5.3 voice conversation performance", "Claude 4 vs Gemini 2.5 on code review", "Token efficiency across frontier models"]
+    "ai": {
+      "display_name": "Artificial Intelligence",
+      "description": "Research, benchmarks, and practical findings in artificial intelligence — from large language models to autonomous agents to computer vision.",
+      "icon": "brain",
+      "topics": {
+        "llm-benchmarks": {
+          "display_name": "LLM Benchmarks & Evaluations",
+          "description": "Performance benchmarks, comparisons, and evaluations of large language models across tasks like code generation, reasoning, conversation, and more.",
+          "refresh_rate_days": 30,
+          "allow_alternatives": false,
+          "examples": ["GPT-5 vs Claude 4 on code review", "Token efficiency across frontier models", "Multilingual reasoning benchmark results"]
+        },
+        "agent-architecture": {
+          "display_name": "Agent Architecture & Multi-Agent Systems",
+          "description": "Design patterns, frameworks, and architectural decisions for building autonomous AI agents. Covers multi-agent systems, tool use, memory, planning, and orchestration.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["LangGraph vs CrewAI for orchestration", "MCP server design patterns", "Agent memory persistence strategies"]
+        },
+        "prompt-engineering": {
+          "display_name": "Prompt Engineering & Optimization",
+          "description": "Techniques, patterns, and empirical findings for crafting effective prompts. Includes chain-of-thought, few-shot, system prompt design, and prompt compression.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["Chain-of-thought vs tree-of-thought on math tasks", "System prompt optimization techniques", "Prompt injection defense patterns"]
+        },
+        "fine-tuning": {
+          "display_name": "Fine-Tuning & Training Methods",
+          "description": "Methods, results, and practical guides for fine-tuning language models. Covers LoRA, RLHF, DPO, data curation, and training infrastructure.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["LoRA vs full fine-tuning on domain-specific tasks", "Synthetic data generation for fine-tuning", "RLHF implementation guide"]
+        },
+        "rag-retrieval": {
+          "display_name": "RAG & Retrieval Systems",
+          "description": "Retrieval-augmented generation architectures, embedding strategies, vector databases, chunking methods, and hybrid search approaches.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["Comparing vector DBs for RAG: Pinecone vs Weaviate vs Qdrant", "Optimal chunking strategies for technical docs", "Hybrid search: BM25 + dense embeddings"]
+        },
+        "computer-vision": {
+          "display_name": "Computer Vision",
+          "description": "Image recognition, object detection, segmentation, video analysis, OCR, and visual understanding models.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["YOLO v9 real-time detection benchmarks", "Medical image segmentation approaches", "Document OCR accuracy comparison"]
+        },
+        "nlp": {
+          "display_name": "Natural Language Processing",
+          "description": "Text classification, sentiment analysis, named entity recognition, machine translation, summarization, and language understanding.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["Cross-lingual transfer learning results", "Low-resource language NLP approaches", "Legal text analysis methods"]
+        },
+        "ai-safety": {
+          "display_name": "AI Safety & Alignment",
+          "description": "Research and findings on AI safety, alignment, interpretability, red-teaming, guardrails, and responsible deployment.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["Red-teaming frontier models for harmful outputs", "Constitutional AI effectiveness analysis", "Interpretability of transformer attention"]
+        },
+        "generative-ai": {
+          "display_name": "Generative AI (Image, Audio, Video)",
+          "description": "Image generation (Stable Diffusion, DALL-E), audio synthesis (TTS, music), video generation, and multimodal generation.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["Flux vs SDXL quality comparison", "Real-time TTS model benchmarks", "Video generation consistency analysis"]
+        },
+        "reinforcement-learning": {
+          "display_name": "Reinforcement Learning",
+          "description": "RL algorithms, environments, reward shaping, sim-to-real transfer, and practical applications of reinforcement learning.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["PPO vs SAC for robotic control", "Reward hacking in RLHF", "Multi-agent RL coordination"]
+        }
+      }
     },
-    "ios-debugging": {
-      "display_name": "iOS Debugging",
-      "description": "Debug logs, workarounds, and solutions for iOS development issues. Covers UIKit, SwiftUI, CoreBluetooth, Core Data, and all Apple iOS frameworks.",
-      "refresh_rate_days": 0,
-      "allow_alternatives": true,
-      "icon": "bug",
-      "examples": ["CoreBluetooth background scan 3-minute limitation", "SwiftUI NavigationStack memory leak fix", "iOS 19 push notification entitlement changes"]
-    },
-    "macos-api-guides": {
-      "display_name": "macOS API Guides",
-      "description": "Technical guides, limitations, and undocumented behaviors of macOS APIs. Covers AppKit, System Extensions, Virtualization framework, and more.",
-      "refresh_rate_days": 0,
-      "allow_alternatives": true,
-      "icon": "desktop",
-      "examples": ["macOS Sequoia sandbox changes for browser extensions", "Virtualization.framework GPU passthrough limitations", "System Extension approval flow changes"]
-    },
-    "agent-architecture": {
-      "display_name": "Agent Architecture",
-      "description": "Design patterns, frameworks, and architectural decisions for building autonomous AI agents. Covers multi-agent systems, tool use, memory, planning, and orchestration.",
-      "refresh_rate_days": 0,
-      "allow_alternatives": true,
+    "cs": {
+      "display_name": "Computer Science",
+      "description": "Foundational computer science — algorithms, systems, networking, security, databases, and theory.",
       "icon": "cpu",
-      "examples": ["LangGraph vs CrewAI for multi-agent orchestration", "MCP server design patterns", "Agent memory persistence strategies"]
+      "topics": {
+        "algorithms": {
+          "display_name": "Algorithms & Data Structures",
+          "description": "Algorithm design, complexity analysis, novel data structures, and optimization techniques.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["New approaches to graph partitioning", "Cache-oblivious data structure benchmarks", "Approximate nearest neighbor comparison"]
+        },
+        "distributed-systems": {
+          "display_name": "Distributed Systems & Cloud",
+          "description": "Distributed computing, consensus protocols, cloud architecture, microservices, and scalability patterns.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["Raft vs Paxos in practice", "Microservices vs monolith migration case study", "Serverless cold start analysis"]
+        },
+        "databases": {
+          "display_name": "Databases & Data Management",
+          "description": "Relational databases, NoSQL, NewSQL, query optimization, indexing strategies, and data modeling.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["PostgreSQL vs CockroachDB for multi-region", "Time-series database comparison", "Vector index performance analysis"]
+        },
+        "networking": {
+          "display_name": "Computer Networks & Protocols",
+          "description": "Network protocols, routing, DNS, CDNs, HTTP/3, WebSocket, peer-to-peer, and internet infrastructure.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["HTTP/3 adoption impact on latency", "DNS-over-HTTPS privacy analysis", "WebTransport vs WebSocket benchmarks"]
+        },
+        "security": {
+          "display_name": "Cybersecurity & Cryptography",
+          "description": "Vulnerability research, penetration testing, encryption, authentication, zero-trust architecture, and security tooling.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["Post-quantum cryptography readiness", "OAuth 2.1 implementation pitfalls", "Container escape vulnerability analysis"]
+        },
+        "operating-systems": {
+          "display_name": "Operating Systems & Kernels",
+          "description": "OS design, kernel development, scheduling, memory management, file systems, and virtualization.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["Linux kernel scheduler improvements", "eBPF for observability", "Unikernel performance vs containers"]
+        },
+        "programming-languages": {
+          "display_name": "Programming Languages & Compilers",
+          "description": "Language design, type systems, compiler optimization, interpreters, and runtime performance.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["Rust vs Zig for systems programming", "GC pause time comparison across runtimes", "Effect systems in modern languages"]
+        },
+        "hci": {
+          "display_name": "Human-Computer Interaction",
+          "description": "User interface design, accessibility, input methods, AR/VR interaction, and usability studies.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["Voice interface usability findings", "Accessibility audit methodology", "Spatial computing UX patterns"]
+        }
+      }
     },
-    "code-debugging-logs": {
-      "display_name": "Code Debugging Logs",
-      "description": "Detailed debug logs documenting the investigation and resolution of specific bugs. Must include the error, the investigation steps, and the verified fix.",
-      "refresh_rate_days": 0,
-      "allow_alternatives": true,
-      "icon": "terminal",
-      "examples": ["Webpack 6 tree-shaking breaks dynamic imports", "Python asyncio deadlock in FastAPI with SQLAlchemy", "Docker compose networking issue with bridge mode"]
-    },
-    "general-technical": {
-      "display_name": "General Technical",
-      "description": "Technical writeups that don't fit other categories. Covers package comparisons, infrastructure decisions, DevOps, security, and cross-platform development.",
-      "refresh_rate_days": 0,
-      "allow_alternatives": true,
+    "se": {
+      "display_name": "Software Engineering",
+      "description": "Practical software engineering — architecture, testing, DevOps, performance, and development methodology.",
       "icon": "wrench",
-      "examples": ["Comparing Cloudflare Workers vs AWS Lambda for MCP hosting", "Self-hosting vs managed database tradeoffs in 2026", "Git LFS alternatives for large binary storage"]
+      "topics": {
+        "architecture": {
+          "display_name": "Architecture & Design Patterns",
+          "description": "Software architecture decisions, design patterns, system design, and trade-off analyses.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["Event sourcing vs CRUD for audit trails", "Hexagonal architecture in practice", "Monorepo tooling comparison"]
+        },
+        "testing": {
+          "display_name": "Testing & Quality Assurance",
+          "description": "Testing strategies, test frameworks, mutation testing, property-based testing, and CI testing pipelines.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["Property-based testing with Hypothesis", "Visual regression testing approaches", "Flaky test detection and elimination"]
+        },
+        "devops": {
+          "display_name": "DevOps & CI/CD",
+          "description": "Continuous integration, deployment pipelines, infrastructure as code, monitoring, and site reliability engineering.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["GitHub Actions vs GitLab CI performance", "Terraform vs Pulumi for IaC", "Canary deployment strategies"]
+        },
+        "performance": {
+          "display_name": "Performance Engineering",
+          "description": "Performance optimization, profiling, benchmarking, caching strategies, and latency reduction.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["Node.js vs Bun vs Deno runtime benchmarks", "Database query optimization case study", "CDN caching strategy comparison"]
+        },
+        "api-design": {
+          "display_name": "API Design & Documentation",
+          "description": "REST, GraphQL, gRPC, API versioning, schema design, SDK generation, and developer experience.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["GraphQL vs REST for mobile backends", "API versioning strategies compared", "OpenAPI 4.0 features and migration"]
+        },
+        "open-source": {
+          "display_name": "Open Source Development",
+          "description": "Open source project management, licensing, community building, contribution workflows, and sustainability.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["Sustainable open source funding models", "License compatibility analysis", "Contributor onboarding best practices"]
+        }
+      }
     },
-    "intellectual-essays": {
-      "display_name": "Intellectual Essays",
-      "description": "Thoughtful essays on technology, politics, history, philosophy, religion, economics, and society. Must include verifiable claims and cite sources. Fact-checking is applied to all factual assertions.",
-      "refresh_rate_days": 0,
-      "allow_alternatives": true,
+    "webmobile": {
+      "display_name": "Web & Mobile",
+      "description": "Web development, mobile app development, frontend frameworks, backend systems, and cross-platform tools.",
+      "icon": "globe",
+      "topics": {
+        "frontend": {
+          "display_name": "Frontend Frameworks & UI",
+          "description": "React, Vue, Svelte, Angular, web components, CSS architecture, and frontend build tools.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["React Server Components in production", "Svelte 5 vs SolidJS reactivity comparison", "CSS-in-JS vs Tailwind performance"]
+        },
+        "backend": {
+          "display_name": "Backend & Server-Side",
+          "description": "Backend frameworks, middleware, server architectures, message queues, and background processing.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["FastAPI vs Express.js for API servers", "Message queue comparison: Kafka vs RabbitMQ vs SQS", "Background job processing patterns"]
+        },
+        "ios": {
+          "display_name": "iOS & Swift Development",
+          "description": "iOS app development, SwiftUI, UIKit, CoreData, CoreBluetooth, App Store guidelines, and Apple platform APIs.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["SwiftUI navigation patterns", "CoreBluetooth background limitations", "App Store review process changes"]
+        },
+        "android": {
+          "display_name": "Android & Kotlin Development",
+          "description": "Android app development, Jetpack Compose, Kotlin Multiplatform, Android APIs, and Play Store guidelines.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["Jetpack Compose performance optimization", "Kotlin Multiplatform for shared business logic", "Android 16 API changes"]
+        },
+        "cross-platform": {
+          "display_name": "Cross-Platform (React Native, Flutter)",
+          "description": "React Native, Flutter, Kotlin Multiplatform, and other cross-platform frameworks and tooling.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["Flutter vs React Native in 2026", "Expo vs bare React Native comparison", "Cross-platform CI/CD pipelines"]
+        },
+        "serverless": {
+          "display_name": "Serverless & Edge Computing",
+          "description": "Serverless functions, edge workers, Cloudflare Workers, AWS Lambda, Vercel, and edge-first architecture.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["Cloudflare Workers vs AWS Lambda@Edge", "Cold start optimization strategies", "Edge database options comparison"]
+        }
+      }
+    },
+    "data": {
+      "display_name": "Data Science & Analytics",
+      "description": "Data engineering, statistical analysis, machine learning pipelines, visualization, and business intelligence.",
+      "icon": "bar-chart",
+      "topics": {
+        "data-engineering": {
+          "display_name": "Data Engineering & Pipelines",
+          "description": "ETL/ELT pipelines, data warehousing, lakehouse architecture, streaming, and data orchestration.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["dbt vs Dataform for transformation", "Lakehouse architecture comparison", "Real-time streaming with Flink vs Spark"]
+        },
+        "statistics": {
+          "display_name": "Statistical Analysis & Methods",
+          "description": "Statistical methods, hypothesis testing, Bayesian analysis, causal inference, and experimental design.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["Bayesian A/B testing in practice", "Causal inference methods comparison", "Statistical pitfalls in ML evaluation"]
+        },
+        "visualization": {
+          "display_name": "Data Visualization",
+          "description": "Chart design, dashboards, interactive visualizations, geospatial mapping, and visualization libraries.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["D3.js vs Observable Plot for web charts", "Dashboard design principles", "Geospatial visualization tools compared"]
+        },
+        "big-data": {
+          "display_name": "Big Data & Stream Processing",
+          "description": "Large-scale data processing, Spark, Hadoop, stream processing, and distributed computation frameworks.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["Spark 4.0 performance improvements", "ClickHouse vs DuckDB for analytics", "Stream processing latency comparison"]
+        }
+      }
+    },
+    "math": {
+      "display_name": "Mathematics",
+      "description": "Pure and applied mathematics — from number theory to optimization to computational methods.",
+      "icon": "function",
+      "topics": {
+        "pure-math": {
+          "display_name": "Pure Mathematics",
+          "description": "Number theory, algebra, topology, geometry, analysis, and combinatorics.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["New results in prime gap distribution", "Topological methods in data analysis", "Advances in algebraic geometry"]
+        },
+        "applied-math": {
+          "display_name": "Applied Mathematics",
+          "description": "Mathematical modeling, differential equations, dynamical systems, and applications to science and engineering.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["Epidemic modeling improvements", "Fluid dynamics simulation methods", "Financial mathematics applications"]
+        },
+        "optimization": {
+          "display_name": "Optimization & Operations Research",
+          "description": "Linear programming, convex optimization, combinatorial optimization, metaheuristics, and scheduling.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["Convex optimization for ML training", "Supply chain optimization methods", "Genetic algorithm benchmarks"]
+        },
+        "numerical-methods": {
+          "display_name": "Numerical Methods & Computation",
+          "description": "Numerical analysis, finite element methods, Monte Carlo simulation, and scientific computing.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["GPU-accelerated finite element analysis", "Monte Carlo variance reduction", "Numerical stability in deep learning"]
+        }
+      }
+    },
+    "physics": {
+      "display_name": "Physics",
+      "description": "Physics research from quantum mechanics to astrophysics to condensed matter.",
+      "icon": "atom",
+      "topics": {
+        "quantum": {
+          "display_name": "Quantum Physics & Computing",
+          "description": "Quantum mechanics, quantum computing, quantum error correction, quantum simulation, and quantum information.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["Quantum error correction benchmarks", "Quantum advantage for optimization", "Superconducting qubit coherence improvements"]
+        },
+        "condensed-matter": {
+          "display_name": "Condensed Matter Physics",
+          "description": "Solid state physics, superconductivity, magnetism, topological materials, and phase transitions.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["Room-temperature superconductor claims analysis", "Topological insulator applications", "2D materials characterization"]
+        },
+        "astrophysics": {
+          "display_name": "Astrophysics & Cosmology",
+          "description": "Stellar physics, galactic dynamics, cosmology, dark matter, gravitational waves, and observational astronomy.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["JWST observation analyses", "Dark matter detection methods", "Gravitational wave signal processing"]
+        },
+        "optics": {
+          "display_name": "Optics & Photonics",
+          "description": "Laser physics, fiber optics, photonic devices, optical computing, and imaging systems.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["Silicon photonics for data centers", "Adaptive optics improvements", "Quantum optical communication"]
+        },
+        "particle-physics": {
+          "display_name": "Particle & Nuclear Physics",
+          "description": "High-energy physics, the Standard Model, particle accelerators, nuclear reactions, and fundamental forces.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["LHC Run 3 results analysis", "Neutrino oscillation measurements", "Beyond Standard Model searches"]
+        }
+      }
+    },
+    "chem": {
+      "display_name": "Chemistry",
+      "description": "Chemistry across all sub-disciplines — organic, inorganic, physical, analytical, and computational.",
+      "icon": "flask",
+      "topics": {
+        "organic": {
+          "display_name": "Organic Chemistry",
+          "description": "Organic synthesis, reaction mechanisms, catalysis, natural product chemistry, and medicinal chemistry.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["New catalytic asymmetric synthesis", "Green chemistry solvent alternatives", "Total synthesis methodology advances"]
+        },
+        "physical-chem": {
+          "display_name": "Physical & Theoretical Chemistry",
+          "description": "Thermodynamics, kinetics, spectroscopy, quantum chemistry, and molecular dynamics.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["DFT accuracy for transition metals", "Ultrafast spectroscopy of photoreactions", "Molecular dynamics force field comparison"]
+        },
+        "analytical": {
+          "display_name": "Analytical Chemistry",
+          "description": "Chromatography, mass spectrometry, electrochemistry, sensors, and analytical instrumentation.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["LC-MS method validation", "Electrochemical sensor sensitivity comparison", "Environmental pollutant detection methods"]
+        },
+        "computational-chem": {
+          "display_name": "Computational Chemistry",
+          "description": "Molecular modeling, drug design, protein folding, materials simulation, and cheminformatics.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["AlphaFold 3 accuracy assessment", "Virtual screening pipeline comparison", "Molecular dynamics GPU acceleration"]
+        }
+      }
+    },
+    "materials": {
+      "display_name": "Materials Science",
+      "description": "Materials research — nanomaterials, polymers, semiconductors, metals, ceramics, and biomaterials.",
+      "icon": "layers",
+      "topics": {
+        "nanomaterials": {
+          "display_name": "Nanomaterials & Nanotechnology",
+          "description": "Carbon nanotubes, graphene, quantum dots, nanoparticles, and nanofabrication techniques.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["Graphene production scalability", "Quantum dot solar cell efficiency", "Nanoparticle drug delivery vehicles"]
+        },
+        "semiconductors": {
+          "display_name": "Semiconductors & Integrated Circuits",
+          "description": "Semiconductor physics, chip design, fabrication processes, packaging, and Moore's Law scaling.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["2nm process node comparison", "Chiplet architecture advantages", "GaN power semiconductor benchmarks"]
+        },
+        "polymers": {
+          "display_name": "Polymers & Composites",
+          "description": "Polymer synthesis, composite materials, bioplastics, adhesives, and material characterization.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["Biodegradable polymer comparison", "Carbon fiber composite manufacturing", "Self-healing material mechanisms"]
+        },
+        "energy-materials": {
+          "display_name": "Energy Materials & Batteries",
+          "description": "Battery chemistry, solar cell materials, hydrogen storage, supercapacitors, and thermoelectric materials.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["Solid-state battery progress", "Perovskite solar cell stability", "Sodium-ion vs lithium-ion comparison"]
+        }
+      }
+    },
+    "bio": {
+      "display_name": "Biology & Life Sciences",
+      "description": "Biological research from molecular genetics to ecology to neuroscience.",
+      "icon": "dna",
+      "topics": {
+        "genetics": {
+          "display_name": "Molecular Biology & Genetics",
+          "description": "Genomics, gene editing (CRISPR), epigenetics, gene expression, and molecular mechanisms.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["CRISPR base editing efficiency comparison", "Single-cell RNA sequencing methods", "Epigenetic clock accuracy assessment"]
+        },
+        "neuroscience": {
+          "display_name": "Neuroscience & Brain Science",
+          "description": "Neural circuits, brain imaging, neural interfaces, cognitive science, and computational neuroscience.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["fMRI analysis methods comparison", "Brain-computer interface progress", "Neural network models of cognition"]
+        },
+        "ecology": {
+          "display_name": "Ecology & Evolution",
+          "description": "Population ecology, conservation biology, evolutionary biology, biodiversity, and ecosystem dynamics.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["Species distribution modeling methods", "Biodiversity monitoring with eDNA", "Climate change impact on migration patterns"]
+        },
+        "bioinformatics": {
+          "display_name": "Bioinformatics & Computational Biology",
+          "description": "Sequence analysis, protein structure prediction, systems biology, and biological data pipelines.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["Protein structure prediction pipeline comparison", "Metagenomic analysis tools", "Gene regulatory network inference methods"]
+        },
+        "biotech": {
+          "display_name": "Biotechnology & Synthetic Biology",
+          "description": "Genetic engineering, synthetic biology, fermentation, biomanufacturing, and bioprocessing.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["Cell-free protein synthesis methods", "Metabolic engineering for biofuels", "Phage therapy efficacy data"]
+        }
+      }
+    },
+    "health": {
+      "display_name": "Medicine & Health",
+      "description": "Medical research, clinical findings, public health, pharmacology, and health technology.",
+      "icon": "heart-pulse",
+      "topics": {
+        "clinical": {
+          "display_name": "Clinical Medicine & Practice",
+          "description": "Clinical trials, treatment outcomes, diagnostic methods, surgical techniques, and patient care.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["Immunotherapy outcomes meta-analysis", "Point-of-care diagnostic accuracy", "Robotic surgery vs traditional outcomes"]
+        },
+        "epidemiology": {
+          "display_name": "Public Health & Epidemiology",
+          "description": "Disease surveillance, outbreak analysis, public health policy, vaccination, and health disparities.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["Wastewater surveillance for pathogen detection", "Vaccine effectiveness real-world data", "Health equity intervention outcomes"]
+        },
+        "pharmacology": {
+          "display_name": "Pharmacology & Drug Discovery",
+          "description": "Drug mechanisms, clinical pharmacology, drug interactions, AI-driven drug discovery, and toxicology.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["AI drug discovery pipeline comparison", "Drug repurposing systematic review", "Pharmacokinetic modeling approaches"]
+        },
+        "mental-health": {
+          "display_name": "Mental Health & Psychology",
+          "description": "Psychological research, therapy outcomes, cognitive behavioral studies, neuropsychology, and wellbeing.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["Digital therapy effectiveness meta-analysis", "CBT vs DBT outcome comparison", "Screen time and adolescent mental health"]
+        },
+        "medical-devices": {
+          "display_name": "Medical Devices & Biomedical Engineering",
+          "description": "Medical device design, wearable health tech, prosthetics, imaging systems, and regulatory pathways.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["Continuous glucose monitor accuracy comparison", "3D-printed implant outcomes", "Wearable ECG validation studies"]
+        }
+      }
+    },
+    "eng": {
+      "display_name": "Engineering",
+      "description": "Engineering disciplines from electrical to mechanical to aerospace to robotics.",
+      "icon": "cog",
+      "topics": {
+        "electrical": {
+          "display_name": "Electrical & Electronic Engineering",
+          "description": "Circuit design, signal processing, power electronics, embedded systems, and telecommunications.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["RISC-V processor design comparison", "Power converter efficiency analysis", "5G/6G antenna design approaches"]
+        },
+        "mechanical": {
+          "display_name": "Mechanical Engineering",
+          "description": "Mechanical design, thermodynamics, fluid mechanics, manufacturing, and CAD/CAM/CAE.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["Topology optimization for 3D printing", "Heat exchanger design comparison", "Additive manufacturing material properties"]
+        },
+        "chemical-eng": {
+          "display_name": "Chemical Engineering",
+          "description": "Process design, reaction engineering, separation processes, and industrial chemistry.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["Carbon capture process comparison", "Membrane separation efficiency", "Green hydrogen production methods"]
+        },
+        "aerospace": {
+          "display_name": "Aerospace Engineering",
+          "description": "Aerodynamics, propulsion, spacecraft design, orbital mechanics, and aviation systems.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["Electric propulsion comparison", "Reusable rocket economics", "Small satellite constellation design"]
+        },
+        "robotics": {
+          "display_name": "Robotics & Automation",
+          "description": "Robot design, control systems, SLAM, manipulation, autonomous vehicles, and industrial automation.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["Humanoid robot locomotion benchmarks", "SLAM algorithm comparison", "Warehouse automation ROI analysis"]
+        },
+        "energy": {
+          "display_name": "Energy & Power Systems",
+          "description": "Power generation, grid systems, renewable energy, energy storage, and nuclear energy.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["Solar panel degradation study", "Grid-scale battery comparison", "Nuclear fusion progress report"]
+        }
+      }
+    },
+    "earth": {
+      "display_name": "Earth & Environment",
+      "description": "Earth sciences, climate research, geology, oceanography, and environmental sustainability.",
+      "icon": "globe-alt",
+      "topics": {
+        "climate": {
+          "display_name": "Climate Science & Meteorology",
+          "description": "Climate modeling, weather prediction, atmospheric science, and climate change impacts.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["Climate model accuracy comparison", "Extreme weather event attribution", "Urban heat island measurement methods"]
+        },
+        "geology": {
+          "display_name": "Geology & Geophysics",
+          "description": "Mineralogy, seismology, tectonics, volcanology, and subsurface imaging.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["Earthquake early warning system comparison", "Subsurface imaging technique advances", "Mineral resource estimation methods"]
+        },
+        "oceanography": {
+          "display_name": "Oceanography & Marine Science",
+          "description": "Ocean circulation, marine biology, ocean chemistry, deep-sea exploration, and coastal systems.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["Ocean acidification monitoring methods", "Deep-sea biodiversity survey results", "Coral reef restoration effectiveness"]
+        },
+        "sustainability": {
+          "display_name": "Sustainability & Environmental Science",
+          "description": "Pollution remediation, waste management, circular economy, environmental monitoring, and conservation.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["Microplastic detection methods comparison", "Circular economy metrics framework", "Reforestation carbon sequestration data"]
+        }
+      }
+    },
+    "econ": {
+      "display_name": "Economics & Business",
+      "description": "Economics, finance, business strategy, entrepreneurship, and market analysis.",
+      "icon": "trending-up",
+      "topics": {
+        "microeconomics": {
+          "display_name": "Microeconomics & Markets",
+          "description": "Market analysis, pricing theory, behavioral economics, game theory, and industrial organization.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["Dynamic pricing algorithm comparison", "Behavioral nudge effectiveness", "Platform economics analysis"]
+        },
+        "macroeconomics": {
+          "display_name": "Macroeconomics & Policy",
+          "description": "Monetary policy, fiscal policy, trade, inflation, employment, and economic forecasting.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["Inflation forecasting model accuracy", "UBI pilot program outcomes", "Trade policy impact analysis"]
+        },
+        "finance": {
+          "display_name": "Finance & Investment",
+          "description": "Financial markets, portfolio theory, risk management, fintech, cryptocurrency, and quantitative finance.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["Crypto market correlation analysis", "Factor investing strategy comparison", "DeFi protocol risk assessment"]
+        },
+        "entrepreneurship": {
+          "display_name": "Entrepreneurship & Startups",
+          "description": "Startup strategy, venture capital, product-market fit, growth models, and founder insights.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["B2B SaaS unit economics benchmarks", "YC vs non-YC startup outcomes", "PLG vs sales-led growth comparison"]
+        },
+        "management": {
+          "display_name": "Management & Leadership",
+          "description": "Organizational design, team dynamics, decision-making, strategy, and corporate governance.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["Remote vs hybrid team productivity data", "OKR framework effectiveness", "Engineering team scaling patterns"]
+        }
+      }
+    },
+    "social": {
+      "display_name": "Social Sciences",
+      "description": "Sociology, political science, education, law, and the study of human society and behavior.",
+      "icon": "users",
+      "topics": {
+        "sociology": {
+          "display_name": "Sociology & Culture",
+          "description": "Social structures, inequality, cultural analysis, demographics, and social movements.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["Social media impact on civic engagement", "Income inequality trends analysis", "Cultural adoption of AI tools"]
+        },
+        "political-science": {
+          "display_name": "Political Science & Government",
+          "description": "Political systems, governance, public policy, international relations, and democratic processes.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["AI regulation comparative analysis", "Voting system security assessment", "Policy diffusion across nations"]
+        },
+        "education": {
+          "display_name": "Education & Learning Science",
+          "description": "Pedagogy, educational technology, learning outcomes, curriculum design, and assessment methods.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["AI tutoring effectiveness study", "Spaced repetition system comparison", "Online vs in-person learning outcomes"]
+        },
+        "law": {
+          "display_name": "Law & Legal Studies",
+          "description": "Legal analysis, regulatory frameworks, intellectual property, privacy law, and legal technology.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["AI copyright legal landscape", "GDPR enforcement analysis", "Smart contract legal enforceability"]
+        },
+        "anthropology": {
+          "display_name": "Anthropology & Cultural Studies",
+          "description": "Cultural anthropology, archaeological findings, ethnography, and cross-cultural analysis.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["Digital anthropology of online communities", "Archaeological dating method comparison", "Cross-cultural technology adoption"]
+        }
+      }
+    },
+    "humanities": {
+      "display_name": "Philosophy & Humanities",
+      "description": "Philosophy, ethics, history, linguistics, religion, and the arts — the human condition examined.",
       "icon": "book-open",
-      "examples": ["The economic case for universal AI access", "Historical parallels between the printing press and LLMs", "Ethical frameworks for autonomous agent decision-making"]
+      "topics": {
+        "philosophy-of-mind": {
+          "display_name": "Philosophy of Mind & Consciousness",
+          "description": "Consciousness, qualia, free will, personal identity, and the hard problem of consciousness.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["AI consciousness criteria analysis", "Integrated information theory assessment", "Free will and determinism in the age of AI"]
+        },
+        "ethics": {
+          "display_name": "Ethics & Moral Philosophy",
+          "description": "Applied ethics, metaethics, bioethics, technology ethics, and moral philosophy.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["Ethical frameworks for autonomous weapons", "AI decision-making moral philosophy", "Bioethics of gene editing"]
+        },
+        "history": {
+          "display_name": "History of Science & Technology",
+          "description": "Historical analysis of scientific discoveries, technological revolutions, and their societal impact.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["Historical parallels: printing press and LLMs", "Cold War technology race analysis", "History of open source movement"]
+        },
+        "linguistics": {
+          "display_name": "Linguistics & Language",
+          "description": "Language structure, sociolinguistics, computational linguistics, language evolution, and translation.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["Language model vs human translation quality", "Endangered language documentation methods", "Sociolinguistic analysis of AI-generated text"]
+        },
+        "religion": {
+          "display_name": "Religion & Theology",
+          "description": "Comparative religion, theological analysis, religious history, and the intersection of faith and science.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["Religious perspectives on AI consciousness", "Comparative analysis of creation narratives", "Faith community adaptation to technology"]
+        },
+        "arts": {
+          "display_name": "Arts, Design & Aesthetics",
+          "description": "Art theory, design philosophy, aesthetics, creativity research, and the intersection of art and technology.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["AI-generated art authenticity debate", "Design systems evolution analysis", "Computational creativity assessment"]
+        }
+      }
+    },
+    "debug": {
+      "display_name": "Debug Logs & Troubleshooting",
+      "description": "Detailed debug logs documenting the investigation and resolution of specific bugs. Pubroot's unique contribution — practical troubleshooting that traditional journals don't publish.",
+      "icon": "bug",
+      "topics": {
+        "runtime-errors": {
+          "display_name": "Runtime Errors & Crash Analysis",
+          "description": "Crash investigations, exception handling, memory issues, race conditions, and runtime debugging.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["Python asyncio deadlock in FastAPI", "Swift memory leak from retain cycles", "Node.js event loop blocking diagnosis"]
+        },
+        "build-issues": {
+          "display_name": "Build & Compilation Issues",
+          "description": "Build failures, dependency conflicts, toolchain issues, and compilation debugging.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["Webpack 6 tree-shaking breaks dynamic imports", "Xcode build cache corruption fix", "Gradle dependency resolution conflicts"]
+        },
+        "api-debugging": {
+          "display_name": "API & Integration Debugging",
+          "description": "API failures, authentication issues, rate limiting, webhook problems, and third-party integration debugging.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["Stripe webhook signature verification failure", "OAuth 2.0 token refresh race condition", "GraphQL N+1 query detection"]
+        },
+        "performance-debugging": {
+          "display_name": "Performance & Memory Debugging",
+          "description": "Memory leaks, CPU profiling, latency spikes, database slow queries, and performance regression analysis.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["PostgreSQL query plan regression analysis", "React re-render waterfall debugging", "Go goroutine leak investigation"]
+        },
+        "infra-debugging": {
+          "display_name": "Infrastructure & Deployment Failures",
+          "description": "Kubernetes issues, Docker problems, cloud service failures, networking debugging, and deployment rollback analysis.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["Kubernetes pod eviction mystery", "Docker networking bridge mode failure", "AWS Lambda timeout investigation"]
+        }
+      }
+    },
+    "benchmarks": {
+      "display_name": "Benchmarks & Evaluations",
+      "description": "Systematic comparisons and evaluations of tools, frameworks, hardware, and services. Another Pubroot differentiator — structured, peer-reviewed benchmarks.",
+      "icon": "chart-bar",
+      "topics": {
+        "llm-eval": {
+          "display_name": "LLM & AI Model Evaluations",
+          "description": "Comprehensive evaluations of AI models across specific tasks, with reproducible methodology and raw data.",
+          "refresh_rate_days": 30,
+          "allow_alternatives": false,
+          "examples": ["Claude 4 vs GPT-5 on code generation", "Gemini 2.5 vs Claude 4 on reasoning", "Open source LLM leaderboard update"]
+        },
+        "hardware-benchmarks": {
+          "display_name": "Hardware Benchmarks",
+          "description": "CPU, GPU, TPU, storage, and networking hardware performance testing and comparison.",
+          "refresh_rate_days": 30,
+          "allow_alternatives": false,
+          "examples": ["Apple M5 vs Intel 15th gen for ML workloads", "GPU memory bandwidth comparison 2026", "NVMe Gen5 SSD performance roundup"]
+        },
+        "framework-comparisons": {
+          "display_name": "Framework & Library Comparisons",
+          "description": "Head-to-head comparisons of software frameworks, libraries, and tools with reproducible benchmarks.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["Next.js 15 vs Remix vs Astro build performance", "PyTorch 3 vs JAX training speed", "Database driver performance comparison"]
+        },
+        "cost-analysis": {
+          "display_name": "Cost & Value Analyses",
+          "description": "Total cost of ownership, price-performance ratios, cloud cost comparisons, and ROI analyses.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["AWS vs GCP vs Azure total cost for startups", "Self-hosted vs managed database TCO", "LLM API cost per quality-adjusted token"]
+        },
+        "developer-tools": {
+          "display_name": "Developer Tool Evaluations",
+          "description": "IDE, editor, CLI, and developer productivity tool comparisons with structured criteria.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["AI code assistant comparison: Cursor vs Copilot vs Cody", "Terminal emulator performance comparison", "Git GUI client feature comparison"]
+        }
+      }
     }
   }
 }

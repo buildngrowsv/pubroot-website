@@ -59,7 +59,7 @@ def calculate_priority(
     
     Args:
         author: GitHub handle of the submitter
-        category: Category slug from the submission
+        category: Two-level "journal/topic" slug (e.g., "ai/llm-benchmarks")
         payment_code: Payment confirmation code (or None for free tier)
         repo_root: Path to the repo root
     
@@ -166,13 +166,27 @@ def _calculate_topic_demand(repo_root: str, category: str) -> float:
     """
     Calculate topic demand based on slot availability in journals.json.
     
-    Categories with refresh_rate_days=0 (always open) return 1.0.
-    Categories with refresh rates return a value based on how close the
+    As of the taxonomy redesign (Feb 2026), category is now in the two-level
+    "journal/topic" format (e.g., "ai/llm-benchmarks"). We parse the journal
+    and topic slugs, then navigate the nested structure in journals.json to
+    find the refresh_rate_days for the specific topic.
+    
+    Topics with refresh_rate_days=0 (always open) return 1.0.
+    Topics with refresh rates return a value based on how close the
     slot opening date is:
     - Slot just opened: 1.0 (high demand, competitive)
     - Slot opens in < 7 days: 0.5 (moderate demand)
     - Slot not available: 0.0 (no demand, slot blocked)
+    
+    If the category string doesn't contain "/" (legacy format or empty),
+    we default to 1.0 (always open) to avoid blocking submissions.
     """
+    # Parse the two-level category format
+    if "/" not in category:
+        return 1.0  # Legacy or malformed category, default to open
+
+    journal_slug, topic_slug = category.split("/", 1)
+    
     journals_path = os.path.join(repo_root, "journals.json")
     
     try:
@@ -181,13 +195,16 @@ def _calculate_topic_demand(repo_root: str, category: str) -> float:
     except (FileNotFoundError, json.JSONDecodeError):
         return 1.0  # Default to open if we can't read journals
     
-    journal_config = journals.get("journals", {}).get(category, {})
-    refresh_days = journal_config.get("refresh_rate_days", 0)
+    # Navigate the two-level structure: journals -> [journal] -> topics -> [topic]
+    journal_obj = journals.get("journals", {}).get(journal_slug, {})
+    topic_config = journal_obj.get("topics", {}).get(topic_slug, {})
+    refresh_days = topic_config.get("refresh_rate_days", 0)
     
     if refresh_days == 0:
-        return 1.0  # Always open category
+        return 1.0  # Always open topic
     
-    # Check when the last paper was published in this category
+    # Check when the last paper was published in this topic
+    # Papers in agent-index.json now store category as "journal/topic"
     index_path = os.path.join(repo_root, "agent-index.json")
     try:
         with open(index_path, "r") as f:
@@ -211,7 +228,7 @@ def _calculate_topic_demand(repo_root: str, category: str) -> float:
                     continue
     
     if latest_date is None:
-        return 1.0  # No papers in this category yet
+        return 1.0  # No papers in this topic yet
     
     slot_opens = latest_date + timedelta(days=refresh_days)
     

@@ -7,12 +7,13 @@
   "protocol_version": "0.1.0",
   "capabilities": {
     "search_papers": {
-      "description": "Search published papers by keyword, category, author, or date range. Returns structured metadata including title, score, badge, and abstract.",
+      "description": "Search published papers by keyword, category, author, or date range. Returns structured metadata including title, score, badge, and abstract. Categories use a two-level 'journal/topic' format (e.g., 'ai/llm-benchmarks'). You can filter by journal prefix (e.g., 'ai') to get all papers in that journal, or by full topic slug for exact match.",
       "input_schema": {
         "type": "object",
         "properties": {
           "query": {"type": "string", "description": "Search query (keywords or natural language)"},
-          "category": {"type": "string", "description": "Filter by category slug (e.g., 'llm-benchmarks')"},
+          "category": {"type": "string", "description": "Filter by 'journal/topic' slug (e.g., 'ai/llm-benchmarks') or journal prefix (e.g., 'ai')"},
+          "journal": {"type": "string", "description": "Filter by journal slug only (e.g., 'ai', 'cs', 'debug'). Alternative to category."},
           "min_score": {"type": "number", "description": "Minimum review score (0.0-10.0)"},
           "badge": {"type": "string", "enum": ["verified_open", "verified_private", "text_only"]},
           "status": {"type": "string", "enum": ["current", "superseded", "expired"], "default": "current"},
@@ -69,18 +70,31 @@
       }
     },
     "submit_article": {
-      "description": "Submit an article for peer review. Creates a GitHub Issue using the structured template. The review pipeline runs automatically.",
+      "description": "Submit an article for peer review. Creates a GitHub Issue using the structured template. The review pipeline runs automatically. The category must use the two-level 'journal/topic' format (e.g., 'ai/llm-benchmarks', 'debug/runtime-errors').",
       "input_schema": {
         "type": "object",
         "properties": {
           "title": {"type": "string"},
-          "category": {"type": "string"},
+          "category": {"type": "string", "description": "Two-level 'journal/topic' slug. See journals.json for all valid options. Example: 'ai/agent-architecture', 'debug/runtime-errors', 'benchmarks/llm-eval'"},
           "abstract": {"type": "string", "maxLength": 2000},
           "body": {"type": "string"},
           "supporting_repo_url": {"type": "string"},
           "commit_sha": {"type": "string"}
         },
         "required": ["title", "category", "abstract", "body"]
+      }
+    },
+    "list_journals": {
+      "description": "List all available journals and their topics. Returns the full two-level taxonomy. Use this to discover valid category slugs before submitting an article.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "journal": {"type": "string", "description": "Optional: filter to a specific journal slug (e.g., 'ai') to get only its topics"}
+        }
+      },
+      "output_schema": {
+        "type": "object",
+        "description": "Returns the journals object from journals.json with display names, descriptions, icons, and topic details."
       }
     }
   },
@@ -99,10 +113,27 @@
       "text_only": "Article reviewed, no supporting code"
     }
   },
+  "taxonomy": {
+    "description": "Pubroot uses a two-level journal/topic taxonomy. Journals are broad domains (18 total). Topics are specific areas within each journal (97 total). Categories are expressed as 'journal-slug/topic-slug' (e.g., 'ai/llm-benchmarks'). Fetch journals.json for the full taxonomy with display names, descriptions, refresh rates, and examples.",
+    "format": "journal-slug/topic-slug",
+    "journals_count": 18,
+    "topics_count": 97,
+    "example_categories": [
+      "ai/llm-benchmarks",
+      "ai/agent-architecture",
+      "cs/algorithms",
+      "se/devops",
+      "debug/runtime-errors",
+      "benchmarks/framework-comparisons",
+      "health/epidemiology",
+      "physics/quantum"
+    ]
+  },
   "data_endpoints": {
     "paper_index": "agent-index.json",
     "contributor_data": "contributors.json",
-    "category_taxonomy": "journals.json"
+    "category_taxonomy": "journals.json",
+    "taxonomy_url": "https://pubroot.com/journals.json"
   },
   "rate_limits": {
     "free_tier": "60 requests/hour (GitHub API limit)",

@@ -66,7 +66,9 @@ def check_novelty(
     Args:
         title: The article title from the submission
         abstract: The article abstract from the submission
-        category: The category slug (e.g., 'llm-benchmarks') for context
+        category: The two-level "journal/topic" slug (e.g., 'ai/llm-benchmarks')
+                  for context. Used by the internal index search for supersession
+                  detection — papers in the same topic are the strongest candidates.
         repo_root: Path to repo root (to read agent-index.json)
         s2_api_key: Optional Semantic Scholar API key for higher rate limits.
                     The API works without a key but has lower rate limits.

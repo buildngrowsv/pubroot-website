@@ -50,18 +50,22 @@
       </div>
     </section>
 
-    <!-- Topic categories -->
+    <!-- Journal navigation — two-level taxonomy (Feb 2026 redesign)
+         Top row: journal-level pills (scrollable horizontal bar)
+         Bottom row: topic-level pills (shown when a journal is selected)
+         JavaScript at the bottom of the page loads journals.json and populates
+         the topic sub-bar dynamically. This way the template doesn't need to be
+         updated when journals.json changes. -->
     <section class="topics-bar">
       <div class="container">
-        <div class="topic-pills">
-          <a href="/" class="topic-pill active">All</a>
-          <a href="/?cat=llm-benchmarks" class="topic-pill">LLM Benchmarks</a>
-          <a href="/?cat=agent-architecture" class="topic-pill">Agent Architecture</a>
-          <a href="/?cat=ios-debugging" class="topic-pill">iOS Debugging</a>
-          <a href="/?cat=code-debugging-logs" class="topic-pill">Debug Logs</a>
-          <a href="/?cat=macos-api-guides" class="topic-pill">macOS APIs</a>
-          <a href="/?cat=general-technical" class="topic-pill">Technical</a>
-          <a href="/?cat=intellectual-essays" class="topic-pill">Essays</a>
+        <!-- Journal-level pills (top row) — loaded dynamically from journals.json -->
+        <div class="journal-pills" id="journal-pills">
+          <button class="journal-pill active" data-journal="all">All Journals</button>
+          <!-- Remaining pills populated by JavaScript from journals.json -->
+        </div>
+        <!-- Topic-level pills (sub row) — shown when a journal is selected -->
+        <div class="topic-subbar" id="topic-subbar">
+          <!-- Populated dynamically when a journal pill is clicked -->
         </div>
       </div>
     </section>
@@ -76,7 +80,7 @@
 
         {{ $papers := where .Site.RegularPages "Section" "papers" }}
         {{ range $papers.ByDate.Reverse }}
-        <article class="paper-card">
+        <article class="paper-card" data-category="{{ .Params.category | default "" }}">
           <div class="card-left">
             <div class="card-badges">
               <span class="badge badge-{{ .Params.badge | default "text_only" }}">
@@ -173,10 +177,151 @@
 
   <script src="/_pagefind/pagefind-ui.js"></script>
   <script>
-    window.addEventListener('DOMContentLoaded', () => {
-      const el = document.getElementById('search');
-      if (el) {
+    /**
+     * Homepage interactivity for Pubroot — journal/topic navigation
+     *
+     * WHAT THIS DOES:
+     * 1. Loads journals.json to build the two-level navigation dynamically
+     * 2. Renders journal-level pills in a horizontally scrollable bar
+     * 3. When a journal is clicked, shows its topic pills in a sub-bar
+     * 4. Filters the paper cards by the selected journal or topic
+     *
+     * WHY DYNAMIC:
+     * We load journals.json instead of hardcoding because the taxonomy is
+     * designed to evolve. When journals.json changes, the navigation updates
+     * on the next site build without needing to touch this template.
+     *
+     * ICON MAP:
+     * Maps the icon field from journals.json to simple emoji representations.
+     * We use emoji instead of an icon library to avoid external dependencies
+     * on a static site. These can be replaced with SVG icons later.
+     */
+    const ICON_MAP = {
+      'brain': '🧠', 'cpu': '💻', 'wrench': '🔧', 'globe': '🌐',
+      'bar-chart': '📊', 'function': '∑', 'atom': '⚛️', 'flask': '🧪',
+      'layers': '🔬', 'dna': '🧬', 'heart-pulse': '❤️', 'cog': '⚙️',
+      'globe-alt': '🌍', 'trending-up': '📈', 'users': '👥',
+      'book-open': '📖', 'bug': '🐛', 'chart-bar': '📉'
+    };
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      /* ---- Pagefind search initialization ---- */
+      const searchEl = document.getElementById('search');
+      if (searchEl) {
         new PagefindUI({ element: "#search", showSubResults: true, showImages: false });
+      }
+
+      /* ---- Load journals.json and build navigation ---- */
+      let journalsData = {};
+      try {
+        const resp = await fetch('/journals.json');
+        if (resp.ok) {
+          const data = await resp.json();
+          journalsData = data.journals || {};
+        }
+      } catch (e) {
+        console.warn('Could not load journals.json:', e);
+      }
+
+      const pillsContainer = document.getElementById('journal-pills');
+      const subbar = document.getElementById('topic-subbar');
+
+      /* Build journal pills from the loaded data */
+      Object.entries(journalsData).forEach(([slug, journal]) => {
+        const btn = document.createElement('button');
+        btn.className = 'journal-pill';
+        btn.dataset.journal = slug;
+        const icon = ICON_MAP[journal.icon] || '📄';
+        btn.innerHTML = `<span class="journal-icon">${icon}</span> ${journal.display_name}`;
+        btn.title = journal.description || '';
+        pillsContainer.appendChild(btn);
+      });
+
+      /* ---- Click handlers for journal pills ---- */
+      pillsContainer.addEventListener('click', (e) => {
+        const pill = e.target.closest('.journal-pill');
+        if (!pill) return;
+
+        /* Update active state on journal pills */
+        pillsContainer.querySelectorAll('.journal-pill').forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+
+        const journalSlug = pill.dataset.journal;
+
+        if (journalSlug === 'all') {
+          /* "All Journals" — hide topic sub-bar, show all papers */
+          subbar.innerHTML = '';
+          subbar.classList.remove('visible');
+          filterPapers(null);
+        } else {
+          /* Show topics for this journal */
+          const journal = journalsData[journalSlug];
+          if (!journal || !journal.topics) return;
+
+          subbar.innerHTML = '';
+          /* "All in Journal" pill */
+          const allBtn = document.createElement('button');
+          allBtn.className = 'topic-pill active';
+          allBtn.dataset.category = journalSlug;
+          allBtn.textContent = `All ${journal.display_name}`;
+          subbar.appendChild(allBtn);
+
+          Object.entries(journal.topics).forEach(([topicSlug, topic]) => {
+            const btn = document.createElement('button');
+            btn.className = 'topic-pill';
+            btn.dataset.category = `${journalSlug}/${topicSlug}`;
+            btn.textContent = topic.display_name;
+            btn.title = topic.description || '';
+            subbar.appendChild(btn);
+          });
+
+          subbar.classList.add('visible');
+          filterPapers(journalSlug);
+        }
+      });
+
+      /* ---- Click handlers for topic pills (sub-bar) ---- */
+      subbar.addEventListener('click', (e) => {
+        const pill = e.target.closest('.topic-pill');
+        if (!pill) return;
+
+        subbar.querySelectorAll('.topic-pill').forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+
+        const cat = pill.dataset.category;
+        filterPapers(cat);
+      });
+
+      /**
+       * Filter paper cards by category.
+       * - null = show all
+       * - "ai" = show all papers in the "ai" journal (category starts with "ai/")
+       * - "ai/llm-benchmarks" = show only that specific topic
+       *
+       * Papers have a data-category attribute set by Hugo (e.g., "ai/llm-benchmarks").
+       * We match by prefix for journal-level filtering, or exact for topic-level.
+       */
+      function filterPapers(category) {
+        const cards = document.querySelectorAll('.paper-card');
+        cards.forEach(card => {
+          const paperCat = card.dataset.category || '';
+          if (!category) {
+            card.style.display = '';
+          } else if (category.includes('/')) {
+            /* Exact topic match */
+            card.style.display = paperCat === category ? '' : 'none';
+          } else {
+            /* Journal prefix match */
+            card.style.display = paperCat.startsWith(category + '/') ? '' : 'none';
+          }
+        });
+
+        /* Update empty state visibility */
+        const visibleCards = document.querySelectorAll('.paper-card:not([style*="display: none"])');
+        const emptyState = document.querySelector('.empty-state');
+        if (emptyState) {
+          emptyState.style.display = visibleCards.length === 0 ? '' : 'none';
+        }
       }
     });
   </script>

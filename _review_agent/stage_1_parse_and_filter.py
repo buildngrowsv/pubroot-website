@@ -69,7 +69,9 @@ def parse_and_filter_submission(
             - 'warnings' (list[str]): Non-blocking warnings
             - 'parsed' (dict): The extracted fields:
                 - 'title' (str)
-                - 'category' (str): slug from journals.json
+                - 'category' (str): full "journal/topic" slug (e.g., "ai/llm-benchmarks")
+                - 'journal' (str): journal slug extracted from category (e.g., "ai")
+                - 'topic' (str): topic slug extracted from category (e.g., "llm-benchmarks")
                 - 'abstract' (str)
                 - 'body' (str): full article text
                 - 'supporting_repo' (str or None)
@@ -154,47 +156,99 @@ def parse_and_filter_submission(
         )
 
     # -----------------------------------------------------------------------
-    # STEP 4: Validate category exists in journals.json
+    # STEP 4: Validate category exists in journals.json (TWO-LEVEL FORMAT)
     # -----------------------------------------------------------------------
-    # We load journals.json from the repo to check that the submitted category
-    # is a valid slug. This prevents typos and ensures the review pipeline can
-    # find the right review criteria and slot rules for this category.
+    # As of the taxonomy redesign (Feb 2026), categories use a two-level
+    # "journal/topic" format like "ai/llm-benchmarks" or "debug/runtime-errors".
+    # The submission.yml dropdown presents options in this format. We split on
+    # "/" to get the journal slug and topic slug, then validate both exist in
+    # journals.json.
+    #
+    # We also reject separator lines from the dropdown (like "--- Artificial
+    # Intelligence ---") which are visual aids for humans filling out the form
+    # but are NOT valid submissions.
     # -----------------------------------------------------------------------
 
+    # Parse the two-level category format: "journal-slug/topic-slug"
+    journal_slug = ""
+    topic_slug = ""
+    if category:
+        # Reject dropdown separator lines (visual grouping headers)
+        # These look like "--- Artificial Intelligence ---"
+        if category.startswith("---") and category.endswith("---"):
+            errors.append(
+                f"'{category}' is a section header, not a valid category. "
+                f"Please select a specific topic from the dropdown "
+                f"(e.g., 'ai/llm-benchmarks')."
+            )
+        elif "/" in category:
+            parts = category.split("/", 1)
+            journal_slug = parts[0].strip()
+            topic_slug = parts[1].strip()
+        else:
+            # Legacy flat format or malformed input — reject with helpful message
+            errors.append(
+                f"Category '{category}' is not in the required 'journal/topic' format. "
+                f"Please select a topic from the dropdown (e.g., 'ai/llm-benchmarks')."
+            )
+
     journals_path = os.path.join(repo_root, "journals.json")
+    journals_data = None
+    valid_topics = []  # List of "journal/topic" strings for error messages
     try:
         with open(journals_path, "r") as f:
             journals_data = json.load(f)
-        valid_categories = list(journals_data.get("journals", {}).keys())
+        # Build a flat list of valid "journal/topic" slugs for validation
+        for j_slug, j_data in journals_data.get("journals", {}).items():
+            for t_slug in j_data.get("topics", {}).keys():
+                valid_topics.append(f"{j_slug}/{t_slug}")
     except (FileNotFoundError, json.JSONDecodeError) as e:
         # If journals.json is missing or corrupt, that's a system error, not
         # a submission error. We warn but don't block.
         warnings.append(f"Could not load journals.json: {e}")
-        valid_categories = []
 
-    if valid_categories and category and category not in valid_categories:
-        errors.append(
-            f"Invalid category '{category}'. Valid categories are: "
-            f"{', '.join(valid_categories)}"
-        )
+    # Validate the journal/topic combination exists
+    if valid_topics and journal_slug and topic_slug:
+        full_category = f"{journal_slug}/{topic_slug}"
+        if full_category not in valid_topics:
+            # Check if just the journal is wrong vs the topic
+            known_journals = list(journals_data.get("journals", {}).keys())
+            if journal_slug not in known_journals:
+                errors.append(
+                    f"Unknown journal '{journal_slug}'. Valid journals are: "
+                    f"{', '.join(known_journals)}"
+                )
+            else:
+                known_topics = list(
+                    journals_data["journals"][journal_slug].get("topics", {}).keys()
+                )
+                errors.append(
+                    f"Unknown topic '{topic_slug}' in journal '{journal_slug}'. "
+                    f"Valid topics for {journal_slug} are: {', '.join(known_topics)}"
+                )
 
     # -----------------------------------------------------------------------
     # STEP 5: Check topic slot availability (refresh rate enforcement)
     # -----------------------------------------------------------------------
-    # Some categories have a refresh_rate_days setting. For example, 
-    # "llm-benchmarks" has a 30-day refresh rate, meaning only one article
-    # per sub-topic is accepted per month. This prevents spam and creates
-    # competitive submission dynamics.
+    # Some topics have a refresh_rate_days setting. For example,
+    # "ai/llm-benchmarks" and "benchmarks/llm-eval" have a 30-day refresh rate,
+    # meaning only one article per topic is accepted per month. This prevents
+    # spam and creates competitive submission dynamics.
+    #
+    # In the two-level taxonomy, refresh_rate_days lives on the TOPIC object
+    # inside its parent journal. We navigate journals[journal][topics][topic]
+    # to find it.
     #
     # We check agent-index.json for the most recent accepted article in the
-    # same category. If it was published within the refresh window, we reject.
+    # same topic. If it was published within the refresh window, we reject.
     #
-    # Categories with refresh_rate_days=0 are always open.
+    # Topics with refresh_rate_days=0 are always open (the vast majority).
     # -----------------------------------------------------------------------
 
-    if valid_categories and category in valid_categories:
-        journal_config = journals_data["journals"][category]
-        refresh_days = journal_config.get("refresh_rate_days", 0)
+    if journals_data and journal_slug and topic_slug:
+        journal_obj = journals_data.get("journals", {}).get(journal_slug, {})
+        topic_config = journal_obj.get("topics", {}).get(topic_slug, {})
+        refresh_days = topic_config.get("refresh_rate_days", 0)
 
         if refresh_days > 0:
             slot_error = _check_topic_slot_availability(
@@ -289,7 +343,9 @@ def parse_and_filter_submission(
         "warnings": warnings,
         "parsed": {
             "title": title,
-            "category": category,
+            "category": category,          # Full "journal/topic" slug (e.g., "ai/llm-benchmarks")
+            "journal": journal_slug,        # Journal slug only (e.g., "ai")
+            "topic": topic_slug,            # Topic slug only (e.g., "llm-benchmarks")
             "abstract": abstract,
             "body": body,
             "supporting_repo": supporting_repo,
