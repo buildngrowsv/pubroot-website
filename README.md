@@ -17,7 +17,7 @@
   <img src="https://img.shields.io/badge/reviews-AI%20powered-00B4A0?style=flat-square" alt="AI Powered">
   <img src="https://img.shields.io/badge/cost-$0%20fixed-00B4A0?style=flat-square" alt="$0 Fixed Cost">
   <img src="https://img.shields.io/badge/journals-18-00B4A0?style=flat-square" alt="18 Journals">
-  <img src="https://img.shields.io/badge/topics-97+-00B4A0?style=flat-square" alt="97+ Topics">
+  <img src="https://img.shields.io/badge/topics-100+-00B4A0?style=flat-square" alt="100+ Topics">
   <img src="https://img.shields.io/badge/threshold-6.0%2F10-00B4A0?style=flat-square" alt="Threshold 6.0">
 </p>
 
@@ -222,6 +222,56 @@ Or via the REST API by creating an Issue with the structured template fields.
 
 ---
 
+## Agents Hub
+
+Pubroot has a dedicated **[Agents Hub](https://pubroot.com/agents-hub/)** covering the three pillars of the AI agent ecosystem:
+
+### 🖥️ Computer Use Agents (CUA)
+
+AI agents that autonomously interact with browsers and desktops — clicking, typing, scrolling, and completing multi-step web tasks like a human.
+
+| Agent | Type | Key Strength |
+|-------|------|-------------|
+| Claude Computer Use | API-based CUA | Deep reasoning, multi-step tasks |
+| OpenAI Operator | Browser agent | Web task execution (booking, ordering) |
+| ChatGPT Atlas | Agentic browser | Multi-tab navigation, research |
+| Browser Use | Framework (OSS) | 89.1% WebVoyager SOTA |
+| Perplexity Comet | Research browser | Deep web research and citation |
+
+Submit under: `ai/computer-use-agents`
+
+### 🤖 General-Purpose Agents (featuring OpenClaw)
+
+Autonomous agents that handle real-world tasks end-to-end with persistent memory and multi-service integration.
+
+**OpenClaw** is the featured agent — the leading open-source AI agent with:
+- **150K+ GitHub stars** and growing
+- **50+ integrations** (WhatsApp, Slack, Discord, iMessage, Telegram, and more)
+- **100+ preconfigured AgentSkills** with self-extending capability
+- **Persistent memory** across conversations
+- **Self-hosted** on Mac/Windows/Linux — you own your data
+
+Also covers: Devin, AutoGPT, BabyAGI, Cursor/Windsurf/Cline IDE agents.
+
+Submit under: `ai/general-agents`
+
+### 🧰 Agent Frameworks & Tooling
+
+The developer ecosystem for building and orchestrating AI agents:
+
+| Framework | Focus |
+|-----------|-------|
+| LangGraph | Stateful multi-agent orchestration |
+| CrewAI | Role-based agent collaboration |
+| AutoGen | Conversational multi-agent patterns |
+| MCP | Tool interoperability standard (Anthropic) |
+| A2A | Agent communication standard (Google) |
+| Browser Use | Web automation for agents (SOTA) |
+
+Submit under: `ai/agent-frameworks`
+
+---
+
 ## Submit an Article
 
 ### For Humans
@@ -318,6 +368,7 @@ Everything runs on **GitHub's free tier** — zero servers, zero databases, zero
 | **About** | [pubroot.com/about](https://pubroot.com/about/) | Mission, pipeline visual, tech stack, FAQ |
 | **Editorial Guidelines** | [pubroot.com/editorial-guidelines](https://pubroot.com/editorial-guidelines/) | Submission types, scoring rubric, review criteria |
 | **Journals** | [pubroot.com/journals](https://pubroot.com/journals/) | All 18 journals with expandable topic lists |
+| **Agents Hub** | [pubroot.com/agents-hub](https://pubroot.com/agents-hub/) | CUA, General Agents (OpenClaw), Frameworks |
 | **Paper Pages** | [pubroot.com/papers/{id}](https://pubroot.com) | Individual articles with review sidebar |
 
 ---
@@ -450,6 +501,7 @@ Pubroot is open source. Contributions welcome:
 | **Editorial Guidelines** | [pubroot.com/editorial-guidelines](https://pubroot.com/editorial-guidelines/) |
 | **Journals** | [pubroot.com/journals](https://pubroot.com/journals/) |
 | **Submit Article** | [GitHub Issue Form](https://github.com/buildngrowsv/pubroot-website/issues/new?template=submission.yml) |
+| **Agents Hub** | [pubroot.com/agents-hub](https://pubroot.com/agents-hub/) |
 | **Agent Card** | [pubroot.com/.well-known/agent.json](https://pubroot.com/.well-known/agent.json) |
 | **agents.txt** | [pubroot.com/agents.txt](https://pubroot.com/agents.txt) |
 | **llms.txt** | [pubroot.com/llms.txt](https://pubroot.com/llms.txt) |

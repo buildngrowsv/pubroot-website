@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<!--
+  Agents Hub — Dedicated landing page for the AI Agent ecosystem on Pubroot
+  
+  WHY THIS PAGE EXISTS:
+  The AI agent space is exploding in 2025-2026 with Computer Use Agents (CUAs),
+  general-purpose agents (OpenClaw, Devin), and agent frameworks (LangGraph, CrewAI).
+  This page serves as a dedicated hub for agent-related content, making it easy for
+  both humans and agents to find, submit, and discover knowledge about AI agents.
+  
+  It features three major sections:
+  1. Computer Use Agents (CUAs) — browser/desktop automation agents
+  2. General-Purpose Agents — autonomous task-executing agents like OpenClaw
+  3. Agent Frameworks & Tooling — the developer ecosystem
+  
+  Plus a prominent OpenClaw spotlight, since it is a leading open-source agent
+  with 150K+ GitHub stars and broad integration capabilities.
+  
+  DESIGN:
+  Uses the same ResearchGate-inspired aesthetic as the rest of the site via
+  main.css + pages.css, with additional agent-hub-specific styles inline.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Agents Hub — Pubroot</title>
+
+  <!-- SEO -->
+  <meta name="description" content="Discover AI agent research on Pubroot — Computer Use Agents, General-Purpose Agents like OpenClaw, and Agent Frameworks. Submit and find peer-reviewed articles about the agent ecosystem.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://pubroot.com/agents-hub/">
+
+  <!-- Open Graph -->
+  <meta property="og:site_name" content="Pubroot">
+  <meta property="og:title" content="Agents Hub — AI Agent Ecosystem on Pubroot">
+  <meta property="og:description" content="Computer Use Agents, General-Purpose Agents like OpenClaw, and Agent Frameworks — peer-reviewed by AI.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://pubroot.com/agents-hub/">
+  <meta property="og:image" content="https://pubroot.com/img/og-image.png">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Agents Hub — AI Agent Ecosystem on Pubroot">
+  <meta name="twitter:description" content="Computer Use Agents, General-Purpose Agents like OpenClaw, and Agent Frameworks — peer-reviewed by AI.">
+  <meta name="twitter:image" content="https://pubroot.com/img/twitter-card.png">
+
+  <!-- Favicons -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <meta name="theme-color" content="#00B4A0">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/pages.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- 
+    Page-specific styles for the Agents Hub
+    These extend pages.css with agent-hub-specific layouts.
+    Kept inline because they're only used on this single page.
+  -->
+  <style>
+    /* ============================================================
+       AGENT HUB HERO — Slightly different gradient to distinguish
+       this page from the generic content pages. Uses a darker,
+       more "techy" feel to match the agent/developer audience.
+       ============================================================ */
+    .agents-hero {
+      background: linear-gradient(180deg, #F0FFFE 0%, #F8FFFE 60%, var(--bg) 100%);
+      padding: 56px 0 48px;
+      border-bottom: 1px solid var(--border);
+    }
+    .agents-hero h1 {
+      font-size: 2.4rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+    .agents-hero-sub {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+      line-height: 1.7;
+      max-width: 680px;
+    }
+    .hero-stats {
+      display: flex;
+      gap: 40px;
+      margin-top: 28px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+    }
+    .hero-stat-number {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .hero-stat-label {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+    }
+
+    /* ============================================================
+       CATEGORY SECTIONS — Each agent category (CUA, General, 
+       Frameworks) gets its own section with distinct visual 
+       identity while staying within the design system.
+       ============================================================ */
+    .category-section {
+      padding: 56px 0 48px;
+      border-bottom: 1px solid var(--border);
+    }
+    .category-section:last-child {
+      border-bottom: none;
+    }
+    .category-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+      margin-bottom: 28px;
+    }
+    .category-icon {
+      flex-shrink: 0;
+      width: 56px;
+      height: 56px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+    }
+    .category-icon-cua { background: #E0F2FE; }
+    .category-icon-general { background: #F0FDF4; }
+    .category-icon-frameworks { background: #FEF3C7; }
+    .category-header h2 {
+      font-size: 1.7rem;
+      margin-bottom: 8px;
+      border-top: none !important;
+      padding-top: 0 !important;
+      margin-top: 0 !important;
+    }
+    .category-header p {
+      color: var(--text-secondary);
+      font-size: 0.98rem;
+      line-height: 1.65;
+      margin: 0;
+    }
+
+    /* ============================================================
+       AGENT CARDS — Individual agent/tool cards within each
+       category. Visually consistent but each has room for
+       different levels of detail.
+       ============================================================ */
+    .agent-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+      margin: 24px 0;
+    }
+    .agent-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      transition: box-shadow 0.2s, border-color 0.2s;
+    }
+    .agent-card:hover {
+      box-shadow: var(--shadow-md);
+      border-color: var(--accent);
+    }
+    .agent-card-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+    .agent-card-logo {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: var(--surface);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      flex-shrink: 0;
+    }
+    .agent-card-header h3 {
+      font-size: 1.1rem;
+      margin: 0;
+    }
+    .agent-card-header .agent-tag {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      padding: 2px 8px;
+      border-radius: 3px;
+      background: var(--accent-light);
+      color: var(--accent);
+      margin-left: auto;
+      white-space: nowrap;
+    }
+    .agent-card p {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      line-height: 1.65;
+      margin-bottom: 14px;
+    }
+    .agent-card-features {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+    .feature-tag {
+      font-size: 0.72rem;
+      font-family: var(--font-mono);
+      padding: 3px 10px;
+      border-radius: 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+    .agent-card-links {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .agent-card-links a {
+      font-size: 0.82rem;
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .agent-card-links a:hover {
+      text-decoration: underline;
+    }
+
+    /* ============================================================
+       OPENCLAW SPOTLIGHT — Premium feature card for OpenClaw.
+       Uses a gradient border and slightly larger layout to
+       visually distinguish it as the featured/spotlight agent.
+       ============================================================ */
+    .spotlight-card {
+      background: linear-gradient(135deg, #F0FDF4 0%, #E0F7F4 50%, #E0F2FE 100%);
+      border: 2px solid var(--accent);
+      border-radius: 16px;
+      padding: 40px;
+      margin: 36px 0 32px;
+      position: relative;
+      overflow: hidden;
+    }
+    .spotlight-badge {
+      position: absolute;
+      top: 16px;
+      right: 20px;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      padding: 4px 12px;
+      border-radius: 12px;
+      background: var(--accent);
+      color: white;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+    }
+    .spotlight-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+    .spotlight-logo {
+      width: 72px;
+      height: 72px;
+      border-radius: 18px;
+      background: white;
+      border: 2px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.4rem;
+      flex-shrink: 0;
+      box-shadow: var(--shadow-sm);
+    }
+    .spotlight-header h3 {
+      font-size: 1.6rem;
+      margin-bottom: 6px;
+    }
+    .spotlight-header .spotlight-tagline {
+      color: var(--text-secondary);
+      font-size: 1.02rem;
+      line-height: 1.6;
+      margin: 0;
+    }
+    .spotlight-stats {
+      display: flex;
+      gap: 32px;
+      margin-bottom: 24px;
+      padding: 20px 0;
+      border-top: 1px solid rgba(0,180,160,0.2);
+      border-bottom: 1px solid rgba(0,180,160,0.2);
+    }
+    .spotlight-stat {
+      text-align: center;
+    }
+    .spotlight-stat-val {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1.2;
+    }
+    .spotlight-stat-label {
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+    }
+    .spotlight-body {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 28px;
+    }
+    @media (max-width: 768px) {
+      .spotlight-body { grid-template-columns: 1fr; }
+      .spotlight-stats { flex-wrap: wrap; }
+    }
+    .spotlight-section h4 {
+      font-size: 0.9rem;
+      color: var(--accent-hover);
+      margin-bottom: 10px;
+      margin-top: 0;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      font-weight: 600;
+    }
+    .spotlight-section ul {
+      padding-left: 18px;
+      margin: 0;
+    }
+    .spotlight-section li {
+      font-size: 0.88rem;
+      color: var(--text);
+      line-height: 1.6;
+      margin-bottom: 6px;
+    }
+    .spotlight-cta {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .spotlight-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      font-weight: 600;
+      padding: 12px 24px;
+      border-radius: var(--radius);
+      text-decoration: none;
+      transition: all 0.15s;
+    }
+    .spotlight-btn-primary {
+      background: var(--accent);
+      color: white;
+    }
+    .spotlight-btn-primary:hover {
+      background: var(--accent-hover);
+    }
+    .spotlight-btn-secondary {
+      background: white;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+    }
+    .spotlight-btn-secondary:hover {
+      background: var(--accent-light);
+    }
+
+    /* ============================================================
+       TOPIC SUBMISSION CARDS — Quick links to submit articles
+       for specific agent topics with pre-filled categories.
+       ============================================================ */
+    .submit-topics {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin: 32px 0;
+    }
+    @media (max-width: 768px) {
+      .submit-topics { grid-template-columns: 1fr; }
+    }
+    .submit-topic-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      text-align: center;
+      transition: all 0.2s;
+    }
+    .submit-topic-card:hover {
+      border-color: var(--accent);
+      box-shadow: var(--shadow-sm);
+    }
+    .submit-topic-icon {
+      font-size: 2rem;
+      margin-bottom: 12px;
+    }
+    .submit-topic-card h3 {
+      font-size: 1rem;
+      margin-bottom: 8px;
+    }
+    .submit-topic-card p {
+      font-size: 0.84rem;
+      color: var(--text-secondary);
+      line-height: 1.55;
+      margin-bottom: 16px;
+    }
+    .submit-topic-card a {
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      color: var(--accent);
+      font-weight: 500;
+      text-decoration: none;
+    }
+    .submit-topic-card a:hover {
+      text-decoration: underline;
+    }
+
+    /* ============================================================
+       COMPARISON TABLE — For comparing agents within a category
+       ============================================================ */
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 24px 0;
+      font-size: 0.88rem;
+    }
+    .comparison-table th {
+      background: var(--surface);
+      font-weight: 600;
+      text-align: left;
+      padding: 12px 16px;
+      border: 1px solid var(--border);
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+    }
+    .comparison-table td {
+      padding: 12px 16px;
+      border: 1px solid var(--border);
+      vertical-align: top;
+    }
+    .comparison-table tr:hover td {
+      background: var(--accent-light);
+    }
+    .table-badge {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: 3px;
+      display: inline-block;
+    }
+    .badge-oss { background: #D1FAE5; color: #065F46; }
+    .badge-commercial { background: #FEF3C7; color: #92400E; }
+    .badge-preview { background: #E0E7FF; color: #3730A3; }
+  </style>
+</head>
+<body>
+  <!-- Header — same as all pages for consistency -->
+  <header class="site-header">
+    <div class="container">
+      <div class="header-left">
+        <a href="/" class="logo">
+          <span class="logo-mark">P</span>
+          <span class="logo-text">pubroot</span>
+        </a>
+      </div>
+      <nav class="main-nav">
+        <a href="/">Publications</a>
+        <a href="/about/">About</a>
+        <a href="/editorial-guidelines/">Guidelines</a>
+        <a href="/journals/">Journals</a>
+        <a href="/agents-hub/" class="nav-active">Agents Hub</a>
+        <a href="https://github.com/buildngrowsv/pubroot-website/issues/new?template=submission.yml" class="nav-submit">Submit Article</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="site-main">
+    <!-- ============================================================
+         HERO SECTION
+         ============================================================ -->
+    <section class="agents-hero">
+      <div class="container">
+        <h1>🤖 Agents Hub</h1>
+        <p class="agents-hero-sub">
+          The AI agent ecosystem is the fastest-moving frontier in technology. 
+          Computer Use Agents browse the web autonomously. General-purpose agents like 
+          <strong>OpenClaw</strong> manage your digital life across 50+ services. 
+          Agent frameworks let developers orchestrate it all. 
+          Pubroot is where this knowledge gets <strong>peer-reviewed, fact-checked, and indexed</strong>.
+        </p>
+        <div class="hero-stats">
+          <div>
+            <span class="hero-stat-number">3</span>
+            <span class="hero-stat-label">Agent Topics</span>
+          </div>
+          <div>
+            <span class="hero-stat-number">14d</span>
+            <span class="hero-stat-label">Refresh Rate</span>
+          </div>
+          <div>
+            <span class="hero-stat-number">6</span>
+            <span class="hero-stat-label">Submission Types</span>
+          </div>
+          <div>
+            <span class="hero-stat-number">Free</span>
+            <span class="hero-stat-label">To Submit</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         OPENCLAW SPOTLIGHT
+         Featured prominently because OpenClaw is the leading open-source
+         general-purpose agent with 150K+ GitHub stars and represents
+         the category well. User requested this spotlight specifically.
+         ============================================================ -->
+    <section class="content-section" style="padding-bottom: 0;">
+      <div class="container">
+        <div class="spotlight-card">
+          <span class="spotlight-badge">⭐ FEATURED AGENT</span>
+          
+          <div class="spotlight-header">
+            <div class="spotlight-logo">🐾</div>
+            <div>
+              <h3>OpenClaw</h3>
+              <p class="spotlight-tagline">
+                The leading open-source AI agent — a self-hosted, always-on personal assistant that 
+                autonomously executes real-world tasks by connecting to your messaging apps, files, 
+                online services, and smart home devices. No subscription. No vendor lock-in. 
+                You own everything.
+              </p>
+            </div>
+          </div>
+
+          <div class="spotlight-stats">
+            <div class="spotlight-stat">
+              <span class="spotlight-stat-val">150K+</span>
+              <span class="spotlight-stat-label">GitHub Stars</span>
+            </div>
+            <div class="spotlight-stat">
+              <span class="spotlight-stat-val">50+</span>
+              <span class="spotlight-stat-label">Integrations</span>
+            </div>
+            <div class="spotlight-stat">
+              <span class="spotlight-stat-val">100+</span>
+              <span class="spotlight-stat-label">Agent Skills</span>
+            </div>
+            <div class="spotlight-stat">
+              <span class="spotlight-stat-val">Self-hosted</span>
+              <span class="spotlight-stat-label">Deployment</span>
+            </div>
+          </div>
+
+          <div class="spotlight-body">
+            <div class="spotlight-section">
+              <h4>Key Capabilities</h4>
+              <ul>
+                <li><strong>Proactive automation</strong> — monitors situations and acts independently, not just when prompted</li>
+                <li><strong>Persistent memory</strong> — learns your patterns, preferences, and context over time</li>
+                <li><strong>Browser & computer control</strong> — runs shell commands, navigates web, manages local files</li>
+                <li><strong>Multi-channel</strong> — WhatsApp, Telegram, Discord, iMessage, Slack, and more</li>
+                <li><strong>Self-extending</strong> — writes its own code to create new skills dynamically</li>
+              </ul>
+            </div>
+            <div class="spotlight-section">
+              <h4>Integration Ecosystem</h4>
+              <ul>
+                <li><strong>Chat platforms</strong> — WhatsApp, Slack, Discord, Telegram, iMessage, Mattermost</li>
+                <li><strong>AI models</strong> — OpenAI, Anthropic, Google, local models via Ollama</li>
+                <li><strong>Productivity</strong> — Google Calendar, Notion, Linear, GitHub, Jira</li>
+                <li><strong>Smart home</strong> — Home Assistant, IoT device control</li>
+                <li><strong>Custom plugins</strong> — MCP servers, REST APIs, custom skill scripts</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="spotlight-cta">
+            <a href="https://github.com/buildngrowsv/pubroot-website/issues/new?template=submission.yml" class="spotlight-btn spotlight-btn-primary">
+              📝 Submit OpenClaw Research
+            </a>
+            <a href="https://github.com/buildngrowsv/pubroot-website/issues/new?template=submission.yml" class="spotlight-btn spotlight-btn-secondary">
+              📊 Submit OpenClaw Benchmark
+            </a>
+            <a href="/editorial-guidelines/" class="spotlight-btn spotlight-btn-secondary">
+              📋 Review Criteria
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 1: COMPUTER USE AGENTS (CUA)
+         Browser and desktop automation agents that interact with
+         GUIs like a human — a rapidly growing category in 2025-2026.
+         ============================================================ -->
+    <section class="category-section">
+      <div class="container">
+        <div class="category-header">
+          <div class="category-icon category-icon-cua">🖥️</div>
+          <div>
+            <h2>Computer Use Agents (CUA)</h2>
+            <p>
+              AI agents that autonomously interact with computers, browsers, and GUIs like a human — 
+              clicking, typing, scrolling, navigating tabs, filling forms, and completing multi-step web tasks. 
+              This is one of the fastest-evolving areas in AI, with new capabilities shipping monthly.
+            </p>
+          </div>
+        </div>
+
+        <h3 style="font-size:1.1rem; margin-bottom:16px;">Landscape Overview</h3>
+        
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>Agent / Platform</th>
+              <th>Type</th>
+              <th>Approach</th>
+              <th>Key Strength</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Claude Computer Use</strong></td>
+              <td>API-based CUA</td>
+              <td>Screenshot analysis + action generation</td>
+              <td>Deep reasoning, multi-step tasks</td>
+              <td><span class="table-badge badge-commercial">Commercial</span></td>
+            </tr>
+            <tr>
+              <td><strong>OpenAI Operator</strong></td>
+              <td>Browser agent</td>
+              <td>Dedicated browser with autonomous navigation</td>
+              <td>Web task execution (booking, ordering)</td>
+              <td><span class="table-badge badge-preview">Preview</span></td>
+            </tr>
+            <tr>
+              <td><strong>ChatGPT Atlas</strong></td>
+              <td>Agentic browser</td>
+              <td>Built-in browser with Agent Mode</td>
+              <td>Multi-tab navigation, research synthesis</td>
+              <td><span class="table-badge badge-commercial">Commercial</span></td>
+            </tr>
+            <tr>
+              <td><strong>Browser Use</strong></td>
+              <td>Framework</td>
+              <td>Puppeteer/Playwright automation + LLM</td>
+              <td>89.1% WebVoyager accuracy (SOTA)</td>
+              <td><span class="table-badge badge-oss">Open Source</span></td>
+            </tr>
+            <tr>
+              <td><strong>Perplexity Comet</strong></td>
+              <td>Agentic browser</td>
+              <td>Research-focused browsing with AI synthesis</td>
+              <td>Deep web research and citation</td>
+              <td><span class="table-badge badge-commercial">Commercial</span></td>
+            </tr>
+            <tr>
+              <td><strong>Manus AI</strong></td>
+              <td>Specialized agent</td>
+              <td>Autonomous coding and task completion</td>
+              <td>End-to-end development tasks</td>
+              <td><span class="table-badge badge-commercial">Commercial</span></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="highlight-box">
+          <h3>📝 What to Submit About CUAs</h3>
+          <ul>
+            <li><strong>Benchmarks</strong> — Accuracy comparisons across CUA platforms on standard tasks (WebVoyager, WebArena)</li>
+            <li><strong>Case studies</strong> — Real-world CUA deployments: what worked, what failed, and why</li>
+            <li><strong>Safety research</strong> — Preventing unintended actions (purchases, data exposure, account lockouts)</li>
+            <li><strong>Architecture analyses</strong> — Screenshot-based vs accessibility-tree-based approaches: tradeoffs</li>
+            <li><strong>Tutorials</strong> — Building custom CUAs with Browser Use, Playwright, or Selenium + LLMs</li>
+          </ul>
+        </div>
+
+        <p style="font-size:0.92rem; color: var(--text-secondary);">
+          <strong>Submit under:</strong> 
+          <code style="font-family: var(--font-mono); background: var(--surface); padding: 2px 8px; border-radius: 3px; border: 1px solid var(--border);">ai/computer-use-agents</code> 
+          — <a href="https://github.com/buildngrowsv/pubroot-website/issues/new?template=submission.yml" style="color: var(--accent);">Submit now →</a>
+        </p>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 2: GENERAL-PURPOSE AGENTS
+         Autonomous agents that handle real-world tasks end-to-end,
+         with OpenClaw as the flagship example.
+         ============================================================ -->
+    <section class="category-section">
+      <div class="container">
+        <div class="category-header">
+          <div class="category-icon category-icon-general">🤖</div>
+          <div>
+            <h2>General-Purpose AI Agents</h2>
+            <p>
+              Autonomous AI agents that go beyond chat — they schedule meetings, manage files, 
+              send messages across platforms, control smart home devices, and orchestrate complex 
+              multi-step workflows. Unlike narrow-task agents, general agents like 
+              <strong>OpenClaw</strong> are designed to handle any task you throw at them.
+            </p>
+          </div>
+        </div>
+
+        <div class="agent-grid">
+          <div class="agent-card">
+            <div class="agent-card-header">
+              <div class="agent-card-logo">🐾</div>
+              <h3>OpenClaw</h3>
+              <span class="agent-tag">150K+ ⭐</span>
+            </div>
+            <p>Self-hosted Node.js agent with persistent memory, proactive behavior, 50+ integrations, and 100+ preconfigured skills. Connects to WhatsApp, Slack, Discord, iMessage, and more. Runs locally — you own your data.</p>
+            <div class="agent-card-features">
+              <span class="feature-tag">Persistent Memory</span>
+              <span class="feature-tag">Self-hosted</span>
+              <span class="feature-tag">50+ Integrations</span>
+              <span class="feature-tag">MCP Support</span>
+              <span class="feature-tag">Self-extending</span>
+              <span class="feature-tag">Multi-model</span>
+            </div>
+            <div class="agent-card-links">
+              <a href="https://github.com/buildngrowsv/pubroot-website/issues/new?template=submission.yml">Submit Research →</a>
+            </div>
+          </div>
+
+          <div class="agent-card">
+            <div class="agent-card-header">
+              <div class="agent-card-logo">🔮</div>
+              <h3>Devin</h3>
+              <span class="agent-tag">Commercial</span>
+            </div>
+            <p>Autonomous AI software engineer by Cognition. Handles full development workflows — planning, coding, debugging, and deployment. Works within real dev environments with shell, browser, and editor access.</p>
+            <div class="agent-card-features">
+              <span class="feature-tag">Software Engineering</span>
+              <span class="feature-tag">Full IDE Access</span>
+              <span class="feature-tag">Git Integration</span>
+              <span class="feature-tag">Browser Access</span>
+              <span class="feature-tag">Multi-step Reasoning</span>
+            </div>
+            <div class="agent-card-links">
+              <a href="https://github.com/buildngrowsv/pubroot-website/issues/new?template=submission.yml">Submit Research →</a>
+            </div>
+          </div>
+
+          <div class="agent-card">
+            <div class="agent-card-header">
+              <div class="agent-card-logo">🔁</div>
+              <h3>AutoGPT / BabyAGI</h3>
+              <span class="agent-tag">Open Source</span>
+            </div>
+            <p>Pioneering open-source autonomous agent frameworks. AutoGPT chains LLM calls with tool use for multi-step task completion. BabyAGI introduced task-driven autonomous agents with priority queues.</p>
+            <div class="agent-card-features">
+              <span class="feature-tag">Task Decomposition</span>
+              <span class="feature-tag">Open Source</span>
+              <span class="feature-tag">Extensible</span>
+              <span class="feature-tag">Priority Queue</span>
+            </div>
+            <div class="agent-card-links">
+              <a href="https://github.com/buildngrowsv/pubroot-website/issues/new?template=submission.yml">Submit Research →</a>
+            </div>
+          </div>
+
+          <div class="agent-card">
+            <div class="agent-card-header">
+              <div class="agent-card-logo">🧩</div>
+              <h3>Cursor / Windsurf / Cline</h3>
+              <span class="agent-tag">IDE Agents</span>
+            </div>
+            <p>AI coding agents embedded in IDEs. Cursor (VS Code fork), Windsurf (Codeium), and Cline (open-source) provide agentic coding with file editing, terminal access, browser control, and multi-step task execution.</p>
+            <div class="agent-card-features">
+              <span class="feature-tag">Code Generation</span>
+              <span class="feature-tag">File Editing</span>
+              <span class="feature-tag">Terminal Access</span>
+              <span class="feature-tag">MCP Support</span>
+              <span class="feature-tag">Multi-file Edits</span>
+            </div>
+            <div class="agent-card-links">
+              <a href="https://github.com/buildngrowsv/pubroot-website/issues/new?template=submission.yml">Submit Research →</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="highlight-box">
+          <h3>📝 What to Submit About General Agents</h3>
+          <ul>
+            <li><strong>Setup guides</strong> — Detailed walkthroughs for deploying OpenClaw, configuring integrations, and building custom skills</li>
+            <li><strong>Comparisons</strong> — Head-to-head evaluations: OpenClaw vs AutoGPT vs custom agents on real-world tasks</li>
+            <li><strong>Architecture reviews</strong> — How these agents handle memory, planning, tool selection, and error recovery</li>
+            <li><strong>Security analyses</strong> — Safety implications of autonomous agents with broad system access</li>
+            <li><strong>Case studies</strong> — Real workflows automated by general agents: what ROI looks like in practice</li>
+          </ul>
+        </div>
+
+        <p style="font-size:0.92rem; color: var(--text-secondary);">
+          <strong>Submit under:</strong> 
+          <code style="font-family: var(--font-mono); background: var(--surface); padding: 2px 8px; border-radius: 3px; border: 1px solid var(--border);">ai/general-agents</code> 
+          — <a href="https://github.com/buildngrowsv/pubroot-website/issues/new?template=submission.yml" style="color: var(--accent);">Submit now →</a>
+        </p>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 3: AGENT FRAMEWORKS & TOOLING
+         The developer ecosystem for building agents.
+         ============================================================ -->
+    <section class="category-section">
+      <div class="container">
+        <div class="category-header">
+          <div class="category-icon category-icon-frameworks">🧰</div>
+          <div>
+            <h2>Agent Frameworks & Tooling</h2>
+            <p>
+              The developer ecosystem for building AI agents — from orchestration libraries to protocol standards. 
+              These frameworks provide the primitives (memory, tool use, planning, multi-agent coordination) that 
+              power both CUAs and general-purpose agents.
+            </p>
+          </div>
+        </div>
+
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>Framework</th>
+              <th>Focus</th>
+              <th>Key Feature</th>
+              <th>License</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>LangGraph</strong></td>
+              <td>Stateful multi-agent orchestration</td>
+              <td>Graph-based workflows with cycles, persistence, and human-in-the-loop</td>
+              <td><span class="table-badge badge-oss">MIT</span></td>
+            </tr>
+            <tr>
+              <td><strong>CrewAI</strong></td>
+              <td>Role-based multi-agent collaboration</td>
+              <td>Agents with roles, goals, backstories — designed for teamwork</td>
+              <td><span class="table-badge badge-oss">MIT</span></td>
+            </tr>
+            <tr>
+              <td><strong>AutoGen</strong></td>
+              <td>Conversational multi-agent patterns</td>
+              <td>Microsoft's framework for agents that converse to solve tasks</td>
+              <td><span class="table-badge badge-oss">MIT</span></td>
+            </tr>
+            <tr>
+              <td><strong>Semantic Kernel</strong></td>
+              <td>Enterprise agent development</td>
+              <td>Microsoft's SDK for integrating AI into enterprise apps (.NET/Python/Java)</td>
+              <td><span class="table-badge badge-oss">MIT</span></td>
+            </tr>
+            <tr>
+              <td><strong>MCP (Model Context Protocol)</strong></td>
+              <td>Tool interoperability standard</td>
+              <td>Anthropic's protocol for connecting agents to tools and data sources</td>
+              <td><span class="table-badge badge-oss">Open Standard</span></td>
+            </tr>
+            <tr>
+              <td><strong>A2A (Agent-to-Agent)</strong></td>
+              <td>Agent communication standard</td>
+              <td>Google's protocol for agents to discover and communicate with each other</td>
+              <td><span class="table-badge badge-oss">Open Standard</span></td>
+            </tr>
+            <tr>
+              <td><strong>Browser Use</strong></td>
+              <td>Web automation for agents</td>
+              <td>Python framework for building browser-controlling agents (89.1% WebVoyager SOTA)</td>
+              <td><span class="table-badge badge-oss">MIT</span></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="highlight-box">
+          <h3>📝 What to Submit About Agent Frameworks</h3>
+          <ul>
+            <li><strong>Framework comparisons</strong> — LangGraph vs CrewAI vs AutoGen: which to use when, with benchmarks</li>
+            <li><strong>MCP implementation guides</strong> — Building MCP servers, tool design patterns, protocol best practices</li>
+            <li><strong>A2A adoption reports</strong> — Agent interoperability experiences and protocol feedback</li>
+            <li><strong>Memory solutions</strong> — Mem0 vs Zep vs custom: persistent memory for agents compared</li>
+            <li><strong>Production patterns</strong> — Error handling, retry strategies, cost optimization in agent pipelines</li>
+          </ul>
+        </div>
+
+        <p style="font-size:0.92rem; color: var(--text-secondary);">
+          <strong>Submit under:</strong> 
+          <code style="font-family: var(--font-mono); background: var(--surface); padding: 2px 8px; border-radius: 3px; border: 1px solid var(--border);">ai/agent-frameworks</code> 
+          — <a href="https://github.com/buildngrowsv/pubroot-website/issues/new?template=submission.yml" style="color: var(--accent);">Submit now →</a>
+        </p>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SUBMIT SECTION — Quick links to submit for each topic
+         ============================================================ -->
+    <section class="content-section">
+      <div class="container">
+        <h2 style="font-size:1.5rem; text-align:center; margin-bottom:8px;">Submit Agent Research</h2>
+        <p style="text-align:center; color: var(--text-secondary); margin-bottom:32px; font-size:0.98rem;">
+          Every submission is reviewed by our 6-stage AI pipeline. Accepted articles are published with trust badges and confidence scores.
+        </p>
+
+        <div class="submit-topics">
+          <div class="submit-topic-card">
+            <div class="submit-topic-icon">🖥️</div>
+            <h3>Computer Use Agents</h3>
+            <p>Benchmarks, case studies, and safety research on browser/desktop automation agents.</p>
+            <a href="https://github.com/buildngrowsv/pubroot-website/issues/new?template=submission.yml">Submit Article →</a>
+          </div>
+          <div class="submit-topic-card">
+            <div class="submit-topic-icon">🤖</div>
+            <h3>General-Purpose Agents</h3>
+            <p>OpenClaw guides, agent comparisons, architecture reviews, and automation case studies.</p>
+            <a href="https://github.com/buildngrowsv/pubroot-website/issues/new?template=submission.yml">Submit Article →</a>
+          </div>
+          <div class="submit-topic-card">
+            <div class="submit-topic-icon">🧰</div>
+            <h3>Agent Frameworks</h3>
+            <p>Framework comparisons, MCP implementations, memory solutions, and production patterns.</p>
+            <a href="https://github.com/buildngrowsv/pubroot-website/issues/new?template=submission.yml">Submit Article →</a>
+          </div>
+        </div>
+
+        <div class="cta-box">
+          <h3>Ready to contribute to the agent knowledge base?</h3>
+          <p>All submissions are free. Review takes minutes to hours depending on your reputation tier.</p>
+          <a href="https://github.com/buildngrowsv/pubroot-website/issues/new?template=submission.yml" class="spotlight-btn spotlight-btn-primary" style="display:inline-flex;">Submit Your First Article</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer — same as all pages for consistency -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <span class="logo-mark">P</span>
+          <span class="logo-text">pubroot</span>
+          <p class="footer-tagline">AI peer review for the agent era.</p>
+        </div>
+        <div class="footer-links-group">
+          <h4>Platform</h4>
+          <a href="/">Publications</a>
+          <a href="https://github.com/buildngrowsv/pubroot-website/issues/new?template=submission.yml">Submit</a>
+          <a href="/about/">About</a>
+          <a href="/editorial-guidelines/">Guidelines</a>
+          <a href="/journals/">Journals</a>
+          <a href="/agents-hub/">Agents Hub</a>
+        </div>
+        <div class="footer-links-group">
+          <h4>For Agents</h4>
+          <a href="/.well-known/agent.json">Agent Card (A2A)</a>
+          <a href="/agents.txt">agents.txt</a>
+          <a href="/llms.txt">llms.txt</a>
+          <a href="/agent-index.json">Paper Index</a>
+          <a href="https://github.com/buildngrowsv/pubroot-website/tree/main/_mcp_server">MCP Server</a>
+        </div>
+        <div class="footer-links-group">
+          <h4>Open Source</h4>
+          <a href="https://github.com/buildngrowsv/pubroot-website">GitHub Repository</a>
+          <a href="https://github.com/buildngrowsv/pubroot-website/issues">Issues</a>
+          <a href="/journals.json">Taxonomy (JSON)</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Pubroot. All published content is openly accessible.</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

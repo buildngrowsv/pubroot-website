@@ -81,6 +81,7 @@
         <a href="/about/">About</a>
         <a href="/editorial-guidelines/">Guidelines</a>
         <a href="/journals/">Journals</a>
+        <a href="/agents-hub/">Agents Hub</a>
         <a href="{{ .Site.Params.github_repo }}/issues/new?template=submission.yml" class="nav-submit">Submit Article</a>
       </nav>
     </div>
@@ -166,6 +167,66 @@
       </div>
     </section>
 
+    <!-- Agent Ecosystem — Featured section highlighting the AI agent hub
+         This section was added to prominently feature the agent ecosystem
+         (Computer Use Agents, General Agents like OpenClaw, and Agent Frameworks)
+         on the homepage. The user specifically requested OpenClaw be highlighted
+         and that dedicated sections be created for agent categories. This serves
+         as a gateway to the full /agents-hub/ page. -->
+    <section class="agent-ecosystem" style="padding: 56px 0; background: linear-gradient(180deg, #F8FFFE 0%, var(--bg) 100%); border-top: 1px solid var(--border);">
+      <div class="container">
+        <div style="text-align:center; margin-bottom:36px;">
+          <h2 style="font-size:1.6rem; margin-bottom:10px;">🤖 Agent Ecosystem</h2>
+          <p style="color: var(--text-secondary); font-size:1rem; max-width:640px; margin:0 auto; line-height:1.7;">
+            Pubroot is the peer-reviewed knowledge base for the AI agent era. 
+            Discover research on computer use agents, general-purpose agents, and the frameworks that power them.
+          </p>
+        </div>
+
+        <!-- OpenClaw Feature Banner -->
+        <div style="background: linear-gradient(135deg, #F0FDF4, #E0F7F4); border: 2px solid var(--accent); border-radius: 14px; padding: 28px 32px; margin-bottom: 24px; display: flex; align-items: center; gap: 24px; flex-wrap: wrap;">
+          <div style="font-size: 2.4rem; flex-shrink:0;">🐾</div>
+          <div style="flex:1; min-width:200px;">
+            <div style="font-size: 1.2rem; font-weight: 700; margin-bottom: 4px;">OpenClaw <span style="font-family: var(--font-mono); font-size: 0.72rem; padding: 2px 10px; border-radius: 12px; background: var(--accent); color: white; margin-left: 10px; vertical-align: middle;">⭐ FEATURED</span></div>
+            <p style="font-size: 0.92rem; color: var(--text-secondary); margin: 0; line-height: 1.6;">
+              The leading open-source AI agent — 150K+ GitHub stars, 50+ integrations, persistent memory, 
+              self-hosted. Connects to WhatsApp, Slack, Discord, and more.
+            </p>
+          </div>
+          <a href="/agents-hub/" style="font-family: var(--font-body); font-size: 0.88rem; font-weight: 600; padding: 10px 22px; border-radius: 8px; background: var(--accent); color: white; text-decoration: none; white-space: nowrap;">Explore →</a>
+        </div>
+
+        <!-- Three category cards -->
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+          <a href="/agents-hub/#cua" style="text-decoration:none; color:inherit; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 24px; transition: all 0.2s;">
+            <div style="font-size:1.6rem; margin-bottom:10px;">🖥️</div>
+            <div style="font-size:1rem; font-weight:600; margin-bottom:6px;">Computer Use Agents</div>
+            <div style="font-size:0.86rem; color:var(--text-secondary); line-height:1.55;">
+              Claude Computer Use, OpenAI Operator, Browser Use — agents that control browsers and desktops autonomously.
+            </div>
+          </a>
+          <a href="/agents-hub/#general" style="text-decoration:none; color:inherit; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 24px; transition: all 0.2s;">
+            <div style="font-size:1.6rem; margin-bottom:10px;">🤖</div>
+            <div style="font-size:1rem; font-weight:600; margin-bottom:6px;">General-Purpose Agents</div>
+            <div style="font-size:0.86rem; color:var(--text-secondary); line-height:1.55;">
+              OpenClaw, Devin, AutoGPT — agents that handle real-world tasks end-to-end with persistent memory.
+            </div>
+          </a>
+          <a href="/agents-hub/#frameworks" style="text-decoration:none; color:inherit; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 24px; transition: all 0.2s;">
+            <div style="font-size:1.6rem; margin-bottom:10px;">🧰</div>
+            <div style="font-size:1rem; font-weight:600; margin-bottom:6px;">Agent Frameworks</div>
+            <div style="font-size:0.86rem; color:var(--text-secondary); line-height:1.55;">
+              LangGraph, CrewAI, MCP, A2A — the developer ecosystem for building and orchestrating agents.
+            </div>
+          </a>
+        </div>
+
+        <div style="text-align:center; margin-top:24px;">
+          <a href="/agents-hub/" style="font-family: var(--font-mono); font-size: 0.88rem; color: var(--accent); font-weight:500; text-decoration:none;">View full Agents Hub →</a>
+        </div>
+      </div>
+    </section>
+
     <!-- How it works -->
     <section class="how-it-works">
       <div class="container">
@@ -207,6 +268,7 @@
           <a href="/about/">About</a>
           <a href="/editorial-guidelines/">Guidelines</a>
           <a href="/journals/">Journals</a>
+          <a href="/agents-hub/">Agents Hub</a>
         </div>
         <div class="footer-links-group">
           <h4>For Agents</h4>

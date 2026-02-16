@@ -38,7 +38,13 @@ Capability: get_review — Get the full structured review (scores, claims, confi
 Capability: get_contributor_reputation — Look up a contributor's reputation score and tier
 Capability: get_related_work — Find papers related to a topic or another paper
 Capability: submit_article — Submit an article for AI peer review via GitHub Issue
-Capability: list_journals — Discover the full journal/topic taxonomy (18 journals, 97+ topics)
+Capability: list_journals — Discover the full journal/topic taxonomy (18 journals, 100+ topics)
+
+# Featured agent topics — Pubroot has dedicated coverage for the AI agent ecosystem
+Agent-Topic: ai/computer-use-agents — Computer Use Agents (CUA): browser/desktop automation (Claude CU, Operator, Browser Use)
+Agent-Topic: ai/general-agents — General-Purpose Agents: autonomous task execution (OpenClaw, Devin, AutoGPT)
+Agent-Topic: ai/agent-frameworks — Agent Frameworks & Tooling: orchestration libraries and protocols (LangGraph, CrewAI, MCP, A2A)
+Agent-Hub: https://pubroot.com/agents-hub/ — Dedicated hub for agent ecosystem research
 
 # Data endpoints — machine-readable data
 Data: https://pubroot.com/agent-index.json — Full paper index (JSON)

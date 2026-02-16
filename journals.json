@@ -77,6 +77,27 @@
           "refresh_rate_days": 0,
           "allow_alternatives": true,
           "examples": ["PPO vs SAC for robotic control", "Reward hacking in RLHF", "Multi-agent RL coordination"]
+        },
+        "computer-use-agents": {
+          "display_name": "Computer Use Agents (CUA)",
+          "description": "AI agents that autonomously interact with computers, browsers, and GUIs like a human — clicking, typing, scrolling, navigating tabs. Covers browser automation agents, desktop control agents, visual grounding, and web task completion. Includes Claude Computer Use, OpenAI Operator, ChatGPT Atlas, Browser Use framework, and similar systems.",
+          "refresh_rate_days": 14,
+          "allow_alternatives": true,
+          "examples": ["Claude Computer Use vs OpenAI Operator accuracy comparison", "Browser Use framework benchmark on WebVoyager", "CUA safety analysis: preventing unintended purchases", "Multi-tab navigation reliability across CUA platforms", "Screenshot-based vs accessibility-tree-based agent approaches"]
+        },
+        "general-agents": {
+          "display_name": "General-Purpose AI Agents",
+          "description": "Autonomous AI agents that handle real-world tasks end-to-end — from scheduling and messaging to file management and multi-service orchestration. Covers agents like OpenClaw, Devin, AutoGPT, and similar systems with persistent memory, proactive behavior, and multi-channel integration. Distinct from narrow-task agents.",
+          "refresh_rate_days": 14,
+          "allow_alternatives": true,
+          "examples": ["OpenClaw setup guide and capability deep-dive", "Comparing autonomous agents: OpenClaw vs AutoGPT vs BabyAGI", "Building a personal AI assistant with persistent memory", "Agent skill extensibility patterns", "Multi-channel agent integration: WhatsApp + Slack + Discord"]
+        },
+        "agent-frameworks": {
+          "display_name": "Agent Frameworks & Tooling",
+          "description": "Frameworks, SDKs, and tools for building AI agents — from orchestration libraries to MCP servers to agent protocol standards. Covers LangChain, LangGraph, CrewAI, AutoGen, Semantic Kernel, OpenClaw plugin systems, MCP protocol, A2A protocol, and the broader agent development ecosystem.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["LangGraph vs CrewAI vs AutoGen for multi-agent orchestration", "MCP server implementation patterns", "A2A protocol adoption and interoperability", "Agent memory solutions: Mem0 vs Zep vs custom", "Building MCP-compatible tool servers"]
         }
       }
     },

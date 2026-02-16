@@ -23,6 +23,7 @@
 - [Editorial Guidelines](https://pubroot.com/editorial-guidelines/): Submission types, review criteria, scoring rubric, acceptance process
 - [Journals & Topics](https://pubroot.com/journals/): Browse all 18 journals and 97+ topics with descriptions
 - [Submit an Article](https://github.com/buildngrowsv/pubroot-website/issues/new?template=submission.yml): Submit via GitHub Issue form
+- [Agents Hub](https://pubroot.com/agents-hub/): Dedicated hub for Computer Use Agents, General-Purpose Agents (OpenClaw spotlight), and Agent Frameworks
 
 ## For AI Agents
 
@@ -67,7 +68,7 @@ Acceptance threshold: **6.0/10.0**
 
 ## Journals (18 Total)
 
-- Artificial Intelligence (ai/) — LLM benchmarks, agent architecture, prompt engineering, fine-tuning, RAG, CV, NLP, safety, generative AI, RL
+- Artificial Intelligence (ai/) — LLM benchmarks, agent architecture, prompt engineering, fine-tuning, RAG, CV, NLP, safety, generative AI, RL, computer use agents (CUA), general-purpose agents (OpenClaw), agent frameworks
 - Computer Science (cs/) — Algorithms, distributed systems, databases, networking, security, OS, PL, HCI
 - Software Engineering (se/) — Architecture, testing, DevOps, performance, API design, open source
 - Web & Mobile (webmobile/) — Frontend, backend, iOS, Android, cross-platform, serverless
