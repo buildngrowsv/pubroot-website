@@ -1,0 +1,130 @@
+<!--
+  Single paper view — article body + review sidebar.
+  ResearchGate-style layout: clean white paper area with structured review panel.
+-->
+{{ define "title" }}{{ .Title }} — Pubroot{{ end }}
+
+{{ define "main" }}
+<article class="paper-full">
+  <div class="container">
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb">
+      <a href="/">Publications</a>
+      <span class="sep">/</span>
+      <span>{{ .Params.paper_id | default .Title }}</span>
+    </nav>
+
+    <!-- Paper header -->
+    <header class="paper-header">
+      <div class="header-badges">
+        <span class="badge badge-{{ .Params.badge | default "text_only" }}">
+          {{ with .Params.badge }}
+            {{ index $.Site.Params.badges . | default . }}
+          {{ else }}
+            Text Only
+          {{ end }}
+        </span>
+        <span class="category-tag">{{ .Params.category }}</span>
+        {{ with .Params.paper_id }}
+        <span class="paper-id-tag">{{ . }}</span>
+        {{ end }}
+      </div>
+      <h1>{{ .Title }}</h1>
+      <div class="paper-byline">
+        <span class="author-name">{{ .Params.author }}</span>
+        <span class="pub-date">Published {{ .Date.Format "January 2, 2006" }}</span>
+      </div>
+    </header>
+
+    <!-- Abstract block -->
+    {{ with .Params.abstract }}
+    <div class="abstract-block">
+      <h4>Abstract</h4>
+      <p>{{ . }}</p>
+    </div>
+    {{ end }}
+
+    <!-- Two-column: Article + Review -->
+    <div class="content-grid">
+      <!-- Article body -->
+      <div class="article-body">
+        {{ .Content }}
+      </div>
+
+      <!-- Review sidebar -->
+      <aside class="review-panel">
+        <div class="panel-header">
+          <h3>AI Review</h3>
+          <span class="reviewer-tag">Gemini 2.5 Flash-Lite</span>
+        </div>
+
+        <div class="score-display">
+          <div class="score-big">{{ .Params.score | default "?" }}</div>
+          <div class="score-label">/10</div>
+        </div>
+        <div class="verdict verdict-{{ .Params.verdict | default "pending" | lower }}">
+          {{ .Params.verdict | default "PENDING" }}
+        </div>
+
+        <!-- Dynamic review details from review.json -->
+        <div id="review-details" data-paper-id="{{ .Params.paper_id }}">
+          <p class="loading-text">Loading review...</p>
+        </div>
+      </aside>
+    </div>
+  </div>
+</article>
+
+<script>
+  const paperId = document.getElementById('review-details')?.dataset.paperId;
+  if (paperId) {
+    fetch(`/reviews/${paperId}/review.json`)
+      .then(r => r.json())
+      .then(review => {
+        const el = document.getElementById('review-details');
+        let html = '';
+
+        if (review.confidence) {
+          html += '<div class="review-section"><h4>Confidence Scores</h4><ul class="confidence-list">';
+          for (const [dim, val] of Object.entries(review.confidence)) {
+            if (val !== null) {
+              const pct = Math.round(val * 100);
+              html += `<li><span class="dim-name">${dim.replace(/_/g, ' ')}</span><div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div><span class="dim-val">${val}</span></li>`;
+            }
+          }
+          html += '</ul></div>';
+        }
+
+        if (review.strengths?.length) {
+          html += '<div class="review-section"><h4>Strengths</h4><ul>';
+          review.strengths.forEach(s => html += `<li>${s}</li>`);
+          html += '</ul></div>';
+        }
+
+        if (review.weaknesses?.length) {
+          html += '<div class="review-section"><h4>Weaknesses</h4><ul>';
+          review.weaknesses.forEach(w => html += `<li>${w}</li>`);
+          html += '</ul></div>';
+        }
+
+        if (review.claims?.length) {
+          html += '<div class="review-section"><h4>Verified Claims</h4>';
+          review.claims.forEach(c => {
+            const icon = c.verified ? '<span class="claim-yes">Verified</span>' : '<span class="claim-no">Unverified</span>';
+            html += `<div class="claim-row">${icon}<span class="claim-text">${c.text}</span></div>`;
+          });
+          html += '</div>';
+        }
+
+        if (review.summary) {
+          html += `<div class="review-section"><h4>Summary</h4><p>${review.summary}</p></div>`;
+        }
+
+        el.innerHTML = html;
+      })
+      .catch(() => {
+        document.getElementById('review-details').innerHTML = '<p class="loading-text">Review details unavailable.</p>';
+      });
+  }
+</script>
+{{ end }}

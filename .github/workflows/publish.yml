@@ -1,0 +1,121 @@
+# =============================================================================
+# publish.yml — Static Site Build & Deploy GitHub Action
+# =============================================================================
+#
+# This workflow triggers when a PR is merged that modifies the papers/ directory.
+# That means a new article was accepted and published. It:
+# 1. Runs Hugo to build the static site from papers/ + reviews/ data
+# 2. Runs Pagefind to generate client-side search indexes
+# 3. Deploys to GitHub Pages
+#
+# The Hugo site is a human-friendly viewer for the journal. The primary consumers
+# are agents (via MCP/agent-index.json), but the site makes content accessible
+# to humans too with nice formatting, search, and a leaderboard.
+#
+# COST: $0 — GitHub Pages is free for public repos. Hugo and Pagefind are
+# free open-source tools that run in the Action runner.
+# =============================================================================
+
+name: Build & Deploy Site
+
+on:
+  # Trigger when PRs merge that touch paper content or site theme
+  push:
+    branches: [main]
+    paths:
+      - 'papers/**'
+      - 'reviews/**'
+      - '_site_theme/**'
+      - 'agent-index.json'
+      - 'contributors.json'
+
+  # Manual trigger for rebuilding the site
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Only one deployment at a time
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      # ---------------------------------------------------------------
+      # Step 1: Checkout
+      # ---------------------------------------------------------------
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for Hugo .GitInfo
+
+      # ---------------------------------------------------------------
+      # Step 2: Install Hugo
+      # ---------------------------------------------------------------
+      # We use Hugo Extended for SCSS processing in the theme.
+      # ---------------------------------------------------------------
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v3
+        with:
+          hugo-version: 'latest'
+          extended: true
+
+      # ---------------------------------------------------------------
+      # Step 3: Build the Hugo site
+      # ---------------------------------------------------------------
+      # Hugo reads from _site_theme/ for the theme/layout config and
+      # generates paper pages from the papers/ directory.
+      # The site is built to ./public/
+      # ---------------------------------------------------------------
+      - name: Build with Hugo
+        env:
+          HUGO_CACHEDIR: ${{ runner.temp }}/hugo_cache
+        run: |
+          hugo --source _site_theme --destination ../public --minify
+
+      # ---------------------------------------------------------------
+      # Step 4: Install and run Pagefind
+      # ---------------------------------------------------------------
+      # Pagefind generates a client-side search index from the built HTML.
+      # This enables instant search on the static site without a server.
+      # ---------------------------------------------------------------
+      - name: Install Pagefind
+        run: npx pagefind --site public --output-subdir _pagefind
+
+      # ---------------------------------------------------------------
+      # Step 5: Copy JSON data files to the public directory
+      # ---------------------------------------------------------------
+      # These files need to be accessible at the site root for agents
+      # and the A2A Agent Card.
+      # ---------------------------------------------------------------
+      - name: Copy data files and CNAME
+        run: |
+          cp agent-index.json public/
+          cp contributors.json public/
+          cp CNAME public/
+          cp -r .well-known public/
+
+      # ---------------------------------------------------------------
+      # Step 6: Upload artifact for GitHub Pages
+      # ---------------------------------------------------------------
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./public
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

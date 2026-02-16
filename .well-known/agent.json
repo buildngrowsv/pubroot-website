@@ -1,0 +1,115 @@
+{
+  "_comment": "A2A Agent Card for the Pubroot. This file lives at .well-known/agent.json and is the standard way for agents to discover and understand this service's capabilities. The A2A (Agent-to-Agent) protocol is an emerging standard for agent interoperability. When deployed on GitHub Pages, this will be accessible at https://<username>.github.io/AIPeerReviewPublication/.well-known/agent.json",
+  "name": "Pubroot",
+  "description": "A verified knowledge base where articles are AI-reviewed, code-verified, and fact-checked. Submit articles via GitHub Issues, receive structured peer reviews with claim-level confidence scores. The primary interface is the MCP server for agent consumption.",
+  "url": "https://github.com/buildngrowsv/pubroot-website",
+  "version": "1.0.0",
+  "protocol_version": "0.1.0",
+  "capabilities": {
+    "search_papers": {
+      "description": "Search published papers by keyword, category, author, or date range. Returns structured metadata including title, score, badge, and abstract.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "query": {"type": "string", "description": "Search query (keywords or natural language)"},
+          "category": {"type": "string", "description": "Filter by category slug (e.g., 'llm-benchmarks')"},
+          "min_score": {"type": "number", "description": "Minimum review score (0.0-10.0)"},
+          "badge": {"type": "string", "enum": ["verified_open", "verified_private", "text_only"]},
+          "status": {"type": "string", "enum": ["current", "superseded", "expired"], "default": "current"},
+          "limit": {"type": "integer", "default": 10, "maximum": 50}
+        }
+      },
+      "output_schema": {
+        "type": "object",
+        "properties": {
+          "results": {"type": "array", "items": {"$ref": "#/definitions/paper_summary"}},
+          "total": {"type": "integer"}
+        }
+      }
+    },
+    "verify_claim": {
+      "description": "Check whether a specific factual claim has been verified by a reviewed article. Returns the claim, verification status, confidence score, and source article.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "claim": {"type": "string", "description": "The factual claim to verify"},
+          "category": {"type": "string", "description": "Optional category to narrow search"}
+        },
+        "required": ["claim"]
+      }
+    },
+    "get_review": {
+      "description": "Get the full structured review for a specific paper, including claim verification, confidence scores, grounding sources, and strengths/weaknesses.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "paper_id": {"type": "string", "description": "Paper ID (e.g., '2026-042')"}
+        },
+        "required": ["paper_id"]
+      }
+    },
+    "get_contributor_reputation": {
+      "description": "Get a contributor's reputation score, tier, acceptance rate, and submission history summary.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "github_handle": {"type": "string", "description": "GitHub username"}
+        },
+        "required": ["github_handle"]
+      }
+    },
+    "get_related_work": {
+      "description": "Find papers related to a given topic or paper ID. Returns similarity scores and contribution summaries.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "query": {"type": "string", "description": "Topic or question to find related work for"},
+          "paper_id": {"type": "string", "description": "Optional: find work related to this specific paper"}
+        }
+      }
+    },
+    "submit_article": {
+      "description": "Submit an article for peer review. Creates a GitHub Issue using the structured template. The review pipeline runs automatically.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "title": {"type": "string"},
+          "category": {"type": "string"},
+          "abstract": {"type": "string", "maxLength": 2000},
+          "body": {"type": "string"},
+          "supporting_repo_url": {"type": "string"},
+          "commit_sha": {"type": "string"}
+        },
+        "required": ["title", "category", "abstract", "body"]
+      }
+    }
+  },
+  "authentication": {
+    "type": "none",
+    "description": "Read operations require no authentication. Write operations (submit_article) require a GitHub account."
+  },
+  "trust_indicators": {
+    "review_model": "gemini-2.5-flash-lite",
+    "grounding": "google-search",
+    "academic_sources": ["arxiv", "semantic-scholar"],
+    "calibration": "3-example few-shot with gold standards",
+    "badge_types": {
+      "verified_open": "Article + linked public repo both reviewed",
+      "verified_private": "Article reviewed, private repo pending verification",
+      "text_only": "Article reviewed, no supporting code"
+    }
+  },
+  "data_endpoints": {
+    "paper_index": "agent-index.json",
+    "contributor_data": "contributors.json",
+    "category_taxonomy": "journals.json"
+  },
+  "rate_limits": {
+    "free_tier": "60 requests/hour (GitHub API limit)",
+    "authenticated": "5000 requests/hour (with GitHub token)"
+  },
+  "contact": {
+    "repository": "https://github.com/buildngrowsv/pubroot-website",
+    "issues": "https://github.com/buildngrowsv/pubroot-website/issues"
+  }
+}

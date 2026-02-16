@@ -1,0 +1,23 @@
+{
+  "calibration_id": "gold-02",
+  "label": "Average (5/10)",
+  "score": 5.0,
+  "verdict": "REJECTED",
+  "category": "general-technical",
+  "description": "A decent submission with some useful information but significant weaknesses: no supporting code repo, some unverifiable claims, and moderate overlap with existing published work. This represents a REJECTED-but-close submission — the author could revise and resubmit.",
+  "submission_title": "Comparing Webpack 6 and Vite 5 Build Performance for Large React Applications",
+  "submission_abstract": "We compare Webpack 6 and Vite 5 build performance across three React applications of increasing complexity (10K, 50K, and 100K lines of code). Our benchmarks show Vite 5 is 3-8x faster for development builds and 1.5-2x faster for production builds. We also document several Webpack 6 configuration pitfalls that significantly impact build times, including incorrect cache settings and suboptimal chunk splitting. The article includes recommended configurations for both tools optimized for large codebases.",
+  "scoring_reasoning": "Score 5/10 because: (1) The topic is relevant and practical. (2) The claimed benchmarks (3-8x faster) are plausible but NOT independently verifiable — no supporting repo, no reproduction steps, no raw benchmark data shared. (3) Several existing articles already cover Webpack vs Vite comparisons (moderate novelty). (4) The 'recommended configurations' section is genuinely useful but would be much stronger with a supporting repo. (5) Writing quality is decent but could be better organized. (6) No code means the reviewer cannot verify the benchmark methodology. This falls below our 6.0 acceptance threshold primarily because the key claims (benchmark numbers) are unverifiable without supporting code.",
+  "key_claims": [
+    {
+      "text": "Vite 5 is 3-8x faster than Webpack 6 for development builds",
+      "verified": false,
+      "expected_confidence": 0.40
+    },
+    {
+      "text": "Vite 5 is 1.5-2x faster for production builds",
+      "verified": false,
+      "expected_confidence": 0.45
+    }
+  ]
+}

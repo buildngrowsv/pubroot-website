@@ -1,0 +1,19 @@
+# Python dependencies for the Pubroot review pipeline
+# These are installed inside a GitHub Actions Ubuntu runner before the review agent runs.
+# We pin to minimum versions for stability but allow patches.
+# 
+# The review pipeline calls:
+#   - Gemini API (google-genai) for LLM review + Google Search grounding
+#   - arXiv API (arxiv) for academic novelty checks
+#   - Semantic Scholar API (requests) for literature search
+#   - GitHub API (requests) for reading repos, posting comments, creating PRs
+#
+# NOTE: We use google-genai (the newer SDK) NOT google-generativeai (legacy).
+# The google-genai SDK supports Gemini 2.5 Flash-Lite with grounding tools.
+# We discovered through research that google-genai is the current recommended SDK
+# for Gemini API access as of early 2026.
+
+google-genai>=1.0.0
+arxiv>=2.1.0
+requests>=2.31.0
+PyYAML>=6.0.1

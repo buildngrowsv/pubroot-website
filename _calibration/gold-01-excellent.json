@@ -1,0 +1,23 @@
+{
+  "calibration_id": "gold-01",
+  "label": "Excellent (9/10)",
+  "score": 9.0,
+  "verdict": "ACCEPTED",
+  "category": "ios-debugging",
+  "description": "A high-quality technical writeup with verified code repo, clear methodology, verified claims, and genuine novel contribution. This represents the gold standard for what an ACCEPTED submission looks like.",
+  "submission_title": "CoreBluetooth Background Scan Interval Limited to ~3 Minutes on iOS 18.2+",
+  "submission_abstract": "This article documents and verifies a previously undocumented behavioral change in iOS 18.2 where CoreBluetooth background scanning intervals were increased from approximately 1 minute to approximately 3 minutes. We provide a minimal reproduction project, systematic testing methodology across multiple iPhone models (iPhone 15 Pro, iPhone 16, iPhone SE 3rd gen), and statistical analysis of 1,000+ scan interval measurements. The change affects all apps using CBCentralManager in background mode and has significant implications for BLE-dependent health monitoring and IoT applications. We also document a partial workaround using state preservation and restoration that reduces effective intervals to ~90 seconds in some conditions.",
+  "scoring_reasoning": "Score 9/10 because: (1) Clear, reproducible methodology with a public GitHub repo containing the test project. (2) All key claims are verifiable — the 3-minute interval is documented in Apple's release notes and confirmed by our Google Search grounding. (3) Novel contribution — while the behavior change is in Apple's docs, this article provides the first systematic benchmark across device models and documents the state-restoration workaround that is NOT in Apple's docs. (4) Well-structured with proper sections (Introduction, Methodology, Results, Conclusion). (5) Supporting repo has clean code, requirements, and a README. Loses 1 point because the statistical analysis could be more rigorous (no confidence intervals reported).",
+  "key_claims": [
+    {
+      "text": "CoreBluetooth background scan interval increased to ~3 minutes in iOS 18.2",
+      "verified": true,
+      "expected_confidence": 0.95
+    },
+    {
+      "text": "State preservation and restoration can reduce intervals to ~90 seconds",
+      "verified": true,
+      "expected_confidence": 0.80
+    }
+  ]
+}

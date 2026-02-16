@@ -1,0 +1,23 @@
+{
+  "calibration_id": "gold-03",
+  "label": "Poor (2/10)",
+  "score": 2.0,
+  "verdict": "REJECTED",
+  "category": "llm-benchmarks",
+  "description": "A low-quality submission with factual errors, no methodology, no supporting evidence, and claims that contradict publicly available information. This represents a clear REJECT — the submission does not meet minimum quality standards.",
+  "submission_title": "GPT-5 Is the Best Model for All Tasks — Comprehensive Analysis",
+  "submission_abstract": "This article proves that GPT-5 is superior to all other language models including Claude, Gemini, and Llama in every benchmark category. Our testing shows GPT-5 achieves 99.7% accuracy on all reasoning tasks and is 10x faster than any competitor. We recommend all developers switch to GPT-5 immediately.",
+  "scoring_reasoning": "Score 2/10 because: (1) Claims are wildly exaggerated and factually incorrect — no model achieves 99.7% on 'all reasoning tasks'. Google Search verification shows current frontier models score 70-90% on standard benchmarks like MMLU and HumanEval. (2) No methodology described — 'our testing' with zero details about what was tested, how, or with what parameters. (3) No supporting repo, no benchmark scripts, no raw data. (4) The blanket claim '10x faster than any competitor' is meaningless without specifying task, hardware, batch size, etc. (5) The article reads like marketing copy, not a technical evaluation. (6) Multiple other published benchmarks contradict the core claims. (7) Low novelty — many benchmark comparisons exist, and this one adds no value. Loses points for every dimension: factual accuracy (very low), methodology (none), novelty (none), writing quality (poor).",
+  "key_claims": [
+    {
+      "text": "GPT-5 achieves 99.7% accuracy on all reasoning tasks",
+      "verified": false,
+      "expected_confidence": 0.05
+    },
+    {
+      "text": "GPT-5 is 10x faster than any competitor",
+      "verified": false,
+      "expected_confidence": 0.05
+    }
+  ]
+}

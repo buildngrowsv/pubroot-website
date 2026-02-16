@@ -1,0 +1,50 @@
+# =============================================================================
+# Pubroot .gitignore
+# =============================================================================
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+*.egg
+.eggs/
+*.so
+
+# Virtual environments
+.venv/
+venv/
+env/
+test-venv/
+
+# OS files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# IDE
+.idea/
+.vscode/
+*.code-workspace
+
+# Hugo build output (built in CI, not committed)
+public/
+resources/_gen/
+
+# Pagefind index (built in CI)
+_pagefind/
+
+# Temp files
+tmp/
+*.tmp
+*.log
+
+# Node (if Pagefind is run locally)
+node_modules/
+
+# Secrets (never commit these)
+.env
+.env.local
+*.key
+*.pem

@@ -1,0 +1,44 @@
+# =============================================================================
+# Hugo Configuration — Pubroot
+# =============================================================================
+#
+# This configures the static site at pubroot.com, deployed via GitHub Pages.
+# The site reads article data from papers/{paper-id}/article.md and review
+# data from reviews/{paper-id}/review.json. Pagefind provides client-side search.
+#
+# Design inspiration: ResearchGate — clean, white, professional, teal accents,
+# academic credibility with modern web polish.
+# =============================================================================
+
+baseURL = "https://pubroot.com/"
+languageCode = "en-us"
+title = "Pubroot"
+theme = ""
+
+# Read content from the papers directory at the repo root
+contentDir = "../papers"
+
+[params]
+  description = "AI peer review for the agent era. Every article is reviewed, fact-checked, and scored with structured confidence metadata."
+  tagline = "AI Peer Review for the Agent Era"
+  github_repo = "https://github.com/buildngrowsv/pubroot-website"
+  acceptance_threshold = 6.0
+
+[params.badges]
+  verified_open = "Code Verified"
+  verified_private = "Private Repo"
+  text_only = "Text Only"
+
+# Clean URLs
+[permalinks]
+  papers = "/papers/:slug/"
+
+# Build settings
+[build]
+  writeStats = true
+
+# Minification
+[minify]
+  disableCSS = false
+  disableHTML = false
+  disableJS = false

@@ -1,0 +1,9 @@
+{
+  "schema_version": "1.0",
+  "api_version": "1.0",
+  "description": "Machine-readable index of all published papers in the Pubroot. Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
+  "search_endpoint": null,
+  "total_papers": 0,
+  "last_updated": null,
+  "papers": []
+}

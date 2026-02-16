@@ -1,0 +1,63 @@
+{
+  "schema_version": "1.0",
+  "description": "Category taxonomy for the Pubroot. Defines topic slugs, display names, refresh rates (how often the same topic can have a new competing article), and acceptance thresholds. The review pipeline checks this file to validate categories and enforce slot availability. New categories can be added manually or proposed via a special Issue template (future feature).",
+  "acceptance_threshold": 6.0,
+  "journals": {
+    "llm-benchmarks": {
+      "display_name": "LLM Benchmarks",
+      "description": "Performance benchmarks, comparisons, and evaluations of large language models across tasks like code generation, reasoning, conversation, and more.",
+      "refresh_rate_days": 30,
+      "allow_alternatives": false,
+      "icon": "chart-bar",
+      "examples": ["GPT-5.3 voice conversation performance", "Claude 4 vs Gemini 2.5 on code review", "Token efficiency across frontier models"]
+    },
+    "ios-debugging": {
+      "display_name": "iOS Debugging",
+      "description": "Debug logs, workarounds, and solutions for iOS development issues. Covers UIKit, SwiftUI, CoreBluetooth, Core Data, and all Apple iOS frameworks.",
+      "refresh_rate_days": 0,
+      "allow_alternatives": true,
+      "icon": "bug",
+      "examples": ["CoreBluetooth background scan 3-minute limitation", "SwiftUI NavigationStack memory leak fix", "iOS 19 push notification entitlement changes"]
+    },
+    "macos-api-guides": {
+      "display_name": "macOS API Guides",
+      "description": "Technical guides, limitations, and undocumented behaviors of macOS APIs. Covers AppKit, System Extensions, Virtualization framework, and more.",
+      "refresh_rate_days": 0,
+      "allow_alternatives": true,
+      "icon": "desktop",
+      "examples": ["macOS Sequoia sandbox changes for browser extensions", "Virtualization.framework GPU passthrough limitations", "System Extension approval flow changes"]
+    },
+    "agent-architecture": {
+      "display_name": "Agent Architecture",
+      "description": "Design patterns, frameworks, and architectural decisions for building autonomous AI agents. Covers multi-agent systems, tool use, memory, planning, and orchestration.",
+      "refresh_rate_days": 0,
+      "allow_alternatives": true,
+      "icon": "cpu",
+      "examples": ["LangGraph vs CrewAI for multi-agent orchestration", "MCP server design patterns", "Agent memory persistence strategies"]
+    },
+    "code-debugging-logs": {
+      "display_name": "Code Debugging Logs",
+      "description": "Detailed debug logs documenting the investigation and resolution of specific bugs. Must include the error, the investigation steps, and the verified fix.",
+      "refresh_rate_days": 0,
+      "allow_alternatives": true,
+      "icon": "terminal",
+      "examples": ["Webpack 6 tree-shaking breaks dynamic imports", "Python asyncio deadlock in FastAPI with SQLAlchemy", "Docker compose networking issue with bridge mode"]
+    },
+    "general-technical": {
+      "display_name": "General Technical",
+      "description": "Technical writeups that don't fit other categories. Covers package comparisons, infrastructure decisions, DevOps, security, and cross-platform development.",
+      "refresh_rate_days": 0,
+      "allow_alternatives": true,
+      "icon": "wrench",
+      "examples": ["Comparing Cloudflare Workers vs AWS Lambda for MCP hosting", "Self-hosting vs managed database tradeoffs in 2026", "Git LFS alternatives for large binary storage"]
+    },
+    "intellectual-essays": {
+      "display_name": "Intellectual Essays",
+      "description": "Thoughtful essays on technology, politics, history, philosophy, religion, economics, and society. Must include verifiable claims and cite sources. Fact-checking is applied to all factual assertions.",
+      "refresh_rate_days": 0,
+      "allow_alternatives": true,
+      "icon": "book-open",
+      "examples": ["The economic case for universal AI access", "Historical parallels between the printing press and LLMs", "Ethical frameworks for autonomous agent decision-making"]
+    }
+  }
+}

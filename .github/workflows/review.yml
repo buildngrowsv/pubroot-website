@@ -1,0 +1,162 @@
+# =============================================================================
+# review.yml — AI Peer Review Pipeline GitHub Action
+# =============================================================================
+#
+# This workflow is the heart of the journal. It triggers when:
+# 1. A new Issue is opened (with the submission template)
+# 2. Every 15 minutes via cron (to process queued submissions by priority)
+#
+# For direct triggers (issue:opened), it immediately runs the full 6-stage
+# review pipeline on the new submission. For cron triggers, it checks the
+# issue queue for unprocessed submissions and processes them in priority order.
+#
+# The workflow uses these secrets:
+#   GEMINI_API_KEY — For the LLM review + Google Search grounding
+#   GITHUB_TOKEN — Auto-provided by Actions for API access (no setup needed)
+#
+# Optional secrets:
+#   S2_API_KEY — Semantic Scholar API key for higher novelty check rate limits
+#
+# COST: $0 on GitHub's free tier (2,000 Action minutes/month for public repos).
+# Each review takes ~2-3 minutes of compute time, so the free tier handles
+# ~700-1000 reviews/month.
+# =============================================================================
+
+name: AI Peer Review Pipeline
+
+on:
+  # ----- TRIGGER 1: New submission (Issue opened) -----
+  # Runs immediately when someone opens an Issue using our template.
+  # This means the submitter gets a review comment within ~3-5 minutes.
+  issues:
+    types: [opened]
+
+  # ----- TRIGGER 2: Queue processor (every 15 minutes) -----
+  # Picks up any submissions that were queued (e.g., if the direct trigger
+  # failed, or for batching during high-volume periods). Processes by priority
+  # label: critical > high > normal > low.
+  schedule:
+    - cron: '*/15 * * * *'
+
+  # ----- TRIGGER 3: Manual dispatch (for debugging/re-running) -----
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: 'Issue number to process'
+        required: true
+        type: number
+
+# Concurrency: only one review pipeline instance runs at a time.
+# If a new trigger fires while one is running, it queues (not cancels).
+# This prevents race conditions on contributors.json and agent-index.json.
+concurrency:
+  group: review-pipeline
+  cancel-in-progress: false
+
+permissions:
+  issues: write
+  contents: write
+  pull-requests: write
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      # ---------------------------------------------------------------
+      # Step 1: Checkout the repo
+      # ---------------------------------------------------------------
+      # We need the full repo for reading config files (journals.json,
+      # contributors.json, agent-index.json, calibration examples) and
+      # for the Python review agent code.
+      # ---------------------------------------------------------------
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      # ---------------------------------------------------------------
+      # Step 2: Set up Python
+      # ---------------------------------------------------------------
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      # ---------------------------------------------------------------
+      # Step 3: Install Python dependencies
+      # ---------------------------------------------------------------
+      - name: Install dependencies
+        run: |
+          pip install -r _review_agent/requirements.txt
+
+      # ---------------------------------------------------------------
+      # Step 4: Determine which issue to process
+      # ---------------------------------------------------------------
+      # For issue:opened triggers, use the event payload issue number.
+      # For cron triggers, find the highest-priority unprocessed issue.
+      # For manual dispatch, use the provided issue number.
+      # ---------------------------------------------------------------
+      - name: Determine issue number
+        id: get-issue
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          EVENT_NAME: ${{ github.event_name }}
+          EVENT_ISSUE: ${{ github.event.issue.number }}
+          DISPATCH_ISSUE: ${{ github.event.inputs.issue_number }}
+        run: |
+          if [ "$EVENT_NAME" = "issues" ]; then
+            echo "issue_number=$EVENT_ISSUE" >> $GITHUB_OUTPUT
+            echo "Processing issue #$EVENT_ISSUE (direct trigger)"
+          elif [ "$EVENT_NAME" = "workflow_dispatch" ]; then
+            echo "issue_number=$DISPATCH_ISSUE" >> $GITHUB_OUTPUT
+            echo "Processing issue #$DISPATCH_ISSUE (manual dispatch)"
+          else
+            # Cron trigger: find highest-priority unprocessed issue
+            # Look for issues without 'accepted', 'rejected', 'review-error',
+            # or 'validation-failed' labels
+            ISSUE=$(gh issue list \
+              --repo "$GITHUB_REPOSITORY" \
+              --state open \
+              --label "priority:critical,priority:high,priority:normal,priority:low" \
+              --json number,labels \
+              --jq 'map(select(.labels | map(.name) | (contains(["accepted"]) or contains(["rejected"]) or contains(["review-error"]) or contains(["validation-failed"])) | not)) | sort_by(.labels | map(select(.name | startswith("priority:"))) | .[0].name) | .[0].number // empty' \
+              2>/dev/null || true)
+
+            if [ -z "$ISSUE" ]; then
+              # No unprocessed issues with priority labels — check for any open
+              # issues from the submission template that haven't been labeled yet
+              ISSUE=$(gh issue list \
+                --repo "$GITHUB_REPOSITORY" \
+                --state open \
+                --json number,labels \
+                --jq 'map(select(.labels | length == 0)) | .[0].number // empty' \
+                2>/dev/null || true)
+            fi
+
+            if [ -z "$ISSUE" ]; then
+              echo "No unprocessed submissions found. Exiting."
+              echo "issue_number=" >> $GITHUB_OUTPUT
+            else
+              echo "issue_number=$ISSUE" >> $GITHUB_OUTPUT
+              echo "Processing issue #$ISSUE (cron trigger)"
+            fi
+
+      # ---------------------------------------------------------------
+      # Step 5: Run the review pipeline
+      # ---------------------------------------------------------------
+      # Only runs if we have an issue number to process.
+      # ---------------------------------------------------------------
+      - name: Run review pipeline
+        if: steps.get-issue.outputs.issue_number != ''
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          S2_API_KEY: ${{ secrets.S2_API_KEY }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_WORKSPACE: ${{ github.workspace }}
+        working-directory: _review_agent
+        run: |
+          python review_pipeline_main.py ${{ steps.get-issue.outputs.issue_number }}

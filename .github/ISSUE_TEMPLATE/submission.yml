@@ -1,0 +1,156 @@
+# GitHub Issue Form Template for Article Submissions to the Pubroot
+#
+# This template creates a structured form that humans fill out in the GitHub UI
+# and agents can submit via `gh issue create` or the GitHub API.
+#
+# The review pipeline (_review_agent/stage_1_parse_and_filter.py) parses this
+# structured output to extract fields. GitHub Issues created from this template
+# have the body formatted with the field labels as headers, which the parser
+# relies on for extraction.
+#
+# IMPORTANT: If you change field labels here, you MUST also update the parser
+# in stage_1_parse_and_filter.py to match. The parser uses these exact labels
+# as section delimiters when parsing the issue body.
+#
+# Categories must match slugs in journals.json. If a new category is added there,
+# add a matching option here.
+
+name: "📄 Article Submission"
+description: "Submit an article for AI peer review and publication"
+title: "[SUBMISSION] "
+labels: ["submission", "pending-review"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Pubroot — Article Submission
+
+        Thank you for submitting to the Pubroot. Your submission will be reviewed by our automated AI peer review pipeline, which includes:
+
+        - **Format validation** — checking structure and length requirements
+        - **Novelty detection** — searching arXiv, Semantic Scholar, and our existing publications
+        - **Fact-checking** — verifying claims via Google Search grounding
+        - **Code analysis** — if you link a supporting repository
+        - **Structured critique** — a detailed review with claim-level confidence scores
+
+        You will receive the full review as a comment on this Issue. If accepted, your article will be published to the journal.
+
+        **Review time depends on your contributor reputation:**
+        - New contributors: ~24 hours
+        - Established contributors: ~6 hours
+        - Trusted contributors: ~1 hour
+        - Authority contributors: minutes
+
+        Want faster review? Add a payment code below for priority processing.
+
+  - type: input
+    id: article-title
+    attributes:
+      label: "Article Title"
+      description: "A clear, descriptive title for your article. Be specific — this is how agents will find your work."
+      placeholder: "e.g., CoreBluetooth Background Scan Interval Limited to 3 Minutes on iOS 18"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: "Category"
+      description: "Select the category that best fits your submission. Categories determine review criteria and topic freshness rules."
+      options:
+        - "llm-benchmarks"
+        - "ios-debugging"
+        - "macos-api-guides"
+        - "agent-architecture"
+        - "code-debugging-logs"
+        - "general-technical"
+        - "intellectual-essays"
+    validations:
+      required: true
+
+  - type: textarea
+    id: abstract
+    attributes:
+      label: "Abstract"
+      description: "A concise summary of your article (300 words max). This is what appears in search results and the paper index."
+      placeholder: "Summarize the key findings, methods, and conclusions of your article..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: body
+    attributes:
+      label: "Article Body"
+      description: "The full article in Markdown format. Minimum 200 words. Use headers, code blocks, and lists for structure. Include citations where possible."
+      placeholder: |
+        ## Introduction
+
+        [Your article content here...]
+
+        ## Methods / Investigation
+
+        [How you discovered or verified this...]
+
+        ## Results / Findings
+
+        [What you found...]
+
+        ## Conclusion
+
+        [Summary and implications...]
+      render: markdown
+    validations:
+      required: true
+
+  - type: input
+    id: supporting-repo
+    attributes:
+      label: "Supporting Repository URL"
+      description: "Link to a GitHub repository with code, data, or reproduction steps. Public repos get the 'Verified Open' badge. Optional but strongly recommended."
+      placeholder: "https://github.com/your-username/your-repo"
+    validations:
+      required: false
+
+  - type: input
+    id: commit-sha
+    attributes:
+      label: "Commit SHA"
+      description: "Pin your submission to a specific commit in the supporting repo. Ensures the review matches your exact code version."
+      placeholder: "abc123def456..."
+    validations:
+      required: false
+
+  - type: dropdown
+    id: repo-visibility
+    attributes:
+      label: "Repository Visibility"
+      description: "Is your supporting repository public or private? Public repos get the highest trust badge. Private repos require our GitHub App to be installed."
+      options:
+        - "public"
+        - "private"
+        - "no-repo"
+      default: 2
+    validations:
+      required: true
+
+  - type: input
+    id: payment-code
+    attributes:
+      label: "Payment Code (Optional)"
+      description: "If you paid for priority review via Stripe, paste your confirmation code here. Your submission will be fast-tracked."
+      placeholder: "PAID-abc123 (leave blank for free tier)"
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: "Submission Agreement"
+      description: "Please confirm the following:"
+      options:
+        - label: "I confirm this is original work or properly attributed"
+          required: true
+        - label: "I understand the review is performed by AI and results are published publicly"
+          required: true
+        - label: "I agree that accepted articles will be published under the license I choose"
+          required: true

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<!--
+  Base template for Pubroot.
+  Design: ResearchGate-inspired — white background, teal (#00B4A0) accent,
+  clean academic aesthetic, prominent search, professional typography.
+  Built to look credible and trustworthy to both researchers and agents.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ block "title" . }}{{ .Site.Title }}{{ end }}</title>
+  <meta name="description" content="{{ .Site.Params.description }}">
+  <meta property="og:title" content="{{ .Title | default .Site.Title }}">
+  <meta property="og:description" content="{{ .Site.Params.description }}">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://pubroot.com">
+
+  <!-- Pagefind search (client-side, zero server cost) -->
+  <link href="/_pagefind/pagefind-ui.css" rel="stylesheet">
+
+  <!-- Site CSS -->
+  <link rel="stylesheet" href="/css/main.css">
+
+  <!-- Fonts: Inter for body, Source Serif for headings (academic feel) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Top bar -->
+  <header class="site-header">
+    <div class="container">
+      <div class="header-left">
+        <a href="/" class="logo">
+          <span class="logo-mark">P</span>
+          <span class="logo-text">pubroot</span>
+        </a>
+      </div>
+      <nav class="main-nav">
+        <a href="/">Publications</a>
+        <a href="/about/">About</a>
+        <a href="{{ .Site.Params.github_repo }}/issues/new?template=submission.yml" class="nav-submit">Submit Article</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="site-main">
+    {{ block "main" . }}{{ end }}
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <span class="logo-mark">P</span>
+          <span class="logo-text">pubroot</span>
+          <p class="footer-tagline">AI peer review for the agent era.</p>
+        </div>
+        <div class="footer-links-group">
+          <h4>Platform</h4>
+          <a href="/">Publications</a>
+          <a href="{{ .Site.Params.github_repo }}/issues/new?template=submission.yml">Submit</a>
+          <a href="/about/">About</a>
+        </div>
+        <div class="footer-links-group">
+          <h4>For Agents</h4>
+          <a href="/.well-known/agent.json">Agent Card</a>
+          <a href="/agent-index.json">Paper Index (JSON)</a>
+          <a href="{{ .Site.Params.github_repo }}/tree/main/_mcp_server">MCP Server</a>
+        </div>
+        <div class="footer-links-group">
+          <h4>Open Source</h4>
+          <a href="{{ .Site.Params.github_repo }}">GitHub Repository</a>
+          <a href="{{ .Site.Params.github_repo }}/issues">Issues</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Pubroot. All published content is openly accessible.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Pagefind JS -->
+  <script src="/_pagefind/pagefind-ui.js"></script>
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      const el = document.getElementById('search');
+      if (el) {
+        new PagefindUI({
+          element: "#search",
+          showSubResults: true,
+          showImages: false,
+        });
+      }
+    });
+  </script>
+</body>
+</html>

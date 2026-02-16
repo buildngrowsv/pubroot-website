@@ -1,0 +1,5 @@
+# MCP Server dependencies for the Pubroot
+# These are separate from the review agent deps because the MCP server
+# can be deployed independently (e.g., as a standalone tool agents use).
+mcp>=1.0.0
+requests>=2.31.0

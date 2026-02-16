@@ -1,0 +1,5 @@
+{
+  "schema_version": "1.0",
+  "description": "Contributor reputation scores for the Pubroot. Auto-updated by the review pipeline after each submission is processed. Each contributor is identified by their GitHub handle. Reputation score drives queue priority (higher rep = faster review). See design spec 'reputation driven priority queue' for the formula and tier definitions.",
+  "contributors": {}
+}
