@@ -57,7 +57,9 @@ def build_review_prompt(
     
     Args:
         parsed_submission: Output from Stage 1 — the 'parsed' dict with title,
-                          category, abstract, body, repo info, author
+                          category, abstract, body, repo info, author,
+                          and submission_type (one of: original-research,
+                          case-study, benchmark, review-survey, tutorial, dataset)
         novelty_results: Output from Stage 2 — arxiv_results, s2_results,
                         internal_results, potential_supersession
         repo_data: Output from Stage 3 — file_tree, key_files, badge_type
@@ -83,19 +85,32 @@ def build_review_prompt(
     )
     
     # -----------------------------------------------------------------------
-    # SECTION 2: Format novelty context
+    # SECTION 2: Build type-specific review criteria
+    # -----------------------------------------------------------------------
+    # Different submission types are judged by different criteria. For example,
+    # original research is judged heavily on novelty, while case studies are
+    # judged more on practical value and reproducibility. The submission_type
+    # field was added in Feb 2026. Older submissions that don't include it
+    # default to "original-research" (the strictest review criteria).
+    # -----------------------------------------------------------------------
+    
+    submission_type = parsed_submission.get("submission_type", "original-research")
+    type_criteria_text = _build_type_specific_criteria(submission_type)
+    
+    # -----------------------------------------------------------------------
+    # SECTION 3: Format novelty context
     # -----------------------------------------------------------------------
     
     novelty_text = _format_novelty_context(novelty_results)
     
     # -----------------------------------------------------------------------
-    # SECTION 3: Format repo context
+    # SECTION 4: Format repo context
     # -----------------------------------------------------------------------
     
     repo_text = _format_repo_context(repo_data)
     
     # -----------------------------------------------------------------------
-    # SECTION 4: Sanitize submission body
+    # SECTION 5: Sanitize submission body
     # -----------------------------------------------------------------------
     # We wrap the submission content in clear delimiters and limit its length
     # to prevent the submission from dominating the context window.
@@ -110,7 +125,7 @@ def build_review_prompt(
         body_text = " ".join(body_words[:8000]) + "\n\n[Article truncated for review — full text available in the submission]"
     
     # -----------------------------------------------------------------------
-    # SECTION 5: Assemble the full prompt
+    # SECTION 6: Assemble the full prompt
     # -----------------------------------------------------------------------
     
     prompt = f"""You are a peer reviewer for the Pubroot, a verified knowledge base where articles are reviewed by AI before publication. Your review must be rigorous, fair, and grounded in evidence.
@@ -134,12 +149,15 @@ Rate the submission on a scale of 0.0 to 10.0:
 
 The acceptance threshold is 6.0. Submissions scoring 6.0 or higher are ACCEPTED.
 
+{type_criteria_text}
+
 {calibration_text}
 
 ## SUBMISSION TO REVIEW
 
 **Paper ID:** {paper_id}
 **Title:** {parsed_submission.get('title', 'Untitled')}
+**Submission Type:** {submission_type}
 **Category:** {parsed_submission.get('category', 'uncategorized')}
 **Author:** {parsed_submission.get('author', 'unknown')}
 **Word Count:** {parsed_submission.get('word_count_body', 0)} words
@@ -226,6 +244,160 @@ IMPORTANT RULES FOR YOUR REVIEW:
 # ---------------------------------------------------------------------------
 # PRIVATE HELPER FUNCTIONS
 # ---------------------------------------------------------------------------
+
+
+def _build_type_specific_criteria(submission_type: str) -> str:
+    """
+    Generate type-specific review instructions that tell the AI how to weight
+    its scoring for different submission types.
+    
+    WHY THIS EXISTS:
+    A case study should not be penalized for low novelty — its value is in
+    practical experience, not originality. Similarly, a benchmark's entire
+    credibility rests on methodology and reproducibility, not writing style.
+    
+    This function was added in Feb 2026 when we introduced the 6 submission
+    types. Before this, all submissions were reviewed as "original research"
+    which was unfair to case studies, tutorials, and datasets.
+    
+    The criteria text is injected into the LLM prompt between the scoring
+    guidelines and the calibration examples, so it modifies how the AI
+    interprets the scoring rubric for each specific submission.
+    
+    Args:
+        submission_type: One of the 6 valid submission types.
+        
+    Returns:
+        A string with type-specific review instructions to inject into the prompt.
+    """
+    
+    # -----------------------------------------------------------------------
+    # TYPE-SPECIFIC CRITERIA MAP
+    # -----------------------------------------------------------------------
+    # Each entry describes what to emphasize and de-emphasize for that type.
+    # The AI will use these instructions alongside the general scoring rubric
+    # (0-10 scale) to produce a fair review. The goal is NOT to lower the bar
+    # for certain types, but to evaluate them by the right criteria.
+    #
+    # Weight levels: Critical > High > Medium > Low
+    # "Critical" means a low score here should strongly pull down the overall score.
+    # "Low" means this dimension is less important for this type.
+    # -----------------------------------------------------------------------
+    
+    criteria = {
+        "original-research": {
+            "label": "Original Research",
+            "description": "Novel findings, experiments, or discoveries with original evidence.",
+            "emphasis": """
+## TYPE-SPECIFIC REVIEW CRITERIA: Original Research
+
+This is an **Original Research** submission. Evaluate with these priorities:
+
+- **Novelty** (CRITICAL): Does this present genuinely new findings, methods, or insights? Compare carefully against the existing literature provided. Low novelty is a major reason to reject.
+- **Methodology** (HIGH): Is the experimental design or analytical approach sound? Are variables controlled? Is the reasoning logical?
+- **Factual Accuracy** (HIGH): Verify specific claims via Google Search. Are numbers, dates, and attributions correct?
+- **Reproducibility** (HIGH): Could someone reproduce these results? Are steps documented?
+- **Writing Quality** (HIGH): Is the argument clear and well-structured?
+- **Code Quality** (MEDIUM): If code is provided, does it support the claims?
+
+A score of 6.0+ requires meaningful novelty AND sound methodology. Even well-written submissions should be rejected if they are purely derivative of existing work.
+"""
+        },
+        "case-study": {
+            "label": "Case Study",
+            "description": "Real-world implementation, debug log, or production incident report.",
+            "emphasis": """
+## TYPE-SPECIFIC REVIEW CRITERIA: Case Study
+
+This is a **Case Study** submission. Evaluate with these priorities:
+
+- **Practical Value** (CRITICAL): Does this provide useful, actionable knowledge from real-world experience? Would other practitioners benefit from reading this?
+- **Reproducibility** (HIGH): Are steps documented clearly enough for someone facing a similar situation to follow?
+- **Writing Quality** (HIGH): Is the narrative clear? Does it explain the context, investigation, resolution, and lessons learned?
+- **Factual Accuracy** (HIGH): Are technical claims correct? Are tool names, versions, and error messages accurate?
+- **Methodology** (MEDIUM): Is the investigation/debugging process logical?
+- **Novelty** (LOW): Case studies are inherently specific — they don't need to be novel in the academic sense. What matters is that they document useful real-world experience. Do NOT penalize for low novelty.
+
+A score of 6.0+ requires clear practical value AND good documentation. The best case studies are those that save someone else hours of debugging.
+"""
+        },
+        "benchmark": {
+            "label": "Benchmark",
+            "description": "Structured comparison or evaluation with reproducible methodology.",
+            "emphasis": """
+## TYPE-SPECIFIC REVIEW CRITERIA: Benchmark
+
+This is a **Benchmark** submission. Evaluate with these priorities:
+
+- **Methodology** (CRITICAL): Is the benchmarking methodology rigorous? Are baselines fair? Are variables isolated? Is the comparison apples-to-apples?
+- **Reproducibility** (CRITICAL): Are hardware specs, software versions, configurations, and exact steps documented? Could someone reproduce these results independently?
+- **Code Quality** (HIGH): If benchmark code is linked, is it well-organized and does it match the described methodology?
+- **Factual Accuracy** (HIGH): Are the numbers correct? Are comparisons fair? Are conclusions supported by the data?
+- **Writing Quality** (MEDIUM): Clear presentation of data is important, but literary quality is less important than data quality.
+- **Novelty** (MEDIUM): The comparison itself provides value even if the tools being compared are well-known.
+
+A score of 6.0+ requires rigorous methodology AND reproducibility. Benchmarks without version numbers, hardware specs, or reproducible code should be scored lower. Cherry-picked or unfair comparisons should be flagged.
+"""
+        },
+        "review-survey": {
+            "label": "Review / Survey",
+            "description": "Literature review, landscape analysis, or state-of-the-art survey.",
+            "emphasis": """
+## TYPE-SPECIFIC REVIEW CRITERIA: Review / Survey
+
+This is a **Review/Survey** submission. Evaluate with these priorities:
+
+- **Comprehensiveness** (CRITICAL): Does this survey cover the important work in the area? Are key papers/tools/approaches included? Are there obvious gaps?
+- **Factual Accuracy** (CRITICAL): Reviews make many claims about other work. Verify as many as possible via Google Search. Misrepresenting cited work is a serious flaw.
+- **Writing Quality** (HIGH): A review must be well-organized, clearly written, and provide a coherent narrative. Good structure (e.g., taxonomy, comparison tables) is a plus.
+- **Novelty** (MEDIUM): The survey's contribution is in its synthesis and analysis, not in new experiments. A unique perspective or insightful comparison counts as novelty.
+- **Methodology** (MEDIUM): Is there a clear search methodology? How were papers selected?
+- **Reproducibility** (LOW): Surveys don't need to be reproducible in the experimental sense.
+
+A score of 6.0+ requires comprehensive coverage AND factual accuracy. Incomplete surveys or those that misrepresent cited work should be rejected.
+"""
+        },
+        "tutorial": {
+            "label": "Tutorial",
+            "description": "Step-by-step guide with working code and clear instructions.",
+            "emphasis": """
+## TYPE-SPECIFIC REVIEW CRITERIA: Tutorial
+
+This is a **Tutorial** submission. Evaluate with these priorities:
+
+- **Completeness** (CRITICAL): Can someone follow this from start to finish? Are all steps included? Are prerequisites listed? Are there no missing steps?
+- **Reproducibility** (CRITICAL): Do the code examples work? Are dependencies pinned? Are versions specified? Is the supporting repo complete?
+- **Code Quality** (HIGH): Is the code well-written, well-commented, and following best practices? Are there error handling examples?
+- **Writing Quality** (CRITICAL): Clarity is paramount for tutorials. Is each step explained? Are complex concepts broken down? Are there helpful diagrams or examples?
+- **Factual Accuracy** (HIGH): Are best practices current? Are API references correct?
+- **Novelty** (LOW): Tutorials don't need to be novel. A well-written tutorial on an existing topic is valuable. Do NOT penalize for low novelty.
+
+A score of 6.0+ requires completeness AND working code. A tutorial that skips steps, has broken code, or uses deprecated APIs should be scored lower.
+"""
+        },
+        "dataset": {
+            "label": "Dataset",
+            "description": "Dataset description with methodology, statistics, and access information.",
+            "emphasis": """
+## TYPE-SPECIFIC REVIEW CRITERIA: Dataset
+
+This is a **Dataset** submission. Evaluate with these priorities:
+
+- **Documentation** (CRITICAL): Is the dataset thoroughly described? Are fields/columns defined? Are statistics provided (size, distribution, missing values)?
+- **Methodology** (HIGH): How was the data collected? Are there biases? Is the collection process reproducible?
+- **Reproducibility** (CRITICAL): Can someone access and use this dataset? Is the data format documented? Is the linked repository accessible?
+- **Code Quality** (HIGH): Are data processing scripts included? Are they documented?
+- **Novelty** (MEDIUM): Does this dataset fill a gap? Is there already a similar dataset available?
+- **Factual Accuracy** (MEDIUM): Are statistics about the dataset accurate?
+
+A score of 6.0+ requires thorough documentation AND accessible data. A dataset without access information, missing field definitions, or undocumented biases should be scored lower.
+"""
+        }
+    }
+    
+    # Look up the criteria for this type; fall back to original-research
+    type_data = criteria.get(submission_type, criteria["original-research"])
+    return type_data["emphasis"]
 
 
 def _load_calibration_examples(repo_root: str, category: str) -> str:

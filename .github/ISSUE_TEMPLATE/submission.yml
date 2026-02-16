@@ -205,6 +205,22 @@ body:
     validations:
       required: true
 
+  - type: dropdown
+    id: submission-type
+    attributes:
+      label: "Submission Type"
+      description: "What type of submission is this? Each type is judged by different criteria. See https://pubroot.com/editorial-guidelines/ for details."
+      options:
+        - "original-research"
+        - "case-study"
+        - "benchmark"
+        - "review-survey"
+        - "tutorial"
+        - "dataset"
+      default: 0
+    validations:
+      required: true
+
   - type: textarea
     id: abstract
     attributes:

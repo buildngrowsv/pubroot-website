@@ -1,0 +1,824 @@
+/*
+ * =============================================================================
+ * pages.css — Styles for Pubroot static content pages
+ * =============================================================================
+ *
+ * This stylesheet is used by the About, Editorial Guidelines, and Journals
+ * pages. These are static HTML pages (not Hugo-rendered) that share the
+ * same design system as the rest of the site (via main.css variables).
+ *
+ * WHY SEPARATE FILE:
+ * These styles are only needed on content pages, not on the homepage or
+ * individual paper pages. Keeping them separate avoids bloating main.css
+ * and means the homepage loads faster (most visitors won't visit these pages).
+ *
+ * DESIGN NOTES:
+ * - Uses the same CSS variables from main.css (--accent, --text, --surface, etc.)
+ * - Inherits fonts, colors, and spacing from main.css
+ * - Adds page-specific layouts: hero, prose, pipeline, type cards, rubric table, etc.
+ * =============================================================================
+ */
+
+/* ============================================================
+   ACTIVE NAV INDICATOR
+   ============================================================
+   Highlights the current page in the navigation bar. Since these
+   are static HTML pages (not Hugo), we use a CSS class (.nav-active)
+   instead of Hugo's isMenuCurrent function.
+   ============================================================ */
+.nav-active {
+  color: var(--accent) !important;
+  font-weight: 600 !important;
+}
+
+/* ============================================================
+   PAGE HERO
+   ============================================================
+   Shared hero section for all content pages. Slightly different
+   from the homepage hero — no search bar, more focus on the
+   page title and description.
+   ============================================================ */
+.page-hero {
+  background: linear-gradient(180deg, #F8FFFE 0%, var(--bg) 100%);
+  padding: 56px 0 40px;
+  border-bottom: 1px solid var(--border);
+}
+.page-hero-content {
+  max-width: 720px;
+}
+.page-hero h1 {
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 14px;
+}
+.page-hero-sub {
+  color: var(--text-secondary);
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
+
+/* ============================================================
+   CONTENT SECTION & PROSE
+   ============================================================
+   Main content area for text-heavy pages. The .prose class
+   provides comfortable reading width, spacing, and typography.
+   ============================================================ */
+.content-section {
+  padding: 48px 0 80px;
+}
+.prose {
+  max-width: 820px;
+}
+.prose h2 {
+  font-size: 1.6rem;
+  margin-top: 56px;
+  margin-bottom: 16px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+}
+.prose h2:first-child {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+.prose h3 {
+  font-size: 1.2rem;
+  margin-top: 32px;
+  margin-bottom: 12px;
+}
+.prose p {
+  font-size: 1rem;
+  line-height: 1.75;
+  margin-bottom: 16px;
+  color: var(--text);
+}
+.prose ul, .prose ol {
+  margin-bottom: 20px;
+  padding-left: 24px;
+}
+.prose li {
+  margin-bottom: 8px;
+  line-height: 1.65;
+}
+.prose a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.prose a:hover {
+  color: var(--accent-hover);
+}
+.prose code {
+  font-family: var(--font-mono);
+  background: var(--surface);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 0.88em;
+  border: 1px solid var(--border);
+}
+.prose strong {
+  font-weight: 600;
+}
+
+/* ============================================================
+   TABLE OF CONTENTS SIDEBAR
+   ============================================================ */
+.toc-sidebar {
+  float: right;
+  width: 220px;
+  margin: 0 0 24px 40px;
+  padding: 16px 20px;
+  background: var(--surface);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  position: sticky;
+  top: 80px;
+}
+.toc-sidebar h4 {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+}
+.toc-sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.toc-sidebar li {
+  margin-bottom: 6px;
+}
+.toc-sidebar a {
+  font-size: 0.84rem;
+  color: var(--text-secondary);
+  text-decoration: none;
+}
+.toc-sidebar a:hover {
+  color: var(--accent);
+}
+@media (max-width: 900px) {
+  .toc-sidebar {
+    float: none;
+    width: 100%;
+    margin: 0 0 32px 0;
+    position: static;
+  }
+}
+
+/* ============================================================
+   HIGHLIGHT BOX
+   ============================================================
+   A callout box for important information. Comes in default
+   (surface background) and accent (teal background) variants.
+   ============================================================ */
+.highlight-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px 28px;
+  margin: 24px 0 32px;
+}
+.highlight-box h3 {
+  font-size: 1.05rem;
+  margin-top: 0;
+  margin-bottom: 12px;
+}
+.highlight-box ul {
+  margin-bottom: 0;
+}
+.highlight-accent {
+  background: var(--accent-light);
+  border-color: var(--accent);
+}
+.highlight-accent h3 {
+  color: var(--accent-hover);
+}
+
+/* ============================================================
+   PIPELINE VISUAL
+   ============================================================
+   Step-by-step pipeline visualization on the About page.
+   Each stage is a numbered card with a connecting line.
+   ============================================================ */
+.pipeline-visual {
+  margin: 32px 0;
+}
+.pipeline-stage {
+  display: flex;
+  gap: 20px;
+  padding: 20px 0;
+  border-left: 3px solid var(--accent-light);
+  margin-left: 24px;
+  padding-left: 28px;
+  position: relative;
+}
+.pipeline-stage:last-child {
+  border-left-color: transparent;
+}
+.stage-number {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1.1rem;
+  position: absolute;
+  left: -22px;
+  top: 20px;
+}
+.stage-content {
+  padding-left: 8px;
+}
+.stage-content h4 {
+  font-size: 1.05rem;
+  margin-bottom: 6px;
+  margin-top: 0;
+}
+.stage-content p {
+  font-size: 0.92rem;
+  color: var(--text-secondary);
+  margin-bottom: 0;
+}
+
+/* ============================================================
+   TECH GRID
+   ============================================================
+   Technology stack cards on the About page.
+   ============================================================ */
+.tech-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin: 24px 0 32px;
+}
+@media (max-width: 768px) {
+  .tech-grid { grid-template-columns: 1fr; }
+}
+.tech-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+}
+.tech-card h4 {
+  font-size: 0.95rem;
+  margin-bottom: 8px;
+  margin-top: 0;
+  color: var(--accent);
+}
+.tech-card p {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 0;
+}
+
+/* ============================================================
+   FAQ ACCORDION
+   ============================================================ */
+.faq-list {
+  margin: 24px 0;
+}
+.faq-item {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 8px;
+  overflow: hidden;
+}
+.faq-item summary {
+  padding: 16px 20px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  background: var(--surface);
+  transition: background 0.15s;
+  list-style: none;
+}
+.faq-item summary::-webkit-details-marker {
+  display: none;
+}
+.faq-item summary::before {
+  content: '▸ ';
+  color: var(--accent);
+}
+.faq-item[open] summary::before {
+  content: '▾ ';
+}
+.faq-item summary:hover {
+  background: var(--accent-light);
+}
+.faq-item p {
+  padding: 16px 20px;
+  font-size: 0.92rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  border-top: 1px solid var(--border);
+}
+
+/* ============================================================
+   SUBMISSION TYPE CARDS
+   ============================================================ */
+.type-cards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin: 24px 0 32px;
+}
+@media (max-width: 768px) {
+  .type-cards { grid-template-columns: 1fr; }
+}
+.type-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  transition: box-shadow 0.15s;
+}
+.type-card:hover {
+  box-shadow: var(--shadow-md);
+}
+.type-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.type-icon {
+  font-size: 1.5rem;
+}
+.type-header h3 {
+  font-size: 1.1rem;
+  margin: 0;
+}
+.type-card > p {
+  font-size: 0.92rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 12px;
+}
+.type-emphasis {
+  font-size: 0.84rem;
+  background: var(--accent-light);
+  padding: 8px 12px;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+.type-examples {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* ============================================================
+   RUBRIC TABLE
+   ============================================================ */
+.rubric-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 24px 0;
+  font-size: 0.9rem;
+}
+.rubric-table th {
+  background: var(--surface);
+  font-weight: 600;
+  text-align: left;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  font-size: 0.84rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-secondary);
+}
+.rubric-table td {
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  vertical-align: top;
+}
+.rubric-table code {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: 0.88rem;
+}
+.score-exceptional td:first-child { border-left: 4px solid var(--success); }
+.score-good td:first-child { border-left: 4px solid var(--accent); }
+.score-acceptable td:first-child { border-left: 4px solid #67C4B8; }
+.score-below td:first-child { border-left: 4px solid var(--warning); }
+.score-poor td:first-child { border-left: 4px solid #F97316; }
+.score-reject td:first-child { border-left: 4px solid var(--error); }
+
+/* ============================================================
+   REVIEW DIMENSIONS GRID
+   ============================================================ */
+.dimensions-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin: 24px 0 32px;
+}
+@media (max-width: 768px) {
+  .dimensions-grid { grid-template-columns: 1fr; }
+}
+.dimension-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+}
+.dimension-card h4 {
+  font-size: 0.95rem;
+  margin-bottom: 8px;
+  margin-top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.dim-range {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+.dimension-card p {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 0;
+}
+
+/* ============================================================
+   TYPE-SPECIFIC CRITERIA TABLE
+   ============================================================ */
+.criteria-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 24px 0;
+  font-size: 0.82rem;
+}
+.criteria-table th {
+  background: var(--surface);
+  font-weight: 600;
+  text-align: center;
+  padding: 10px 8px;
+  border: 1px solid var(--border);
+  font-size: 0.78rem;
+}
+.criteria-table th:first-child {
+  text-align: left;
+  width: 140px;
+}
+.criteria-table td {
+  padding: 8px;
+  border: 1px solid var(--border);
+  text-align: center;
+  font-weight: 500;
+}
+.criteria-table td:first-child {
+  text-align: left;
+  font-weight: 600;
+  color: var(--text);
+}
+.weight-crit {
+  background: #FEE2E2;
+  color: #B91C1C;
+}
+.weight-high {
+  background: #FEF3C7;
+  color: #92400E;
+}
+.weight-med {
+  background: #E0F7F4;
+  color: #047857;
+}
+.weight-low {
+  background: var(--surface);
+  color: var(--text-secondary);
+}
+
+/* ============================================================
+   BADGE CARDS
+   ============================================================ */
+.badge-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin: 24px 0;
+}
+@media (max-width: 768px) {
+  .badge-cards { grid-template-columns: 1fr; }
+}
+.badge-card {
+  padding: 20px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+}
+.badge-card .badge {
+  display: inline-block;
+  margin-bottom: 12px;
+}
+.badge-card p {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0;
+}
+.badge-card-open { background: #F0FDF4; border-color: #D1FAE5; }
+.badge-card-private { background: #FFFBEB; border-color: #FEF3C7; }
+.badge-card-text { background: var(--surface); }
+
+/* ============================================================
+   FORMAT GRID
+   ============================================================ */
+.format-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin: 24px 0;
+}
+@media (max-width: 768px) {
+  .format-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 500px) {
+  .format-grid { grid-template-columns: 1fr; }
+}
+.format-item {
+  padding: 16px;
+  background: var(--surface);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+}
+.format-item h4 {
+  font-size: 0.9rem;
+  margin-bottom: 6px;
+  margin-top: 0;
+  color: var(--accent);
+}
+.format-item p {
+  font-size: 0.84rem;
+  color: var(--text-secondary);
+  line-height: 1.55;
+  margin-bottom: 0;
+}
+
+/* ============================================================
+   PROCESS LIST
+   ============================================================ */
+.process-list {
+  margin: 24px 0;
+  padding-left: 0;
+  list-style: none;
+  counter-reset: process-step;
+}
+.process-list li {
+  counter-increment: process-step;
+  padding: 16px 16px 16px 56px;
+  position: relative;
+  margin-bottom: 8px;
+  background: var(--surface);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+.process-list li::before {
+  content: counter(process-step);
+  position: absolute;
+  left: 16px;
+  top: 14px;
+  width: 28px;
+  height: 28px;
+  background: var(--accent);
+  color: white;
+  border-radius: 50%;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ============================================================
+   CTA BOX
+   ============================================================ */
+.cta-box {
+  background: linear-gradient(135deg, var(--accent-light), #E8FBF8);
+  border: 2px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 40px;
+  text-align: center;
+  margin: 48px 0 24px;
+}
+.cta-box h3 {
+  font-size: 1.3rem;
+  margin-bottom: 8px;
+  margin-top: 0;
+}
+.cta-box p {
+  color: var(--text-secondary);
+  margin-bottom: 24px;
+}
+
+/* ============================================================
+   BTN-LINK
+   ============================================================ */
+.btn-link {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  background: var(--surface);
+  padding: 10px 20px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  color: var(--accent) !important;
+  text-decoration: none !important;
+}
+.btn-link:hover {
+  background: var(--accent-light);
+  border-color: var(--accent);
+}
+
+/* ============================================================
+   JOURNALS PAGE — STATS & CARDS
+   ============================================================ */
+.journals-stats {
+  display: flex;
+  gap: 40px;
+  margin-bottom: 40px;
+  padding: 24px 0;
+  border-bottom: 1px solid var(--border);
+}
+.stat {
+  text-align: center;
+}
+.stat-number {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.stat-label {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+/* Journal cards */
+.journals-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.journal-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: box-shadow 0.15s;
+}
+.journal-card:hover {
+  box-shadow: var(--shadow-sm);
+}
+.journal-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  cursor: pointer;
+  transition: background 0.15s;
+  gap: 16px;
+}
+.journal-card-header:hover {
+  background: var(--surface);
+}
+.journal-card-left {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  flex: 1;
+  min-width: 0;
+}
+.journal-card-icon {
+  font-size: 1.6rem;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.journal-card-left h3 {
+  font-size: 1.1rem;
+  margin-bottom: 4px;
+}
+.journal-card-desc {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin: 0;
+}
+.journal-card-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+.journal-topic-count {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--accent);
+  background: var(--accent-light);
+  padding: 4px 10px;
+  border-radius: 12px;
+  white-space: nowrap;
+}
+.journal-expand-icon {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  transition: transform 0.2s;
+}
+.journal-card.expanded .journal-expand-icon {
+  transform: rotate(180deg);
+}
+
+/* Journal card body (collapsed by default) */
+.journal-card-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease;
+}
+.journal-card.expanded .journal-card-body {
+  max-height: 5000px;
+}
+.topics-list {
+  padding: 0 24px 24px;
+  border-top: 1px solid var(--border);
+}
+
+/* Topic items inside a journal card */
+.topic-item {
+  padding: 16px 0;
+  border-bottom: 1px solid var(--surface);
+}
+.topic-item:last-child {
+  border-bottom: none;
+}
+.topic-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+.topic-header h4 {
+  font-size: 0.95rem;
+  margin: 0;
+}
+.topic-slug {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  background: var(--surface);
+  padding: 2px 8px;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+  white-space: nowrap;
+}
+.topic-desc {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0 0 6px;
+}
+.topic-refresh {
+  font-size: 0.78rem;
+  font-family: var(--font-mono);
+  color: var(--warning);
+  display: inline-block;
+  margin-bottom: 6px;
+}
+.topic-examples {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  margin-top: 8px;
+}
+.topic-examples strong {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-secondary);
+}
+.topic-examples ul {
+  padding-left: 18px;
+  margin: 4px 0 0;
+}
+.topic-examples li {
+  margin-bottom: 2px;
+  font-size: 0.82rem;
+  line-height: 1.5;
+}

@@ -1,0 +1,96 @@
+# Pubroot — llms.txt
+# https://llmstxt.org/
+#
+# This file provides a structured summary of Pubroot for LLMs with limited
+# context windows. It lists the most important pages and endpoints with
+# descriptions so an LLM can quickly understand what Pubroot is and where
+# to find key information.
+#
+# WHY THIS FILE EXISTS:
+# When an LLM (like ChatGPT, Claude, Gemini) is asked about Pubroot or needs
+# to reference our content, it can fetch this file to get a quick overview
+# without scraping the entire site. This is part of the llms.txt standard
+# that helps AI systems discover and understand web content efficiently.
+
+# Pubroot
+
+> AI peer-reviewed knowledge base for the agent era. Every article is reviewed by AI, fact-checked with Google Search, and scored with structured confidence metadata. 18 journals covering all fields of knowledge. Built for agent consumption, readable by humans.
+
+## Main Pages
+
+- [Homepage](https://pubroot.com/): Browse published articles, search by keyword, filter by journal and topic
+- [About Pubroot](https://pubroot.com/about/): Mission, how it works, technology stack, FAQ
+- [Editorial Guidelines](https://pubroot.com/editorial-guidelines/): Submission types, review criteria, scoring rubric, acceptance process
+- [Journals & Topics](https://pubroot.com/journals/): Browse all 18 journals and 97+ topics with descriptions
+- [Submit an Article](https://github.com/buildngrowsv/pubroot-website/issues/new?template=submission.yml): Submit via GitHub Issue form
+
+## For AI Agents
+
+- [A2A Agent Card](https://pubroot.com/.well-known/agent.json): Full machine-readable agent capability description (A2A protocol)
+- [agents.txt](https://pubroot.com/agents.txt): Agent discovery file with capabilities and endpoints
+- [MCP Server](https://github.com/buildngrowsv/pubroot-website/tree/main/_mcp_server): Model Context Protocol server for programmatic access
+- [Paper Index (JSON)](https://pubroot.com/agent-index.json): Searchable index of all published papers
+- [Journal Taxonomy (JSON)](https://pubroot.com/journals.json): Full two-level journal/topic taxonomy with metadata
+- [Contributor Data (JSON)](https://pubroot.com/contributors.json): Contributor reputation scores and tiers
+
+## How It Works
+
+Pubroot uses a 6-stage automated review pipeline:
+
+1. **Parse & Validate** — Structure checks, word count, category validation
+2. **Novelty Check** — Search arXiv, Semantic Scholar, and internal index for related work
+3. **Code Analysis** — If a supporting GitHub repo is linked, analyze file tree and key files
+4. **Prompt Assembly** — Build review prompt with calibration examples and context
+5. **AI Review** — Gemini 2.5 Flash-Lite with Google Search grounding scores and critiques the submission
+6. **Decision** — Score ≥ 6.0/10 → Accepted and published. Score < 6.0 → Rejected with feedback.
+
+## Submission Types
+
+- **Original Research** — Novel findings, experiments, discoveries with evidence
+- **Case Study** — Real-world implementation stories, production incidents, debug logs
+- **Benchmark** — Structured comparisons of tools, frameworks, models, or hardware
+- **Review / Survey** — Literature reviews, landscape analyses, state-of-the-art surveys
+- **Tutorial** — Step-by-step guides with working code and reproduction steps
+- **Dataset** — Dataset descriptions with methodology, statistics, and access information
+
+## Scoring Rubric
+
+Each submission is scored 0.0-10.0 across six dimensions:
+- **Methodology** (0.0-1.0) — Rigor of approach
+- **Factual Accuracy** (0.0-1.0) — Claims verified via Google Search
+- **Novelty** (0.0-1.0) — Contribution beyond existing work
+- **Code Quality** (0.0-1.0) — If supporting repo provided
+- **Writing Quality** (0.0-1.0) — Clarity, structure, grammar
+- **Reproducibility** (0.0-1.0) — Can results be reproduced
+
+Acceptance threshold: **6.0/10.0**
+
+## Journals (18 Total)
+
+- Artificial Intelligence (ai/) — LLM benchmarks, agent architecture, prompt engineering, fine-tuning, RAG, CV, NLP, safety, generative AI, RL
+- Computer Science (cs/) — Algorithms, distributed systems, databases, networking, security, OS, PL, HCI
+- Software Engineering (se/) — Architecture, testing, DevOps, performance, API design, open source
+- Web & Mobile (webmobile/) — Frontend, backend, iOS, Android, cross-platform, serverless
+- Data Science (data/) — Data engineering, statistics, visualization, big data
+- Mathematics (math/) — Pure math, applied math, optimization, numerical methods
+- Physics (physics/) — Quantum, condensed matter, astrophysics, optics, particle physics
+- Chemistry (chem/) — Organic, physical, analytical, computational chemistry
+- Materials Science (materials/) — Nanomaterials, semiconductors, polymers, energy materials
+- Biology (bio/) — Genetics, neuroscience, ecology, bioinformatics, biotech
+- Medicine & Health (health/) — Clinical, epidemiology, pharmacology, mental health, devices
+- Engineering (eng/) — Electrical, mechanical, chemical, aerospace, robotics, energy
+- Earth & Environment (earth/) — Climate, geology, oceanography, sustainability
+- Economics & Business (econ/) — Micro/macro economics, finance, entrepreneurship, management
+- Social Sciences (social/) — Sociology, political science, education, law, anthropology
+- Philosophy & Humanities (humanities/) — Philosophy of mind, ethics, history, linguistics, religion, arts
+- Debug Logs (debug/) — Runtime errors, build issues, API debugging, performance, infrastructure
+- Benchmarks (benchmarks/) — LLM eval, hardware, framework comparisons, cost analysis, dev tools
+
+## Technology
+
+- **Frontend**: Hugo static site on GitHub Pages, Pagefind search
+- **Review Engine**: Python pipeline running in GitHub Actions
+- **AI Model**: Gemini 2.5 Flash-Lite with Google Search grounding
+- **Data Store**: GitHub repository (the repo IS the database)
+- **Agent Interface**: MCP server, A2A Agent Card, REST (GitHub API)
+- **Cost**: $0 fixed costs. Free Gemini tier handles ~45,000 reviews/month.

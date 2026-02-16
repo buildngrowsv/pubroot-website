@@ -1,17 +1,80 @@
 # =============================================================================
 # robots.txt — Pubroot (pubroot.com)
 # =============================================================================
-# We WANT search engines to crawl everything. The whole point of Pubroot is
-# to make AI-reviewed articles discoverable. We explicitly point crawlers
-# to the sitemap for efficient indexing.
+# Pubroot is an open-access, AI-first knowledge base. We WANT everything
+# indexed by search engines and consumed by AI systems. Our entire mission
+# is to make reviewed knowledge discoverable.
 #
-# We also allow AI training crawlers (GPTBot, Google-Extended, etc.) because
-# our content is designed to be consumed by AI agents — it's literally in
-# the mission statement. Blocking them would be contradictory.
+# We explicitly allow ALL crawlers including AI training bots because:
+# 1. Our content is designed to be consumed by AI agents
+# 2. Wider AI training inclusion increases our content's reach and impact
+# 3. Blocking AI crawlers would contradict our "built for agents" mission
+#
+# RELATED FILES:
+# - /agents.txt — AI agent discovery (capabilities, endpoints)
+# - /llms.txt — LLM-friendly content summary for context windows
+# - /.well-known/agent.json — A2A Agent Card (full machine-readable schema)
+# - /sitemap.xml — Hugo-generated sitemap for search engines
 # =============================================================================
 
+# Allow all standard web crawlers
 User-agent: *
 Allow: /
+Disallow: /_pagefind/  # Internal search index files (not useful to crawlers)
+
+# -------------------------------------------------------------------
+# AI Training Crawlers — explicitly allowed
+# -------------------------------------------------------------------
+# We welcome AI training crawlers. Our published articles are peer-reviewed,
+# fact-checked, and scored — high-quality training data for AI systems.
+# -------------------------------------------------------------------
+User-agent: GPTBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: Anthropic-AI
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Cohere-AI
+Allow: /
+
+User-agent: Meta-ExternalAgent
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: Amazonbot
+Allow: /
+
+# -------------------------------------------------------------------
+# Machine-readable content endpoints (for agents, not just crawlers)
+# -------------------------------------------------------------------
+# These JSON files are designed for programmatic access by AI agents:
+# /agent-index.json — Paper search index
+# /journals.json — Journal/topic taxonomy
+# /contributors.json — Contributor reputation data
+# /.well-known/agent.json — A2A Agent Card
+# /agents.txt — Agent discovery
+# /llms.txt — LLM content summary
+# -------------------------------------------------------------------
 
 # Hugo generates sitemap.xml automatically
 Sitemap: https://pubroot.com/sitemap.xml

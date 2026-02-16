@@ -72,6 +72,7 @@ def parse_and_filter_submission(
                 - 'category' (str): full "journal/topic" slug (e.g., "ai/llm-benchmarks")
                 - 'journal' (str): journal slug extracted from category (e.g., "ai")
                 - 'topic' (str): topic slug extracted from category (e.g., "llm-benchmarks")
+                - 'submission_type' (str): one of original-research, case-study, benchmark, review-survey, tutorial, dataset
                 - 'abstract' (str)
                 - 'body' (str): full article text
                 - 'supporting_repo' (str or None)
@@ -105,6 +106,31 @@ def parse_and_filter_submission(
     # The labels must match EXACTLY what's in submission.yml
     title = parsed_fields.get("Article Title", "").strip()
     category = parsed_fields.get("Category", "").strip()
+    # -----------------------------------------------------------------------
+    # SUBMISSION TYPE (added Feb 2026)
+    # -----------------------------------------------------------------------
+    # submission_type distinguishes how the article is judged. Different types
+    # have different review emphasis (e.g., novelty matters more for original
+    # research, reproducibility matters more for benchmarks). The valid types
+    # are: original-research, case-study, benchmark, review-survey, tutorial,
+    # dataset. This field is passed through to stage_4_build_review_prompt.py
+    # which uses it to customize the scoring criteria in the AI prompt.
+    #
+    # If the field is missing (e.g., submissions from before this field was
+    # added, or from agents that don't include it), we default to
+    # "original-research" as the most conservative/strictest review type.
+    # -----------------------------------------------------------------------
+    submission_type = parsed_fields.get("Submission Type", "original-research").strip()
+    valid_submission_types = [
+        "original-research", "case-study", "benchmark",
+        "review-survey", "tutorial", "dataset"
+    ]
+    if submission_type not in valid_submission_types:
+        warnings.append(
+            f"Unknown submission type '{submission_type}'. Defaulting to 'original-research'. "
+            f"Valid types are: {', '.join(valid_submission_types)}"
+        )
+        submission_type = "original-research"
     abstract = parsed_fields.get("Abstract", "").strip()
     body = parsed_fields.get("Article Body", "").strip()
     supporting_repo = parsed_fields.get("Supporting Repository URL", "").strip() or None
@@ -346,6 +372,7 @@ def parse_and_filter_submission(
             "category": category,          # Full "journal/topic" slug (e.g., "ai/llm-benchmarks")
             "journal": journal_slug,        # Journal slug only (e.g., "ai")
             "topic": topic_slug,            # Topic slug only (e.g., "llm-benchmarks")
+            "submission_type": submission_type,  # One of: original-research, case-study, benchmark, review-survey, tutorial, dataset
             "abstract": abstract,
             "body": body,
             "supporting_repo": supporting_repo,

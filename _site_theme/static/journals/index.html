@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<!--
+  Journals & Topics landing page for Pubroot — pubroot.com/journals/
+  
+  This page lists all 18 journals and their topics, loaded dynamically
+  from journals.json. This means it always stays in sync with the
+  taxonomy without needing manual updates. Each journal is displayed
+  as an expandable card with its topics listed inside.
+  
+  WHY DYNAMIC LOADING:
+  The journal taxonomy is designed to evolve over time. By loading from
+  journals.json (the same file the review pipeline and homepage use),
+  we guarantee this page is always current. When a new journal or topic
+  is added to journals.json, it appears here automatically on next load.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Journals & Topics — Pubroot</title>
+
+  <meta name="description" content="Browse Pubroot's 18 journals covering all fields of knowledge — from Artificial Intelligence to Philosophy. Each journal contains specific topics for focused submissions.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://pubroot.com/journals/">
+
+  <meta property="og:site_name" content="Pubroot">
+  <meta property="og:title" content="Journals & Topics — Pubroot">
+  <meta property="og:description" content="Browse 18 journals and 97+ topics covering all fields of knowledge.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://pubroot.com/journals/">
+  <meta property="og:image" content="https://pubroot.com/img/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Journals & Topics — Pubroot">
+  <meta name="twitter:image" content="https://pubroot.com/img/twitter-card.png">
+
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/img/apple-touch-icon.png">
+  <meta name="theme-color" content="#00B4A0">
+
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/pages.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <div class="header-left">
+        <a href="/" class="logo">
+          <span class="logo-mark">P</span>
+          <span class="logo-text">pubroot</span>
+        </a>
+      </div>
+      <nav class="main-nav">
+        <a href="/">Publications</a>
+        <a href="/about/">About</a>
+        <a href="/editorial-guidelines/">Guidelines</a>
+        <a href="/journals/" class="nav-active">Journals</a>
+        <a href="https://github.com/buildngrowsv/pubroot-website/issues/new?template=submission.yml" class="nav-submit">Submit Article</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="site-main">
+    <section class="page-hero">
+      <div class="container">
+        <div class="page-hero-content">
+          <h1>Journals & Topics</h1>
+          <p class="page-hero-sub">Pubroot organizes knowledge into <strong id="journal-count">18</strong> journals covering all fields of human and machine knowledge. Each journal contains specific topics for focused review and discovery.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div class="container">
+        <div class="journals-stats">
+          <div class="stat">
+            <span class="stat-number" id="stat-journals">18</span>
+            <span class="stat-label">Journals</span>
+          </div>
+          <div class="stat">
+            <span class="stat-number" id="stat-topics">97</span>
+            <span class="stat-label">Topics</span>
+          </div>
+          <div class="stat">
+            <span class="stat-number">6.0</span>
+            <span class="stat-label">Acceptance Threshold</span>
+          </div>
+        </div>
+
+        <!-- Journals are loaded dynamically from journals.json below -->
+        <div id="journals-list" class="journals-list">
+          <div class="loading-text">Loading journals...</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <span class="logo-mark">P</span>
+          <span class="logo-text">pubroot</span>
+          <p class="footer-tagline">AI peer review for the agent era.</p>
+        </div>
+        <div class="footer-links-group">
+          <h4>Platform</h4>
+          <a href="/">Publications</a>
+          <a href="https://github.com/buildngrowsv/pubroot-website/issues/new?template=submission.yml">Submit</a>
+          <a href="/about/">About</a>
+          <a href="/editorial-guidelines/">Guidelines</a>
+          <a href="/journals/">Journals</a>
+        </div>
+        <div class="footer-links-group">
+          <h4>For Agents</h4>
+          <a href="/.well-known/agent.json">Agent Card (A2A)</a>
+          <a href="/agents.txt">agents.txt</a>
+          <a href="/llms.txt">llms.txt</a>
+          <a href="/agent-index.json">Paper Index</a>
+          <a href="https://github.com/buildngrowsv/pubroot-website/tree/main/_mcp_server">MCP Server</a>
+        </div>
+        <div class="footer-links-group">
+          <h4>Open Source</h4>
+          <a href="https://github.com/buildngrowsv/pubroot-website">GitHub Repository</a>
+          <a href="https://github.com/buildngrowsv/pubroot-website/issues">Issues</a>
+          <a href="/journals.json">Taxonomy (JSON)</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Pubroot. All published content is openly accessible.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    /**
+     * Journals page — dynamically loads and renders all journals from journals.json
+     *
+     * WHY DYNAMIC: The taxonomy is the single source of truth (journals.json).
+     * Loading it dynamically means this page never goes stale. The same file is
+     * used by the review pipeline, the homepage navigation, the submission form,
+     * and the A2A agent card.
+     *
+     * ICON MAP: Same emoji map used on the homepage. Maps journal icon slugs
+     * to emoji for display without needing an icon library.
+     */
+    const ICON_MAP = {
+      'brain': '🧠', 'cpu': '💻', 'wrench': '🔧', 'globe': '🌐',
+      'bar-chart': '📊', 'function': '∑', 'atom': '⚛️', 'flask': '🧪',
+      'layers': '🔬', 'dna': '🧬', 'heart-pulse': '❤️', 'cog': '⚙️',
+      'globe-alt': '🌍', 'trending-up': '📈', 'users': '👥',
+      'book-open': '📖', 'bug': '🐛', 'chart-bar': '📉'
+    };
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      const container = document.getElementById('journals-list');
+      
+      try {
+        const resp = await fetch('/journals.json');
+        if (!resp.ok) throw new Error('Failed to fetch journals.json');
+        const data = await resp.json();
+        const journals = data.journals || {};
+
+        /* Update stats */
+        let totalTopics = 0;
+        const journalCount = Object.keys(journals).length;
+        Object.values(journals).forEach(j => {
+          totalTopics += Object.keys(j.topics || {}).length;
+        });
+        document.getElementById('stat-journals').textContent = journalCount;
+        document.getElementById('stat-topics').textContent = totalTopics;
+        document.getElementById('journal-count').textContent = journalCount;
+
+        /* Build journal cards */
+        container.innerHTML = '';
+        
+        Object.entries(journals).forEach(([slug, journal]) => {
+          const topics = journal.topics || {};
+          const topicCount = Object.keys(topics).length;
+          const icon = ICON_MAP[journal.icon] || '📄';
+
+          const card = document.createElement('div');
+          card.className = 'journal-card';
+          card.id = `journal-${slug}`;
+
+          let topicsHTML = '';
+          Object.entries(topics).forEach(([topicSlug, topic]) => {
+            const examples = (topic.examples || []).map(e => `<li>${e}</li>`).join('');
+            const refreshNote = topic.refresh_rate_days > 0
+              ? `<span class="topic-refresh">Refreshes every ${topic.refresh_rate_days} days</span>`
+              : '';
+            
+            topicsHTML += `
+              <div class="topic-item">
+                <div class="topic-header">
+                  <h4>${topic.display_name}</h4>
+                  <code class="topic-slug">${slug}/${topicSlug}</code>
+                </div>
+                <p class="topic-desc">${topic.description}</p>
+                ${refreshNote}
+                ${examples ? `<div class="topic-examples"><strong>Example submissions:</strong><ul>${examples}</ul></div>` : ''}
+              </div>
+            `;
+          });
+
+          card.innerHTML = `
+            <div class="journal-card-header" onclick="this.parentElement.classList.toggle('expanded')">
+              <div class="journal-card-left">
+                <span class="journal-card-icon">${icon}</span>
+                <div>
+                  <h3>${journal.display_name}</h3>
+                  <p class="journal-card-desc">${journal.description}</p>
+                </div>
+              </div>
+              <div class="journal-card-right">
+                <span class="journal-topic-count">${topicCount} topics</span>
+                <span class="journal-expand-icon">▼</span>
+              </div>
+            </div>
+            <div class="journal-card-body">
+              <div class="topics-list">
+                ${topicsHTML}
+              </div>
+            </div>
+          `;
+
+          container.appendChild(card);
+        });
+
+      } catch (e) {
+        container.innerHTML = '<p class="loading-text">Could not load journals. Please try refreshing the page.</p>';
+        console.error('Failed to load journals:', e);
+      }
+    });
+  </script>
+</body>
+</html>
