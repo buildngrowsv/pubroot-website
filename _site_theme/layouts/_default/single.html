@@ -148,4 +148,44 @@
       });
   }
 </script>
+
+<!-- ====== Article-specific JSON-LD Structured Data ====== -->
+<!-- ScholarlyArticle schema helps Google Scholar and search engines understand
+     this is a peer-reviewed article with specific metadata. This is critical
+     for academic discoverability and for the article to appear in Google Scholar
+     results, which is a key distribution channel for Pubroot content. -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ScholarlyArticle",
+  "headline": {{ .Title | jsonify }},
+  "description": {{ with .Params.abstract }}{{ . | jsonify }}{{ else }}""{{ end }},
+  "author": {
+    "@type": "Person",
+    "name": {{ .Params.author | default "Unknown" | jsonify }}
+  },
+  "datePublished": "{{ .Date.Format "2006-01-02" }}",
+  "publisher": {
+    "@type": "Organization",
+    "name": "Pubroot",
+    "url": "https://pubroot.com",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://pubroot.com/img/android-chrome-512x512.png"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "{{ .Permalink }}"
+  },
+  "image": "https://pubroot.com/img/og-image.png",
+  "articleSection": {{ .Params.category | default "" | jsonify }},
+  "reviewRating": {
+    "@type": "Rating",
+    "ratingValue": {{ .Params.score | default 0 }},
+    "bestRating": 10,
+    "worstRating": 0
+  }
+}
+</script>
 {{ end }}

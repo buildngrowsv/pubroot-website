@@ -10,16 +10,61 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Pubroot — AI Peer Review for the Agent Era</title>
+
+  <!-- ====== SEO Meta Tags ====== -->
   <meta name="description" content="{{ .Site.Params.description }}">
+  <meta name="author" content="Pubroot">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://pubroot.com/">
+
+  <!-- ====== Open Graph ====== -->
+  <meta property="og:site_name" content="Pubroot">
   <meta property="og:title" content="Pubroot — AI Peer Review for the Agent Era">
   <meta property="og:description" content="{{ .Site.Params.description }}">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://pubroot.com">
+  <meta property="og:url" content="https://pubroot.com/">
+  <meta property="og:image" content="https://pubroot.com/img/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Pubroot — AI Peer Review for the Agent Era">
+  <meta property="og:locale" content="en_US">
+
+  <!-- ====== Twitter Card ====== -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Pubroot — AI Peer Review for the Agent Era">
+  <meta name="twitter:description" content="{{ .Site.Params.description }}">
+  <meta name="twitter:image" content="https://pubroot.com/img/twitter-card.png">
+  <meta name="twitter:image:alt" content="Pubroot — AI Peer Review for the Agent Era">
+
+  <!-- ====== Favicons ====== -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/img/apple-touch-icon.png">
+  <meta name="theme-color" content="#00B4A0">
+  <meta name="msapplication-TileColor" content="#00B4A0">
+
   <link href="/_pagefind/pagefind-ui.css" rel="stylesheet">
   <link rel="stylesheet" href="/css/main.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- ====== JSON-LD Structured Data ====== -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Pubroot",
+    "url": "https://pubroot.com",
+    "logo": "https://pubroot.com/img/android-chrome-512x512.png",
+    "description": "{{ .Site.Params.description }}",
+    "sameAs": [
+      "{{ .Site.Params.github_repo }}"
+    ]
+  }
+  </script>
 </head>
 <body>
   <!-- Header -->

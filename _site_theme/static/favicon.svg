@@ -1,0 +1,14 @@
+<!--
+  Pubroot Favicon  SVG format
+  Matches the teal "P" logo-mark used in the site header.
+  SVG favicons are supported by all modern browsers (Chrome, Firefox, Edge, Safari 15+).
+  We also provide PNG fallbacks for older browsers and devices.
+
+  Design: Rounded square (6px radius) with the Pubroot teal (#00B4A0) background
+  and a white "P" in a serif-like font weight, matching the Source Serif 4 heading
+  font used on the site. The design is intentionally simple so it's legible at 16x16.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <rect width="32" height="32" rx="6" fill="#00B4A0"/>
+  <text x="16" y="24" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-weight="700" font-size="22" fill="white">P</text>
+</svg>

@@ -4,17 +4,75 @@
   Design: ResearchGate-inspired — white background, teal (#00B4A0) accent,
   clean academic aesthetic, prominent search, professional typography.
   Built to look credible and trustworthy to both researchers and agents.
+
+  SEO STRATEGY (added Feb 2026):
+  - Every page has canonical URL, OG tags, Twitter Card tags
+  - Homepage has Organization JSON-LD schema
+  - Article pages have ScholarlyArticle JSON-LD (added in single.html)
+  - Favicon set: SVG (modern), ICO (legacy), PNG 16/32 (tabs),
+    Apple Touch Icon 180 (iOS), Android Chrome 192/512 (PWA)
+  - robots.txt and Hugo sitemap handle crawlability
 -->
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{{ block "title" . }}{{ .Site.Title }}{{ end }}</title>
-  <meta name="description" content="{{ .Site.Params.description }}">
+
+  <!-- ====== SEO Meta Tags ====== -->
+  <meta name="description" content="{{ with .Params.abstract }}{{ . | truncate 160 }}{{ else }}{{ .Site.Params.description }}{{ end }}">
+  <meta name="author" content="{{ .Params.author | default "Pubroot" }}">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="{{ .Permalink | default "https://pubroot.com/" }}">
+
+  <!-- ====== Open Graph (Facebook, LinkedIn, Discord, Slack) ====== -->
+  <!-- These tags control the preview card when someone shares a pubroot.com
+       link on social media. The og:image is the most impactful — it's the
+       large preview image that makes the link look professional and clickable. -->
+  <meta property="og:site_name" content="Pubroot">
   <meta property="og:title" content="{{ .Title | default .Site.Title }}">
-  <meta property="og:description" content="{{ .Site.Params.description }}">
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://pubroot.com">
+  <meta property="og:description" content="{{ with .Params.abstract }}{{ . | truncate 200 }}{{ else }}{{ .Site.Params.description }}{{ end }}">
+  <meta property="og:type" content="{{ if .IsPage }}article{{ else }}website{{ end }}">
+  <meta property="og:url" content="{{ .Permalink | default "https://pubroot.com/" }}">
+  <meta property="og:image" content="https://pubroot.com/img/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Pubroot — AI Peer Review for the Agent Era">
+  <meta property="og:locale" content="en_US">
+
+  <!-- ====== Twitter Card ====== -->
+  <!-- summary_large_image shows the full-width preview card on Twitter/X.
+       This is the format that gets the most engagement and looks most professional. -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{ .Title | default .Site.Title }}">
+  <meta name="twitter:description" content="{{ with .Params.abstract }}{{ . | truncate 200 }}{{ else }}{{ .Site.Params.description }}{{ end }}">
+  <meta name="twitter:image" content="https://pubroot.com/img/twitter-card.png">
+  <meta name="twitter:image:alt" content="Pubroot — AI Peer Review for the Agent Era">
+
+  <!-- ====== Article-specific OG tags (for paper pages) ====== -->
+  {{ if .IsPage }}
+  <meta property="article:published_time" content="{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}">
+  <meta property="article:author" content="{{ .Params.author }}">
+  <meta property="article:section" content="{{ .Params.category }}">
+  {{ end }}
+
+  <!-- ====== Favicons ====== -->
+  <!-- Multi-format favicon set for maximum browser/device coverage:
+       - SVG: Modern browsers (Chrome 80+, Firefox 41+, Edge 80+, Safari 15+)
+       - ICO: Legacy fallback (IE, very old browsers)
+       - PNG 32: Standard tab icon
+       - PNG 16: Small tab icon
+       - Apple Touch Icon: iOS home screen bookmark
+       - Android Chrome: PWA / Android home screen -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/img/apple-touch-icon.png">
+
+  <!-- ====== Web App Manifest hint ====== -->
+  <meta name="theme-color" content="#00B4A0">
+  <meta name="msapplication-TileColor" content="#00B4A0">
 
   <!-- Pagefind search (client-side, zero server cost) -->
   <link href="/_pagefind/pagefind-ui.css" rel="stylesheet">
@@ -26,6 +84,26 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- ====== JSON-LD Structured Data ====== -->
+  <!-- Helps search engines understand the site structure.
+       Homepage gets Organization schema. Article pages get their own
+       ScholarlyArticle schema injected by single.html. -->
+  {{ if .IsHome }}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Pubroot",
+    "url": "https://pubroot.com",
+    "logo": "https://pubroot.com/img/android-chrome-512x512.png",
+    "description": "{{ .Site.Params.description }}",
+    "sameAs": [
+      "{{ .Site.Params.github_repo }}"
+    ]
+  }
+  </script>
+  {{ end }}
 </head>
 <body>
   <!-- Top bar -->

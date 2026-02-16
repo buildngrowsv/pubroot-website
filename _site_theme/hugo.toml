@@ -38,6 +38,14 @@ contentDir = "../papers"
 [build]
   writeStats = true
 
+# Sitemap configuration — Hugo generates sitemap.xml automatically.
+# This is referenced by robots.txt and submitted to search engines.
+# changefreq and priority hint to crawlers about update patterns.
+[sitemap]
+  changefreq = "weekly"
+  priority = 0.5
+  filename = "sitemap.xml"
+
 # Minification
 [minify]
   disableCSS = false

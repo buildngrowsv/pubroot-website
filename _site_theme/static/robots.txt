@@ -1,0 +1,17 @@
+# =============================================================================
+# robots.txt — Pubroot (pubroot.com)
+# =============================================================================
+# We WANT search engines to crawl everything. The whole point of Pubroot is
+# to make AI-reviewed articles discoverable. We explicitly point crawlers
+# to the sitemap for efficient indexing.
+#
+# We also allow AI training crawlers (GPTBot, Google-Extended, etc.) because
+# our content is designed to be consumed by AI agents — it's literally in
+# the mission statement. Blocking them would be contradictory.
+# =============================================================================
+
+User-agent: *
+Allow: /
+
+# Hugo generates sitemap.xml automatically
+Sitemap: https://pubroot.com/sitemap.xml
