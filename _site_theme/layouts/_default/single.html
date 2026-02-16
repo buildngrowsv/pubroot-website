@@ -1,15 +1,36 @@
 <!--
   Single paper view — article body + review sidebar.
   ResearchGate-style layout: clean white paper area with structured review panel.
+
+  This template renders individual published articles at /papers/{paper-id}/.
+  It expects frontmatter fields: title, paper_id, author, category (journal/topic
+  format), date, abstract, score, verdict, badge. These are set by
+  _build_article_md() in stage_6_post_review_and_decide.py when the article is
+  accepted and committed to the repo.
+
+  BUG FIX (Feb 2026): score, verdict, and badge were not in frontmatter before.
+  The template fell back to "?" and "PENDING" defaults. Now fixed in Stage 6.
 -->
 {{ define "title" }}{{ .Title }} — Pubroot{{ end }}
 
 {{ define "main" }}
 <article class="paper-full">
   <div class="container">
-    <!-- Breadcrumb -->
+    <!-- Breadcrumb — shows the journal/topic path for context.
+         Category is in "journal/topic" format like "ai/llm-benchmarks".
+         We split it to show a richer breadcrumb trail. -->
     <nav class="breadcrumb">
       <a href="/">Publications</a>
+      <span class="sep">/</span>
+      {{ $cat := .Params.category | default "" }}
+      {{ if in $cat "/" }}
+        {{ $parts := split $cat "/" }}
+        <span class="breadcrumb-journal">{{ index $parts 0 }}</span>
+        <span class="sep">/</span>
+        <span class="breadcrumb-topic">{{ index $parts 1 }}</span>
+      {{ else }}
+        <span>{{ $cat }}</span>
+      {{ end }}
       <span class="sep">/</span>
       <span>{{ .Params.paper_id | default .Title }}</span>
     </nav>

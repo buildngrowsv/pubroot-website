@@ -327,7 +327,13 @@ def _handle_acceptance(
     gh.create_branch(branch_name, main_sha)
     
     # Step 2: Build and commit article.md
-    article_content = _build_article_md(parsed_submission, paper_id, now)
+    # NOTE: We pass review and repo_data to _build_article_md so it can include
+    # score, verdict, and badge in the frontmatter. Without these, the Hugo
+    # single page template (single.html) falls back to "?" and "PENDING" defaults.
+    # This bug was caught during the Feb 2026 taxonomy redesign audit.
+    article_content = _build_article_md(
+        parsed_submission, review, repo_data, paper_id, now
+    )
     gh.create_or_update_file(
         path=f"papers/{paper_id}/article.md",
         content=article_content,
@@ -396,28 +402,71 @@ def _handle_acceptance(
     return pr_number
 
 
-def _build_article_md(parsed: dict, paper_id: str, now: datetime) -> str:
-    """Build the published article Markdown file with frontmatter."""
+def _build_article_md(
+    parsed: dict,
+    review: dict,
+    repo_data: dict,
+    paper_id: str,
+    now: datetime
+) -> str:
+    """
+    Build the published article Markdown file with Hugo-compatible frontmatter.
+
+    This function creates the file that Hugo renders as the article's single page.
+    The frontmatter fields map directly to template variables used in single.html:
+
+        .Title           ← title
+        .Params.paper_id ← paper_id
+        .Params.author   ← author
+        .Params.category ← category (now "journal/topic" format, e.g., "ai/llm-benchmarks")
+        .Params.abstract ← abstract  (shown in the teal abstract block)
+        .Params.score    ← score     (shown in the score circle)
+        .Params.verdict  ← verdict   (ACCEPTED/REJECTED badge)
+        .Params.badge    ← badge     (verified_open / verified_private / text_only)
+        .Date            ← date
+        .Content         ← everything below the "---" frontmatter delimiter
+
+    BUG FIX (Feb 2026): Previously this function did NOT include score, verdict,
+    or badge in the frontmatter. The single.html template fell back to "?" and
+    "PENDING" defaults, making every published article look unscored on the site.
+    Fixed by adding review and repo_data as parameters and including their values.
+
+    Args:
+        parsed: Parsed submission data from Stage 1 (title, author, category, etc.)
+        review: Structured review from Stage 5 (score, verdict, summary, etc.)
+        repo_data: Repository analysis from Stage 3 (badge_type, etc.)
+        paper_id: The paper ID (e.g., "2026-042")
+        now: Publication timestamp
+    """
     frontmatter = {
         "title": parsed.get("title", "Untitled"),
         "paper_id": paper_id,
         "author": parsed.get("author", "unknown"),
-        "category": parsed.get("category", "general-technical"),
+        "category": parsed.get("category", ""),
         "date": now.isoformat(),
         "abstract": parsed.get("abstract", ""),
+        "score": review.get("score", 0),
+        "verdict": review.get("verdict", "ACCEPTED"),
+        "badge": repo_data.get("badge_type", "text_only"),
     }
-    
+
+    # Build YAML frontmatter manually. We use json.dumps for safe quoting
+    # of strings that might contain colons, newlines, or special YAML chars.
+    # Multi-line strings (like abstracts) use the YAML pipe (|) syntax.
     content = "---\n"
     for key, value in frontmatter.items():
         if isinstance(value, str) and ("\n" in value or ":" in value):
             content += f'{key}: |\n'
             for line in value.split("\n"):
                 content += f"  {line}\n"
+        elif isinstance(value, (int, float)):
+            # Numbers should NOT be quoted so Hugo reads them as numbers
+            content += f"{key}: {value}\n"
         else:
             content += f"{key}: {json.dumps(value)}\n"
     content += "---\n\n"
     content += parsed.get("body", "")
-    
+
     return content
 
 
@@ -426,8 +475,14 @@ def _build_manifest(
     paper_id: str, now: datetime, novelty: dict
 ) -> dict:
     """Build the manifest.json for a published paper."""
-    # Calculate valid_until: 6 months for technical, 12 for essays
-    if parsed.get("category") == "intellectual-essays":
+    # Calculate valid_until: 12 months for humanities/philosophy topics,
+    # 6 months for everything else. Humanities content has longer shelf life
+    # because it deals with ideas that change more slowly than technical content.
+    # The old code checked for "intellectual-essays" which no longer exists
+    # after the Feb 2026 taxonomy redesign to journal/topic format.
+    category = parsed.get("category", "")
+    journal_slug = category.split("/")[0] if "/" in category else category
+    if journal_slug in ("humanities", "social"):
         valid_until = now + timedelta(days=365)
     else:
         valid_until = now + timedelta(days=180)

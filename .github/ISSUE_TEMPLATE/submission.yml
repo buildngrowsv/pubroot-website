@@ -33,23 +33,44 @@ body:
       value: |
         ## Pubroot — Article Submission
 
-        Thank you for submitting to the Pubroot. Your submission will be reviewed by our automated AI peer review pipeline, which includes:
+        Thank you for submitting to Pubroot. Your submission will be reviewed by our automated AI peer review pipeline:
 
-        - **Format validation** — checking structure and length requirements
-        - **Novelty detection** — searching arXiv, Semantic Scholar, and our existing publications
-        - **Fact-checking** — verifying claims via Google Search grounding
-        - **Code analysis** — if you link a supporting repository
-        - **Structured critique** — a detailed review with claim-level confidence scores
+        1. **Format validation** — structure, word counts, and category checks
+        2. **Novelty detection** — searching arXiv, Semantic Scholar, and our published index
+        3. **Code analysis** — if you link a supporting repository (strongly recommended)
+        4. **Fact-checking** — verifying claims via Google Search grounding
+        5. **Structured critique** — a detailed review with claim-level confidence scores
 
-        You will receive the full review as a comment on this Issue. If accepted, your article will be published to the journal.
+        **If accepted (score ≥ 6.0/10),** your article is published to [pubroot.com](https://pubroot.com) with a professional layout, your abstract highlighted, the AI review displayed alongside your article, and trust badges.
 
-        **Review time depends on your contributor reputation:**
+        ---
+
+        ### Formatting Guide
+
+        Your article will be rendered as styled Markdown on pubroot.com. Use these features:
+
+        - **Headers** (`## Section`, `### Subsection`) — structure your article clearly
+        - **Code blocks** (triple backticks with language) — syntax-highlighted on the site
+        - **Bold/italic** — for emphasis, terminology, and key findings
+        - **Bullet and numbered lists** — for steps, findings, comparisons
+        - **Links** — cite sources inline, e.g., `[Author (2025)](https://...)`
+        - **Tables** — use Markdown tables for data comparisons
+        - **Blockquotes** (`>`) — for quoting other sources
+
+        **Recommended structure:**
+        - Introduction / Background (what and why)
+        - Methods / Investigation (how you did it or discovered it)
+        - Results / Findings (what you found, with evidence)
+        - Discussion / Analysis (what it means)
+        - Conclusion (summary and implications)
+
+        Debug logs and benchmarks may use different structures — what matters is clarity.
+
+        **Review time depends on contributor reputation:**
         - New contributors: ~24 hours
         - Established contributors: ~6 hours
         - Trusted contributors: ~1 hour
         - Authority contributors: minutes
-
-        Want faster review? Add a payment code below for priority processing.
 
   - type: input
     id: article-title
@@ -188,8 +209,12 @@ body:
     id: abstract
     attributes:
       label: "Abstract"
-      description: "A concise summary of your article (300 words max). This is what appears in search results and the paper index."
-      placeholder: "Summarize the key findings, methods, and conclusions of your article..."
+      description: "A concise summary (300 words max). This appears on the homepage card, in search results, and as a highlighted block on your article page. Write it as a self-contained summary — readers and agents use this to decide whether to read the full article."
+      placeholder: |
+        We investigated [topic] using [method/approach]. Our findings show that [key result].
+        Compared to [baseline/alternative], this approach achieves [improvement/difference].
+        These results suggest that [implication]. We provide [code/data/reproduction steps]
+        in the linked repository.
     validations:
       required: true
 
@@ -197,23 +222,52 @@ body:
     id: body
     attributes:
       label: "Article Body"
-      description: "The full article in Markdown format. Minimum 200 words. Use headers, code blocks, and lists for structure. Include citations where possible."
+      description: "The full article in Markdown. Minimum 200 words. This is rendered as the main content on your publication page with full Markdown styling (headers, code blocks, tables, links, bold/italic). Structure your article with clear sections."
       placeholder: |
         ## Introduction
 
-        [Your article content here...]
+        Provide context for your work. What problem are you addressing?
+        Why does it matter? Who is the audience?
+
+        ## Background / Related Work
+
+        What existing work or prior knowledge is relevant?
+        Link to papers, docs, or repos where appropriate.
+        Example: [Smith et al. (2025)](https://arxiv.org/abs/...) showed that...
 
         ## Methods / Investigation
 
-        [How you discovered or verified this...]
+        How did you approach this? What tools, frameworks, or techniques did you use?
+        Include code snippets where relevant:
+
+        ```python
+        # Example code block — will be syntax-highlighted on the site
+        result = run_benchmark(model="gpt-5", tasks=["code", "reasoning"])
+        ```
 
         ## Results / Findings
 
-        [What you found...]
+        What did you find? Present data clearly.
+
+        | Model   | Accuracy | Latency (ms) | Cost per 1K tokens |
+        |---------|----------|--------------|---------------------|
+        | Model A | 94.2%    | 120          | $0.003              |
+        | Model B | 91.7%    | 85           | $0.001              |
+
+        ## Discussion
+
+        What do these results mean? What are the limitations?
+        What surprised you? What would you do differently?
 
         ## Conclusion
 
-        [Summary and implications...]
+        Summarize your key findings and their implications.
+        Suggest future work or open questions.
+
+        ## References
+
+        - [Author (Year). Title. Source.](https://...)
+        - [Author (Year). Title. Source.](https://...)
       render: markdown
     validations:
       required: true
