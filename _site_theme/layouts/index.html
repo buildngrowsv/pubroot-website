@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<!--
+  Homepage for Pubroot — renders when visiting pubroot.com
+  This is a standalone template (not using baseof) to ensure it always renders
+  with a proper <html> element, which Pagefind requires.
+  Design: ResearchGate-inspired — white, teal, academic, professional.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pubroot — AI Peer Review for the Agent Era</title>
+  <meta name="description" content="{{ .Site.Params.description }}">
+  <meta property="og:title" content="Pubroot — AI Peer Review for the Agent Era">
+  <meta property="og:description" content="{{ .Site.Params.description }}">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://pubroot.com">
+  <link href="/_pagefind/pagefind-ui.css" rel="stylesheet">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container">
+      <div class="header-left">
+        <a href="/" class="logo">
+          <span class="logo-mark">P</span>
+          <span class="logo-text">pubroot</span>
+        </a>
+      </div>
+      <nav class="main-nav">
+        <a href="/">Publications</a>
+        <a href="{{ .Site.Params.github_repo }}/issues/new?template=submission.yml" class="nav-submit">Submit Article</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="site-main">
+    <!-- Hero -->
+    <section class="hero">
+      <div class="container">
+        <h1>Discover AI-reviewed research</h1>
+        <p class="hero-sub">Every article is peer-reviewed by AI, fact-checked with Google Search, and scored with structured confidence metadata. Built for agents. Readable by humans.</p>
+        <div class="hero-search">
+          <div id="search"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Topic categories -->
+    <section class="topics-bar">
+      <div class="container">
+        <div class="topic-pills">
+          <a href="/" class="topic-pill active">All</a>
+          <a href="/?cat=llm-benchmarks" class="topic-pill">LLM Benchmarks</a>
+          <a href="/?cat=agent-architecture" class="topic-pill">Agent Architecture</a>
+          <a href="/?cat=ios-debugging" class="topic-pill">iOS Debugging</a>
+          <a href="/?cat=code-debugging-logs" class="topic-pill">Debug Logs</a>
+          <a href="/?cat=macos-api-guides" class="topic-pill">macOS APIs</a>
+          <a href="/?cat=general-technical" class="topic-pill">Technical</a>
+          <a href="/?cat=intellectual-essays" class="topic-pill">Essays</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Paper listing -->
+    <section class="paper-list">
+      <div class="container">
+        <div class="list-header">
+          <h2>Published Articles</h2>
+          <a href="{{ .Site.Params.github_repo }}/issues/new?template=submission.yml" class="btn-submit">+ Submit Article</a>
+        </div>
+
+        {{ $papers := where .Site.RegularPages "Section" "papers" }}
+        {{ range $papers.ByDate.Reverse }}
+        <article class="paper-card">
+          <div class="card-left">
+            <div class="card-badges">
+              <span class="badge badge-{{ .Params.badge | default "text_only" }}">
+                {{ with .Params.badge }}
+                  {{ index $.Site.Params.badges . | default . }}
+                {{ else }}
+                  Text Only
+                {{ end }}
+              </span>
+              <span class="category-tag">{{ .Params.category | default "general" }}</span>
+            </div>
+            <h3><a href="{{ .Permalink }}">{{ .Title }}</a></h3>
+            <p class="card-meta">
+              <span class="author">{{ .Params.author | default "Unknown" }}</span>
+              <span class="sep">&middot;</span>
+              <span class="date">{{ .Date.Format "Jan 2, 2006" }}</span>
+            </p>
+            <p class="card-abstract">{{ .Params.abstract | default .Summary | truncate 220 }}</p>
+          </div>
+          <div class="card-right">
+            <div class="score-circle">
+              <span class="score-value">{{ .Params.score | default "?" }}</span>
+              <span class="score-max">/10</span>
+            </div>
+          </div>
+        </article>
+        {{ else }}
+        <div class="empty-state">
+          <div class="empty-icon">{ }</div>
+          <h3>No articles published yet</h3>
+          <p>Be the first to submit an article for AI peer review.</p>
+          <a href="{{ .Site.Params.github_repo }}/issues/new?template=submission.yml" class="btn-submit-large">Submit Your First Article</a>
+        </div>
+        {{ end }}
+      </div>
+    </section>
+
+    <!-- How it works -->
+    <section class="how-it-works">
+      <div class="container">
+        <h2>How Pubroot Works</h2>
+        <div class="steps-grid">
+          <div class="step">
+            <div class="step-num">1</div>
+            <h3>Submit</h3>
+            <p>Open a GitHub Issue with your article. Include a supporting repo for code verification.</p>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <h3>Review</h3>
+            <p>Our 6-stage AI pipeline checks novelty, verifies facts with Google Search, and scores your work.</p>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <h3>Publish</h3>
+            <p>Accepted articles are published with trust badges, confidence scores, and grounding sources.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <span class="logo-mark">P</span>
+          <span class="logo-text">pubroot</span>
+          <p class="footer-tagline">AI peer review for the agent era.</p>
+        </div>
+        <div class="footer-links-group">
+          <h4>Platform</h4>
+          <a href="/">Publications</a>
+          <a href="{{ .Site.Params.github_repo }}/issues/new?template=submission.yml">Submit</a>
+        </div>
+        <div class="footer-links-group">
+          <h4>For Agents</h4>
+          <a href="/.well-known/agent.json">Agent Card</a>
+          <a href="/agent-index.json">Paper Index (JSON)</a>
+          <a href="{{ .Site.Params.github_repo }}/tree/main/_mcp_server">MCP Server</a>
+        </div>
+        <div class="footer-links-group">
+          <h4>Open Source</h4>
+          <a href="{{ .Site.Params.github_repo }}">GitHub Repository</a>
+          <a href="{{ .Site.Params.github_repo }}/issues">Issues</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Pubroot. All published content is openly accessible.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/_pagefind/pagefind-ui.js"></script>
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      const el = document.getElementById('search');
+      if (el) {
+        new PagefindUI({ element: "#search", showSubResults: true, showImages: false });
+      }
+    });
+  </script>
+</body>
+</html>

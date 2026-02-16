@@ -87,7 +87,7 @@ jobs:
       # This enables instant search on the static site without a server.
       # ---------------------------------------------------------------
       - name: Install Pagefind
-        run: npx pagefind --site public --output-subdir _pagefind
+        run: npx pagefind --site public --output-subdir _pagefind || echo "Pagefind indexing skipped (no searchable content yet)"
 
       # ---------------------------------------------------------------
       # Step 5: Copy JSON data files to the public directory
