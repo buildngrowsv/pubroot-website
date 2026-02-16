@@ -143,6 +143,7 @@ jobs:
               echo "issue_number=$ISSUE" >> $GITHUB_OUTPUT
               echo "Processing issue #$ISSUE (cron trigger)"
             fi
+          fi
 
       # ---------------------------------------------------------------
       # Step 5: Run the review pipeline
