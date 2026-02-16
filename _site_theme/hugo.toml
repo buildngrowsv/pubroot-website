@@ -13,9 +13,10 @@
 baseURL = "https://pubroot.com/"
 languageCode = "en-us"
 title = "Pubroot"
-theme = ""
 
-# Read content from the papers directory at the repo root
+# No external theme — layouts are in this directory's layouts/ folder.
+# contentDir points to papers/ at the repo root. If papers/ is empty,
+# Hugo still builds the homepage using layouts/_default/list.html.
 contentDir = "../papers"
 
 [params]
