@@ -918,3 +918,42 @@ h1, h2, h3, h4 {
   font-size: 0.8rem;
   color: #6B6B80;
 }
+
+/* ============================================================
+   LUCIDE ICON UTILITIES
+   ============================================================
+   These classes control the sizing and coloring of Lucide SVG icons
+   used across the site. Lucide icons replace all emoji usage for
+   a consistent, professional, cross-platform appearance.
+   
+   Lucide icons inherit color from their parent element via
+   stroke="currentColor" by default, so they automatically match
+   the surrounding text color. Override with specific classes below.
+   
+   WHY LUCIDE: We chose Lucide (MIT license, lucide.dev) over
+   emoji because emojis render differently on every OS/browser,
+   can't be styled with CSS, and look unprofessional on an academic
+   platform. Lucide gives us clean, consistent line icons that
+   match the "Nature meets Vercel" aesthetic.
+   ============================================================ */
+
+/* Base icon sizing — matches inline text flow */
+.lucide {
+  display: inline-block;
+  vertical-align: -0.125em;
+}
+
+/* Icon size variants for different contexts */
+.icon-sm { width: 16px; height: 16px; }
+.icon-md { width: 20px; height: 20px; }
+.icon-lg { width: 24px; height: 24px; }
+.icon-xl { width: 32px; height: 32px; }
+.icon-2xl { width: 40px; height: 40px; }
+.icon-3xl { width: 48px; height: 48px; }
+
+/* Icon color overrides — uses the site color system */
+.icon-accent { color: var(--accent); }
+.icon-success { color: var(--success); }
+.icon-error { color: var(--error); }
+.icon-warning { color: var(--warning); }
+.icon-muted { color: var(--text-secondary); }

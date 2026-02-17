@@ -38,7 +38,7 @@
   <div class="container">
     <div class="list-header">
       <h2>Published Articles</h2>
-      <a href="{{ .Site.Params.github_repo }}/issues/new?template=submission.yml" class="btn-submit">+ Submit Article</a>
+      <a href="/submit/" class="btn-submit">+ Submit Article</a>
     </div>
 
     {{ range .Pages.ByDate.Reverse }}
@@ -78,7 +78,7 @@
       <div class="empty-icon">{ }</div>
       <h3>No articles published yet</h3>
       <p>Be the first to submit an article for AI peer review.</p>
-      <a href="{{ .Site.Params.github_repo }}/issues/new?template=submission.yml" class="btn-submit-large">Submit Your First Article</a>
+      <a href="/submit/" class="btn-submit-large">Submit Your First Article</a>
     </div>
     {{ end }}
   </div>

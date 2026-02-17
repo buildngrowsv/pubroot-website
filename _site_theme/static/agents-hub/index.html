@@ -59,6 +59,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
+  <!-- Lucide Icons — professional SVG icons replacing all emojis -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
   <!-- 
     Page-specific styles for the Agents Hub
     These extend pages.css with agent-hub-specific layouts.
@@ -486,7 +489,7 @@
         <a href="/editorial-guidelines/">Guidelines</a>
         <a href="/journals/">Journals</a>
         <a href="/agents-hub/" class="nav-active">Agents Hub</a>
-        <a href="https://github.com/buildngrowsv/pubroot-website/issues/new?template=submission.yml" class="nav-submit">Submit Article</a>
+        <a href="/submit/" class="nav-submit">Submit Article</a>
       </nav>
     </div>
   </header>
@@ -497,7 +500,7 @@
          ============================================================ -->
     <section class="agents-hero">
       <div class="container">
-        <h1>🤖 Agents Hub</h1>
+        <h1><i data-lucide="bot" style="width:32px;height:32px;vertical-align:-4px;margin-right:8px;color:var(--accent);"></i> Agents Hub</h1>
         <p class="agents-hero-sub">
           The AI agent ecosystem is the fastest-moving frontier in technology. 
           Computer Use Agents browse the web autonomously. General-purpose agents like 
@@ -535,10 +538,10 @@
     <section class="content-section" style="padding-bottom: 0;">
       <div class="container">
         <div class="spotlight-card">
-          <span class="spotlight-badge">⭐ FEATURED AGENT</span>
+          <span class="spotlight-badge"><i data-lucide="star" style="width:12px;height:12px;vertical-align:-1px;margin-right:3px;"></i> FEATURED AGENT</span>
           
           <div class="spotlight-header">
-            <div class="spotlight-logo">🐾</div>
+            <div class="spotlight-logo" style="color:var(--accent);"><i data-lucide="paw-print" style="width:36px;height:36px;"></i></div>
             <div>
               <h3>OpenClaw</h3>
               <p class="spotlight-tagline">
@@ -593,14 +596,14 @@
           </div>
 
           <div class="spotlight-cta">
-            <a href="https://github.com/buildngrowsv/pubroot-website/issues/new?template=submission.yml" class="spotlight-btn spotlight-btn-primary">
-              📝 Submit OpenClaw Research
+            <a href="/submit/" class="spotlight-btn spotlight-btn-primary">
+              <i data-lucide="pen-line" style="width:16px;height:16px;"></i> Submit OpenClaw Research
             </a>
-            <a href="https://github.com/buildngrowsv/pubroot-website/issues/new?template=submission.yml" class="spotlight-btn spotlight-btn-secondary">
-              📊 Submit OpenClaw Benchmark
+            <a href="/submit/" class="spotlight-btn spotlight-btn-secondary">
+              <i data-lucide="bar-chart-3" style="width:16px;height:16px;"></i> Submit OpenClaw Benchmark
             </a>
             <a href="/editorial-guidelines/" class="spotlight-btn spotlight-btn-secondary">
-              📋 Review Criteria
+              <i data-lucide="clipboard-list" style="width:16px;height:16px;"></i> Review Criteria
             </a>
           </div>
         </div>
@@ -615,7 +618,7 @@
     <section class="category-section">
       <div class="container">
         <div class="category-header">
-          <div class="category-icon category-icon-cua">🖥️</div>
+          <div class="category-icon category-icon-cua" style="color:#0369A1;"><i data-lucide="monitor" style="width:28px;height:28px;"></i></div>
           <div>
             <h2>Computer Use Agents (CUA)</h2>
             <p>
@@ -685,7 +688,7 @@
         </table>
 
         <div class="highlight-box">
-          <h3>📝 What to Submit About CUAs</h3>
+          <h3><i data-lucide="pen-line" style="width:18px;height:18px;vertical-align:-3px;margin-right:4px;"></i> What to Submit About CUAs</h3>
           <ul>
             <li><strong>Benchmarks</strong> — Accuracy comparisons across CUA platforms on standard tasks (WebVoyager, WebArena)</li>
             <li><strong>Case studies</strong> — Real-world CUA deployments: what worked, what failed, and why</li>
@@ -698,7 +701,7 @@
         <p style="font-size:0.92rem; color: var(--text-secondary);">
           <strong>Submit under:</strong> 
           <code style="font-family: var(--font-mono); background: var(--surface); padding: 2px 8px; border-radius: 3px; border: 1px solid var(--border);">ai/computer-use-agents</code> 
-          — <a href="https://github.com/buildngrowsv/pubroot-website/issues/new?template=submission.yml" style="color: var(--accent);">Submit now →</a>
+          — <a href="/submit/" style="color: var(--accent);">Submit now →</a>
         </p>
       </div>
     </section>
@@ -711,7 +714,7 @@
     <section class="category-section">
       <div class="container">
         <div class="category-header">
-          <div class="category-icon category-icon-general">🤖</div>
+          <div class="category-icon category-icon-general" style="color:#047857;"><i data-lucide="bot" style="width:28px;height:28px;"></i></div>
           <div>
             <h2>General-Purpose AI Agents</h2>
             <p>
@@ -726,9 +729,9 @@
         <div class="agent-grid">
           <div class="agent-card">
             <div class="agent-card-header">
-              <div class="agent-card-logo">🐾</div>
+              <div class="agent-card-logo" style="color:var(--accent);"><i data-lucide="paw-print" style="width:22px;height:22px;"></i></div>
               <h3>OpenClaw</h3>
-              <span class="agent-tag">150K+ ⭐</span>
+              <span class="agent-tag">150K+ <i data-lucide="star" style="width:10px;height:10px;vertical-align:-1px;"></i></span>
             </div>
             <p>Self-hosted Node.js agent with persistent memory, proactive behavior, 50+ integrations, and 100+ preconfigured skills. Connects to WhatsApp, Slack, Discord, iMessage, and more. Runs locally — you own your data.</p>
             <div class="agent-card-features">
@@ -740,13 +743,13 @@
               <span class="feature-tag">Multi-model</span>
             </div>
             <div class="agent-card-links">
-              <a href="https://github.com/buildngrowsv/pubroot-website/issues/new?template=submission.yml">Submit Research →</a>
+              <a href="/submit/">Submit Research →</a>
             </div>
           </div>
 
           <div class="agent-card">
             <div class="agent-card-header">
-              <div class="agent-card-logo">🔮</div>
+              <div class="agent-card-logo" style="color:#7C3AED;"><i data-lucide="sparkles" style="width:22px;height:22px;"></i></div>
               <h3>Devin</h3>
               <span class="agent-tag">Commercial</span>
             </div>
@@ -759,13 +762,13 @@
               <span class="feature-tag">Multi-step Reasoning</span>
             </div>
             <div class="agent-card-links">
-              <a href="https://github.com/buildngrowsv/pubroot-website/issues/new?template=submission.yml">Submit Research →</a>
+              <a href="/submit/">Submit Research →</a>
             </div>
           </div>
 
           <div class="agent-card">
             <div class="agent-card-header">
-              <div class="agent-card-logo">🔁</div>
+              <div class="agent-card-logo" style="color:var(--accent);"><i data-lucide="refresh-cw" style="width:22px;height:22px;"></i></div>
               <h3>AutoGPT / BabyAGI</h3>
               <span class="agent-tag">Open Source</span>
             </div>
@@ -777,13 +780,13 @@
               <span class="feature-tag">Priority Queue</span>
             </div>
             <div class="agent-card-links">
-              <a href="https://github.com/buildngrowsv/pubroot-website/issues/new?template=submission.yml">Submit Research →</a>
+              <a href="/submit/">Submit Research →</a>
             </div>
           </div>
 
           <div class="agent-card">
             <div class="agent-card-header">
-              <div class="agent-card-logo">🧩</div>
+              <div class="agent-card-logo" style="color:#2563EB;"><i data-lucide="puzzle" style="width:22px;height:22px;"></i></div>
               <h3>Cursor / Windsurf / Cline</h3>
               <span class="agent-tag">IDE Agents</span>
             </div>
@@ -796,13 +799,13 @@
               <span class="feature-tag">Multi-file Edits</span>
             </div>
             <div class="agent-card-links">
-              <a href="https://github.com/buildngrowsv/pubroot-website/issues/new?template=submission.yml">Submit Research →</a>
+              <a href="/submit/">Submit Research →</a>
             </div>
           </div>
         </div>
 
         <div class="highlight-box">
-          <h3>📝 What to Submit About General Agents</h3>
+          <h3><i data-lucide="pen-line" style="width:18px;height:18px;vertical-align:-3px;margin-right:4px;"></i> What to Submit About General Agents</h3>
           <ul>
             <li><strong>Setup guides</strong> — Detailed walkthroughs for deploying OpenClaw, configuring integrations, and building custom skills</li>
             <li><strong>Comparisons</strong> — Head-to-head evaluations: OpenClaw vs AutoGPT vs custom agents on real-world tasks</li>
@@ -815,7 +818,7 @@
         <p style="font-size:0.92rem; color: var(--text-secondary);">
           <strong>Submit under:</strong> 
           <code style="font-family: var(--font-mono); background: var(--surface); padding: 2px 8px; border-radius: 3px; border: 1px solid var(--border);">ai/general-agents</code> 
-          — <a href="https://github.com/buildngrowsv/pubroot-website/issues/new?template=submission.yml" style="color: var(--accent);">Submit now →</a>
+          — <a href="/submit/" style="color: var(--accent);">Submit now →</a>
         </p>
       </div>
     </section>
@@ -827,7 +830,7 @@
     <section class="category-section">
       <div class="container">
         <div class="category-header">
-          <div class="category-icon category-icon-frameworks">🧰</div>
+          <div class="category-icon category-icon-frameworks" style="color:#92400E;"><i data-lucide="wrench" style="width:28px;height:28px;"></i></div>
           <div>
             <h2>Agent Frameworks & Tooling</h2>
             <p>
@@ -894,7 +897,7 @@
         </table>
 
         <div class="highlight-box">
-          <h3>📝 What to Submit About Agent Frameworks</h3>
+          <h3><i data-lucide="pen-line" style="width:18px;height:18px;vertical-align:-3px;margin-right:4px;"></i> What to Submit About Agent Frameworks</h3>
           <ul>
             <li><strong>Framework comparisons</strong> — LangGraph vs CrewAI vs AutoGen: which to use when, with benchmarks</li>
             <li><strong>MCP implementation guides</strong> — Building MCP servers, tool design patterns, protocol best practices</li>
@@ -907,7 +910,7 @@
         <p style="font-size:0.92rem; color: var(--text-secondary);">
           <strong>Submit under:</strong> 
           <code style="font-family: var(--font-mono); background: var(--surface); padding: 2px 8px; border-radius: 3px; border: 1px solid var(--border);">ai/agent-frameworks</code> 
-          — <a href="https://github.com/buildngrowsv/pubroot-website/issues/new?template=submission.yml" style="color: var(--accent);">Submit now →</a>
+          — <a href="/submit/" style="color: var(--accent);">Submit now →</a>
         </p>
       </div>
     </section>
@@ -924,29 +927,29 @@
 
         <div class="submit-topics">
           <div class="submit-topic-card">
-            <div class="submit-topic-icon">🖥️</div>
+            <div class="submit-topic-icon" style="color:var(--accent);"><i data-lucide="monitor" style="width:32px;height:32px;"></i></div>
             <h3>Computer Use Agents</h3>
             <p>Benchmarks, case studies, and safety research on browser/desktop automation agents.</p>
-            <a href="https://github.com/buildngrowsv/pubroot-website/issues/new?template=submission.yml">Submit Article →</a>
+            <a href="/submit/">Submit Article →</a>
           </div>
           <div class="submit-topic-card">
-            <div class="submit-topic-icon">🤖</div>
+            <div class="submit-topic-icon" style="color:var(--accent);"><i data-lucide="bot" style="width:32px;height:32px;"></i></div>
             <h3>General-Purpose Agents</h3>
             <p>OpenClaw guides, agent comparisons, architecture reviews, and automation case studies.</p>
-            <a href="https://github.com/buildngrowsv/pubroot-website/issues/new?template=submission.yml">Submit Article →</a>
+            <a href="/submit/">Submit Article →</a>
           </div>
           <div class="submit-topic-card">
-            <div class="submit-topic-icon">🧰</div>
+            <div class="submit-topic-icon" style="color:var(--accent);"><i data-lucide="wrench" style="width:32px;height:32px;"></i></div>
             <h3>Agent Frameworks</h3>
             <p>Framework comparisons, MCP implementations, memory solutions, and production patterns.</p>
-            <a href="https://github.com/buildngrowsv/pubroot-website/issues/new?template=submission.yml">Submit Article →</a>
+            <a href="/submit/">Submit Article →</a>
           </div>
         </div>
 
         <div class="cta-box">
           <h3>Ready to contribute to the agent knowledge base?</h3>
           <p>All submissions are free. Review takes minutes to hours depending on your reputation tier.</p>
-          <a href="https://github.com/buildngrowsv/pubroot-website/issues/new?template=submission.yml" class="spotlight-btn spotlight-btn-primary" style="display:inline-flex;">Submit Your First Article</a>
+          <a href="/submit/" class="spotlight-btn spotlight-btn-primary" style="display:inline-flex;">Submit Your First Article</a>
         </div>
       </div>
     </section>
@@ -964,7 +967,7 @@
         <div class="footer-links-group">
           <h4>Platform</h4>
           <a href="/">Publications</a>
-          <a href="https://github.com/buildngrowsv/pubroot-website/issues/new?template=submission.yml">Submit</a>
+          <a href="/submit/">Submit</a>
           <a href="/about/">About</a>
           <a href="/editorial-guidelines/">Guidelines</a>
           <a href="/journals/">Journals</a>
@@ -990,5 +993,12 @@
       </div>
     </div>
   </footer>
+
+  <!-- Initialize Lucide icons after DOM is fully loaded -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (typeof lucide !== 'undefined') { lucide.createIcons(); }
+    });
+  </script>
 </body>
 </html>

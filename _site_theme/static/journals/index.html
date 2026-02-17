@@ -44,6 +44,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/pages.css">
+
+  <!-- Lucide Icons — professional SVG icons replacing all emojis -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 </head>
 <body>
   <header class="site-header">
@@ -59,7 +62,7 @@
         <a href="/about/">About</a>
         <a href="/editorial-guidelines/">Guidelines</a>
         <a href="/journals/" class="nav-active">Journals</a>
-        <a href="https://github.com/buildngrowsv/pubroot-website/issues/new?template=submission.yml" class="nav-submit">Submit Article</a>
+        <a href="/submit/" class="nav-submit">Submit Article</a>
       </nav>
     </div>
   </header>
@@ -110,7 +113,7 @@
         <div class="footer-links-group">
           <h4>Platform</h4>
           <a href="/">Publications</a>
-          <a href="https://github.com/buildngrowsv/pubroot-website/issues/new?template=submission.yml">Submit</a>
+          <a href="/submit/">Submit</a>
           <a href="/about/">About</a>
           <a href="/editorial-guidelines/">Guidelines</a>
           <a href="/journals/">Journals</a>
@@ -145,16 +148,24 @@
      * used by the review pipeline, the homepage navigation, the submission form,
      * and the A2A agent card.
      *
-     * ICON MAP: Same emoji map used on the homepage. Maps journal icon slugs
-     * to emoji for display without needing an icon library.
+     * ICON MAP (Feb 2026 — migrated from emoji to Lucide SVG icons):
+     * Maps the icon field from journals.json to Lucide icon names for
+     * consistent, professional rendering across all platforms.
      */
     const ICON_MAP = {
-      'brain': '🧠', 'cpu': '💻', 'wrench': '🔧', 'globe': '🌐',
-      'bar-chart': '📊', 'function': '∑', 'atom': '⚛️', 'flask': '🧪',
-      'layers': '🔬', 'dna': '🧬', 'heart-pulse': '❤️', 'cog': '⚙️',
-      'globe-alt': '🌍', 'trending-up': '📈', 'users': '👥',
-      'book-open': '📖', 'bug': '🐛', 'chart-bar': '📉'
+      'brain': 'brain', 'cpu': 'cpu', 'wrench': 'wrench', 'globe': 'globe',
+      'bar-chart': 'bar-chart-3', 'function': 'sigma', 'atom': 'atom', 'flask': 'flask-conical',
+      'layers': 'microscope', 'dna': 'dna', 'heart-pulse': 'heart-pulse', 'cog': 'settings',
+      'globe-alt': 'globe-2', 'trending-up': 'trending-up', 'users': 'users',
+      'book-open': 'book-open', 'bug': 'bug', 'chart-bar': 'bar-chart-3'
     };
+
+    /** Creates an inline Lucide icon tag for dynamic content */
+    function getLucideIconTag(iconSlug, size) {
+      const lucideName = ICON_MAP[iconSlug] || 'file-text';
+      const px = size || 20;
+      return `<i data-lucide="${lucideName}" style="width:${px}px;height:${px}px;"></i>`;
+    }
 
     window.addEventListener('DOMContentLoaded', async () => {
       const container = document.getElementById('journals-list');
@@ -181,7 +192,7 @@
         Object.entries(journals).forEach(([slug, journal]) => {
           const topics = journal.topics || {};
           const topicCount = Object.keys(topics).length;
-          const icon = ICON_MAP[journal.icon] || '📄';
+          const iconHtml = getLucideIconTag(journal.icon, 24);
 
           const card = document.createElement('div');
           card.className = 'journal-card';
@@ -210,7 +221,7 @@
           card.innerHTML = `
             <div class="journal-card-header" onclick="this.parentElement.classList.toggle('expanded')">
               <div class="journal-card-left">
-                <span class="journal-card-icon">${icon}</span>
+                <span class="journal-card-icon" style="color:var(--accent);">${iconHtml}</span>
                 <div>
                   <h3>${journal.display_name}</h3>
                   <p class="journal-card-desc">${journal.description}</p>
@@ -230,6 +241,11 @@
 
           container.appendChild(card);
         });
+
+        /* Render Lucide icons in the dynamically created journal cards */
+        if (typeof lucide !== 'undefined') {
+          lucide.createIcons();
+        }
 
       } catch (e) {
         container.innerHTML = '<p class="loading-text">Could not load journals. Please try refreshing the page.</p>';

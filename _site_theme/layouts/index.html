@@ -51,6 +51,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
+  <!-- ====== Lucide Icons ====== -->
+  <!-- Lucide SVG icon library replaces all emoji usage for professional,
+       consistent icon rendering across platforms. See main.css for icon CSS. -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
   <!-- ====== JSON-LD Structured Data ====== -->
   <script type="application/ld+json">
   {
@@ -82,7 +87,7 @@
         <a href="/editorial-guidelines/">Guidelines</a>
         <a href="/journals/">Journals</a>
         <a href="/agents-hub/">Agents Hub</a>
-        <a href="{{ .Site.Params.github_repo }}/issues/new?template=submission.yml" class="nav-submit">Submit Article</a>
+        <a href="/submit/" class="nav-submit">Submit Article</a>
       </nav>
     </div>
   </header>
@@ -124,7 +129,7 @@
       <div class="container">
         <div class="list-header">
           <h2>Published Articles</h2>
-          <a href="{{ .Site.Params.github_repo }}/issues/new?template=submission.yml" class="btn-submit">+ Submit Article</a>
+          <a href="/submit/" class="btn-submit">+ Submit Article</a>
         </div>
 
         {{ $papers := where .Site.RegularPages "Section" "papers" }}
@@ -161,7 +166,7 @@
           <div class="empty-icon">{ }</div>
           <h3>No articles published yet</h3>
           <p>Be the first to submit an article for AI peer review.</p>
-          <a href="{{ .Site.Params.github_repo }}/issues/new?template=submission.yml" class="btn-submit-large">Submit Your First Article</a>
+          <a href="/submit/" class="btn-submit-large">Submit Your First Article</a>
         </div>
         {{ end }}
       </div>
@@ -172,11 +177,15 @@
          (Computer Use Agents, General Agents like OpenClaw, and Agent Frameworks)
          on the homepage. The user specifically requested OpenClaw be highlighted
          and that dedicated sections be created for agent categories. This serves
-         as a gateway to the full /agents-hub/ page. -->
+         as a gateway to the full /agents-hub/ page.
+         
+         ICON NOTE (Feb 2026): All emojis replaced with Lucide SVG icons for
+         consistent, professional rendering across all platforms. Lucide icons
+         inherit color from CSS and can be sized/styled unlike emojis. -->
     <section class="agent-ecosystem" style="padding: 56px 0; background: linear-gradient(180deg, #F8FFFE 0%, var(--bg) 100%); border-top: 1px solid var(--border);">
       <div class="container">
         <div style="text-align:center; margin-bottom:36px;">
-          <h2 style="font-size:1.6rem; margin-bottom:10px;">🤖 Agent Ecosystem</h2>
+          <h2 style="font-size:1.6rem; margin-bottom:10px;"><i data-lucide="bot" style="width:28px;height:28px;vertical-align:-4px;margin-right:6px;color:var(--accent);"></i> Agent Ecosystem</h2>
           <p style="color: var(--text-secondary); font-size:1rem; max-width:640px; margin:0 auto; line-height:1.7;">
             Pubroot is the peer-reviewed knowledge base for the AI agent era. 
             Discover research on computer use agents, general-purpose agents, and the frameworks that power them.
@@ -185,9 +194,9 @@
 
         <!-- OpenClaw Feature Banner -->
         <div style="background: linear-gradient(135deg, #F0FDF4, #E0F7F4); border: 2px solid var(--accent); border-radius: 14px; padding: 28px 32px; margin-bottom: 24px; display: flex; align-items: center; gap: 24px; flex-wrap: wrap;">
-          <div style="font-size: 2.4rem; flex-shrink:0;">🐾</div>
+          <div style="flex-shrink:0; color: var(--accent);"><i data-lucide="paw-print" style="width:40px;height:40px;"></i></div>
           <div style="flex:1; min-width:200px;">
-            <div style="font-size: 1.2rem; font-weight: 700; margin-bottom: 4px;">OpenClaw <span style="font-family: var(--font-mono); font-size: 0.72rem; padding: 2px 10px; border-radius: 12px; background: var(--accent); color: white; margin-left: 10px; vertical-align: middle;">⭐ FEATURED</span></div>
+            <div style="font-size: 1.2rem; font-weight: 700; margin-bottom: 4px;">OpenClaw <span style="font-family: var(--font-mono); font-size: 0.72rem; padding: 2px 10px; border-radius: 12px; background: var(--accent); color: white; margin-left: 10px; vertical-align: middle;"><i data-lucide="star" style="width:11px;height:11px;vertical-align:-1px;margin-right:2px;"></i> FEATURED</span></div>
             <p style="font-size: 0.92rem; color: var(--text-secondary); margin: 0; line-height: 1.6;">
               The leading open-source AI agent — 150K+ GitHub stars, 50+ integrations, persistent memory, 
               self-hosted. Connects to WhatsApp, Slack, Discord, and more.
@@ -199,21 +208,21 @@
         <!-- Three category cards -->
         <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
           <a href="/agents-hub/#cua" style="text-decoration:none; color:inherit; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 24px; transition: all 0.2s;">
-            <div style="font-size:1.6rem; margin-bottom:10px;">🖥️</div>
+            <div style="margin-bottom:10px; color: var(--accent);"><i data-lucide="monitor" style="width:28px;height:28px;"></i></div>
             <div style="font-size:1rem; font-weight:600; margin-bottom:6px;">Computer Use Agents</div>
             <div style="font-size:0.86rem; color:var(--text-secondary); line-height:1.55;">
               Claude Computer Use, OpenAI Operator, Browser Use — agents that control browsers and desktops autonomously.
             </div>
           </a>
           <a href="/agents-hub/#general" style="text-decoration:none; color:inherit; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 24px; transition: all 0.2s;">
-            <div style="font-size:1.6rem; margin-bottom:10px;">🤖</div>
+            <div style="margin-bottom:10px; color: var(--accent);"><i data-lucide="bot" style="width:28px;height:28px;"></i></div>
             <div style="font-size:1rem; font-weight:600; margin-bottom:6px;">General-Purpose Agents</div>
             <div style="font-size:0.86rem; color:var(--text-secondary); line-height:1.55;">
               OpenClaw, Devin, AutoGPT — agents that handle real-world tasks end-to-end with persistent memory.
             </div>
           </a>
           <a href="/agents-hub/#frameworks" style="text-decoration:none; color:inherit; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 24px; transition: all 0.2s;">
-            <div style="font-size:1.6rem; margin-bottom:10px;">🧰</div>
+            <div style="margin-bottom:10px; color: var(--accent);"><i data-lucide="wrench" style="width:28px;height:28px;"></i></div>
             <div style="font-size:1rem; font-weight:600; margin-bottom:6px;">Agent Frameworks</div>
             <div style="font-size:0.86rem; color:var(--text-secondary); line-height:1.55;">
               LangGraph, CrewAI, MCP, A2A — the developer ecosystem for building and orchestrating agents.
@@ -264,7 +273,7 @@
         <div class="footer-links-group">
           <h4>Platform</h4>
           <a href="/">Publications</a>
-          <a href="{{ .Site.Params.github_repo }}/issues/new?template=submission.yml">Submit</a>
+          <a href="/submit/">Submit</a>
           <a href="/about/">About</a>
           <a href="/editorial-guidelines/">Guidelines</a>
           <a href="/journals/">Journals</a>
@@ -307,18 +316,30 @@
      * designed to evolve. When journals.json changes, the navigation updates
      * on the next site build without needing to touch this template.
      *
-     * ICON MAP:
-     * Maps the icon field from journals.json to simple emoji representations.
-     * We use emoji instead of an icon library to avoid external dependencies
-     * on a static site. These can be replaced with SVG icons later.
+     * ICON MAP (Feb 2026 — migrated from emoji to Lucide SVG icons):
+     * Maps the icon field from journals.json to Lucide icon names.
+     * We use Lucide icons instead of emojis for consistent rendering
+     * across platforms, CSS styling capability, and professional appearance.
+     * The helper function creates an inline SVG via Lucide's API.
      */
     const ICON_MAP = {
-      'brain': '🧠', 'cpu': '💻', 'wrench': '🔧', 'globe': '🌐',
-      'bar-chart': '📊', 'function': '∑', 'atom': '⚛️', 'flask': '🧪',
-      'layers': '🔬', 'dna': '🧬', 'heart-pulse': '❤️', 'cog': '⚙️',
-      'globe-alt': '🌍', 'trending-up': '📈', 'users': '👥',
-      'book-open': '📖', 'bug': '🐛', 'chart-bar': '📉'
+      'brain': 'brain', 'cpu': 'cpu', 'wrench': 'wrench', 'globe': 'globe',
+      'bar-chart': 'bar-chart-3', 'function': 'sigma', 'atom': 'atom', 'flask': 'flask-conical',
+      'layers': 'microscope', 'dna': 'dna', 'heart-pulse': 'heart-pulse', 'cog': 'settings',
+      'globe-alt': 'globe-2', 'trending-up': 'trending-up', 'users': 'users',
+      'book-open': 'book-open', 'bug': 'bug', 'chart-bar': 'bar-chart-3'
     };
+
+    /**
+     * Creates an inline SVG string for a Lucide icon.
+     * Used when building journal pill HTML dynamically — we insert the
+     * <i data-lucide="..."> element and then call lucide.createIcons()
+     * to render it. Falls back to a file-text icon if the name isn't mapped.
+     */
+    function getLucideIconTag(journalIconSlug) {
+      const lucideName = ICON_MAP[journalIconSlug] || 'file-text';
+      return `<i data-lucide="${lucideName}" style="width:16px;height:16px;"></i>`;
+    }
 
     window.addEventListener('DOMContentLoaded', async () => {
       /* ---- Pagefind search initialization ---- */
@@ -342,16 +363,23 @@
       const pillsContainer = document.getElementById('journal-pills');
       const subbar = document.getElementById('topic-subbar');
 
-      /* Build journal pills from the loaded data */
+      /* Build journal pills from the loaded data.
+         Uses Lucide icon tags instead of emojis — after all pills are
+         inserted, we call lucide.createIcons() to render the SVGs. */
       Object.entries(journalsData).forEach(([slug, journal]) => {
         const btn = document.createElement('button');
         btn.className = 'journal-pill';
         btn.dataset.journal = slug;
-        const icon = ICON_MAP[journal.icon] || '📄';
-        btn.innerHTML = `<span class="journal-icon">${icon}</span> ${journal.display_name}`;
+        const iconHtml = getLucideIconTag(journal.icon);
+        btn.innerHTML = `<span class="journal-icon">${iconHtml}</span> ${journal.display_name}`;
         btn.title = journal.description || '';
         pillsContainer.appendChild(btn);
       });
+
+      /* Render Lucide icons in the dynamically created pills */
+      if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+      }
 
       /* ---- Click handlers for journal pills ---- */
       pillsContainer.addEventListener('click', (e) => {

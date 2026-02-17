@@ -822,3 +822,334 @@
   font-size: 0.82rem;
   line-height: 1.5;
 }
+
+/* ============================================================
+   SUBMIT PAGE — pubroot.com/submit/
+   ============================================================
+   Styles specific to the Submit Article landing page. This page
+   acts as an explainer/conversion page between clicking "Submit
+   Article" in the nav and actually going to the GitHub Issue form.
+   
+   WHY THIS EXISTS (Feb 2026):
+   The user wanted the nav "Submit Article" button to take visitors
+   to an intermediary page explaining the process, rather than
+   going directly to GitHub. This improves UX for new visitors
+   who don't understand the submission flow.
+   ============================================================ */
+
+/* ---- Submit Hero — slightly enhanced version of page-hero ---- */
+.submit-hero {
+  background: linear-gradient(180deg, #F0FDFB 0%, #F8FFFE 50%, var(--bg) 100%);
+  padding: 64px 0 48px;
+  text-align: center;
+}
+.submit-hero .page-hero-content {
+  margin: 0 auto;
+}
+.submit-hero h1 {
+  font-size: 2.6rem;
+  margin-bottom: 16px;
+}
+.submit-hero .page-hero-sub {
+  font-size: 1.1rem;
+  max-width: 640px;
+  margin: 0 auto 32px;
+  line-height: 1.7;
+}
+
+/* ---- Primary CTA Button ----
+   The main "Submit on GitHub" button. Large, teal, unmissable.
+   Used both in the hero and at the bottom of the page. */
+.submit-hero-cta {
+  margin-top: 8px;
+}
+.btn-submit-primary {
+  display: inline-block;
+  background: var(--accent);
+  color: white !important;
+  padding: 14px 36px;
+  border-radius: 8px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  font-family: var(--font-body);
+  text-decoration: none !important;
+  transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+  box-shadow: 0 4px 14px rgba(0, 180, 160, 0.25);
+}
+.btn-submit-primary:hover {
+  background: var(--accent-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(0, 180, 160, 0.35);
+  text-decoration: none !important;
+  color: white !important;
+}
+.btn-submit-primary:active {
+  transform: translateY(0);
+}
+.btn-submit-primary-large {
+  padding: 16px 44px;
+  font-size: 1.1rem;
+}
+.submit-hero-note {
+  margin-top: 14px;
+  font-size: 0.84rem;
+  color: var(--text-secondary);
+}
+
+/* ---- Value Proposition Grid ---- */
+.submit-value-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  max-width: 860px;
+  margin: 0 auto;
+}
+@media (max-width: 768px) {
+  .submit-value-grid { grid-template-columns: 1fr; }
+}
+.submit-value-card {
+  text-align: center;
+  padding: 28px 20px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  transition: box-shadow 0.15s;
+}
+.submit-value-card:hover {
+  box-shadow: var(--shadow-md);
+}
+.submit-value-icon {
+  font-size: 1.8rem;
+  margin-bottom: 12px;
+}
+.submit-value-card h3 {
+  font-size: 1.1rem;
+  margin-bottom: 6px;
+}
+.submit-value-card p {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* ---- Step-by-Step Process ----
+   Vertical timeline-style layout showing the 3-step process.
+   Each step has a numbered circle, a title, description, and
+   a detail box with bullet points. */
+.submit-steps {
+  margin: 0 0 32px;
+}
+.submit-step {
+  display: flex;
+  gap: 24px;
+  padding: 28px 0;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+}
+.submit-step:last-child {
+  border-bottom: none;
+}
+.submit-step-number {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1.3rem;
+  margin-top: 2px;
+}
+.submit-step-content h3 {
+  font-size: 1.2rem;
+  margin-bottom: 8px;
+  margin-top: 0;
+}
+.submit-step-content > p {
+  font-size: 0.95rem;
+  color: var(--text);
+  line-height: 1.7;
+  margin-bottom: 16px;
+}
+.submit-step-detail {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  font-size: 0.9rem;
+}
+.submit-step-detail strong {
+  display: block;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+.submit-step-detail ul,
+.submit-step-detail ol {
+  padding-left: 20px;
+  margin: 0;
+}
+.submit-step-detail li {
+  margin-bottom: 4px;
+  line-height: 1.55;
+  color: var(--text);
+}
+@media (max-width: 600px) {
+  .submit-step {
+    flex-direction: column;
+    gap: 12px;
+  }
+}
+
+/* ---- Review Timeline Grid ----
+   Shows the 4 reputation tiers and their review times. */
+.submit-timeline-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+@media (max-width: 768px) {
+  .submit-timeline-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 480px) {
+  .submit-timeline-grid { grid-template-columns: 1fr; }
+}
+.submit-timeline-card {
+  text-align: center;
+  padding: 24px 16px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.submit-timeline-card-highlight {
+  background: var(--accent-light);
+  border-color: var(--accent);
+}
+.submit-timeline-tier {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+.submit-timeline-time {
+  font-family: var(--font-mono);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+.submit-timeline-card p {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* ---- Submission Types Grid ----
+   Horizontal row of "pill" labels showing the 6 submission types. */
+.submit-types-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+.submit-type-pill {
+  padding: 10px 20px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+/* ---- Agent Submission Box ----
+   Highlight box for the "agents can submit too" section. */
+.submit-agent-box {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px;
+}
+.submit-agent-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.submit-agent-content h3 {
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+  margin-top: 0;
+}
+.submit-agent-content p {
+  font-size: 0.92rem;
+  color: var(--text-secondary);
+  line-height: 1.65;
+  margin: 0;
+}
+.submit-agent-content code {
+  font-family: var(--font-mono);
+  background: var(--bg);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 0.86em;
+  border: 1px solid var(--border);
+}
+@media (max-width: 600px) {
+  .submit-agent-box { flex-direction: column; gap: 12px; }
+}
+
+/* ---- Final CTA Section ----
+   Bottom-of-page call to action with the big submit button. */
+.submit-final-cta {
+  background: linear-gradient(135deg, var(--accent-light), #E8FBF8);
+  border: 2px solid var(--accent);
+  border-radius: 12px;
+  padding: 48px 40px;
+  text-align: center;
+}
+.submit-final-cta h2 {
+  font-size: 1.6rem;
+  margin-bottom: 12px;
+  border-top: none;
+  padding-top: 0;
+  margin-top: 0;
+}
+.submit-final-cta > p {
+  color: var(--text-secondary);
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-bottom: 28px;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.submit-final-links {
+  margin-top: 20px;
+  font-size: 0.88rem;
+}
+.submit-final-links a {
+  color: var(--accent);
+  text-decoration: none;
+}
+.submit-final-links a:hover {
+  text-decoration: underline;
+}
+.submit-final-sep {
+  margin: 0 10px;
+  color: var(--text-secondary);
+}

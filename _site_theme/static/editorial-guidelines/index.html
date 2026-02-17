@@ -44,6 +44,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/pages.css">
+
+  <!-- Lucide Icons — professional SVG icons replacing all emojis -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 </head>
 <body>
   <header class="site-header">
@@ -59,7 +62,7 @@
         <a href="/about/">About</a>
         <a href="/editorial-guidelines/" class="nav-active">Guidelines</a>
         <a href="/journals/">Journals</a>
-        <a href="https://github.com/buildngrowsv/pubroot-website/issues/new?template=submission.yml" class="nav-submit">Submit Article</a>
+        <a href="/submit/" class="nav-submit">Submit Article</a>
       </nav>
     </div>
   </header>
@@ -101,7 +104,7 @@
           <div class="type-cards">
             <div class="type-card">
               <div class="type-header">
-                <span class="type-icon">🔬</span>
+                <span class="type-icon" style="color:var(--accent);"><i data-lucide="microscope" style="width:24px;height:24px;"></i></span>
                 <h3>Original Research</h3>
               </div>
               <p>Novel findings, experiments, or discoveries with original evidence. This is the traditional "research paper" format.</p>
@@ -115,7 +118,7 @@
 
             <div class="type-card">
               <div class="type-header">
-                <span class="type-icon">📋</span>
+                <span class="type-icon" style="color:var(--accent);"><i data-lucide="clipboard-list" style="width:24px;height:24px;"></i></span>
                 <h3>Case Study</h3>
               </div>
               <p>Real-world implementation stories, production incidents, debug logs, and lessons learned. Pubroot's differentiator — practical knowledge that traditional journals don't publish.</p>
@@ -129,7 +132,7 @@
 
             <div class="type-card">
               <div class="type-header">
-                <span class="type-icon">📊</span>
+                <span class="type-icon" style="color:var(--accent);"><i data-lucide="bar-chart-3" style="width:24px;height:24px;"></i></span>
                 <h3>Benchmark</h3>
               </div>
               <p>Structured comparisons and evaluations of tools, frameworks, models, or hardware. Must include reproducible methodology and raw data.</p>
@@ -143,7 +146,7 @@
 
             <div class="type-card">
               <div class="type-header">
-                <span class="type-icon">📚</span>
+                <span class="type-icon" style="color:var(--accent);"><i data-lucide="book-open" style="width:24px;height:24px;"></i></span>
                 <h3>Review / Survey</h3>
               </div>
               <p>Literature reviews, landscape analyses, and state-of-the-art surveys. Synthesize existing knowledge and identify gaps or trends.</p>
@@ -157,7 +160,7 @@
 
             <div class="type-card">
               <div class="type-header">
-                <span class="type-icon">🎓</span>
+                <span class="type-icon" style="color:var(--accent);"><i data-lucide="graduation-cap" style="width:24px;height:24px;"></i></span>
                 <h3>Tutorial</h3>
               </div>
               <p>Step-by-step guides with working code and clear instructions. Must be complete enough for someone to follow from start to finish.</p>
@@ -171,7 +174,7 @@
 
             <div class="type-card">
               <div class="type-header">
-                <span class="type-icon">🗃️</span>
+                <span class="type-icon" style="color:var(--accent);"><i data-lucide="database" style="width:24px;height:24px;"></i></span>
                 <h3>Dataset</h3>
               </div>
               <p>Dataset descriptions with collection methodology, statistics, access information, and usage guidelines. Must include a linked repository or data source.</p>
@@ -437,7 +440,7 @@
           <div class="cta-box">
             <h3>Ready to Submit?</h3>
             <p>Choose your journal and topic, pick a submission type, and start writing.</p>
-            <a href="https://github.com/buildngrowsv/pubroot-website/issues/new?template=submission.yml" class="btn-submit-large">Submit Your Article</a>
+            <a href="/submit/" class="btn-submit-large">Submit Your Article</a>
           </div>
         </div>
       </div>
@@ -455,7 +458,7 @@
         <div class="footer-links-group">
           <h4>Platform</h4>
           <a href="/">Publications</a>
-          <a href="https://github.com/buildngrowsv/pubroot-website/issues/new?template=submission.yml">Submit</a>
+          <a href="/submit/">Submit</a>
           <a href="/about/">About</a>
           <a href="/editorial-guidelines/">Guidelines</a>
           <a href="/journals/">Journals</a>
@@ -480,5 +483,11 @@
       </div>
     </div>
   </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (typeof lucide !== 'undefined') { lucide.createIcons(); }
+    });
+  </script>
 </body>
 </html>
