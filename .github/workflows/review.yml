@@ -31,12 +31,19 @@ on:
   issues:
     types: [opened]
 
-  # ----- TRIGGER 2: Queue processor (every 15 minutes) -----
+  # ----- TRIGGER 2: Queue processor (every 6 hours) -----
   # Picks up any submissions that were queued (e.g., if the direct trigger
   # failed, or for batching during high-volume periods). Processes by priority
   # label: critical > high > normal > low.
+  #
+  # HISTORY: Originally set to every 15 minutes, but that burned ~960 Actions
+  # minutes/month (nearly half the 2,000 free tier) even when there were zero
+  # submissions. Changed to every 6 hours on Feb 17, 2026 to conserve minutes.
+  # The primary trigger for reviews is still the issue:opened event, which fires
+  # immediately when someone submits. The cron is just a safety net for missed
+  # triggers. When submission volume grows, we can increase frequency.
   schedule:
-    - cron: '*/15 * * * *'
+    - cron: '0 */6 * * *'
 
   # ----- TRIGGER 3: Manual dispatch (for debugging/re-running) -----
   workflow_dispatch:
