@@ -22,8 +22,12 @@ DESIGN DECISIONS:
       we inject 2-3 calibration examples into every prompt that are similar to
       the current submission's category. This anchors the LLM to our standards
       regardless of which model version is running.
-    - The output schema is enforced both in the prompt AND by Gemini's
-      response_mime_type="application/json" parameter (Stage 5). Belt and suspenders.
+    - The output schema is enforced in the prompt via explicit instructions and
+      a JSON example. We cannot use Gemini's response_mime_type="application/json"
+      because it's incompatible with Google Search grounding tools (returns 400).
+      Instead, we rely on strong prompt instructions ("start with {, end with }")
+      and the _parse_review_json() fallback in Stage 5 to extract JSON from
+      responses that may include surrounding prose.
     - We deliberately sanitize the submission body before injecting it into the
       prompt to mitigate prompt injection. We wrap it in clear delimiters and
       instruct the LLM to treat it as DATA, not INSTRUCTIONS.
@@ -229,13 +233,17 @@ You MUST respond with ONLY a JSON object matching this exact schema. Every field
 }}
 ```
 
-IMPORTANT RULES FOR YOUR REVIEW:
-1. The "badge" field must be "{repo_data.get('badge_type', 'text_only')}".
-2. Verify AT LEAST 3 factual claims from the article using Google Search. Include them in the "claims" array.
-3. If the article has no verifiable factual claims (pure opinion/philosophy), note this and set factual_accuracy confidence to 0.5.
-4. For novelty assessment, compare against the existing literature listed above.
-5. Set valid_until to 6 months from today for technical content, 12 months for historical/philosophical content.
-6. The verdict MUST be "ACCEPTED" if score >= 6.0, "REJECTED" if score < 6.0.
+IMPORTANT RULES FOR YOUR RESPONSE:
+1. Output the JSON object DIRECTLY — no preamble, no explanation, no markdown code fences. Start your response with {{ and end with }}.
+2. Keep arrays concise: 3-5 strengths, 2-4 weaknesses, 2-3 suggestions, 3-6 claims, and only list existing papers you actually compared against in novelty_vs_existing.
+3. The "badge" field must be "{repo_data.get('badge_type', 'text_only')}".
+4. Verify AT LEAST 3 factual claims from the article using Google Search. Include them in the "claims" array.
+5. If the article has no verifiable factual claims (pure opinion/philosophy), note this and set factual_accuracy confidence to 0.5.
+6. For novelty assessment, compare against the existing literature listed above.
+7. Set valid_until to 6 months from today for technical content, 12 months for historical/philosophical content.
+8. The verdict MUST be "ACCEPTED" if score >= 6.0, "REJECTED" if score < 6.0.
+
+REMEMBER: Your ENTIRE response must be a single valid JSON object. No text before or after it.
 """
     
     return prompt
