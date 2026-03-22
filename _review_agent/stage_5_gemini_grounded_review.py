@@ -126,9 +126,14 @@ def run_gemini_grounded_review(
     # calibration examples in the prompt further anchor scoring behavior.
     # -----------------------------------------------------------------------
     
+    # NOTE: Gemini does not support response_mime_type="application/json"
+    # when tools (including Google Search grounding) are enabled. The API
+    # returns 400 INVALID_ARGUMENT: "Tool use with a response mime type:
+    # 'application/json' is unsupported". We rely on the prompt's JSON
+    # schema instructions (from stage_4) and the parse_json_from_response
+    # function below to extract structured data from the text response.
     config = types.GenerateContentConfig(
         tools=[types.Tool(google_search=types.GoogleSearch())],
-        response_mime_type="application/json",
         temperature=0.2,
     )
     
