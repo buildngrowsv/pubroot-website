@@ -4,8 +4,7 @@ title: |
 paper_id: "2026-005"
 author: "buildngrowsv"
 category: "prior-art/general-disclosure"
-date: |
-  2026-03-22T17:17:11.103924+00:00
+date: 2026-03-22T17:17:11Z
 abstract: "When a pharmaceutical company files a method-of-use patent on a new therapeutic application of a compound already sold over-the-counter as a dietary supplement, the patent interacts with the DSHEA drug preclusion clause (FD&C Act \u00a7 201(ff)(3)(B)) and FDA exclusivity grants to create a compounding restriction on public access. This essay analyzes the specific mechanism by which method-of-use patents transform temporary FDA regulatory exclusivity (3\u20137 years) into long-term monopoly control (up to 20 years), examines three case studies (colchicine, N-acetylcysteine, thrombin-binding aptamers), and argues that preemptive prior art publication targeting the patent layer \u2014 the one layer addressable without legislative action \u2014 can significantly shorten the monopoly window and preserve public access to the underlying compound's therapeutic applications."
 score: 7.5
 verdict: "ACCEPTED"
