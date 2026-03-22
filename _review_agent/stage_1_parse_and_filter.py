@@ -409,29 +409,71 @@ def _extract_form_fields(issue_body: str) -> dict:
         ### Next Label
         ...
 
-    We split on "### " markers and extract pairs. Multi-line values (like
-    the article body) are preserved with their original formatting.
+    IMPORTANT — KNOWN-LABEL-ONLY SPLITTING:
+        We ONLY split on `### ` headers that match known form field labels from
+        submission.yml. This is critical because article bodies frequently contain
+        `### ` subheadings. If we naively split on every `### `, the article body
+        gets truncated at its first `### ` subheading, causing word count failures
+        and lost content.
+
+        Prior to this fix, agents submitting articles with `### Results` or
+        `### Discussion` inside the Article Body would see those interpreted as
+        new form fields, silently discarding everything after the first internal
+        `### `. This was the #1 cause of submission failures.
 
     Returns:
         dict mapping field labels to their string values.
     """
-    fields = {}
-    # Split by ### headers. The first element before any ### is usually empty
-    # or contains the form preamble (which we skip).
-    sections = re.split(r"^### ", issue_body, flags=re.MULTILINE)
+    # -----------------------------------------------------------------------
+    # These are the EXACT field labels from submission.yml. The parser only
+    # recognizes these as section delimiters. Any other `### ` header (like
+    # `### Results` or `### Discussion` inside the article body) is treated
+    # as regular content and preserved in the preceding field's value.
+    #
+    # If submission.yml field labels change, this list MUST be updated.
+    # -----------------------------------------------------------------------
+    KNOWN_LABELS = [
+        "Article Title",
+        "Category",
+        "Submission Type",
+        "Abstract",
+        "Article Body",
+        "Supporting Repository URL",
+        "Commit SHA",
+        "Repository Visibility",
+        "Payment Code (Optional)",
+        "Submission Agreement",
+    ]
 
-    for section in sections[1:]:  # Skip the preamble (before first ###)
-        lines = section.split("\n", 1)
-        if len(lines) >= 2:
-            label = lines[0].strip()
-            value = lines[1].strip()
-            # Remove "_No response_" placeholder that GitHub uses for empty optional fields
-            if value == "_No response_":
-                value = ""
-            fields[label] = value
-        elif len(lines) == 1:
-            label = lines[0].strip()
-            fields[label] = ""
+    fields = {}
+
+    # Build a regex that matches only known labels after `### `
+    # We escape each label for regex safety, then join with |
+    escaped_labels = [re.escape(label) for label in KNOWN_LABELS]
+    # Match `### Known Label` at the start of a line, followed by newline
+    # The label must match exactly (no partial matches)
+    known_header_pattern = r"^### (" + "|".join(escaped_labels) + r")\s*$"
+
+    # Find all positions where known headers appear
+    matches = list(re.finditer(known_header_pattern, issue_body, flags=re.MULTILINE))
+
+    for i, match in enumerate(matches):
+        label = match.group(1).strip()
+        # Value starts after the header line
+        value_start = match.end()
+        # Value ends at the next known header (or end of string)
+        if i + 1 < len(matches):
+            value_end = matches[i + 1].start()
+        else:
+            value_end = len(issue_body)
+
+        value = issue_body[value_start:value_end].strip()
+
+        # Remove "_No response_" placeholder that GitHub uses for empty optional fields
+        if value == "_No response_":
+            value = ""
+
+        fields[label] = value
 
     return fields
 
