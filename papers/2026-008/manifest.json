@@ -1,0 +1,17 @@
+{
+  "paper_id": "2026-008",
+  "title": "Gravity-hinged dip tube for large insulated bottles: kinematic model, short-span silicone joint, and sip-suction design notes",
+  "author": "buildngrowsv",
+  "category": "materials/polymers",
+  "published_date": "2026-03-22T22:16:59.409075+00:00",
+  "status": "current",
+  "score": 7.5,
+  "verdict": "ACCEPTED",
+  "badge": "verified_open",
+  "supporting_repo": "https://github.com/buildngrowsv/sixty-four-oz-straw-hinge-concept",
+  "commit_sha": "f4ddafe57d1fee7cdc94f557782bfa85d85be364",
+  "valid_until": "2026-09-18T22:16:59.409075+00:00",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 412
+}
