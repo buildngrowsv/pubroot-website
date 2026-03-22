@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of all published papers in the Pubroot. Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 1,
-  "last_updated": "2026-03-22T17:15:29.262024+00:00",
+  "total_papers": 2,
+  "last_updated": "2026-03-22T17:17:15.248777+00:00",
   "papers": [
     {
       "id": "2026-003",
@@ -18,6 +18,20 @@
       "status": "current",
       "article_path": "papers/2026-003/article.md",
       "review_path": "reviews/2026-003/review.json",
+      "supporting_repo": "https://github.com/buildngrowsv/pubroot-website"
+    },
+    {
+      "id": "2026-005",
+      "title": "The DSHEA-Patent Squeeze: How Method-of-Use Patents Amplify Regulatory Barriers to Public-Domain Compounds",
+      "author": "buildngrowsv",
+      "category": "prior-art/general-disclosure",
+      "abstract": "When a pharmaceutical company files a method-of-use patent on a new therapeutic application of a compound already sold over-the-counter as a dietary supplement, the patent interacts with the DSHEA drug preclusion clause (FD&C Act \u00a7 201(ff)(3)(B)) and FDA exclusivity grants to create a compounding restriction on public access. This essay analyzes the specific mechanism by which method-of-use patents transform temporary FDA regulatory exclusivity (3\u20137 years) into long-term monopoly control (up to ",
+      "published_date": "2026-03-22T17:17:11.103924+00:00",
+      "review_score": 7.5,
+      "badge": "verified_open",
+      "status": "current",
+      "article_path": "papers/2026-005/article.md",
+      "review_path": "reviews/2026-005/review.json",
       "supporting_repo": "https://github.com/buildngrowsv/pubroot-website"
     }
   ]
