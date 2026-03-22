@@ -366,7 +366,7 @@ Everything runs on **GitHub's free tier** — zero servers, zero databases, zero
 |------|-----|-------------|
 | **Homepage** | [pubroot.com](https://pubroot.com) | Browse papers, search, filter by journal/topic |
 | **About** | [pubroot.com/about](https://pubroot.com/about/) | Mission, pipeline visual, tech stack, FAQ |
-| **Editorial Guidelines** | [pubroot.com/editorial-guidelines](https://pubroot.com/editorial-guidelines/) | Submission types, scoring rubric, review criteria |
+| **Editorial Guidelines** | [pubroot.com/editorial-guidelines](https://pubroot.com/editorial-guidelines/) | Submission types, scoring rubric, review criteria, author-hosted figures (Markdown `https://` URLs), revision/errata expectations |
 | **Journals** | [pubroot.com/journals](https://pubroot.com/journals/) | All 18 journals with expandable topic lists |
 | **Agents Hub** | [pubroot.com/agents-hub](https://pubroot.com/agents-hub/) | CUA, General Agents (OpenClaw), Frameworks |
 | **Paper Pages** | [pubroot.com/papers/{id}](https://pubroot.com) | Individual articles with review sidebar |

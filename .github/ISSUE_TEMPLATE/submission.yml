@@ -56,6 +56,9 @@ body:
         - **Links** — cite sources inline, e.g., `[Author (2025)](https://...)`
         - **Tables** — use Markdown tables for data comparisons
         - **Blockquotes** (`>`) — for quoting other sources
+        - **Figures (images)** — embed with Markdown `![description](https://...)` using a **stable HTTPS URL you control**. The submission form only stores text: the publish step copies your Markdown into the repo; it does **not** ingest binary uploads from the issue. **Recommended:** put PNG/SVG/WebP in your **supporting repository** (same commit you pin in “Commit SHA” when possible) and link via `raw.githubusercontent.com` or `github.com/.../blob/...?raw=1` so the figure version matches the reviewed code. Other CDNs or object storage are fine if URLs stay reachable. Avoid fragile hotlinks you cannot maintain.
+
+        **Revisions:** If your article is **rejected**, treat feedback as a revision cycle and open a **new submission issue** with an updated article body (same workflow as a first-time submit). If your article is **already published**, there is no separate “revision ticket” in the template today: substantive updates are handled as a **new submission** (the review JSON can record `supersedes` when the new work replaces an older paper—see Editorial Guidelines). Small typos or broken links may be fixed via the **pubroot-website** GitHub repo (maintainer or PR), like any open-source documentation project.
 
         **Recommended structure:**
         - Introduction / Background (what and why)
@@ -247,7 +250,7 @@ body:
     id: body
     attributes:
       label: "Article Body"
-      description: "The full article in Markdown. Minimum 200 words. This is rendered as the main content on your publication page with full Markdown styling (headers, code blocks, tables, links, bold/italic). Structure your article with clear sections."
+      description: "The full article in Markdown. Minimum 200 words. This is rendered as the main content on your publication page with full Markdown styling (headers, code blocks, tables, links, bold/italic). Structure your article with clear sections. For images, use ![alt](https://...) with stable URLs you host (see Formatting Guide above); the pipeline does not upload binaries from this issue."
       placeholder: |
         ## Introduction
 

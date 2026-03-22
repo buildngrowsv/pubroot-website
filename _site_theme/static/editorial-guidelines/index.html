@@ -89,8 +89,10 @@
             <li><a href="#type-specific-criteria">Type-Specific Criteria</a></li>
             <li><a href="#trust-badges">Trust Badges</a></li>
             <li><a href="#formatting">Formatting Guide</a></li>
+            <li><a href="#figures-hosting">Figures &amp; media URLs</a></li>
             <li><a href="#acceptance">Acceptance Process</a></li>
             <li><a href="#after-publication">After Publication</a></li>
+            <li><a href="#revisions-errata">Revisions &amp; errata</a></li>
           </ul>
         </nav>
 
@@ -403,6 +405,21 @@
             </div>
           </div>
 
+          <!--
+            Figures & hosting — added because submitters asked whether Pubroot stores images.
+            Truth: the automated pipeline persists Markdown + metadata from the GitHub Issue; it does
+            not provide an image upload bucket. Authors should treat figures like citations: stable URLs.
+            We mention raw.githubusercontent.com because it pairs naturally with a pinned commit SHA.
+          -->
+          <h3 id="figures-hosting">Figures &amp; media URLs</h3>
+          <p><strong>Pubroot does not re-host arbitrary figure files from the submission form.</strong> Your article body is Markdown text. When a submission is accepted, that Markdown is written into <code>papers/{id}/article.md</code> in the public repo. Binary assets are <em>not</em> scraped out of the issue for you.</p>
+          <ul>
+            <li><strong>What to do:</strong> Host diagrams, screenshots, and photos where you control durability (for example a public GitHub repo, release asset, or CDN). Reference them with absolute <code>https://</code> URLs inside <code>![alt](url)</code>.</li>
+            <li><strong>Best practice with a supporting repo:</strong> Commit figures next to code or docs, pin the <strong>Commit SHA</strong> on the submission form, and link via <code>raw.githubusercontent.com/…</code> (or equivalent) so reviewers and readers see the same bytes that were pinned.</li>
+            <li><strong>GitHub Issue attachments:</strong> Drag-and-drop in the issue thread uploads to GitHub’s user-assets host. Those URLs sometimes work in published Markdown, but they are not the primary workflow and may be harder to reason about than files in your repo.</li>
+            <li><strong>Site static directory:</strong> Maintainers may occasionally add files under <code>_site_theme/static/</code> for operational reasons (for example a curated figure). That is editorial/maintenance work in the website repo, not something the issue form automates.</li>
+          </ul>
+
           <div class="highlight-box">
             <h3>Minimum Requirements</h3>
             <ul>
@@ -436,6 +453,16 @@
             <li><strong>Reputation</strong> — Accepted articles increase your contributor reputation. Higher reputation means faster review times and queue priority.</li>
             <li><strong>Machine-Readable</strong> — Every published article has a <code>manifest.json</code> with structured metadata, and the full review is available at <code>/reviews/{paper-id}/review.json</code>.</li>
           </ul>
+
+          <!--
+            Revisions — clarify pre- vs post-acceptance because "revision" means different things.
+            Pre-acceptance: standard path is a new GitHub Issue (fresh review).
+            Post-acceptance: no dedicated automated "errata issue type" today; substantive changes = new submission;
+            trivial fixes = open source repo process.
+          -->
+          <h3 id="revisions-errata">Revisions &amp; errata</h3>
+          <p><strong>Before acceptance (rejected or you withdrew):</strong> Read the review comment on your issue, update your Markdown, and submit a <strong>new GitHub Issue</strong> using the same template. Each issue is an independent review event.</p>
+          <p><strong>After acceptance:</strong> There is <strong>no separate “revision submission” button</strong> in the current automation. For a <strong>material update</strong> (new results, changed claims, new figures), submit a <strong>new article</strong> through the normal pipeline. The review schema includes <code>supersedes</code> so a replacement article can point at the older paper ID when that applies. For <strong>small corrections</strong> (typos, broken links, formatting), use a normal <a href="https://github.com/buildngrowsv/pubroot-website">GitHub pull request or issue</a> on <code>pubroot-website</code>, the same way you would fix any open-source documentation.</p>
 
           <div class="cta-box">
             <h3>Ready to Submit?</h3>

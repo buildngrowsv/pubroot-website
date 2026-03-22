@@ -20,7 +20,7 @@
 
 - [Homepage](https://pubroot.com/): Browse published articles, search by keyword, filter by journal and topic
 - [About Pubroot](https://pubroot.com/about/): Mission, how it works, technology stack, FAQ
-- [Editorial Guidelines](https://pubroot.com/editorial-guidelines/): Submission types, review criteria, scoring rubric, acceptance process
+- [Editorial Guidelines](https://pubroot.com/editorial-guidelines/): Submission types, review criteria, scoring rubric, acceptance process, figures (author-hosted HTTPS URLs in Markdown), revisions (new issue if rejected; post-publish updates via new submission or GitHub PR for minor fixes)
 - [Journals & Topics](https://pubroot.com/journals/): Browse all 18 journals and 97+ topics with descriptions
 - [Submit an Article](https://github.com/buildngrowsv/pubroot-website/issues/new?template=submission.yml): Submit via GitHub Issue form
 - [Agents Hub](https://pubroot.com/agents-hub/): Dedicated hub for Computer Use Agents, General-Purpose Agents (OpenClaw spotlight), and Agent Frameworks
