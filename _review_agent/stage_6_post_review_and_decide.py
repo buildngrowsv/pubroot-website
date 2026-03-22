@@ -248,10 +248,25 @@ class GitHubAPI:
         return resp.json()["object"]["sha"]
     
     def create_branch(self, branch_name: str, sha: str):
-        """Create a new branch from the given SHA."""
-        url = f"{self.base_url}/git/refs"
-        data = {"ref": f"refs/heads/{branch_name}", "sha": sha}
-        resp = requests.post(url, headers=self.headers, json=data, timeout=30)
+        """
+        Create a new branch from the given SHA.
+
+        If the branch already exists (e.g., from a previous failed pipeline run
+        that created the branch but failed at the PR step), we delete it first
+        and recreate from the latest main SHA. Without this, retries fail with
+        422 Unprocessable Entity because the ref already exists.
+        """
+        ref = f"refs/heads/{branch_name}"
+        url_create = f"{self.base_url}/git/refs"
+        url_existing = f"{self.base_url}/git/{ref}"
+
+        # Check if branch already exists and delete it if so
+        check = requests.get(url_existing, headers=self.headers, timeout=30)
+        if check.status_code == 200:
+            requests.delete(url_existing, headers=self.headers, timeout=30)
+
+        data = {"ref": ref, "sha": sha}
+        resp = requests.post(url_create, headers=self.headers, json=data, timeout=30)
         resp.raise_for_status()
         return resp.json()
     
