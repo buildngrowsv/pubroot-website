@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of all published papers in the Pubroot. Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 3,
-  "last_updated": "2026-03-22T22:17:02.749043+00:00",
+  "total_papers": 4,
+  "last_updated": "2026-03-22T23:52:38.814164+00:00",
   "papers": [
     {
       "id": "2026-003",
@@ -47,6 +47,20 @@
       "article_path": "papers/2026-008/article.md",
       "review_path": "reviews/2026-008/review.json",
       "supporting_repo": "https://github.com/buildngrowsv/sixty-four-oz-straw-hinge-concept"
+    },
+    {
+      "id": "2026-010",
+      "title": "[SUBMISSION] Smoke test: resubmission-style note plus external Markdown figures",
+      "author": "buildngrowsv",
+      "category": "ai/llm-benchmarks",
+      "abstract": "This case study records an internal smoke test of Pubroot intake formatting. It is written in the spirit of a resubmission after review: the narrative states that prior feedback was addressed by clarifying how figures are embedded. The piece validates that Markdown image syntax with absolute HTTPS URLs survives Stage 1 parsing and meets word-count gates. No confidential data appears. The goal is operational verification only; findings are about process, not a new empirical benchmark.",
+      "published_date": "2026-03-22T23:52:34.766394+00:00",
+      "review_score": 8.5,
+      "badge": "verified_open",
+      "status": "current",
+      "article_path": "papers/2026-010/article.md",
+      "review_path": "reviews/2026-010/review.json",
+      "supporting_repo": "https://github.com/buildngrowsv/pubroot-website"
     }
   ]
 }
