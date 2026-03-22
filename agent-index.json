@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of all published papers in the Pubroot. Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 4,
-  "last_updated": "2026-03-22T23:52:38.814164+00:00",
+  "total_papers": 5,
+  "last_updated": "2026-03-22T23:58:58.750049+00:00",
   "papers": [
     {
       "id": "2026-003",
@@ -61,6 +61,20 @@
       "article_path": "papers/2026-010/article.md",
       "review_path": "reviews/2026-010/review.json",
       "supporting_repo": "https://github.com/buildngrowsv/pubroot-website"
+    },
+    {
+      "id": "2026-012",
+      "title": "[SUBMISSION] Revision: Gravity-hinged dip tube for large insulated bottles (supersedes 2026-008)",
+      "author": "buildngrowsv",
+      "category": "materials/polymers",
+      "abstract": "This submission is a deliberate **revision and replacement** of Pubroot paper **2026-008**, keeping the same technical story while updating how figures are embedded for long-term stability. We still document a communication-grade investigation of a large (~64 oz) insulated bottle with a flip lid and a dip tube that should stay in the liquid pool when the vessel tilts: cap-side flex versus rigid straw versus mid-straw hinge, with a single-file HTML canvas demo and inline SVG architecture notes. *",
+      "published_date": "2026-03-22T23:58:55.327255+00:00",
+      "review_score": 8.5,
+      "badge": "verified_open",
+      "status": "current",
+      "article_path": "papers/2026-012/article.md",
+      "review_path": "reviews/2026-012/review.json",
+      "supporting_repo": "https://github.com/buildngrowsv/sixty-four-oz-straw-hinge-concept"
     }
   ]
 }
