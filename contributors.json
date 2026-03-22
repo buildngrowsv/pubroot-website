@@ -1,5 +1,32 @@
 {
   "schema_version": "1.0",
   "description": "Contributor reputation scores for the Pubroot. Auto-updated by the review pipeline after each submission is processed. Each contributor is identified by their GitHub handle. Reputation score drives queue priority (higher rep = faster review). See design spec 'reputation driven priority queue' for the formula and tier definitions.",
-  "contributors": {}
+  "contributors": {
+    "buildngrowsv": {
+      "github_handle": "buildngrowsv",
+      "first_seen": "2026-03-22T17:15:26.769428+00:00",
+      "last_submission": "2026-03-22T17:15:26.769447+00:00",
+      "total_submissions": 1,
+      "accepted": 1,
+      "rejected": 0,
+      "withdrawn": 0,
+      "acceptance_rate": 1.0,
+      "average_score": 8.5,
+      "score_trend": "insufficient_data",
+      "categories": {
+        "prior-art/general-disclosure": {
+          "submissions": 1,
+          "accepted": 1,
+          "avg_score": 8.5
+        }
+      },
+      "reputation_score": 0.0,
+      "reputation_tier": "new",
+      "flags": {
+        "prompt_injection_attempts": 0,
+        "spam_submissions": 0,
+        "dmca_strikes": 0
+      }
+    }
+  }
 }

@@ -3,7 +3,22 @@
   "api_version": "1.0",
   "description": "Machine-readable index of all published papers in the Pubroot. Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 0,
-  "last_updated": null,
-  "papers": []
+  "total_papers": 1,
+  "last_updated": "2026-03-22T17:15:29.262024+00:00",
+  "papers": [
+    {
+      "id": "2026-003",
+      "title": "Preemptive Prior Art Publication as a Defense Against Method-of-Use Patents on Known Compounds and Methods",
+      "author": "buildngrowsv",
+      "category": "prior-art/general-disclosure",
+      "abstract": "Method-of-use patents allow companies to claim exclusive rights over new therapeutic, industrial, or technological applications of compounds and methods already in the public domain. Under 35 U.S.C. \u00a7 102, a patent claim is anticipated \u2014 and therefore unpatentable \u2014 if every element of the claim is described in a single prior art reference that predates the filing. This article proposes a systematic framework for preemptive defensive disclosure: publishing structured, enabling descriptions of kn",
+      "published_date": "2026-03-22T17:15:26.693897+00:00",
+      "review_score": 8.5,
+      "badge": "verified_open",
+      "status": "current",
+      "article_path": "papers/2026-003/article.md",
+      "review_path": "reviews/2026-003/review.json",
+      "supporting_repo": "https://github.com/buildngrowsv/pubroot-website"
+    }
+  ]
 }

@@ -1,0 +1,86 @@
+{
+  "paper_id": "2026-003",
+  "score": 8.5,
+  "verdict": "ACCEPTED",
+  "badge": "verified_open",
+  "summary": "This article proposes a systematic framework for preemptive defensive disclosure to combat method-of-use patent capture. It outlines the legal basis for prior art, enablement requirements, and a multidisciplinary publication platform. The proposal is well-reasoned and addresses a significant issue, though practical implementation and examiner indexing remain challenges.",
+  "strengths": [
+    "Addresses a critical and timely issue in intellectual property law and scientific freedom.",
+    "Provides a clear and well-structured legal framework for defensive disclosure.",
+    "Proposes a novel and scalable solution leveraging AI and multidisciplinary platforms.",
+    "The proposed framework is detailed and considers practical aspects like metadata and accessibility."
+  ],
+  "weaknesses": [
+    "The effectiveness of 'AI peer review' as a quality filter for legal prior art needs further validation.",
+    "Discoverability by patent examiners is a significant hurdle that requires active effort beyond just publication.",
+    "The article does not provide concrete examples of the structured metadata in action."
+  ],
+  "suggestions": [
+    "Include a mock-up or example of the structured metadata for a hypothetical disclosure.",
+    "Elaborate on the specific AI capabilities envisioned for the peer review process beyond basic checks.",
+    "Discuss potential strategies for ensuring patent examiners are aware of and utilize such a publication platform."
+  ],
+  "confidence": {
+    "methodology": 0.9,
+    "factual_accuracy": 0.9,
+    "novelty": 0.8,
+    "code_quality": null,
+    "writing_quality": 0.9,
+    "reproducibility": null
+  },
+  "claims": [
+    {
+      "text": "Method-of-use patents allow companies to claim exclusive rights over new therapeutic, industrial, or technological applications of compounds and methods already in the public domain.",
+      "verified": true,
+      "source": "https://www.uspto.gov/patents/basics/what-can-be-patented",
+      "confidence": 1.0
+    },
+    {
+      "text": "Under 35 U.S.C. \u00a7 102, a patent claim is anticipated \u2014 and therefore unpatentable \u2014 if every element of the claim is described in a single prior art reference that predates the filing.",
+      "verified": true,
+      "source": "https://www.bitlaw.com/source/35usc/102.html",
+      "confidence": 1.0
+    },
+    {
+      "text": "Colchicine, an alkaloid used for gout for over 2,000 years, was repriced from $0.09/pill to $4.85/pill after URL Pharma obtained method-of-use patents on dosing regimens and FDA exclusivity for running the required clinical trial [Kesselheim & Solomon, NEJM 2010].",
+      "verified": true,
+      "source": "https://www.nejm.org/doi/full/10.1056/NEJMp1006050",
+      "confidence": 1.0
+    },
+    {
+      "text": "N-acetylcysteine (NAC), a widely available amino acid derivative sold as a supplement for decades, faced removal from the OTC supplement market after FDA invoked the DSHEA drug preclusion clause, a process reinforced by pharmaceutical companies holding method-of-use patents on NAC for specific indications [FDA Guidance 2022, Nutritional Outlook 2022].",
+      "verified": true,
+      "source": "https://www.fda.gov/media/157784/download",
+      "confidence": 1.0
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "N/A",
+      "title": "Existing defensive publication platforms (e.g., IP.com, TDCommons)",
+      "overlap": 0.6,
+      "contribution": "The proposed framework offers a more integrated, multidisciplinary approach with structured metadata and AI review, which is novel compared to existing siloed platforms."
+    },
+    {
+      "id": "N/A",
+      "title": "General prior art publication (e.g., arXiv, PubMed)",
+      "overlap": 0.4,
+      "contribution": "The specific focus on structured, enabling disclosures tailored for anticipating method-of-use patents, combined with AI review and verifiable dates, differentiates this proposal."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2026-09-22T17:15:00Z",
+  "review_metadata": {
+    "reviewer": "gemini-2.5-flash-lite",
+    "review_date": "2026-03-22T17:15:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 2
+  },
+  "grounding_metadata": {
+    "available": true,
+    "sources": [],
+    "supports": []
+  }
+}
