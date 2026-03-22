@@ -29,6 +29,7 @@ COMMANDS:
     review      — Get the full structured review for a paper
     reputation  — Look up a contributor's trust score and history
     submit      — Submit an article (.md file) for AI peer review
+    guide       — Print agent-facing JSON: figures, revisions, issue-body rules
     install     — Install Cursor rule, Claude rule, or Cursor skill
 
 COST: $0 — reads free public JSON files from GitHub.
@@ -48,6 +49,7 @@ import sys
 import textwrap
 import subprocess
 import shutil
+import tempfile
 
 # -----------------------------------------------------------------------
 # CONFIGURATION
@@ -425,46 +427,211 @@ def cmd_reputation(args):
 
 
 # -----------------------------------------------------------------------
+# SUBMISSION ISSUE BODY — must match _review_agent/stage_1_parse_and_filter.py
+# -----------------------------------------------------------------------
+# The review pipeline only treats a fixed set of "### {Label}" headers as form
+# fields (see KNOWN_LABELS in stage_1). The CLI must emit that shape so
+# `pubroot submit` is not silently broken. We use gh --body-file to avoid
+# shell-escaping bugs in long Markdown bodies.
+# -----------------------------------------------------------------------
+
+def _validate_category_slug(category: str, journals_data: dict):
+    """
+    Ensure category uses journal/topic and exists in journals.json.
+
+    Returns:
+        (True, "") on success, or (False, error_message) on failure.
+    """
+    category = (category or "").strip()
+    parts = category.split("/")
+    if len(parts) != 2 or not all(parts):
+        return (
+            False,
+            "Category must be two-level journal/topic (e.g. ai/agent-architecture). "
+            "Run `pubroot topics` for valid slugs.",
+        )
+    journal_slug, topic_slug = parts[0], parts[1]
+    journals = journals_data.get("journals", {})
+    journal = journals.get(journal_slug)
+    if not journal:
+        return False, f"Unknown journal slug '{journal_slug}'."
+    topics = journal.get("topics") or {}
+    if topic_slug not in topics:
+        return (
+            False,
+            f"Unknown topic '{topic_slug}' under journal '{journal_slug}'.",
+        )
+    return True, ""
+
+
+def _build_submission_issue_body(frontmatter: dict, article_body: str) -> str:
+    """
+    Build the GitHub Issue body in the same shape as submission.yml / Stage 1.
+
+    IMPORTANT:
+        Only known "### " section headers may appear as structural fields.
+        Article sections must use "## " (h2), not "### " (h3), inside Article Body.
+    """
+    title = (frontmatter.get("title") or "").strip()
+    category = (
+        frontmatter.get("category") or frontmatter.get("journal") or ""
+    ).strip()
+    submission_type = (
+        frontmatter.get("submission_type")
+        or frontmatter.get("submission type")
+        or "original-research"
+    ).strip()
+    abstract = (frontmatter.get("abstract") or "").strip()
+    repo_url = (
+        frontmatter.get("repo_url")
+        or frontmatter.get("supporting_repo")
+        or ""
+    ).strip()
+    commit_sha = (frontmatter.get("commit_sha") or "").strip()
+    repo_visibility = (
+        frontmatter.get("repo_visibility") or "public"
+    ).strip().lower()
+    if repo_visibility not in ("public", "private", "no-repo"):
+        repo_visibility = "public"
+    payment = (frontmatter.get("payment_code") or "").strip()
+
+    agreement = (
+        "- [X] I confirm this is original work or properly attributed\n"
+        "- [X] I understand the review is performed by AI and results are published publicly\n"
+        "- [X] I agree that accepted articles will be published under the license I choose"
+    )
+
+    def _opt(val: str) -> str:
+        return val if val else "_No response_"
+
+    parts = [
+        f"### Article Title\n\n{title}",
+        f"### Category\n\n{category}",
+        f"### Submission Type\n\n{submission_type}",
+        f"### Abstract\n\n{abstract}",
+        f"### Article Body\n\n{article_body.strip()}",
+        f"### Supporting Repository URL\n\n{_opt(repo_url)}",
+        f"### Commit SHA\n\n{_opt(commit_sha)}",
+        f"### Repository Visibility\n\n{repo_visibility}",
+        f"### Payment Code (Optional)\n\n{_opt(payment)}",
+        f"### Submission Agreement\n\n{agreement}",
+    ]
+    return "\n\n".join(parts) + "\n"
+
+
+# -----------------------------------------------------------------------
+# COMMAND: guide
+# -----------------------------------------------------------------------
+# Agents call `pubroot guide --json` to load policies without scraping the site.
+# Content mirrors Editorial Guidelines (figures, revisions) and Stage 1 rules.
+# -----------------------------------------------------------------------
+
+def cmd_guide(args):
+    """
+    Print structured JSON for agents: acceptance threshold, figures, revisions,
+    and issue-body constraints. Same information as AGENT_SUBMISSION_GUIDE.md.
+    """
+    data = _fetch_json("journals.json")
+    threshold = float(data.get("acceptance_threshold", 6.0))
+    _output(
+        {
+            "product": "Pubroot",
+            "website": "https://pubroot.com",
+            "submission_repository": GITHUB_REPO,
+            "acceptance_threshold": threshold,
+            "figures_and_embedded_media": {
+                "policy": (
+                    "The automated pipeline persists Markdown from the issue only. "
+                    "It does not upload or mirror binary image files for you."
+                ),
+                "embed_syntax": "![description](https://...) with absolute HTTPS URLs.",
+                "recommended_hosting": [
+                    "Commit figures in your supporting repo; pin Commit SHA; link via raw.githubusercontent.com or GitHub blob ?raw=1.",
+                    "Self-hosted HTTPS, CDN, or object storage you control — keep URLs durable.",
+                ],
+                "reference_url": (
+                    "https://pubroot.com/editorial-guidelines/#figures-hosting"
+                ),
+            },
+            "revisions": {
+                "after_rejection": (
+                    "Open a new submission issue with an updated article body; "
+                    "the full six-stage review runs again."
+                ),
+                "after_publication_substantive": (
+                    "Submit a new article through the same template; published "
+                    "review JSON may include supersedes pointing at the older paper ID."
+                ),
+                "after_publication_minor": (
+                    "Typos, broken links, small formatting: pull request or issue "
+                    "on the pubroot-website repo."
+                ),
+                "same_github_user_as_prior_paper_not_enforced_by_automation": True,
+                "reference_url": (
+                    "https://pubroot.com/editorial-guidelines/#revisions-errata"
+                ),
+            },
+            "submitter_identity": {
+                "note": (
+                    "Attributed author in our index is the GitHub login of the "
+                    "user who opens the issue (issue author), not a free-text "
+                    "field in the Markdown file."
+                ),
+            },
+            "issue_body_format": {
+                "must_match_pipeline": (
+                    "Headers must be exactly the labels expected by "
+                    "stage_1_parse_and_filter.py (see submission.yml)."
+                ),
+                "known_section_labels": [
+                    "Article Title",
+                    "Category",
+                    "Submission Type",
+                    "Abstract",
+                    "Article Body",
+                    "Supporting Repository URL",
+                    "Commit SHA",
+                    "Repository Visibility",
+                    "Payment Code (Optional)",
+                    "Submission Agreement",
+                ],
+                "article_body_rule": (
+                    "Inside Article Body, use ## for sections — avoid ### because "
+                    "only specific ### labels are form fields."
+                ),
+            },
+        }
+    )
+
+
+# -----------------------------------------------------------------------
 # COMMAND: submit
 # -----------------------------------------------------------------------
 # Submits an article for AI peer review. Takes a .md file with YAML-like
 # frontmatter and creates a GitHub Issue via `gh issue create`.
 #
-# The user asked: "how can we make the submission step simple enough?"
-# Answer: The agent writes a normal markdown file with a few metadata
-# fields at the top. The CLI validates it, formats it as a GitHub Issue,
-# and submits it via `gh`. The existing review pipeline picks it up.
+# Frontmatter (between --- markers):
+#   title: Required
+#   category: Required — two-level slug, e.g. ai/agent-architecture (alias: journal)
+#   abstract: Required
+#   submission_type: optional (default original-research)
+#   repo_url / supporting_repo: optional
+#   commit_sha: optional
+#   repo_visibility: public | private | no-repo (default public)
+#   payment_code: optional
 #
-# Frontmatter format (between --- markers):
-#   title: Your Article Title
-#   author: github-username
-#   journal: ios-debugging
-#   repo_url: https://github.com/user/repo (optional, for code verification)
-#   abstract: One-paragraph summary
-#
-# Then the article body follows as regular markdown.
+# The article Markdown body follows the closing ---. Author attribution in
+# published metadata comes from the GitHub user running `gh`, not from frontmatter.
 # -----------------------------------------------------------------------
 
 def cmd_submit(args):
     """
     Submit an article for AI peer review via GitHub Issue.
 
-    Takes a .md file, validates its frontmatter, and uses the GitHub CLI
-    (gh) to create an Issue in the Pubroot repo. The review pipeline
-    picks it up automatically from there.
-
-    Prerequisites:
-    - GitHub CLI (gh) must be installed and authenticated
-    - The .md file must have valid frontmatter (title, author, journal, abstract)
+    Uses an issue body compatible with stage_1_parse_and_filter.py (same headers
+    as submission.yml). Requires GitHub CLI authenticated as the submitting user.
 
     Example: `pubroot submit my-article.md`
-
-    WHY GITHUB ISSUES:
-    The entire Pubroot pipeline is GitHub-native. Issues trigger Actions,
-    Actions run the review pipeline, the pipeline commits results back.
-    No external services, no API keys, no cost. The user specifically
-    asked about making submission "simple enough" — this is a single
-    command that an agent can run after writing a markdown file.
     """
     filepath = args.file
 
@@ -472,7 +639,7 @@ def cmd_submit(args):
         _output({"error": f"File not found: {filepath}"})
         return
 
-    with open(filepath, "r") as f:
+    with open(filepath, "r", encoding="utf-8") as f:
         content = f.read()
 
     # Parse simple YAML-like frontmatter (between --- markers)
@@ -481,39 +648,50 @@ def cmd_submit(args):
 
     if not frontmatter:
         _output({
-            "error": "No frontmatter found. File must start with --- and include title, author, journal, abstract.",
+            "error": (
+                "No frontmatter found. File must start with --- and include "
+                "title, category, abstract."
+            ),
             "expected_format": (
                 "---\n"
                 "title: Your Article Title\n"
-                "author: your-github-username\n"
-                "journal: ios-debugging\n"
+                "category: ai/agent-architecture\n"
+                "submission_type: original-research\n"
                 "repo_url: https://github.com/user/repo\n"
+                "commit_sha: abc1234\n"
+                "repo_visibility: public\n"
                 "abstract: One paragraph summary of the article.\n"
                 "---\n\n"
-                "Your article body in markdown..."
-            )
+                "Your article body in markdown (200+ words). "
+                "Embed images with ![alt](https://...) using URLs you host."
+            ),
+            "see_also": "pubroot guide --json",
         })
         return
 
-    # Validate required fields
-    required = ["title", "author", "journal", "abstract"]
+    # Validate required fields (two-level category, not legacy flat journal slug)
+    required = ["title", "abstract"]
     missing = [f for f in required if not frontmatter.get(f)]
+    if not frontmatter.get("category") and not frontmatter.get("journal"):
+        missing.append("category (or journal: journal/topic)")
     if missing:
         _output({
             "error": f"Missing required frontmatter fields: {', '.join(missing)}",
             "fields_found": list(frontmatter.keys()),
-            "tip": "Run `pubroot topics` to see valid journal slugs."
+            "tip": "Run `pubroot topics` and use category: journal/topic (e.g. ai/agent-architecture).",
         })
         return
 
-    # Validate journal exists
     journals_data = _fetch_json("journals.json")
-    valid_journals = list(journals_data.get("journals", {}).keys())
-    if frontmatter["journal"] not in valid_journals:
+    category_val = (
+        frontmatter.get("category") or frontmatter.get("journal") or ""
+    ).strip()
+    ok, err_msg = _validate_category_slug(category_val, journals_data)
+    if not ok:
         _output({
-            "error": f"Unknown journal: {frontmatter['journal']}",
-            "valid_journals": valid_journals,
-            "tip": "Run `pubroot topics` to browse available journals."
+            "error": err_msg,
+            "category_provided": category_val,
+            "tip": "Run `pubroot topics --json` for valid journal/topic pairs.",
         })
         return
 
@@ -523,43 +701,33 @@ def cmd_submit(args):
             "error": "GitHub CLI (gh) not found. Install it: https://cli.github.com",
             "alternative": (
                 f"You can also submit manually at: "
-                f"https://github.com/{GITHUB_REPO}/issues/new"
-            )
+                f"https://github.com/{GITHUB_REPO}/issues/new?template=submission.yml"
+            ),
         })
         return
 
-    # Build the Issue body
-    # Format matches what the review pipeline expects to parse from Issues
-    issue_title = f"[Submission] {frontmatter['title']}"
+    issue_body = _build_submission_issue_body(frontmatter, body)
+    issue_title = f"[SUBMISSION] {frontmatter['title']}"
+    threshold = float(journals_data.get("acceptance_threshold", 6.0))
 
-    repo_line = ""
-    if frontmatter.get("repo_url"):
-        repo_line = f"\n**Repository:** {frontmatter['repo_url']}"
-
-    issue_body = (
-        f"## Article Submission\n\n"
-        f"**Title:** {frontmatter['title']}\n"
-        f"**Author:** @{frontmatter['author']}\n"
-        f"**Journal:** {frontmatter['journal']}\n"
-        f"**Abstract:** {frontmatter['abstract']}{repo_line}\n\n"
-        f"---\n\n"
-        f"## Article Content\n\n"
-        f"{body.strip()}\n"
-    )
-
-    # Submit via gh
+    tmp_path = None
     try:
+        fd, tmp_path = tempfile.mkstemp(suffix=".md", prefix="pubroot-submit-")
+        with os.fdopen(fd, "w", encoding="utf-8") as tmp:
+            tmp.write(issue_body)
+
         result = subprocess.run(
             [
                 "gh", "issue", "create",
                 "--repo", GITHUB_REPO,
                 "--title", issue_title,
-                "--body", issue_body,
-                "--label", "submission"
+                "--body-file", tmp_path,
+                "--label", "submission",
+                "--label", "pending-review",
             ],
             capture_output=True,
             text=True,
-            timeout=30
+            timeout=60,
         )
 
         if result.returncode == 0:
@@ -569,24 +737,33 @@ def cmd_submit(args):
                 "message": "Article submitted for AI peer review!",
                 "issue_url": issue_url,
                 "title": frontmatter["title"],
-                "journal": frontmatter["journal"],
+                "category": category_val,
+                "acceptance_threshold": threshold,
                 "next_steps": (
-                    "The AI review pipeline will automatically process your "
-                    "submission. You'll receive the review as a comment on the "
-                    "GitHub Issue. If accepted (score >= 6.0/10), it will be "
-                    "published to pubroot.com."
-                )
+                    "The AI review pipeline will process this issue automatically. "
+                    "You will receive the review as a comment. If accepted "
+                    f"(score >= {threshold}), the article is published to pubroot.com. "
+                    "For figures, use ![alt](https://...) with stable URLs you host. "
+                    "For revisions after rejection, open a new submission issue. "
+                    "Run `pubroot guide --json` for full agent policies."
+                ),
             })
         else:
             _output({
                 "error": "Failed to create GitHub Issue",
                 "stderr": result.stderr.strip(),
-                "tip": "Make sure you're authenticated: `gh auth login`"
+                "tip": "Make sure you're authenticated: `gh auth login`",
             })
     except subprocess.TimeoutExpired:
         _output({"error": "Timed out creating GitHub Issue. Check your network."})
     except Exception as e:
         _output({"error": f"Failed to run gh: {e}"})
+    finally:
+        if tmp_path and os.path.isfile(tmp_path):
+            try:
+                os.unlink(tmp_path)
+            except OSError:
+                pass
 
 
 def _parse_frontmatter(content):
@@ -667,21 +844,31 @@ pubroot verify "GPT-4o scores 90% on MMLU" --json        # Verify a claim
 pubroot review 2026-042 --json                           # Get full review
 pubroot reputation octocat --json                        # Check contributor
 pubroot submit article.md                                # Submit for review
+pubroot guide --json                                     # Figures, revisions, issue format (agents)
 ```
 
 ## Submitting Articles
 
-Use `pubroot submit article.md` (recommended). The CLI creates a GitHub Issue.
+Use `pubroot submit article.md` (recommended). The CLI builds the same
+`### Section` layout as the GitHub submission template so the review pipeline
+can parse it.
+
+**Figures:** Pubroot does not upload images from the issue. In your article
+body use `![alt](https://...)` with stable HTTPS URLs you control (e.g. files
+in your supporting repo + pinned Commit SHA, or your own CDN).
+
+**Revisions:** After a rejection, open a **new** submission issue with the
+revised Markdown. After publication, substantive updates are a **new**
+submission (review may record `supersedes`); tiny fixes can be PRs on
+pubroot-website. Run `pubroot guide --json` for the full policy object.
 
 If submitting directly via `gh issue create`, you MUST format the body with
-`### ` headers as section delimiters. The parser splits on `### ` to extract
-fields. **NEVER use `### ` (h3) inside the Article Body** — it will be
-interpreted as a new form field and truncate your article. Use `## ` (h2)
-for article sections and `**bold**` for subsections.
+the same `### ` headers as `submission.yml`. **NEVER use `### ` (h3) inside
+the Article Body** for sections — use `## ` (h2) for article sections.
 
 Categories use two-level `journal/topic` format: `ai/llm-benchmarks`,
 `prior-art/therapeutic-use`, `debug/runtime-errors`, etc. Run `pubroot topics`
-for the full list. Flat slugs like `llm-benchmarks` are rejected.
+for the full list.
 
 ## When to Use
 
@@ -709,14 +896,17 @@ pubroot verify "claim text here" --json                  # Fact-check a claim
 pubroot review 2026-042 --json                           # Get full review
 pubroot reputation github-handle --json                  # Contributor info
 pubroot submit article.md                                # Submit article
+pubroot guide --json                                     # Policies for figures & revisions
 ```
 
 ## Submitting Articles
 
-Use `pubroot submit article.md` (recommended). If submitting directly via
-`gh issue create`, format the body with `### ` headers as section delimiters.
-**NEVER use `### ` (h3) inside the Article Body** — the parser splits on
-`### ` and will truncate your article. Use `## ` for article sections.
+Use `pubroot submit article.md`. Embed figures with `![alt](https://...)` and
+URLs you host. Revisions after rejection = new submission issue; after
+publication = new article for major changes, or PR for typos. See `pubroot guide --json`.
+
+If using `gh issue create` manually, copy header layout from `submission.yml`.
+**NEVER use `### ` inside Article Body** for sections — use `## `.
 
 Categories use two-level format: `ai/llm-benchmarks`, `prior-art/therapeutic-use`,
 `debug/runtime-errors`. Run `pubroot topics` for the full list.
@@ -772,6 +962,11 @@ Or: `npm install -g pubroot`. Or standalone (zero deps):
 There are two ways to submit. Both create a GitHub Issue on
 `buildngrowsv/pubroot-website` that triggers the AI review pipeline.
 
+**Policy snapshot:** Run `pubroot guide --json` for machine-readable rules on
+**figures** (embed `![alt](https://...)` only; no binary upload from the issue),
+**revisions** (new issue after rejection; new article for major post-publish updates;
+`supersedes` in review JSON when replacing an older paper), and **issue body** headers.
+
 **Option A: Via CLI (recommended)**
 
 Write a markdown file with frontmatter, then submit:
@@ -779,16 +974,19 @@ Write a markdown file with frontmatter, then submit:
 ```markdown
 ---
 title: Your Article Title
-author: github-username
-journal: ai/agent-architecture
+category: ai/agent-architecture
+submission_type: original-research
 repo_url: https://github.com/user/repo
+commit_sha: abc123def456
+repo_visibility: public
 abstract: One paragraph summary.
 ---
 
-Your article body here...
+Your article body here (200+ words). Images: ![diagram](https://your-host/fig.png)
 ```
 
-Run: `pubroot submit article.md` (requires `gh` CLI authenticated).
+Run: `pubroot submit article.md` (requires `gh` CLI authenticated). The CLI
+emits the same `###` section headers as the GitHub submission template.
 
 **Option B: Via `gh issue create` (direct)**
 
@@ -1048,6 +1246,7 @@ def build_parser():
               pubroot review 2026-042                           Get full review
               pubroot reputation octocat                        Contributor info
               pubroot submit my-article.md                      Submit for review
+              pubroot guide --json                              Agent policies (figures, revisions)
               pubroot install cursor-rule                       Install Cursor rule
               pubroot install cursor-skill                      Install global skill
             
@@ -1114,6 +1313,14 @@ def build_parser():
     p_submit = subs.add_parser("submit", parents=[json_parent], help="Submit an article for review")
     p_submit.add_argument("file", help="Path to the .md article file")
     p_submit.set_defaults(func=cmd_submit)
+
+    # --- guide (agent-facing policies: figures, revisions, issue format) ---
+    p_guide = subs.add_parser(
+        "guide",
+        parents=[json_parent],
+        help="Print JSON: figures, revisions, and submission issue-body rules for agents",
+    )
+    p_guide.set_defaults(func=cmd_guide)
 
     # --- install ---
     p_install = subs.add_parser(

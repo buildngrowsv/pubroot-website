@@ -476,6 +476,13 @@
           <p><strong>Before acceptance (rejected or you withdrew):</strong> Read the review comment on your issue, update your Markdown, and submit a <strong>new GitHub Issue</strong> using the same template. Each issue is an independent review event.</p>
           <p><strong>After acceptance:</strong> There is <strong>no separate “revision submission” button</strong> in the current automation. For a <strong>material update</strong> (new results, changed claims, new figures), submit a <strong>new article</strong> through the normal pipeline. The review schema includes <code>supersedes</code> so a replacement article can point at the older paper ID when that applies. For <strong>small corrections</strong> (typos, broken links, formatting), use a normal <a href="https://github.com/buildngrowsv/pubroot-website">GitHub pull request or issue</a> on <code>pubroot-website</code>, the same way you would fix any open-source documentation.</p>
 
+          <h3 id="agents-cli-mcp">Agents, CLI &amp; MCP</h3>
+          <p>
+            Automated clients should call <code>pubroot guide --json</code> (install via <code>pip install pubroot</code> or <code>npx pubroot</code>) to load the same policies as this page: figure embedding, revision paths, and which <code>###</code> headers are valid in the issue body.
+            The MCP server exposes <code>get_submission_guide</code> with an equivalent payload. Use <code>pubroot submit</code> to generate an issue body that matches <code>submission.yml</code> / the Stage&nbsp;1 parser.
+            Reference: <a href="https://github.com/buildngrowsv/pubroot-website/blob/main/_cli/AGENT_SUBMISSION_GUIDE.md"><code>AGENT_SUBMISSION_GUIDE.md</code></a> in the repo.
+          </p>
+
           <div class="cta-box">
             <h3>Ready to Submit?</h3>
             <p>Choose your journal and topic, pick a submission type, and start writing.</p>

@@ -11,6 +11,7 @@ PURPOSE:
     3. get_review — Get the full structured review for a specific paper
     4. get_contributor_reputation — Look up a contributor's trust metrics
     5. get_related_work — Find papers related to a topic or paper
+    6. get_submission_guide — Figures, revisions, and issue-body rules for agents
     
     The server reads data from the GitHub repo's JSON files. It can run in two modes:
     - LOCAL: Read from local filesystem (for development/testing)
@@ -401,6 +402,89 @@ def get_related_work(
     return {
         "total_related": len(scored),
         "results": scored[:10],
+    }
+
+
+@mcp.tool()
+def get_submission_guide() -> dict:
+    """
+    Return agent-facing policies for Pubroot submissions: embedded images (HTTPS URLs
+    only; no binary upload from the issue), revision workflows (new issue after rejection;
+    new article for major post-publish updates; PR for minor fixes), issue-body header
+    rules matching submission.yml / stage_1 parser, and acceptance threshold.
+
+    Use this when an agent needs to submit or revise an article and must not guess
+    hosting or revision steps. Equivalent to: pubroot guide --json
+    """
+    data = _load_json("journals.json")
+    threshold = float(data.get("acceptance_threshold", 6.0))
+    return {
+        "product": "Pubroot",
+        "website": "https://pubroot.com",
+        "submission_repository": GITHUB_REPO,
+        "acceptance_threshold": threshold,
+        "figures_and_embedded_media": {
+            "policy": (
+                "The automated pipeline persists Markdown from the issue only. "
+                "It does not upload or mirror binary image files for you."
+            ),
+            "embed_syntax": "![description](https://...) with absolute HTTPS URLs.",
+            "recommended_hosting": [
+                "Commit figures in your supporting repo; pin Commit SHA; link via raw.githubusercontent.com or GitHub blob ?raw=1.",
+                "Self-hosted HTTPS, CDN, or object storage you control — keep URLs durable.",
+            ],
+            "reference_url": (
+                "https://pubroot.com/editorial-guidelines/#figures-hosting"
+            ),
+        },
+        "revisions": {
+            "after_rejection": (
+                "Open a new submission issue with an updated article body; "
+                "the full six-stage review runs again."
+            ),
+            "after_publication_substantive": (
+                "Submit a new article through the same template; published "
+                "review JSON may include supersedes pointing at the older paper ID."
+            ),
+            "after_publication_minor": (
+                "Typos, broken links, small formatting: pull request or issue "
+                "on the pubroot-website repo."
+            ),
+            "same_github_user_as_prior_paper_not_enforced_by_automation": True,
+            "reference_url": (
+                "https://pubroot.com/editorial-guidelines/#revisions-errata"
+            ),
+        },
+        "submitter_identity": {
+            "note": (
+                "Attributed author in our index is the GitHub login of the "
+                "user who opens the issue (issue author), not a free-text "
+                "field in the Markdown file."
+            ),
+        },
+        "issue_body_format": {
+            "must_match_pipeline": (
+                "Headers must be exactly the labels expected by "
+                "stage_1_parse_and_filter.py (see submission.yml)."
+            ),
+            "known_section_labels": [
+                "Article Title",
+                "Category",
+                "Submission Type",
+                "Abstract",
+                "Article Body",
+                "Supporting Repository URL",
+                "Commit SHA",
+                "Repository Visibility",
+                "Payment Code (Optional)",
+                "Submission Agreement",
+            ],
+            "article_body_rule": (
+                "Inside Article Body, use ## for sections — avoid ### because "
+                "only specific ### labels are form fields."
+            ),
+        },
+        "cli_equivalent": "pubroot guide --json",
     }
 
 
