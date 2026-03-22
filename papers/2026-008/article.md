@@ -4,8 +4,7 @@ title: |
 paper_id: "2026-008"
 author: "buildngrowsv"
 category: "materials/polymers"
-date: |
-  2026-03-22T22:16:59.409075+00:00
+date: 2026-03-22T22:16:59Z
 abstract: |
   We document a communication-grade investigation of a large (~64 oz) insulated bottle with a flip lid and a dip tube that should stay in the liquid pool when the vessel tilts. The work separates a flexible joint at the cap from a long rigid tube that behaves as a pendulum in world space, compares a fixed one-piece straw, and adds a mid-straw hinge story. A single-file HTML canvas demo encodes the kinematics (level water surface, cavity clip, angle clamping so the rod does not spuriously shorten at walls). An inline SVG explains an adapter-friendly architecture: two cut rigid stubs inside a generous silicone sock with a modest gap between plastic ends to limit unsupported soft volume under typical sip suction (~1 foot of water head, order of magnitude). A markdown design note lists off-the-shelf prototyping paths. The supporting repository hosts the static demo and assets for reproduction and review.
 score: 7.5
