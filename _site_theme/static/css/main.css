@@ -51,6 +51,78 @@
   --radius: 6px;
   --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
   --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+
+  /* ---- Gradient / Hero color tokens (Feb 2026) ----
+     These are extracted from previously-hardcoded hex values so that
+     dark mode can override them cleanly. Used in hero sections,
+     feature banners, and other gradient backgrounds across the site. */
+  --hero-gradient-start: #F8FFFE;
+  --feature-gradient-start: #F0FDF4;
+  --feature-gradient-end: #E0F7F4;
+  --cta-gradient-start: #E0F7F4;
+  --cta-gradient-end: #E8FBF8;
+
+  /* ---- Footer color tokens ----
+     The footer has its own dark color scheme even in light mode.
+     In dark mode these shift subtly to differentiate from the body bg. */
+  --footer-bg: #1A1A2E;
+  --footer-text: #B0B0C0;
+  --footer-text-muted: #8888A0;
+  --footer-heading: #E4E4EB;
+  --footer-border: #2A2A3E;
+}
+
+/* ============================================================
+   DARK MODE — [data-theme="dark"]
+   ============================================================
+   Dark mode is activated by setting data-theme="dark" on the <html>
+   element. This is done via an inline anti-flash script in <head>
+   (reads from localStorage) and toggled by a sun/moon button in the
+   site header.
+
+   COLOR PHILOSOPHY:
+   - We use dark slate backgrounds (not pure black) for a comfortable
+     reading experience similar to GitHub dark mode or Notion dark.
+   - The teal accent (#00D4BE) is slightly brighter than light mode's
+     #00B4A0 to maintain contrast and vibrancy against dark backgrounds.
+   - Surface colors are close but distinct from the body bg to create
+     subtle depth without harsh contrasts.
+   - Green/red/amber status colors are lightened to meet WCAG AA
+     contrast requirements against dark backgrounds.
+   - The footer, which is already dark in light mode, shifts to an even
+     darker shade to remain visually distinct from the page body.
+   ============================================================ */
+[data-theme="dark"] {
+  --bg: #0F1117;
+  --surface: #1A1B26;
+  --surface-hover: #24253A;
+  --border: #2A2B3D;
+  --text: #E4E4EB;
+  --text-secondary: #8B8FA3;
+  --accent: #00D4BE;
+  --accent-hover: #00B4A0;
+  --accent-light: #0D2F2B;
+  --success: #34D399;
+  --success-light: #0D2F26;
+  --error: #F87171;
+  --error-light: #2F1A1A;
+  --warning: #FBBF24;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.35);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.4);
+
+  /* Dark mode gradient overrides */
+  --hero-gradient-start: #111320;
+  --feature-gradient-start: #0D1F1A;
+  --feature-gradient-end: #0D2520;
+  --cta-gradient-start: #0D2F2B;
+  --cta-gradient-end: #0D2520;
+
+  /* Dark mode footer — slightly deeper than body to stay distinct */
+  --footer-bg: #0A0B10;
+  --footer-text: #8B8FA3;
+  --footer-text-muted: #5A5E72;
+  --footer-heading: #C8C8D4;
+  --footer-border: #1A1B26;
 }
 
 html {
@@ -171,7 +243,7 @@ h1, h2, h3, h4 {
    HERO
    ============================================================ */
 .hero {
-  background: linear-gradient(180deg, #F8FFFE 0%, var(--bg) 100%);
+  background: linear-gradient(180deg, var(--hero-gradient-start) 0%, var(--bg) 100%);
   padding: 60px 0 40px;
   text-align: center;
   border-bottom: 1px solid var(--border);
@@ -869,8 +941,8 @@ h1, h2, h3, h4 {
    FOOTER
    ============================================================ */
 .site-footer {
-  background: #1A1A2E;
-  color: #B0B0C0;
+  background: var(--footer-bg);
+  color: var(--footer-text);
   padding: 48px 0 24px;
   margin-top: 0;
 }
@@ -887,12 +959,12 @@ h1, h2, h3, h4 {
   background: var(--accent);
 }
 .footer-brand .logo-text {
-  color: #E4E4EB;
+  color: var(--footer-heading);
 }
 .footer-tagline {
   margin-top: 10px;
   font-size: 0.85rem;
-  color: #8888A0;
+  color: var(--footer-text-muted);
 }
 .footer-links-group h4 {
   font-family: var(--font-body);
@@ -900,23 +972,23 @@ h1, h2, h3, h4 {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: #E4E4EB;
+  color: var(--footer-heading);
   margin-bottom: 12px;
 }
 .footer-links-group a {
   display: block;
-  color: #8888A0;
+  color: var(--footer-text-muted);
   font-size: 0.85rem;
   padding: 3px 0;
 }
 .footer-links-group a:hover { color: var(--accent); text-decoration: none; }
 
 .footer-bottom {
-  border-top: 1px solid #2A2A3E;
+  border-top: 1px solid var(--footer-border);
   padding-top: 16px;
   text-align: center;
   font-size: 0.8rem;
-  color: #6B6B80;
+  color: var(--footer-text-muted);
 }
 
 /* ============================================================
@@ -957,3 +1029,110 @@ h1, h2, h3, h4 {
 .icon-error { color: var(--error); }
 .icon-warning { color: var(--warning); }
 .icon-muted { color: var(--text-secondary); }
+
+/* ============================================================
+   THEME TOGGLE BUTTON — Dark/Light Mode Switch
+   ============================================================
+   A sun/moon icon button in the site header that toggles between
+   dark and light modes. Uses Lucide icons (already loaded sitewide).
+   
+   DESIGN DECISIONS (Feb 2026):
+   - Positioned in the header nav, just before the "Submit Article" CTA
+   - Uses CSS to swap icons based on [data-theme="dark"] — no JS needed
+     for icon visibility (the JS only sets the data-theme attribute)
+   - Moon icon shown in light mode (clicking it = "switch to dark")
+   - Sun icon shown in dark mode (clicking it = "switch to light")
+   - Standard UX pattern used by GitHub, Notion, Stripe docs, etc.
+   - Button has generous hit area (36x36px) with 6px radius for easy
+     clicking on mobile, matching the site's --radius design token
+   - Smooth 0.2s transition on background for nice hover feedback
+   ============================================================ */
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+  padding: 0;
+  flex-shrink: 0;
+}
+.theme-toggle:hover {
+  background: var(--accent-light);
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+/* Icon swap logic — pure CSS, no JS needed.
+   Moon shows in light mode, Sun shows in dark mode.
+   Both icons are in the DOM, CSS toggles display. */
+.theme-toggle .theme-icon-light {
+  display: none;
+}
+.theme-toggle .theme-icon-dark {
+  display: inline-block;
+}
+[data-theme="dark"] .theme-toggle .theme-icon-light {
+  display: inline-block;
+}
+[data-theme="dark"] .theme-toggle .theme-icon-dark {
+  display: none;
+}
+
+/* ============================================================
+   DARK MODE — Element-Specific Overrides
+   ============================================================
+   Some elements have hardcoded colors (like the code block dark bg,
+   badge borders, or paper card hover) that need explicit dark mode
+   overrides. These are kept here rather than scattered through the
+   file for easy maintenance. The CSS variable system handles 90%
+   of dark mode automatically; these are the remaining 10%.
+   ============================================================ */
+
+/* Article body code blocks — already dark-bg in light mode, so in
+   dark mode we lighten them slightly for contrast against the page */
+[data-theme="dark"] .article-body pre {
+  background: #1E1F2E;
+}
+
+/* Paper card hover border — hardcoded #ccc in light mode */
+[data-theme="dark"] .paper-card:hover {
+  border-color: var(--border);
+}
+
+/* Badge border overrides for dark mode — the light-mode pastel
+   borders become too subtle on dark backgrounds */
+[data-theme="dark"] .badge-verified_open {
+  border-color: #166534;
+}
+[data-theme="dark"] .badge-verified_private {
+  border-color: #854D0E;
+}
+
+/* Pagefind search overrides for dark mode — the search input needs
+   to contrast against the dark hero gradient */
+[data-theme="dark"] .pagefind-ui .pagefind-ui__search-input {
+  background: var(--surface) !important;
+  border-color: var(--border) !important;
+  color: var(--text) !important;
+}
+[data-theme="dark"] .pagefind-ui .pagefind-ui__search-input::placeholder {
+  color: var(--text-secondary) !important;
+}
+
+/* Smooth color transitions for theme switching — prevents jarring
+   flash when toggling. Applied to all major color-changing properties.
+   The 0.2s duration matches the toggle button animation. */
+html {
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+body, .site-header, .site-footer, .hero, .how-it-works,
+.topics-bar, .paper-card, .review-panel, .abstract-block,
+.empty-state, .score-circle, .theme-toggle {
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}

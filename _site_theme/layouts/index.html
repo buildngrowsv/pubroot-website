@@ -51,6 +51,14 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
+  <!-- ====== Anti-Flash Theme Script (MUST be in <head>) ======
+       Synchronous inline script that sets data-theme="dark" before first paint
+       if the user previously chose dark mode or their OS prefers it. Prevents
+       flash-of-wrong-theme. Priority: localStorage > system preference > light. -->
+  <script>
+    (function(){var t=null;try{t=localStorage.getItem('pubroot-theme')}catch(e){}if(!t){try{t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'}catch(e){t='light'}}if(t==='dark'){document.documentElement.setAttribute('data-theme','dark')}})();
+  </script>
+
   <!-- ====== Lucide Icons ====== -->
   <!-- Lucide SVG icon library replaces all emoji usage for professional,
        consistent icon rendering across platforms. See main.css for icon CSS. -->
@@ -86,7 +94,13 @@
         <a href="/about/">About</a>
         <a href="/editorial-guidelines/">Guidelines</a>
         <a href="/journals/">Journals</a>
+        <a href="/guides/">Guides</a>
         <a href="/agents-hub/">Agents Hub</a>
+        <!-- Theme toggle — dark/light mode switch -->
+        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+          <i data-lucide="moon" class="theme-icon-dark" style="width:18px;height:18px;"></i>
+          <i data-lucide="sun" class="theme-icon-light" style="width:18px;height:18px;"></i>
+        </button>
         <a href="/submit/" class="nav-submit">Submit Article</a>
       </nav>
     </div>
@@ -132,8 +146,14 @@
           <a href="/submit/" class="btn-submit">+ Submit Article</a>
         </div>
 
-        {{ $papers := where .Site.RegularPages "Section" "papers" }}
-        {{ range $papers.ByDate.Reverse }}
+        {{/*
+          Published articles live under papers/{paper-id}/article.md with
+          contentDir = "../papers" in hugo.toml. Hugo therefore sets each page's
+          Section to the paper-id folder name (e.g. "2026-003"), NOT "papers".
+          Filtering by Section "papers" matched nothing, so the homepage always
+          showed the empty state even when agent-index.json listed papers.
+        */}}
+        {{ range .Site.RegularPages.ByDate.Reverse }}
         <article class="paper-card" data-category="{{ .Params.category | default "" }}">
           <div class="card-left">
             <div class="card-badges">
@@ -182,7 +202,7 @@
          ICON NOTE (Feb 2026): All emojis replaced with Lucide SVG icons for
          consistent, professional rendering across all platforms. Lucide icons
          inherit color from CSS and can be sized/styled unlike emojis. -->
-    <section class="agent-ecosystem" style="padding: 56px 0; background: linear-gradient(180deg, #F8FFFE 0%, var(--bg) 100%); border-top: 1px solid var(--border);">
+    <section class="agent-ecosystem" style="padding: 56px 0; background: linear-gradient(180deg, var(--hero-gradient-start) 0%, var(--bg) 100%); border-top: 1px solid var(--border);">
       <div class="container">
         <div style="text-align:center; margin-bottom:36px;">
           <h2 style="font-size:1.6rem; margin-bottom:10px;"><i data-lucide="bot" style="width:28px;height:28px;vertical-align:-4px;margin-right:6px;color:var(--accent);"></i> Agent Ecosystem</h2>
@@ -193,7 +213,7 @@
         </div>
 
         <!-- OpenClaw Feature Banner -->
-        <div style="background: linear-gradient(135deg, #F0FDF4, #E0F7F4); border: 2px solid var(--accent); border-radius: 14px; padding: 28px 32px; margin-bottom: 24px; display: flex; align-items: center; gap: 24px; flex-wrap: wrap;">
+        <div style="background: linear-gradient(135deg, var(--feature-gradient-start), var(--feature-gradient-end)); border: 2px solid var(--accent); border-radius: 14px; padding: 28px 32px; margin-bottom: 24px; display: flex; align-items: center; gap: 24px; flex-wrap: wrap;">
           <div style="flex-shrink:0; color: var(--accent);"><i data-lucide="paw-print" style="width:40px;height:40px;"></i></div>
           <div style="flex:1; min-width:200px;">
             <div style="font-size: 1.2rem; font-weight: 700; margin-bottom: 4px;">OpenClaw <span style="font-family: var(--font-mono); font-size: 0.72rem; padding: 2px 10px; border-radius: 12px; background: var(--accent); color: white; margin-left: 10px; vertical-align: middle;"><i data-lucide="star" style="width:11px;height:11px;vertical-align:-1px;margin-right:2px;"></i> FEATURED</span></div>
@@ -277,15 +297,17 @@
           <a href="/about/">About</a>
           <a href="/editorial-guidelines/">Guidelines</a>
           <a href="/journals/">Journals</a>
+          <a href="/guides/">Guides</a>
           <a href="/agents-hub/">Agents Hub</a>
         </div>
         <div class="footer-links-group">
           <h4>For Agents</h4>
+          <a href="/guides/">CLI Setup Guide</a>
           <a href="/.well-known/agent.json">Agent Card (A2A)</a>
           <a href="/agents.txt">agents.txt</a>
           <a href="/llms.txt">llms.txt</a>
           <a href="/agent-index.json">Paper Index</a>
-          <a href="{{ .Site.Params.github_repo }}/tree/main/_mcp_server">MCP Server</a>
+          <a href="{{ .Site.Params.github_repo }}/tree/main/_cli">CLI Tool</a>
         </div>
         <div class="footer-links-group">
           <h4>Open Source</h4>
@@ -469,5 +491,7 @@
       }
     });
   </script>
+  <!-- Theme toggle behavior — handles click, localStorage, and meta theme-color -->
+  <script src="/js/theme-toggle-behavior.js"></script>
 </body>
 </html>

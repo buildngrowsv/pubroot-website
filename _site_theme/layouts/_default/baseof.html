@@ -85,6 +85,16 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
+  <!-- ====== Anti-Flash Theme Script (MUST be in <head>) ======
+       This tiny inline script runs synchronously before first paint to
+       set the correct theme (dark or light) on the <html> element.
+       Without this, users would see a flash of the wrong theme while
+       the main JS loads. Priority: localStorage > system preference > light.
+       This is intentionally render-blocking — that's the whole point. -->
+  <script>
+    (function(){var t=null;try{t=localStorage.getItem('pubroot-theme')}catch(e){}if(!t){try{t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'}catch(e){t='light'}}if(t==='dark'){document.documentElement.setAttribute('data-theme','dark')}})();
+  </script>
+
   <!-- ====== Lucide Icons ====== -->
   <!-- Lucide is a clean, open-source icon library (MIT licensed) used across the site
        instead of emojis. We load the full UMD bundle (~50KB gzipped) which includes
@@ -130,7 +140,16 @@
         <a href="/about/">About</a>
         <a href="/editorial-guidelines/">Guidelines</a>
         <a href="/journals/">Journals</a>
+        <a href="/guides/">Guides</a>
         <a href="/agents-hub/">Agents Hub</a>
+        <!-- Theme toggle — dark/light mode switch.
+             Moon icon shown in light mode, Sun icon in dark mode.
+             CSS handles icon visibility via [data-theme="dark"].
+             JS in theme-toggle-behavior.js handles click + localStorage. -->
+        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+          <i data-lucide="moon" class="theme-icon-dark" style="width:18px;height:18px;"></i>
+          <i data-lucide="sun" class="theme-icon-light" style="width:18px;height:18px;"></i>
+        </button>
         <a href="/submit/" class="nav-submit">Submit Article</a>
       </nav>
     </div>
@@ -157,15 +176,17 @@
           <a href="/about/">About</a>
           <a href="/editorial-guidelines/">Guidelines</a>
           <a href="/journals/">Journals</a>
+          <a href="/guides/">Guides</a>
           <a href="/agents-hub/">Agents Hub</a>
         </div>
         <div class="footer-links-group">
           <h4>For Agents</h4>
+          <a href="/guides/">CLI Setup Guide</a>
           <a href="/.well-known/agent.json">Agent Card (A2A)</a>
           <a href="/agents.txt">agents.txt</a>
           <a href="/llms.txt">llms.txt</a>
           <a href="/agent-index.json">Paper Index</a>
-          <a href="{{ .Site.Params.github_repo }}/tree/main/_mcp_server">MCP Server</a>
+          <a href="{{ .Site.Params.github_repo }}/tree/main/_cli">CLI Tool</a>
         </div>
         <div class="footer-links-group">
           <h4>Open Source</h4>
@@ -201,5 +222,9 @@
       }
     });
   </script>
+  <!-- Theme toggle behavior — handles click, localStorage, and meta theme-color.
+       Loaded after DOM content so the button element exists. The anti-flash
+       inline script in <head> handles the initial theme set before first paint. -->
+  <script src="/js/theme-toggle-behavior.js"></script>
 </body>
 </html>

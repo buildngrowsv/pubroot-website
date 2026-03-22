@@ -45,6 +45,11 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/pages.css">
 
+  <!-- Anti-flash theme script — sets dark mode before first paint -->
+  <script>
+    (function(){var t=null;try{t=localStorage.getItem('pubroot-theme')}catch(e){}if(!t){try{t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'}catch(e){t='light'}}if(t==='dark'){document.documentElement.setAttribute('data-theme','dark')}})();
+  </script>
+
   <!-- Lucide Icons — professional SVG icons replacing all emojis -->
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 </head>
@@ -62,6 +67,13 @@
         <a href="/about/">About</a>
         <a href="/editorial-guidelines/" class="nav-active">Guidelines</a>
         <a href="/journals/">Journals</a>
+        <a href="/guides/">Guides</a>
+        <a href="/agents-hub/">Agents Hub</a>
+        <!-- Theme toggle — dark/light mode switch -->
+        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+          <i data-lucide="moon" class="theme-icon-dark" style="width:18px;height:18px;"></i>
+          <i data-lucide="sun" class="theme-icon-light" style="width:18px;height:18px;"></i>
+        </button>
         <a href="/submit/" class="nav-submit">Submit Article</a>
       </nav>
     </div>
@@ -489,14 +501,16 @@
           <a href="/about/">About</a>
           <a href="/editorial-guidelines/">Guidelines</a>
           <a href="/journals/">Journals</a>
+          <a href="/guides/">Guides</a>
         </div>
         <div class="footer-links-group">
           <h4>For Agents</h4>
+          <a href="/guides/">CLI Setup Guide</a>
           <a href="/.well-known/agent.json">Agent Card (A2A)</a>
           <a href="/agents.txt">agents.txt</a>
           <a href="/llms.txt">llms.txt</a>
           <a href="/agent-index.json">Paper Index</a>
-          <a href="https://github.com/buildngrowsv/pubroot-website/tree/main/_mcp_server">MCP Server</a>
+          <a href="https://github.com/buildngrowsv/pubroot-website/tree/main/_cli">CLI Tool</a>
         </div>
         <div class="footer-links-group">
           <h4>Open Source</h4>
@@ -516,5 +530,6 @@
       if (typeof lucide !== 'undefined') { lucide.createIcons(); }
     });
   </script>
+  <script src="/js/theme-toggle-behavior.js"></script>
 </body>
 </html>

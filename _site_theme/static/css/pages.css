@@ -37,9 +37,10 @@
    Shared hero section for all content pages. Slightly different
    from the homepage hero — no search bar, more focus on the
    page title and description.
+   Uses --hero-gradient-start variable so dark mode works automatically.
    ============================================================ */
 .page-hero {
-  background: linear-gradient(180deg, #F8FFFE 0%, var(--bg) 100%);
+  background: linear-gradient(180deg, var(--hero-gradient-start) 0%, var(--bg) 100%);
   padding: 56px 0 40px;
   border-bottom: 1px solid var(--border);
 }
@@ -1152,4 +1153,85 @@
 .submit-final-sep {
   margin: 0 10px;
   color: var(--text-secondary);
+}
+
+/* ============================================================
+   DARK MODE OVERRIDES — pages.css
+   ============================================================
+   These overrides handle elements in static content pages that use
+   hardcoded light-mode colors. Most elements already use CSS variables
+   from main.css and adapt automatically. These are the stragglers.
+   
+   Added Feb 2026 as part of the sitewide dark/light mode toggle feature.
+   ============================================================ */
+
+/* Submit hero — uses a multi-stop gradient with hardcoded light colors.
+   In dark mode we shift to dark-tinted greens that maintain the
+   "nature meets tech" vibe without blinding the user. */
+[data-theme="dark"] .submit-hero {
+  background: linear-gradient(180deg, #0D1F1A 0%, #111320 50%, var(--bg) 100%);
+}
+
+/* CTA boxes — gradient backgrounds need dark mode variants.
+   The teal-tinted gradient becomes a deep teal that's still
+   distinct from the page background. */
+[data-theme="dark"] .cta-box {
+  background: linear-gradient(135deg, var(--cta-gradient-start), var(--cta-gradient-end));
+}
+[data-theme="dark"] .submit-final-cta {
+  background: linear-gradient(135deg, var(--cta-gradient-start), var(--cta-gradient-end));
+}
+
+/* Badge card backgrounds — pastel backgrounds need dark equivalents */
+[data-theme="dark"] .badge-card-open {
+  background: #0D2F26;
+  border-color: #166534;
+}
+[data-theme="dark"] .badge-card-private {
+  background: #2F2A1A;
+  border-color: #854D0E;
+}
+
+/* Weight classes in criteria tables — hardcoded pastel backgrounds */
+[data-theme="dark"] .weight-crit {
+  background: #3B1C1C;
+  color: #F87171;
+}
+[data-theme="dark"] .weight-high {
+  background: #3B2E10;
+  color: #FBBF24;
+}
+[data-theme="dark"] .weight-med {
+  background: #0D2F2B;
+  color: #34D399;
+}
+[data-theme="dark"] .weight-low {
+  background: var(--surface);
+  color: var(--text-secondary);
+}
+
+/* Score table row left-border colors — slightly brighter for dark bg */
+[data-theme="dark"] .score-acceptable td:first-child {
+  border-left-color: #34D399;
+}
+[data-theme="dark"] .score-poor td:first-child {
+  border-left-color: #FB923C;
+}
+
+/* FAQ accordion — summary hover uses accent-light which auto-adapts,
+   but the base summary background needs explicit override */
+[data-theme="dark"] .faq-item summary {
+  background: var(--surface);
+}
+[data-theme="dark"] .faq-item summary:hover {
+  background: var(--accent-light);
+}
+
+/* Smooth transitions for dark mode on page-specific elements */
+.page-hero, .submit-hero, .cta-box, .submit-final-cta,
+.highlight-box, .tech-card, .type-card, .badge-card,
+.faq-item, .dimension-card, .journal-card, .format-item,
+.submit-value-card, .submit-step-detail, .submit-timeline-card,
+.submit-agent-box {
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
