@@ -1,0 +1,1963 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!--
+    SixtyFourOunceFlexibleJointStrawBottleConceptAnimation.html
+
+    Product / UX story (why this file exists):
+    The user described a large (~64 oz) insulated bottle: a drinking cap with a mouthpiece, a
+    short flexible joint only at the cap (ball or bellows), and a stiff dip tube below that joint.
+    Only the joint articulates; the long straw is rigid and swings as a pendulum in world space so
+    the intake tracks the pooled liquid when the bottle tilts. We animate that separation clearly
+    so viewers do not confuse "flexible straw" with "flexible joint at the top."
+
+    Technical approach (how the demo works):
+    We use a 2D side-view canvas. The bottle interior is a clipped region. Water is drawn by
+    clipping to the bottle, un-rotating the transform, and filling everything below a horizontal
+    "world" waterline so the free surface stays level while the vessel tilts (incompressible
+    liquid, no slosh in this educational model). The stiff dip tube is a damped pendulum in world
+    space from the pivot under the cap; the cap and spout ride with the bottle; only the short
+    flex zone plus pivot allow that pendulum motion relative to the lid.
+
+    This is a concept demonstrator, not a CFD or manufacturing spec. We avoid claiming real
+    product performance; it is for communication with designers, investors, or users.
+
+    The page renders three canvases plus a mechanisms plate: primary inline SVG (short silicone sock
+    on cut rigid straw) and a secondary PNG joint-family board. Straw
+    segments use fixed molded length until a wall hit along the hinge ray. Cap hinge, rigid straw,
+    and mid-straw hinge share one tilt and fill control.
+  -->
+  <title>64oz bottle · straw hinge concepts</title>
+  <style>
+    :root {
+      --bg: #0e1118;
+      --panel: #161c28;
+      --text: #e8ecf4;
+      --muted: #8b95a8;
+      --accent: #3d9cf0;
+      --accent2: #5ce1c8;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "SF Pro Text", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background: radial-gradient(1200px 800px at 50% 0%, #1a2233 0%, var(--bg) 55%);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 16px 40px;
+    }
+    h1 {
+      font-weight: 600;
+      font-size: clamp(1.15rem, 2.5vw, 1.45rem);
+      letter-spacing: 0.02em;
+      margin: 0 0 8px;
+      text-align: center;
+    }
+    p.lead {
+      margin: 0 0 20px;
+      max-width: 52ch;
+      text-align: center;
+      color: var(--muted);
+      line-height: 1.55;
+      font-size: 0.95rem;
+    }
+    .stage-wrap {
+      width: min(520px, 100%);
+      border-radius: 20px;
+      background: linear-gradient(165deg, #1c2436 0%, var(--panel) 45%, #121722 100%);
+      box-shadow:
+        0 24px 60px rgba(0, 0, 0, 0.45),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06);
+      padding: 20px 18px 22px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    canvas {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 14px;
+      background: linear-gradient(180deg, #0a0d14 0%, #121826 100%);
+    }
+    .controls {
+      margin-top: 18px;
+      display: grid;
+      gap: 14px;
+    }
+    label.row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.88rem;
+      color: var(--muted);
+    }
+    label.row span.name { color: var(--text); font-weight: 500; }
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--accent);
+    }
+    .btns {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+    button {
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(61, 156, 240, 0.12);
+      color: var(--text);
+      padding: 10px 16px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: background 0.15s ease, transform 0.12s ease;
+    }
+    button:hover {
+      background: rgba(61, 156, 240, 0.22);
+    }
+    button:active { transform: scale(0.98); }
+    button.secondary {
+      background: rgba(255, 255, 255, 0.06);
+    }
+    .legend {
+      margin-top: 16px;
+      font-size: 0.8rem;
+      color: var(--muted);
+      line-height: 1.5;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .legend strong { color: var(--accent2); font-weight: 600; }
+    /*
+     * compare-row: three viewports (flex at cap, fixed one-piece, mid-straw hinge) so reviewers can
+     * compare drink-path behaviors at the same tilt and fill without swapping files.
+     */
+    .compare-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+      align-items: flex-start;
+      width: 100%;
+      max-width: 1680px;
+    }
+    .stage-wrap.compare-panel {
+      flex: 1 1 280px;
+      width: min(520px, 100%);
+      max-width: 520px;
+    }
+    .stage-title {
+      margin: 0 0 12px;
+      font-size: 0.92rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      text-align: center;
+      color: var(--accent2);
+    }
+    .controls-outer {
+      width: min(1100px, 100%);
+      margin-top: 8px;
+    }
+    /*
+     * mechanisms-plate: reference art above the simulators so mechanical engineers and investors see
+     * plausible real-world implementations (bellows, elastomer hinge, sealed ball joint, flexure)
+     * before judging the 2D bottle animation. The image was generated as a concept board and then
+     * shipped beside this HTML for offline file:// use without a CDN.
+     */
+    .mechanisms-plate {
+      width: min(1100px, 100%);
+      margin: 0 auto 28px;
+      padding: 22px 22px 26px;
+      border-radius: 20px;
+      background: linear-gradient(155deg, #1a2234 0%, var(--panel) 42%, #10151f 100%);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      box-shadow: 0 18px 48px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    }
+    .mechanisms-plate__title {
+      margin: 0 0 10px;
+      font-size: clamp(1.05rem, 2.2vw, 1.25rem);
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      color: var(--accent2);
+      text-align: center;
+    }
+    .mechanisms-plate__lead {
+      margin: 0 auto 18px;
+      max-width: 62ch;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.55;
+    }
+    .mechanisms-plate__figure {
+      margin: 0;
+      padding: 0;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      background: #0a0d12;
+    }
+    .mechanisms-plate__figure img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+    /*
+     * Primary diagram is vector so we can label the exact architecture from design-notes:
+     * short silicone span between two rigid stubs, retention, optional slits, sip context.
+     * Scales cleanly on retina without regenerating raster art.
+     */
+    .mechanisms-diagram-primary {
+      display: block;
+      width: 100%;
+      line-height: 0;
+      background: #0a0d12;
+    }
+    .mechanisms-diagram-primary svg {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+    .mechanisms-plate__figure--secondary {
+      margin-top: 16px;
+      opacity: 0.98;
+    }
+    .mechanisms-plate__caption {
+      margin: 0;
+      padding: 12px 14px 14px;
+      font-size: 0.8rem;
+      line-height: 1.5;
+      color: var(--muted);
+      background: rgba(0, 0, 0, 0.25);
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .mechanisms-plate__caption strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <section class="mechanisms-plate" aria-labelledby="mechanisms-heading">
+    <h2 id="mechanisms-heading" class="mechanisms-plate__title">
+      Short-span silicone joint on cut rigid straw (primary concept)
+    </h2>
+    <p class="mechanisms-plate__lead">
+      Two rigid drink-path segments (for example an OEM straw cut once) sit inside a
+      <strong style="color: var(--text); font-weight: 600">generous silicone sock</strong> for grip and
+      retention, with a <strong style="color: var(--text); font-weight: 600">modest gap</strong> between
+      the plastic ends so assembly is forgiving. The sock overlap is large; the hollow span between PP
+      faces stays short so sip suction still does not see a long soft cavity. Optional slits thin one
+      side for bend. The animation below is kinematic only; this diagram is the hardware story we want
+      reviewers to remember first.
+    </p>
+    <figure class="mechanisms-plate__figure">
+      <div
+        class="mechanisms-diagram-primary"
+        role="img"
+        aria-label="Cross-section diagram: upper and lower rigid straw stubs with a modest gap between ends, large overlapping silicone sock with shallow folds and optional axial slits, cap sketch, sip suction callout, optional tip mass, retention and short-span callouts"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 920 400"
+          fill="none"
+          aria-hidden="true"
+        >
+          <defs>
+            <linearGradient id="rigidGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#c5d8e8" />
+              <stop offset="100%" stop-color="#7a9ab0" />
+            </linearGradient>
+            <linearGradient id="silGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="rgba(92, 225, 200, 0.35)" />
+              <stop offset="50%" stop-color="rgba(92, 225, 200, 0.55)" />
+              <stop offset="100%" stop-color="rgba(92, 225, 200, 0.38)" />
+            </linearGradient>
+            <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000" flood-opacity="0.35" />
+            </filter>
+            <marker id="arrBlu" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+              <path d="M0,0 L8,4 L0,8 z" fill="#3d9cf0" />
+            </marker>
+          </defs>
+          <rect width="920" height="400" fill="#0a0d12" />
+          <text x="460" y="34" text-anchor="middle" fill="#5ce1c8" font-size="17" font-weight="600" font-family="system-ui, sans-serif">
+            Cut rigid straw + short silicone sock (adapter-friendly)
+          </text>
+          <text x="460" y="54" text-anchor="middle" fill="#8b95a8" font-size="12" font-family="system-ui, sans-serif">
+            Large silicone sock for retention and strain relief; modest gap between rigid faces inside
+          </text>
+          <!-- Cap / lid stack (schematic) -->
+          <path
+            fill="#2a3448"
+            stroke="rgba(255,255,255,0.2)"
+            stroke-width="1.2"
+            d="M118 78 L262 78 L268 62 L272 52 L112 52 L108 62 Z"
+          />
+          <rect x="120" y="78" width="140" height="14" rx="3" fill="#1e2636" stroke="rgba(255,255,255,0.12)" />
+          <text x="190" y="58" text-anchor="middle" fill="#8b95a8" font-size="11" font-family="system-ui, sans-serif">Lid / mouthpiece (existing)</text>
+          <!--
+            Big sock (wide + long overlap on both stubs) reads as a real adapter sleeve: room for grip,
+            ribs, and glue bands. Rigid ends stay separated by a modest gap (diagram ~16 px) so assembly
+            and flex are forgiving without opening a huge suction-prone cavity. Silicone is under stubs
+            for z-order so PP walls stay visible on centerline.
+          -->
+          <rect
+            x="146"
+            y="206"
+            width="88"
+            height="82"
+            rx="18"
+            ry="18"
+            fill="url(#silGrad)"
+            stroke="#4ad4b8"
+            stroke-width="2"
+          />
+          <path
+            fill="none"
+            stroke="rgba(74,212,184,0.85)"
+            stroke-width="1.35"
+            d="M 146 224 Q 134 242 146 258 Q 158 274 146 290 Q 134 306 146 318"
+          />
+          <!-- Upper rigid stub: ends above joint; gap to lower is visible inside the sock -->
+          <rect x="168" y="92" width="44" height="142" rx="5" fill="url(#rigidGrad)" stroke="#4a5f72" stroke-width="1.4" filter="url(#softShadow)" />
+          <line x1="176" y1="108" x2="204" y2="108" stroke="rgba(255,255,255,0.25)" stroke-width="1" />
+          <line x1="176" y1="190" x2="204" y2="190" stroke="rgba(0,0,0,0.12)" stroke-width="1" />
+          <!-- Lower rigid stub: ~16 px diagram gap vs upper (234 → 250) -->
+          <rect x="168" y="250" width="44" height="122" rx="5" fill="url(#rigidGrad)" stroke="#4a5f72" stroke-width="1.4" filter="url(#softShadow)" />
+          <!-- Optional relief slits (story: open compliance without long soft run) -->
+          <g stroke="rgba(255,200,120,0.9)" stroke-width="1.3" stroke-linecap="round">
+            <line x1="162" y1="236" x2="162" y2="254" />
+            <line x1="168" y1="237" x2="168" y2="256" />
+            <line x1="174" y1="236" x2="174" y2="254" />
+          </g>
+          <text x="196" y="248" fill="#e8b87a" font-size="10" font-family="system-ui, sans-serif">optional slits</text>
+          <!-- Lumen (sip path) -->
+          <rect x="183" y="98" width="14" height="274" rx="3" fill="rgba(15,22,34,0.85)" stroke="rgba(92,225,200,0.25)" stroke-width="1" />
+          <!-- Optional tip mass (minor) -->
+          <circle cx="190" cy="372" r="9" fill="#5a6a7e" stroke="#3d9cf0" stroke-width="1.2" opacity="0.9" />
+          <text x="190" y="376" text-anchor="middle" fill="#0a0d12" font-size="8" font-weight="700" font-family="system-ui, sans-serif">m</text>
+          <text x="248" y="382" fill="#8b95a8" font-size="10" font-family="system-ui, sans-serif">optional small tip mass (cleaning / retention tradeoffs)</text>
+          <!-- Suction callout (~1 ft water column order of magnitude, not a certified spec) -->
+          <rect
+            x="248"
+            y="118"
+            width="72"
+            height="50"
+            rx="6"
+            fill="rgba(61,156,240,0.12)"
+            stroke="rgba(61,156,240,0.45)"
+            stroke-width="1"
+          />
+          <text x="284" y="138" text-anchor="middle" fill="#3d9cf0" font-size="11" font-weight="600" font-family="system-ui, sans-serif">Sip</text>
+          <text x="284" y="154" text-anchor="middle" fill="#8b95a8" font-size="10" font-family="system-ui, sans-serif">~1 ft H₂O</text>
+          <path stroke="#3d9cf0" stroke-width="1.4" fill="none" marker-end="url(#arrBlu)" d="M 284 168 L 284 198 L 200 198 L 200 242" />
+          <!-- Leader: short span / low collapse volume -->
+          <path stroke="rgba(255,255,255,0.35)" stroke-width="1" fill="none" d="M 238 248 L 310 248 L 310 200" />
+          <rect x="312" y="176" width="248" height="58" rx="8" fill="rgba(22,28,40,0.95)" stroke="rgba(92,225,200,0.35)" />
+          <text x="324" y="196" fill="#e8ecf4" font-size="12" font-weight="600" font-family="system-ui, sans-serif">Short soft span</text>
+          <text x="324" y="212" fill="#8b95a8" font-size="10" font-family="system-ui, sans-serif">Big sock, small air gap between PP ends</text>
+          <text x="324" y="226" fill="#8b95a8" font-size="10" font-family="system-ui, sans-serif">(not a long unsupported bellows run)</text>
+          <!-- Leader: retention -->
+          <path stroke="rgba(255,255,255,0.35)" stroke-width="1" fill="none" d="M 232 228 L 380 228 L 380 268" />
+          <rect x="312" y="268" width="268" height="40" rx="8" fill="rgba(22,28,40,0.95)" stroke="rgba(255,255,255,0.12)" />
+          <text x="324" y="288" fill="#e8ecf4" font-size="12" font-weight="600" font-family="system-ui, sans-serif">Retention</text>
+          <text x="324" y="304" fill="#8b95a8" font-size="10" font-family="system-ui, sans-serif">Interference / grip on both stubs so the joint does not slip out</text>
+          <!-- Cross-section inset -->
+          <text x="620" y="92" fill="#5ce1c8" font-size="13" font-weight="600" font-family="system-ui, sans-serif">Section A–A (exaggerated)</text>
+          <circle cx="680" cy="170" r="52" fill="rgba(92,225,200,0.15)" stroke="#4ad4b8" stroke-width="2" />
+          <circle cx="680" cy="170" r="38" fill="url(#rigidGrad)" stroke="#4a5f72" stroke-width="1.4" />
+          <circle cx="680" cy="170" r="22" fill="rgba(15,22,34,0.9)" stroke="rgba(92,225,200,0.3)" />
+          <text x="680" y="174" text-anchor="middle" fill="#5ce1c8" font-size="9" font-family="system-ui, sans-serif">lumen</text>
+          <text x="748" y="130" fill="#8b95a8" font-size="10" font-family="system-ui, sans-serif">silicone</text>
+          <text x="748" y="200" fill="#8b95a8" font-size="10" font-family="system-ui, sans-serif">rigid</text>
+          <line x1="732" y1="136" x2="708" y2="152" stroke="rgba(255,255,255,0.3)" />
+          <line x1="732" y1="196" x2="712" y2="182" stroke="rgba(255,255,255,0.3)" />
+          <text x="600" y="248" fill="#8b95a8" font-size="10" font-family="system-ui, sans-serif">Adapter path: cut OEM tube once, slide sleeve, verify food-contact stack.</text>
+        </svg>
+      </div>
+      <figcaption class="mechanisms-plate__caption">
+        <strong>Read this as:</strong> the <strong>silicone sock is intentionally large</strong> for
+        retention, feel, and manufacturing tolerance, while the <strong>rigid stubs stop short of each
+        other</strong> with a modest gap inside. You get assembly slack and side-wall compliance without
+        a tall empty soft tunnel. The board below shows other joint families for brainstorming; they are
+        not the primary adapter story.
+      </figcaption>
+    </figure>
+    <figure class="mechanisms-plate__figure mechanisms-plate__figure--secondary">
+      <img
+        src="SixtyFourOunceStrawCompliantMechanismConceptDiagram.png"
+        alt="Earlier four-panel reference: molded bellows, thin elastomer hinge, ball socket with seal, and narrow plastic flexure neck"
+        loading="lazy"
+      />
+      <figcaption class="mechanisms-plate__caption">
+        <strong>Broader reference palette (illustrative):</strong> bellows, living hinge, sealed ball
+        joint, monolithic flexure neck. Labels are not binding; ME still picks materials for wash,
+        creep, and lid-stack interference. See also
+        <code style="color: var(--accent2)">design-notes/ShortSpanSiliconeJointRigidStrawSegmentsAdaptationAndOffTheShelfOptions.md</code>.
+      </figcaption>
+    </figure>
+  </section>
+
+  <h1>Gravity-hinged straw · concept animation</h1>
+  <p class="lead">
+    Symmetric 64 oz–style cylinder in side view, flip straw on top of the lid. Total molded straw
+    length comes from the cap pivot to a tip target above the inner floor; the tip standoff slider
+    moves that target. Teal and violet pendulum segments keep that length and pivot against the
+    cavity wall by changing angle, not by shrinking the tube. The coral fixed straw still shortens
+    along its rigid axis when the shoulder blocks the full run (no hinge). The hybrid hinge slider
+    moves the flex joint as a fraction of total length on the violet panel.
+  </p>
+
+  <div class="compare-row">
+    <div class="stage-wrap compare-panel">
+      <h2 class="stage-title">Flex at cap · full dip tube on gravity</h2>
+      <canvas
+        id="stageFlex"
+        width="480"
+        height="520"
+        aria-label="Bottle with flexible joint at cap and gravity-hinged dip tube"
+      ></canvas>
+    </div>
+    <div class="stage-wrap compare-panel">
+      <h2 class="stage-title">Fixed straw · rigid with the lid</h2>
+      <canvas
+        id="stageFixed"
+        width="480"
+        height="520"
+        aria-label="Same bottle with a fixed straw for comparison"
+      ></canvas>
+    </div>
+    <div class="stage-wrap compare-panel">
+      <h2 class="stage-title">Mid-straw flex · upper rigid, lower on gravity</h2>
+      <canvas
+        id="stageMidFlex"
+        width="480"
+        height="520"
+        aria-label="Bottle with adjustable mid-straw flex joint and gravity lower segment"
+      ></canvas>
+    </div>
+  </div>
+
+  <div class="stage-wrap controls-outer">
+    <div class="controls">
+      <label class="row" for="tilt">
+        <span class="name">Tilt (drink angle)</span>
+        <span id="tiltVal">0°</span>
+      </label>
+      <input id="tilt" type="range" min="-180" max="180" value="0" title="Bottle tilt in degrees, full rotation" aria-valuetext="degrees" />
+
+      <label class="row" for="fill">
+        <span class="name">Fill level</span>
+        <span id="fillVal">55%</span>
+      </label>
+      <input id="fill" type="range" min="8" max="100" value="55" title="How full the bottle is" aria-valuetext="percent full" />
+
+      <label class="row" for="bottomGap">
+        <span class="name">Tip standoff above inner floor</span>
+        <span id="bottomGapVal">22 px</span>
+      </label>
+      <input
+        id="bottomGap"
+        type="range"
+        min="6"
+        max="56"
+        value="22"
+        title="Extra gap between straw tip and inner floor when upright (all straws)"
+        aria-valuetext="pixels above floor"
+      />
+
+      <label class="row" for="midHingeFrac">
+        <span class="name">Hybrid hinge position (down the straw)</span>
+        <span id="midHingeFracVal">50%</span>
+      </label>
+      <input
+        id="midHingeFrac"
+        type="range"
+        min="18"
+        max="82"
+        value="50"
+        title="Fraction of total straw length from cap pivot to mid flex joint (violet panel only)"
+        aria-valuetext="percent along straw"
+      />
+
+      <div class="btns">
+        <button type="button" id="btnAuto">Play auto demo</button>
+        <button type="button" id="btnStop" class="secondary">Stop</button>
+      </div>
+    </div>
+
+    <div class="legend">
+      <strong>Read this as a story, not a lab measurement:</strong>
+      All three panels share tilt and fill. The cavity shows a lighter band above the bright white
+      line (air) and deeper blue below (water). Teal: hinge under the cap. Coral: no hinge, straw
+      locked to the bottle axis. Violet: rigid upper half with the bottle, silicone flex at the
+      adjustable hinge, lower half pendulum toward gravity. Teal and violet rods keep fixed molded
+      length: when the cavity blocks the pendulum, the angle shifts against the wall instead of
+      shortening the tube. Tip standoff and hinge position are sliders. This is
+      2D canvas for a quick concept, not CFD or CAD.
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      /*
+       * Canvas coordinate system: x right, y down (common for canvas). Angles are in radians.
+       * Bottle "tilt" is rotation about the canvas center in degrees, slider -180..180 so the user
+       * can explore upside-down and full swing; positive tilts the opening toward the right.
+       *
+       * Straw dynamics: the stiff dip tube is a single rigid segment pivoted at the joint under
+       * the cap. We keep a world-space pendulum angle toward vertical-down with damping. The user
+       * asked that only the top be flexible; the long straw does not bend along its length in
+       * this visualization (no quadratic hose), only the short neck between cap and pivot wiggles
+       * for readability as "flex zone."
+       */
+
+      /*
+       * Three canvases share one simulation clock and the same sliders. renderCtx switches each
+       * frame so we do not duplicate draw helpers. Cap-hinge and mid-hinge panels each own pendulum
+       * state; the fixed panel only reads tilt for its rigid direction vector.
+       */
+      const canvasFlex = document.getElementById("stageFlex");
+      const canvasFixed = document.getElementById("stageFixed");
+      const canvasMid = document.getElementById("stageMidFlex");
+      /*
+       * We re-resolve the 2D context inside drawScene via the canvas element each frame instead of
+       * caching handles alone. During Puppeteer and headless Chromium checks, a stale context for an
+       * extra bitmap once never received draws; re-binding from the DOM and hard-resetting CTM /
+       * alpha / composite mode keeps every panel reliable.
+       */
+      let renderCtx = canvasFlex.getContext("2d");
+      const tiltInput = document.getElementById("tilt");
+      const fillInput = document.getElementById("fill");
+      const bottomGapInput = document.getElementById("bottomGap");
+      const midHingeFracInput = document.getElementById("midHingeFrac");
+      const tiltVal = document.getElementById("tiltVal");
+      const fillVal = document.getElementById("fillVal");
+      const bottomGapVal = document.getElementById("bottomGapVal");
+      const midHingeFracVal = document.getElementById("midHingeFracVal");
+      const btnAuto = document.getElementById("btnAuto");
+      const btnStop = document.getElementById("btnStop");
+
+      const W = canvasFlex.width;
+      const H = canvasFlex.height;
+      const cx = W / 2;
+      const cy = H / 2 + 10;
+
+      /*
+       * Bottle profile in side view: symmetric body, chamfered shoulder into the neck (user asked
+       * for more chamfer toward the drinking zone), and a relatively square bottom via a small
+       * corner radius only. neckChamferLowerY is the bottom of the straight narrow neck; diagonals
+       * connect to bodyTop where the full body width runs vertically.
+       */
+      const bottleLocal = {
+        neckHalfW: 20,
+        neckTop: -178,
+        neckChamferLowerY: -158,
+        bodyHalfW: 64,
+        bodyTop: -128,
+        bodyBottom: 155,
+        cornerR: 11,
+      };
+
+      /*
+       * Cap and joint layout in bottle-local Y (offsets from bottle center cy, same convention as
+       * neckTop). The pivot is where the stiff tube meets the flex joint; flex draws upward into
+       * the cap slab so the story reads "cap holds drink path, only joint articulates."
+       */
+      const capLocal = {
+        topY: bottleLocal.neckTop - 14,
+        bottomY: bottleLocal.neckTop + 5,
+        halfWidth: 28,
+        cornerRadius: 7,
+        pivotY: bottleLocal.neckTop + 28,
+      };
+
+      /*
+       * Straw geometry: the dip tube is a fixed molded length in pixels for this demo. It must not
+       * read as a rubber line that grows to the lowest corner of the cavity (user report). We
+       * therefore define length as the upright vertical span from the cap pivot down to a target
+       * point that sits noticeably above the inner floor, then use that same number as the rigid
+       * rod length for every tilt; only the cavity wall can shorten it via min(design, wallHit).
+       */
+      const strawBottomInteriorClearancePx = 10;
+      /*
+       * Tip standoff above the inner floor reference is driven by #bottomGap (pixels). Larger values
+       * shorten the fixed molded length so the tip hovers higher when upright; the slider makes
+       * that relationship obvious in reviews without editing code.
+       */
+      /*
+       * Tip stops short of the cavity outline so the straw never reads as punching through the wall
+       * when the bottle is tilted (user report). Slightly larger than half the tube stroke so the
+       * rounded end cap stays visually inside.
+       */
+      const strawTipInteriorMarginPx = 7;
+      const strawTubeR = 5;
+
+      /*
+       * computeStiffDipTubeLengthPx: total rigid molded length shared by all three stories. Derived
+       * from upright vertical span pivot-to-tip with the current bottomGap slider. Pendulum straws
+       * keep this length and rotate against the wall instead of telescoping (user request).
+       */
+      function computeStiffDipTubeLengthPx() {
+        const innerFloorY = cy + bottleLocal.bodyBottom - strawBottomInteriorClearancePx;
+        const standoffPx = Number(bottomGapInput.value);
+        const tipTargetYWhenUpright = innerFloorY - standoffPx;
+        const pivotYWhenUpright = cy + capLocal.pivotY;
+        return Math.max(40, tipTargetYWhenUpright - pivotYWhenUpright);
+      }
+
+      /*
+       * readMidHingeFractionFromControls: fraction of total straw length from cap pivot down to the
+       * mid-straw flex joint (0.5 = half way). Slider is 18–82 so neither segment vanishes in the UI.
+       */
+      function readMidHingeFractionFromControls() {
+        return Number(midHingeFracInput.value) / 100;
+      }
+
+      /*
+       * Pendulum state in world space: angle from vertical-down (0 = hanging straight down),
+       * positive = tip to the right of pivot. omega = angular velocity for damped motion.
+       */
+      let strawAngleWorld = 0;
+      let strawOmega = 0;
+
+      /*
+       * Mid-straw hinge panel only: the lower segment pivots at the geometric midpoint of the
+       * nominal dip length (half rigid along the bottle axis from the cap pivot, half pendulum in
+       * world space). Separate state so cap-hinge and mid-hinge demos do not fight each other.
+       */
+      let strawMidBottomSegmentAngleWorld = 0;
+      let strawMidBottomSegmentOmega = 0;
+
+      let autoDemo = false;
+      let autoT = 0;
+
+      function degToRad(d) {
+        return (d * Math.PI) / 180;
+      }
+
+      /*
+       * buildBottlePath: symmetric path with chamfered shoulder (neck straight segment, then
+       * diagonal to full body width) and small bottom fillets for a squarer base.
+       */
+      function buildBottlePath(context, tiltRad) {
+        const b = bottleLocal;
+        const yb = cy + b.bodyBottom;
+        const ybf = cy + b.bodyBottom - b.cornerR;
+        context.beginPath();
+        context.moveTo(cx - b.neckHalfW, cy + b.neckTop);
+        context.lineTo(cx + b.neckHalfW, cy + b.neckTop);
+        context.lineTo(cx + b.neckHalfW, cy + b.neckChamferLowerY);
+        context.lineTo(cx + b.bodyHalfW, cy + b.bodyTop);
+        context.lineTo(cx + b.bodyHalfW, ybf);
+        context.quadraticCurveTo(cx + b.bodyHalfW, yb, cx + b.bodyHalfW - b.cornerR, yb);
+        context.lineTo(cx - b.bodyHalfW + b.cornerR, yb);
+        context.quadraticCurveTo(cx - b.bodyHalfW, yb, cx - b.bodyHalfW, ybf);
+        context.lineTo(cx - b.bodyHalfW, cy + b.bodyTop);
+        context.lineTo(cx - b.neckHalfW, cy + b.neckChamferLowerY);
+        context.closePath();
+      }
+
+      /*
+       * buildBottleOuterShellPath: expanded silhouette for the insulated wall stroke stack. Y uses
+       * cy + offset everywhere (same bug class as the inner path once had) so the outer rim tracks
+       * the real bottle profile. Offset values are tuned for canvas readability, not CAD accuracy.
+       */
+      function buildBottleOuterShellPath(context) {
+        const b = bottleLocal;
+        const o = 13;
+        const neckTopOut = b.neckTop - 8;
+        const neckHalfOut = b.neckHalfW + o;
+        const bodyHalfOut = b.bodyHalfW + Math.round(o * 1.08);
+        const bodyBottomOut = b.bodyBottom + 8;
+        const cornerOut = b.cornerR + o * 0.8;
+        const yb = cy + bodyBottomOut;
+        const ybf = cy + bodyBottomOut - cornerOut;
+        context.beginPath();
+        context.moveTo(cx - neckHalfOut, cy + neckTopOut);
+        context.lineTo(cx + neckHalfOut, cy + neckTopOut);
+        context.lineTo(cx + neckHalfOut, cy + b.neckChamferLowerY);
+        context.lineTo(cx + bodyHalfOut, cy + b.bodyTop);
+        context.lineTo(cx + bodyHalfOut, ybf);
+        context.quadraticCurveTo(cx + bodyHalfOut, yb, cx + bodyHalfOut - cornerOut, yb);
+        context.lineTo(cx - bodyHalfOut + cornerOut, yb);
+        context.quadraticCurveTo(cx - bodyHalfOut, yb, cx - bodyHalfOut, ybf);
+        context.lineTo(cx - bodyHalfOut, cy + b.bodyTop);
+        context.lineTo(cx - neckHalfOut, cy + b.neckChamferLowerY);
+        context.closePath();
+      }
+
+      /*
+       * jointOffsetLocal: pivot center in bottle-local space (centerline x = 0). Must match
+       * capLocal.pivotY so the stiff tube, flex art, and cap line up in side view.
+       */
+      function jointOffsetLocal() {
+        return { x: 0, y: capLocal.pivotY };
+      }
+
+      /*
+       * rotateVec: applies bottle tilt to a vector from center (used for joint and lid normals).
+       */
+      function rotateVec(vx, vy, tiltRad) {
+        const c = Math.cos(tiltRad);
+        const s = Math.sin(tiltRad);
+        return { x: vx * c - vy * s, y: vx * s + vy * c };
+      }
+
+      /*
+       * bottleOffsetVertexListForInteriorHitTest: closed polygon that tracks buildBottlePath
+       * (straight edges plus subdivided quadratic bottom fillets). We intentionally avoid
+       * CanvasRenderingContext2D.isPointInPath for trimming because, with our translate-center,
+       * rotate, translate-back stack, the spec maps the probe point through the inverse CTM in a way
+       * that stopped matching screen-space pivot and tip coordinates after we widened tilt to
+       * ±180°, so the binary search collapsed the straw to a stub (user-visible regression).
+       *
+       * Ray casting in explicit canvas coordinates stays aligned with the same rotation we apply
+       * when drawing, so QA and Puppeteer pixels match human expectations again.
+       */
+      function bottleOffsetVertexListForInteriorHitTest() {
+        const b = bottleLocal;
+        const yb = b.bodyBottom;
+        const ybf = b.bodyBottom - b.cornerR;
+        const pts = [];
+        pts.push([-b.neckHalfW, b.neckTop]);
+        pts.push([b.neckHalfW, b.neckTop]);
+        pts.push([b.neckHalfW, b.neckChamferLowerY]);
+        pts.push([b.bodyHalfW, b.bodyTop]);
+        pts.push([b.bodyHalfW, ybf]);
+        const subdiv = 8;
+        for (let i = 1; i <= subdiv; i++) {
+          const t = i / subdiv;
+          const omt = 1 - t;
+          const px =
+            omt * omt * b.bodyHalfW +
+            2 * omt * t * b.bodyHalfW +
+            t * t * (b.bodyHalfW - b.cornerR);
+          const py = omt * omt * ybf + 2 * omt * t * yb + t * t * yb;
+          pts.push([px, py]);
+        }
+        pts.push([-b.bodyHalfW + b.cornerR, yb]);
+        for (let i = 1; i <= subdiv; i++) {
+          const t = i / subdiv;
+          const omt = 1 - t;
+          const x0 = -b.bodyHalfW + b.cornerR;
+          const px = omt * omt * x0 + 2 * omt * t * -b.bodyHalfW + t * t * -b.bodyHalfW;
+          const py = omt * omt * yb + 2 * omt * t * yb + t * t * ybf;
+          pts.push([px, py]);
+        }
+        pts.push([-b.bodyHalfW, b.bodyTop]);
+        pts.push([-b.neckHalfW, b.neckChamferLowerY]);
+        return pts;
+      }
+
+      function bottleCavityPolygonCanvasSpace(tiltRad) {
+        return bottleOffsetVertexListForInteriorHitTest().map(function (pair) {
+          const r = rotateVec(pair[0], pair[1], tiltRad);
+          return { x: cx + r.x, y: cy + r.y };
+        });
+      }
+
+      /*
+       * pointInPolygonCanvas: even-odd ray cast without allocating; poly is CCW/CW consistent with
+       * buildBottlePath vertex order so interior matches the water clip customers already trust.
+       */
+      function pointInPolygonCanvas(testX, testY, poly) {
+        let inside = false;
+        const n = poly.length;
+        for (let i = 0, j = n - 1; i < n; j = i++) {
+          const xi = poly[i].x;
+          const yi = poly[i].y;
+          const xj = poly[j].x;
+          const yj = poly[j].y;
+          const denom = yj - yi;
+          const cross =
+            (yi > testY) !== (yj > testY) &&
+            testX < ((xj - xi) * (testY - yi)) / (Math.abs(denom) < 1e-9 ? 1e-9 : denom) + xi;
+          if (cross) inside = !inside;
+        }
+        return inside;
+      }
+
+      /*
+       * openStrawSegmentAlongRayFullyInsideCavityPolygon: tests every sample along the segment from
+       * the pivot out to segmentLengthPx, not just the endpoint. A vertical straw that only checked
+       * the tip could still cut through the chamfered shoulder while both ends read “inside” the
+       * even-odd polygon (user screenshot). Subsampling approximates a true rod-vs-wall collision
+       * for this 2D concept without a full physics engine.
+       */
+      function openStrawSegmentAlongRayFullyInsideCavityPolygon(
+        pivotX,
+        pivotY,
+        dirX,
+        dirY,
+        segmentLengthPx,
+        poly
+      ) {
+        if (segmentLengthPx <= 1e-6) {
+          return true;
+        }
+        const n = Math.max(14, Math.min(56, Math.ceil(segmentLengthPx / 5)));
+        for (let i = 0; i <= n; i++) {
+          const t = (segmentLengthPx * i) / n;
+          const qx = pivotX + dirX * t;
+          const qy = pivotY + dirY * t;
+          if (!pointInPolygonCanvas(qx, qy, poly)) {
+            return false;
+          }
+        }
+        return true;
+      }
+
+      /*
+       * computeStrawSegmentLengthAlongRayClampedToCavity: rigid rod of fixed design length
+       * (fixedDesignedSegmentLengthPx) unless the cavity blocks it. We binary-search the longest
+       * length in [0, min(design, longRay)] such that the whole sampled segment stays inside the
+       * cavity, then subtract strawTipInteriorMarginPx for the rounded end cap. Design length comes
+       * from computeStiffDipTubeLengthPx with an explicit standoff above the floor so the tip does
+       * not park on the bottom corner. hi is let because the search mutates it.
+       */
+      function computeStrawSegmentLengthAlongRayClampedToCavity(
+        pivotX,
+        pivotY,
+        dirX,
+        dirY,
+        tiltRad,
+        fixedDesignedSegmentLengthPx
+      ) {
+        const cavityPoly = bottleCavityPolygonCanvasSpace(tiltRad);
+        const maxRaySearchDistancePx = Math.max(960, Math.hypot(W, H) * 2.5);
+        if (!pointInPolygonCanvas(pivotX, pivotY, cavityPoly)) {
+          /*
+           * Degenerate case: pivot outside the polygon model (should not happen at the cap pivot).
+           * Keep a tiny stub so drawing does not throw; do not pretend the full rod extends in air.
+           */
+          return Math.min(
+            fixedDesignedSegmentLengthPx,
+            Math.max(strawTubeR * 2 + 2, 24)
+          );
+        }
+        const searchUpperBoundPx = Math.min(
+          fixedDesignedSegmentLengthPx,
+          maxRaySearchDistancePx
+        );
+        let lo = 0;
+        let hi = searchUpperBoundPx;
+        for (let i = 0; i < 36; i++) {
+          const mid = (lo + hi) * 0.5;
+          if (
+            openStrawSegmentAlongRayFullyInsideCavityPolygon(
+              pivotX,
+              pivotY,
+              dirX,
+              dirY,
+              mid,
+              cavityPoly
+            )
+          ) {
+            lo = mid;
+          } else {
+            hi = mid;
+          }
+        }
+        return Math.max(strawTubeR * 2 + 2, lo - strawTipInteriorMarginPx);
+      }
+
+      /*
+       * clampStrawAngleWorldForRodOfLengthInsideCavity: given a desired pendulum angle (world space,
+       * 0 = hang toward +Y), return the closest angle that still keeps the **full** rod geometry
+       * inside the cavity polygon. We binary-search toward upright (0) from the desired side so the
+       * straw **does not shrink** when a wall blocks pure vertical; instead it rests at a steeper
+       * angle with fixed length (user-visible fix vs clipping length to the first intersection).
+       *
+       * rodFullLengthPx is the same nominal molded length as computeStiffDipTubeLengthPx; the inside
+       * test uses length minus strawTipInteriorMarginPx so the rounded tip stays marginally clear of
+       * walls like the old ray-march did.
+       */
+      function clampStrawAngleWorldForRodOfLengthInsideCavity(
+        pivotX,
+        pivotY,
+        rodFullLengthPx,
+        desiredStrawAngleWorldRad,
+        tiltRad
+      ) {
+        const poly = bottleCavityPolygonCanvasSpace(tiltRad);
+        const geomLenPx = Math.max(
+          strawTubeR * 2 + 4,
+          rodFullLengthPx - strawTipInteriorMarginPx
+        );
+        function segmentFitsAtAngle(thetaRad) {
+          const dx = Math.sin(thetaRad);
+          const dy = Math.cos(thetaRad);
+          return openStrawSegmentAlongRayFullyInsideCavityPolygon(
+            pivotX,
+            pivotY,
+            dx,
+            dy,
+            geomLenPx,
+            poly
+          );
+        }
+        if (segmentFitsAtAngle(desiredStrawAngleWorldRad)) {
+          return desiredStrawAngleWorldRad;
+        }
+        if (!segmentFitsAtAngle(0)) {
+          let bestAngle = 0;
+          let bestDist = 1e9;
+          for (let a = -2.15; a <= 2.15; a += 0.035) {
+            if (segmentFitsAtAngle(a)) {
+              const d = Math.abs(a - desiredStrawAngleWorldRad);
+              if (d < bestDist) {
+                bestDist = d;
+                bestAngle = a;
+              }
+            }
+          }
+          return bestAngle;
+        }
+        const target = desiredStrawAngleWorldRad;
+        const upright = 0;
+        if (target > upright) {
+          let lo = upright;
+          let hi = target;
+          if (segmentFitsAtAngle(hi)) {
+            return hi;
+          }
+          for (let i = 0; i < 46; i++) {
+            const mid = (lo + hi) * 0.5;
+            if (segmentFitsAtAngle(mid)) {
+              lo = mid;
+            } else {
+              hi = mid;
+            }
+          }
+          return lo;
+        }
+        if (target < upright) {
+          let lo = target;
+          let hi = upright;
+          if (segmentFitsAtAngle(lo)) {
+            return lo;
+          }
+          for (let i = 0; i < 46; i++) {
+            const mid = (lo + hi) * 0.5;
+            if (segmentFitsAtAngle(mid)) {
+              hi = mid;
+            } else {
+              lo = mid;
+            }
+          }
+          return hi;
+        }
+        return 0;
+      }
+
+      /*
+       * estimateInteriorBottomWorldY: approximate lowest interior point in world Y (down-positive)
+       * for the current tilt. Used to place the waterline so "fill %" maps to plausible volume
+       * in side view (still a rough heuristic, not true volume integration).
+       */
+      function estimateInteriorBottomWorldY(tiltRad) {
+        const corners = [
+          rotateVec(-bottleLocal.bodyHalfW, bottleLocal.bodyBottom, tiltRad),
+          rotateVec(bottleLocal.bodyHalfW, bottleLocal.bodyBottom, tiltRad),
+          rotateVec(-bottleLocal.neckHalfW, bottleLocal.neckTop, tiltRad),
+          rotateVec(bottleLocal.neckHalfW, bottleLocal.neckTop, tiltRad),
+        ];
+        let maxY = -1e9;
+        for (let i = 0; i < corners.length; i++) {
+          const wy = cy + corners[i].y;
+          if (wy > maxY) maxY = wy;
+        }
+        return maxY;
+      }
+
+      function estimateInteriorTopWorldY(tiltRad) {
+        const topL = rotateVec(-bottleLocal.neckHalfW, bottleLocal.neckTop, tiltRad);
+        const topR = rotateVec(bottleLocal.neckHalfW, bottleLocal.neckTop, tiltRad);
+        return cy + Math.min(topL.y, topR.y);
+      }
+
+      /*
+       * waterLineWorldY: horizontal water surface in world space from fill percent.
+       * Higher fill => waterline moves up (smaller y because y increases downward).
+       */
+      function waterLineWorldY(tiltRad, fillPct) {
+        const bottom = estimateInteriorBottomWorldY(tiltRad);
+        const top = estimateInteriorTopWorldY(tiltRad);
+        const h = bottom - top;
+        return bottom - (h * fillPct) / 100;
+      }
+
+      /*
+       * stepStrawPhysics: damped pendulum toward angle 0 (world vertical down). We use a small
+       * stiffness and damping so motion feels fluid on screen. This is the visual core of the
+       * "follows gravity" story.
+       */
+      function stepStrawPhysics(dt) {
+        const k = 58;
+        const damp = 12;
+        const target = 0;
+        const accel = -k * (strawAngleWorld - target) - damp * strawOmega;
+        strawOmega += accel * dt;
+        strawAngleWorld += strawOmega * dt;
+      }
+
+      /*
+       * stepStrawMidBottomSegmentPendulumPhysics: same spring-damper story as stepStrawPhysics but
+       * for the violet panel’s lower half only. We keep constants aligned so switching between
+       * panels does not feel like a different “simulation speed.”
+       */
+      function stepStrawMidBottomSegmentPendulumPhysics(dt) {
+        const k = 58;
+        const damp = 12;
+        const target = 0;
+        const accel =
+          -k * (strawMidBottomSegmentAngleWorld - target) - damp * strawMidBottomSegmentOmega;
+        strawMidBottomSegmentOmega += accel * dt;
+        strawMidBottomSegmentAngleWorld += strawMidBottomSegmentOmega * dt;
+      }
+
+      /*
+       * syncPendulumAnglesToCavityAfterPhysicsStep: after integrating spring-damper angles, snap each
+       * pendulum to the nearest physically admissible angle that keeps the **full** segment inside
+       * the cavity. Without this, the integrator keeps pushing toward vertical while the renderer
+       * would have to shorten the stroke to stay inside, which looked like the straw "shrinking"
+       * against the wall (user feedback). Damping omega slightly reduces chatter when the clamp
+       * engages many frames in a row.
+       */
+      function syncPendulumAnglesToCavityAfterPhysicsStep(tiltRad) {
+        const jo = jointOffsetLocal();
+        const jRot = rotateVec(jo.x, jo.y, tiltRad);
+        const jx = cx + jRot.x;
+        const jy = cy + jRot.y;
+        const L = computeStiffDipTubeLengthPx();
+        strawAngleWorld = clampStrawAngleWorldForRodOfLengthInsideCavity(
+          jx,
+          jy,
+          L,
+          strawAngleWorld,
+          tiltRad
+        );
+        strawOmega *= 0.94;
+
+        const frac = readMidHingeFractionFromControls();
+        const rigidDown = rotateVec(0, 1, tiltRad);
+        const rigidMag = Math.hypot(rigidDown.x, rigidDown.y) || 1;
+        const ux = rigidDown.x / rigidMag;
+        const uy = rigidDown.y / rigidMag;
+        const upperTargetAlongRigidPx = L * frac;
+        const upperLenPx = computeStrawSegmentLengthAlongRayClampedToCavity(
+          jx,
+          jy,
+          ux,
+          uy,
+          tiltRad,
+          upperTargetAlongRigidPx
+        );
+        const midX = jx + ux * upperLenPx;
+        const midY = jy + uy * upperLenPx;
+        const lowerRodFullLengthPx = Math.max(24, L - upperLenPx);
+        strawMidBottomSegmentAngleWorld = clampStrawAngleWorldForRodOfLengthInsideCavity(
+          midX,
+          midY,
+          lowerRodFullLengthPx,
+          strawMidBottomSegmentAngleWorld,
+          tiltRad
+        );
+        strawMidBottomSegmentOmega *= 0.94;
+      }
+
+      /*
+       * drawBottleInteriorBackdrop: faint fill inside the cavity so the wall reads as volume,
+       * not a hollow gray outline floating on the grid. Drawn before water so liquid layers on top.
+       */
+      function drawBottleInteriorBackdrop(tiltRad) {
+        renderCtx.save();
+        renderCtx.translate(cx, cy);
+        renderCtx.rotate(tiltRad);
+        renderCtx.translate(-cx, -cy);
+        renderCtx.beginPath();
+        buildBottlePath(renderCtx, tiltRad);
+        /*
+         * Solid-first interior base keeps the cavity legible under every straw/water layer and
+         * avoids "invisible interior" edge cases when radial alpha stacks oddly in some GPU paths.
+         * The radial wash is painted on top at partial alpha for depth.
+         */
+        renderCtx.fillStyle = "rgb(24, 32, 48)";
+        renderCtx.fill();
+        const inner = renderCtx.createRadialGradient(cx - 20, cy - 40, 20, cx, cy, 220);
+        inner.addColorStop(0, "rgba(55, 72, 102, 0.5)");
+        inner.addColorStop(1, "rgba(12, 16, 26, 0.65)");
+        renderCtx.fillStyle = inner;
+        renderCtx.fill();
+        renderCtx.restore();
+      }
+
+      /*
+       * inverseMapCanvasPointToBottleDrawingSpace: undoes translate(cx,cy)·rotate(tilt)·translate(-cx,-cy)
+       * so we can describe the world-horizontal wet half-plane (fixed canvas Y = wl) as a polygon
+       * in the same user space where buildBottlePath lives. Clipping that polygon after the bottle
+       * clip keeps everything in one transform stack, which finally made water appear in Puppeteer
+       * pixel probes where resetTransform/setTransform plus clip did not.
+       */
+      function inverseMapCanvasPointToBottleDrawingSpace(canvasX, canvasY, tiltRad) {
+        const vx = canvasX - cx;
+        const vy = canvasY - cy;
+        const c = Math.cos(-tiltRad);
+        const s = Math.sin(-tiltRad);
+        const ux = vx * c - vy * s;
+        const uy = vx * s + vy * c;
+        return { x: ux + cx, y: uy + cy };
+      }
+
+      /*
+       * appendInverseMappedCanvasPolygonClip: maps canvas-space polygon corners into the current
+       * bottle drawing space and intersects them with the active clip. Shared by wet and dry
+       * regions so air above the surface and water below stay mathematically consistent.
+       */
+      function appendInverseMappedCanvasPolygonClip(canvasCornersXY, tiltRad) {
+        const p0 = inverseMapCanvasPointToBottleDrawingSpace(
+          canvasCornersXY[0][0],
+          canvasCornersXY[0][1],
+          tiltRad
+        );
+        renderCtx.moveTo(p0.x, p0.y);
+        for (let i = 1; i < canvasCornersXY.length; i++) {
+          const p = inverseMapCanvasPointToBottleDrawingSpace(
+            canvasCornersXY[i][0],
+            canvasCornersXY[i][1],
+            tiltRad
+          );
+          renderCtx.lineTo(p.x, p.y);
+        }
+        renderCtx.closePath();
+      }
+
+      /*
+       * drawAirRegionAboveWaterLevelInsideCavity: fills everything inside the bottle that lies
+       * above the world-horizontal free surface (canvas y < wl). Users kept asking where the
+       * water level was because the liquid read as one flat blue slab; separating "air" tint from
+       * "water" tint makes the meniscus location obvious without opening a WebGL/Three.js stack.
+       */
+      function drawAirRegionAboveWaterLevelInsideCavity(tiltRad, wl) {
+        renderCtx.save();
+        renderCtx.translate(cx, cy);
+        renderCtx.rotate(tiltRad);
+        renderCtx.translate(-cx, -cy);
+
+        renderCtx.beginPath();
+        buildBottlePath(renderCtx, tiltRad);
+        renderCtx.clip();
+
+        const canvasDryCorners = [
+          [-8000, -8000],
+          [14000, -8000],
+          [14000, wl],
+          [-8000, wl],
+        ];
+        renderCtx.beginPath();
+        appendInverseMappedCanvasPolygonClip(canvasDryCorners, tiltRad);
+        renderCtx.clip();
+
+        const airTop = inverseMapCanvasPointToBottleDrawingSpace(0, wl - 200, tiltRad);
+        const airBot = inverseMapCanvasPointToBottleDrawingSpace(0, wl, tiltRad);
+        const airGrad = renderCtx.createLinearGradient(airTop.x, airTop.y, airBot.x, airBot.y);
+        airGrad.addColorStop(0, "rgba(255, 255, 255, 0.07)");
+        airGrad.addColorStop(1, "rgba(200, 220, 245, 0.04)");
+        renderCtx.fillStyle = airGrad;
+        renderCtx.fillRect(-16000, -16000, 32000, 32000);
+
+        renderCtx.restore();
+      }
+
+      /*
+       * drawWater: bottle cavity clip first, then clip the wet side of the free surface by mapping
+       * a huge canvas-space trapezoid through the inverse bottle map, then flood-fill in user space.
+       */
+      function drawWater(tiltRad, fillPct) {
+        const wl = waterLineWorldY(tiltRad, fillPct);
+
+        renderCtx.save();
+        renderCtx.translate(cx, cy);
+        renderCtx.rotate(tiltRad);
+        renderCtx.translate(-cx, -cy);
+
+        renderCtx.beginPath();
+        buildBottlePath(renderCtx, tiltRad);
+        renderCtx.clip();
+
+        const canvasWetCorners = [
+          [-8000, wl],
+          [14000, wl],
+          [14000, 14000],
+          [-8000, 14000],
+        ];
+        renderCtx.beginPath();
+        appendInverseMappedCanvasPolygonClip(canvasWetCorners, tiltRad);
+        renderCtx.clip();
+
+        const g0 = inverseMapCanvasPointToBottleDrawingSpace(0, wl - 120, tiltRad);
+        const g1 = inverseMapCanvasPointToBottleDrawingSpace(0, wl + 260, tiltRad);
+        const grd = renderCtx.createLinearGradient(g0.x, g0.y, g1.x, g1.y);
+        grd.addColorStop(0, "rgba(140, 215, 255, 0.88)");
+        grd.addColorStop(0.35, "rgba(70, 155, 235, 0.92)");
+        grd.addColorStop(1, "rgba(18, 72, 155, 0.96)");
+        renderCtx.fillStyle = grd;
+        renderCtx.fillRect(-16000, -16000, 32000, 32000);
+
+        const sL = inverseMapCanvasPointToBottleDrawingSpace(-8000, wl, tiltRad);
+        const sR = inverseMapCanvasPointToBottleDrawingSpace(14000, wl, tiltRad);
+
+        /*
+         * Meniscus stack: broad dark underline so the edge cuts through any mid-tone water, then
+         * bright core + highlight so the level reads on laptop screens and in Safari.
+         */
+        renderCtx.lineCap = "round";
+        renderCtx.lineJoin = "round";
+        renderCtx.strokeStyle = "rgba(8, 40, 90, 0.75)";
+        renderCtx.lineWidth = 8;
+        renderCtx.beginPath();
+        renderCtx.moveTo(sL.x, sL.y);
+        renderCtx.lineTo(sR.x, sR.y);
+        renderCtx.stroke();
+
+        renderCtx.strokeStyle = "rgba(255, 255, 255, 0.92)";
+        renderCtx.lineWidth = 3.5;
+        renderCtx.beginPath();
+        renderCtx.moveTo(sL.x, sL.y);
+        renderCtx.lineTo(sR.x, sR.y);
+        renderCtx.stroke();
+
+        renderCtx.strokeStyle = "rgba(185, 235, 255, 0.95)";
+        renderCtx.lineWidth = 1.25;
+        renderCtx.beginPath();
+        renderCtx.moveTo(sL.x, sL.y);
+        renderCtx.lineTo(sR.x, sR.y);
+        renderCtx.stroke();
+
+        renderCtx.restore();
+      }
+
+      /*
+       * drawWaterMeniscusLineOnTopOfWallStrokes: the thick metallic wall strokes partially cover
+       * the first meniscus pass at the left/right wall. We paint the same surface segment again
+       * after the shell so the water level stays visible where it meets the interior wall.
+       */
+      function drawWaterMeniscusLineOnTopOfWallStrokes(tiltRad, wl) {
+        const sL = inverseMapCanvasPointToBottleDrawingSpace(-8000, wl, tiltRad);
+        const sR = inverseMapCanvasPointToBottleDrawingSpace(14000, wl, tiltRad);
+
+        renderCtx.save();
+        renderCtx.translate(cx, cy);
+        renderCtx.rotate(tiltRad);
+        renderCtx.translate(-cx, -cy);
+
+        renderCtx.beginPath();
+        buildBottlePath(renderCtx, tiltRad);
+        renderCtx.clip();
+
+        renderCtx.lineCap = "round";
+        renderCtx.shadowColor = "rgba(160, 230, 255, 0.85)";
+        renderCtx.shadowBlur = 10;
+        renderCtx.strokeStyle = "rgba(255, 255, 255, 0.98)";
+        renderCtx.lineWidth = 3;
+        renderCtx.beginPath();
+        renderCtx.moveTo(sL.x, sL.y);
+        renderCtx.lineTo(sR.x, sR.y);
+        renderCtx.stroke();
+        renderCtx.shadowBlur = 0;
+
+        renderCtx.strokeStyle = "rgba(120, 210, 255, 0.9)";
+        renderCtx.lineWidth = 1.25;
+        renderCtx.beginPath();
+        renderCtx.moveTo(sL.x, sL.y);
+        renderCtx.lineTo(sR.x, sR.y);
+        renderCtx.stroke();
+
+        renderCtx.restore();
+      }
+
+      /*
+       * drawBottleInsulatedWallAsParallelStrokesOverLiquid: fakes wall thickness using a wide
+       * stroke on the expanded outer profile plus a slim inner lip stroke on the cavity path.
+       *
+       * Filled annulus approaches (destination-out and even-odd) were both brittle here: the
+       * bottle path mixes lineTo and arcTo segments, and nested fills intermittently produced empty
+       * interior pixels in automated Chromium checks while the live Safari preview looked fine.
+       * Strokes never punch holes in the framebuffer, so water and backdrop remain stable while the
+       * silhouette still reads as a bulky insulated bottle rather than a single hairline outline.
+       */
+      function drawBottleInsulatedWallAsParallelStrokesOverLiquid(tiltRad) {
+        renderCtx.save();
+        renderCtx.translate(cx, cy);
+        renderCtx.rotate(tiltRad);
+        renderCtx.translate(-cx, -cy);
+
+        renderCtx.lineJoin = "round";
+        renderCtx.lineCap = "round";
+
+        const wallGrad = renderCtx.createLinearGradient(cx - 120, cy - 220, cx + 120, cy + 200);
+        wallGrad.addColorStop(0, "#3d4758");
+        wallGrad.addColorStop(0.22, "#9aa8bc");
+        wallGrad.addColorStop(0.42, "#e8edf5");
+        wallGrad.addColorStop(0.58, "#a8b3c6");
+        wallGrad.addColorStop(0.78, "#6c7688");
+        wallGrad.addColorStop(1, "#2c3342");
+
+        renderCtx.beginPath();
+        buildBottleOuterShellPath(renderCtx);
+        renderCtx.strokeStyle = wallGrad;
+        renderCtx.lineWidth = 26;
+        renderCtx.stroke();
+
+        renderCtx.beginPath();
+        buildBottleOuterShellPath(renderCtx);
+        renderCtx.strokeStyle = "rgba(0, 0, 0, 0.35)";
+        renderCtx.lineWidth = 8;
+        renderCtx.stroke();
+
+        renderCtx.beginPath();
+        buildBottlePath(renderCtx, tiltRad);
+        renderCtx.strokeStyle = "rgba(255, 255, 255, 0.2)";
+        renderCtx.lineWidth = 2;
+        renderCtx.stroke();
+
+        renderCtx.restore();
+      }
+
+      /*
+       * drawBottomSiliconeBootBandOnBottle: dark sleeve on the lower exterior, matching the rubber
+       * boot many metal bottles use for impact protection (visible on the user's product photo).
+       */
+      function drawBottomSiliconeBootBandOnBottle(tiltRad) {
+        const b = bottleLocal;
+        const pad = 20;
+        const bootH = 26;
+        const bx = cx - b.bodyHalfW - pad;
+        const bw = (b.bodyHalfW + pad) * 2;
+        const by = cy + b.bodyBottom - 10;
+        renderCtx.save();
+        renderCtx.translate(cx, cy);
+        renderCtx.rotate(tiltRad);
+        renderCtx.translate(-cx, -cy);
+        appendCanvasPathAxisAlignedRoundedRectangle(renderCtx, bx, by, bw, bootH, 10);
+        renderCtx.fillStyle = "rgba(22, 24, 28, 0.94)";
+        renderCtx.fill();
+        renderCtx.strokeStyle = "rgba(255, 255, 255, 0.07)";
+        renderCtx.lineWidth = 1.5;
+        renderCtx.stroke();
+        renderCtx.restore();
+      }
+
+      /*
+       * strawTipSubmerged: quick world-space check for UI feedback. Canvas y grows downward, so
+       * "below the surface" means tipY > wl with a small tolerance for the stroke width.
+       */
+      function strawTipSubmerged(tipX, tipY, waterWorldY) {
+        return tipY > waterWorldY + 2;
+      }
+
+      /*
+       * appendCanvasPathAxisAlignedRoundedRectangle: builds a closed path with circular corners.
+       * We avoid renderCtx.roundRect so older WebKit builds still render the cap; the user often previews
+       * in Safari, and this keeps the cap silhouette dependable across versions.
+       */
+      function appendCanvasPathAxisAlignedRoundedRectangle(context, x, y, w, h, r) {
+        const rr = Math.max(0, Math.min(r, w / 2, h / 2));
+        context.beginPath();
+        context.moveTo(x + rr, y);
+        context.lineTo(x + w - rr, y);
+        context.quadraticCurveTo(x + w, y, x + w, y + rr);
+        context.lineTo(x + w, y + h - rr);
+        context.quadraticCurveTo(x + w, y + h, x + w - rr, y + h);
+        context.lineTo(x + rr, y + h);
+        context.quadraticCurveTo(x, y + h, x, y + h - rr);
+        context.lineTo(x, y + rr);
+        context.quadraticCurveTo(x, y, x + rr, y);
+        context.closePath();
+      }
+
+      /*
+       * drawFlexibleNeckConnectorOnlyBetweenCapUndersideAndPivot: flex is only at the lid, but
+       * the old sine polyline read like a tiny spring in browser review. We redraw it as a short
+       * straight silicone boot with light ribbing so it matches "molded joint / bellows boot"
+       * language instead of a slinky. The stiff dip tube still pivots at capLocal.pivotY; this boot
+       * is purely cosmetic filler between cap underside and that pivot.
+       */
+      function drawFlexibleNeckConnectorOnlyBetweenCapUndersideAndPivot(tiltRad) {
+        const yTop = cy + capLocal.bottomY;
+        const yBot = cy + capLocal.pivotY;
+        const h = yBot - yTop;
+        if (h < 4) {
+          return;
+        }
+        const bootHalfW = 7;
+        renderCtx.save();
+        renderCtx.translate(cx, cy);
+        renderCtx.rotate(tiltRad);
+        renderCtx.translate(-cx, -cy);
+
+        appendCanvasPathAxisAlignedRoundedRectangle(
+          renderCtx,
+          cx - bootHalfW,
+          yTop,
+          bootHalfW * 2,
+          h,
+          5
+        );
+        renderCtx.fillStyle = "rgba(48, 52, 62, 0.96)";
+        renderCtx.fill();
+        renderCtx.strokeStyle = "rgba(255, 255, 255, 0.12)";
+        renderCtx.lineWidth = 1.25;
+        renderCtx.stroke();
+
+        renderCtx.strokeStyle = "rgba(0, 0, 0, 0.22)";
+        renderCtx.lineWidth = 1;
+        const ribYs = [yTop + h * 0.35, yTop + h * 0.62];
+        for (let r = 0; r < ribYs.length; r++) {
+          renderCtx.beginPath();
+          renderCtx.ellipse(cx, ribYs[r], bootHalfW + 2.5, 2, 0, 0, Math.PI * 2);
+          renderCtx.stroke();
+        }
+
+        renderCtx.restore();
+      }
+
+      /*
+       * drawDrinkingCapWithFlipStrawAndCarryLoopLast: side view inspired by flip-lid straw bottles
+       * (user reference: CIVAGO-style 64 oz). The drink path goes up through the lid into a flip tab
+       * that opens toward +Y (up on screen), not a horizontal side nipple. A short teal "lumen" line
+       * links the visible dip tube story to the spout. Carry loop on +X reads as the molded handle
+       * on the lid edge.
+       */
+      function drawDrinkingCapWithFlipStrawAndCarryLoopLast(tiltRad) {
+        const c = capLocal;
+        renderCtx.save();
+        renderCtx.translate(cx, cy);
+        renderCtx.rotate(tiltRad);
+        renderCtx.translate(-cx, -cy);
+
+        const capX = cx - c.halfWidth;
+        const capY = cy + c.topY;
+        const capW = c.halfWidth * 2;
+        const capH = c.bottomY - c.topY;
+        const rimY = cy + c.bottomY;
+
+        appendCanvasPathAxisAlignedRoundedRectangle(renderCtx, capX, capY, capW, capH, c.cornerRadius);
+        const capGrad = renderCtx.createLinearGradient(capX, capY, capX + capW, capY + capH);
+        capGrad.addColorStop(0, "#434c5e");
+        capGrad.addColorStop(0.48, "#c4cedf");
+        capGrad.addColorStop(1, "#343b4a");
+        renderCtx.fillStyle = capGrad;
+        renderCtx.fill();
+        renderCtx.strokeStyle = "rgba(255, 255, 255, 0.38)";
+        renderCtx.lineWidth = 2;
+        renderCtx.stroke();
+
+        /*
+         * Straw path through lid stack (drawn before flip plastic so the hinge reads in front).
+         * This ties the flex joint below the cap to the flip spout the user actually sips from.
+         */
+        renderCtx.strokeStyle = "rgba(75, 210, 185, 0.88)";
+        renderCtx.lineWidth = 5;
+        renderCtx.lineCap = "round";
+        renderCtx.beginPath();
+        renderCtx.moveTo(cx, rimY - 1);
+        renderCtx.lineTo(cx, capY + 6);
+        renderCtx.stroke();
+        renderCtx.lineWidth = 2;
+        renderCtx.strokeStyle = "rgba(255, 255, 255, 0.35)";
+        renderCtx.beginPath();
+        renderCtx.moveTo(cx, rimY - 1);
+        renderCtx.lineTo(cx, capY + 6);
+        renderCtx.stroke();
+
+        /*
+         * Flip straw tab: hinged along the front edge of the lid, folded up in side projection.
+         */
+        const flipBaseY = capY + 3;
+        const flipTipY = capY - 30;
+        renderCtx.beginPath();
+        renderCtx.moveTo(cx - 10, flipBaseY);
+        renderCtx.lineTo(cx + 10, flipBaseY);
+        renderCtx.lineTo(cx + 7, flipTipY + 6);
+        renderCtx.quadraticCurveTo(cx, flipTipY - 2, cx - 7, flipTipY + 6);
+        renderCtx.closePath();
+        renderCtx.fillStyle = "rgba(38, 42, 52, 0.97)";
+        renderCtx.fill();
+        renderCtx.strokeStyle = "rgba(255, 255, 255, 0.22)";
+        renderCtx.lineWidth = 1.5;
+        renderCtx.stroke();
+
+        renderCtx.fillStyle = "rgba(0, 0, 0, 0.45)";
+        renderCtx.beginPath();
+        renderCtx.ellipse(cx, flipTipY + 2, 3, 4, 0, 0, Math.PI * 2);
+        renderCtx.fill();
+
+        renderCtx.strokeStyle = "rgba(92, 225, 200, 0.55)";
+        renderCtx.lineWidth = 2;
+        renderCtx.beginPath();
+        renderCtx.moveTo(cx, capY + 6);
+        renderCtx.lineTo(cx, flipTipY + 8);
+        renderCtx.stroke();
+
+        /*
+         * Carry loop: D-shaped bump on the right side of the cap, like integrated lid handles.
+         */
+        renderCtx.beginPath();
+        renderCtx.moveTo(capX + capW - 1, capY + capH * 0.35);
+        renderCtx.bezierCurveTo(
+          capX + capW + 16,
+          capY + capH * 0.32,
+          capX + capW + 16,
+          capY + capH * 0.68,
+          capX + capW - 1,
+          capY + capH * 0.65
+        );
+        renderCtx.strokeStyle = "rgba(55, 60, 72, 0.95)";
+        renderCtx.lineWidth = 5;
+        renderCtx.stroke();
+        renderCtx.strokeStyle = "rgba(255, 255, 255, 0.18)";
+        renderCtx.lineWidth = 1.25;
+        renderCtx.stroke();
+
+        renderCtx.restore();
+      }
+
+      /*
+       * drawMidStrawSiliconeFlexJointBootAlongWorldDirection: cosmetic bellows centered on the
+       * mid-straw hinge so the articulation point reads clearly in side view. We align the boot
+       * with the upper rigid segment (bottle-local down) because that is the reference direction
+       * viewers already understand from the fixed-straw column; the lower segment then breaks away
+       * under gravity at this joint (user-requested third design).
+       */
+      function drawMidStrawSiliconeFlexJointBootAlongWorldDirection(
+        midWx,
+        midWy,
+        alongUnitX,
+        alongUnitY
+      ) {
+        const bootLen = 20;
+        const bootThick = 14;
+        const cornerR = 5;
+        const ang = Math.atan2(alongUnitY, alongUnitX);
+        renderCtx.save();
+        renderCtx.translate(midWx, midWy);
+        renderCtx.rotate(ang);
+        appendCanvasPathAxisAlignedRoundedRectangle(
+          renderCtx,
+          -bootLen / 2,
+          -bootThick / 2,
+          bootLen,
+          bootThick,
+          cornerR
+        );
+        renderCtx.fillStyle = "rgba(48, 44, 62, 0.96)";
+        renderCtx.fill();
+        renderCtx.strokeStyle = "rgba(255, 255, 255, 0.12)";
+        renderCtx.lineWidth = 1.25;
+        renderCtx.stroke();
+        renderCtx.strokeStyle = "rgba(0, 0, 0, 0.22)";
+        renderCtx.lineWidth = 1;
+        renderCtx.beginPath();
+        renderCtx.ellipse(0, -3.5, bootLen * 0.32, 2, 0, 0, Math.PI * 2);
+        renderCtx.stroke();
+        renderCtx.beginPath();
+        renderCtx.ellipse(0, 3.5, bootLen * 0.32, 2, 0, 0, Math.PI * 2);
+        renderCtx.stroke();
+        renderCtx.restore();
+      }
+
+      /*
+       * drawStrawAssemblyWithCapRigidUpperAndMidFlexibleHingeAndGravityLower: third column only.
+       * Upper segment is rigid with the bottle along rotateVec(0,1,tilt). The hinge target distance
+       * from the cap pivot is (#midHingeFrac)% of the total molded length L; if the shoulder blocks
+       * that much straight run, upperLen shortens and the remainder is assigned to the lower segment
+       * so total straw length stays L (marketing-accurate vs telescoping). The lower segment angle is
+       * clamped like the teal panel so it rests on walls at full length instead of shrinking.
+       */
+      function drawStrawAssemblyWithCapRigidUpperAndMidFlexibleHingeAndGravityLower(
+        tiltRad,
+        waterWorldY
+      ) {
+        const jo = jointOffsetLocal();
+        const jRot = rotateVec(jo.x, jo.y, tiltRad);
+        const jx = cx + jRot.x;
+        const jy = cy + jRot.y;
+
+        const rigidDown = rotateVec(0, 1, tiltRad);
+        const rigidMag = Math.hypot(rigidDown.x, rigidDown.y) || 1;
+        const ux = rigidDown.x / rigidMag;
+        const uy = rigidDown.y / rigidMag;
+
+        const nominalDipLen = computeStiffDipTubeLengthPx();
+        const hingeFrac = readMidHingeFractionFromControls();
+        const upperTargetAlongRigidPx = nominalDipLen * hingeFrac;
+
+        const upperLen = computeStrawSegmentLengthAlongRayClampedToCavity(
+          jx,
+          jy,
+          ux,
+          uy,
+          tiltRad,
+          upperTargetAlongRigidPx
+        );
+        const midX = jx + ux * upperLen;
+        const midY = jy + uy * upperLen;
+
+        const lowerRodFullLengthPx = Math.max(24, nominalDipLen - upperLen);
+        const bdx = Math.sin(strawMidBottomSegmentAngleWorld);
+        const bdy = Math.cos(strawMidBottomSegmentAngleWorld);
+        const lowerDrawLenPx = Math.max(
+          strawTubeR * 2 + 2,
+          lowerRodFullLengthPx - strawTipInteriorMarginPx
+        );
+        const tipX = midX + bdx * lowerDrawLenPx;
+        const tipY = midY + bdy * lowerDrawLenPx;
+        const wet = strawTipSubmerged(tipX, tipY, waterWorldY);
+
+        renderCtx.save();
+        renderCtx.lineCap = "round";
+        renderCtx.lineJoin = "round";
+
+        const shadowStroke = "rgba(38, 32, 48, 0.92)";
+        const upperMain = "rgba(150, 120, 210, 0.92)";
+        const lowerMainWet = "rgba(210, 170, 255, 0.98)";
+        const lowerMainDry = "rgba(185, 140, 245, 0.95)";
+        const pivotTop = "#a080d8";
+        const pivotMid = "#c4a0f0";
+        const tipGlowWet = "rgba(230, 210, 255, 0.5)";
+        const tipGlowDry = "rgba(255, 255, 255, 0.22)";
+
+        renderCtx.strokeStyle = shadowStroke;
+        renderCtx.lineWidth = strawTubeR * 2 + 6;
+        renderCtx.beginPath();
+        renderCtx.moveTo(jx, jy);
+        renderCtx.lineTo(midX, midY);
+        renderCtx.stroke();
+
+        renderCtx.strokeStyle = upperMain;
+        renderCtx.lineWidth = strawTubeR * 2;
+        renderCtx.beginPath();
+        renderCtx.moveTo(jx, jy);
+        renderCtx.lineTo(midX, midY);
+        renderCtx.stroke();
+
+        /*
+         * Paint the bellows after the upper stroke so the flex zone sits on top of the rigid lumen;
+         * then the lower segment exits the boot toward the pooled water.
+         */
+        drawMidStrawSiliconeFlexJointBootAlongWorldDirection(midX, midY, ux, uy);
+
+        renderCtx.strokeStyle = shadowStroke;
+        renderCtx.lineWidth = strawTubeR * 2 + 6;
+        renderCtx.beginPath();
+        renderCtx.moveTo(midX, midY);
+        renderCtx.lineTo(tipX, tipY);
+        renderCtx.stroke();
+
+        renderCtx.strokeStyle = wet ? lowerMainWet : lowerMainDry;
+        renderCtx.lineWidth = strawTubeR * 2;
+        renderCtx.beginPath();
+        renderCtx.moveTo(midX, midY);
+        renderCtx.lineTo(tipX, tipY);
+        renderCtx.stroke();
+
+        renderCtx.fillStyle = pivotTop;
+        renderCtx.beginPath();
+        renderCtx.arc(jx, jy, 8, 0, Math.PI * 2);
+        renderCtx.fill();
+        renderCtx.strokeStyle = "rgba(255, 255, 255, 0.45)";
+        renderCtx.lineWidth = 2;
+        renderCtx.stroke();
+
+        renderCtx.fillStyle = pivotMid;
+        renderCtx.beginPath();
+        renderCtx.arc(midX, midY, 9, 0, Math.PI * 2);
+        renderCtx.fill();
+        renderCtx.strokeStyle = "rgba(255, 255, 255, 0.45)";
+        renderCtx.lineWidth = 2;
+        renderCtx.stroke();
+
+        renderCtx.fillStyle = wet ? tipGlowWet : tipGlowDry;
+        renderCtx.beginPath();
+        renderCtx.arc(tipX, tipY, strawTubeR + 2, 0, Math.PI * 2);
+        renderCtx.fill();
+
+        renderCtx.restore();
+
+        drawDrinkingCapWithFlipStrawAndCarryLoopLast(tiltRad);
+      }
+
+      /*
+       * drawStrawAssemblyCapFlexAndStiffDipTube: two modes for the comparison layout the user asked
+       * for. When useGravityHingedFlexibleJointAtCap is true we keep the product story: silicone boot
+       * only between cap and pivot, pendulum angle in world space, teal accent. When false we draw
+       * the conventional molded one-piece straw: no flex boot, direction locked to bottle-local +Y
+       * (rotateVec(0,1,tilt)) so the whole assembly tilts with the vessel and often leaves the tip
+       * high and dry when drinking angle is steep. That contrast is the pedagogical point next to the
+       * hinged panel. Colors shift to warm coral on the fixed side so thumbnails read as two different
+       * behaviors without reading a paragraph first.
+       */
+      function drawStraw(tiltRad, waterWorldY, useGravityHingedFlexibleJointAtCap) {
+        const jo = jointOffsetLocal();
+        const jRot = rotateVec(jo.x, jo.y, tiltRad);
+        const jx = cx + jRot.x;
+        const jy = cy + jRot.y;
+
+        const nominalDipLen = computeStiffDipTubeLengthPx();
+        let dirX;
+        let dirY;
+        let dipDrawLenPx;
+        if (useGravityHingedFlexibleJointAtCap) {
+          /*
+           * Cap-hinge story: angle was clamped in syncPendulumAnglesToCavityAfterPhysicsStep so the
+           * rod keeps molded length; we only subtract the tip margin used by the inside-polygon test.
+           */
+          dirX = Math.sin(strawAngleWorld);
+          dirY = Math.cos(strawAngleWorld);
+          dipDrawLenPx = Math.max(
+            strawTubeR * 2 + 2,
+            nominalDipLen - strawTipInteriorMarginPx
+          );
+        } else {
+          const rigidDown = rotateVec(0, 1, tiltRad);
+          const rm = Math.hypot(rigidDown.x, rigidDown.y) || 1;
+          dirX = rigidDown.x / rm;
+          dirY = rigidDown.y / rm;
+          dipDrawLenPx = computeStrawSegmentLengthAlongRayClampedToCavity(
+            jx,
+            jy,
+            dirX,
+            dirY,
+            tiltRad,
+            nominalDipLen
+          );
+        }
+        const tipX = jx + dirX * dipDrawLenPx;
+        const tipY = jy + dirY * dipDrawLenPx;
+        const wet = strawTipSubmerged(tipX, tipY, waterWorldY);
+
+        if (useGravityHingedFlexibleJointAtCap) {
+          drawFlexibleNeckConnectorOnlyBetweenCapUndersideAndPivot(tiltRad);
+        }
+
+        renderCtx.save();
+        renderCtx.lineCap = "round";
+        renderCtx.lineJoin = "round";
+
+        const shadowStroke = useGravityHingedFlexibleJointAtCap
+          ? "rgba(30, 32, 38, 0.92)"
+          : "rgba(42, 28, 22, 0.92)";
+        const mainStrokeWet = useGravityHingedFlexibleJointAtCap
+          ? "rgba(110, 240, 210, 0.98)"
+          : "rgba(255, 170, 120, 0.98)";
+        const mainStrokeDry = useGravityHingedFlexibleJointAtCap
+          ? "rgba(92, 225, 200, 0.95)"
+          : "rgba(255, 140, 88, 0.95)";
+        const pivotFill = useGravityHingedFlexibleJointAtCap ? "#6fd4bc" : "#f0a070";
+        const tipGlowWet = useGravityHingedFlexibleJointAtCap
+          ? "rgba(180, 255, 240, 0.45)"
+          : "rgba(255, 220, 190, 0.5)";
+        const tipGlowDry = useGravityHingedFlexibleJointAtCap
+          ? "rgba(255, 255, 255, 0.25)"
+          : "rgba(255, 255, 255, 0.22)";
+
+        renderCtx.strokeStyle = shadowStroke;
+        renderCtx.lineWidth = strawTubeR * 2 + 6;
+        renderCtx.beginPath();
+        renderCtx.moveTo(jx, jy);
+        renderCtx.lineTo(tipX, tipY);
+        renderCtx.stroke();
+
+        renderCtx.strokeStyle = wet ? mainStrokeWet : mainStrokeDry;
+        renderCtx.lineWidth = strawTubeR * 2;
+        renderCtx.beginPath();
+        renderCtx.moveTo(jx, jy);
+        renderCtx.lineTo(tipX, tipY);
+        renderCtx.stroke();
+
+        renderCtx.fillStyle = pivotFill;
+        renderCtx.beginPath();
+        renderCtx.arc(jx, jy, 9, 0, Math.PI * 2);
+        renderCtx.fill();
+        renderCtx.strokeStyle = "rgba(255, 255, 255, 0.48)";
+        renderCtx.lineWidth = 2;
+        renderCtx.stroke();
+
+        renderCtx.fillStyle = wet ? tipGlowWet : tipGlowDry;
+        renderCtx.beginPath();
+        renderCtx.arc(tipX, tipY, strawTubeR + 2, 0, Math.PI * 2);
+        renderCtx.fill();
+
+        renderCtx.restore();
+
+        drawDrinkingCapWithFlipStrawAndCarryLoopLast(tiltRad);
+      }
+
+      /*
+       * drawScene: full frame for one canvas. panelKind selects which bitmap we target and which
+       * straw story to draw. All panels stay in lockstep on tilt and fill for a fair comparison.
+       */
+      function drawScene(tiltDeg, fillPct, panelKind) {
+        const targetCanvas =
+          panelKind === "fixed" ? canvasFixed : panelKind === "midFlex" ? canvasMid : canvasFlex;
+        renderCtx = targetCanvas.getContext("2d");
+        /*
+         * Hard reset drawing state for this bitmap so a leaked transform, alpha, or composite mode
+         * on one context cannot zero out an entire panel (we observed a fully transparent fixed
+         * canvas in automated Chromium while flex still rendered).
+         */
+        renderCtx.setTransform(1, 0, 0, 1, 0, 0);
+        renderCtx.globalAlpha = 1;
+        renderCtx.globalCompositeOperation = "source-over";
+        const tiltRad = degToRad(tiltDeg);
+        const wl = waterLineWorldY(tiltRad, fillPct);
+
+        renderCtx.clearRect(0, 0, W, H);
+        /*
+         * Opaque stage base so the canvas never stays fully transparent in the cavity; this also
+         * makes Puppeteer and screenshot tooling read believable pixels off the straw centerline.
+         */
+        renderCtx.fillStyle = "rgb(12, 15, 22)";
+        renderCtx.fillRect(0, 0, W, H);
+
+        renderCtx.save();
+        /*
+         * Grid was reading as "empty graph paper" inside the bottle once water failed to draw.
+         * We keep a light reference grid but dial it back so the vessel and liquid stay the hero.
+         */
+        renderCtx.globalAlpha = 0.045;
+        renderCtx.strokeStyle = "#fff";
+        renderCtx.lineWidth = 1;
+        for (let x = 0; x < W; x += 28) {
+          renderCtx.beginPath();
+          renderCtx.moveTo(x, 0);
+          renderCtx.lineTo(x, H);
+          renderCtx.stroke();
+        }
+        for (let y = 0; y < H; y += 28) {
+          renderCtx.beginPath();
+          renderCtx.moveTo(0, y);
+          renderCtx.lineTo(W, y);
+          renderCtx.stroke();
+        }
+        renderCtx.restore();
+
+        drawBottleInteriorBackdrop(tiltRad);
+        drawAirRegionAboveWaterLevelInsideCavity(tiltRad, wl);
+        drawWater(tiltRad, fillPct);
+        drawBottleInsulatedWallAsParallelStrokesOverLiquid(tiltRad);
+        drawBottomSiliconeBootBandOnBottle(tiltRad);
+        drawWaterMeniscusLineOnTopOfWallStrokes(tiltRad, wl);
+        if (panelKind === "fixed") {
+          drawStraw(tiltRad, wl, false);
+        } else if (panelKind === "midFlex") {
+          drawStrawAssemblyWithCapRigidUpperAndMidFlexibleHingeAndGravityLower(tiltRad, wl);
+        } else {
+          drawStraw(tiltRad, wl, true);
+        }
+
+        /*
+         * HUD moved to the bottom after Puppeteer pass: top banner sat across the neck and read
+         * like a broken label on the product. A bottom strip keeps the thermos silhouette clean.
+         * Per-panel copy calls out hinge versus rigid straw so the side-by-side read is instant.
+         */
+        renderCtx.save();
+        const hudH = 34;
+        const hudY = H - hudH - 6;
+        const hudGrad = renderCtx.createLinearGradient(0, hudY, 0, hudY + hudH);
+        hudGrad.addColorStop(0, "rgba(0, 0, 0, 0)");
+        hudGrad.addColorStop(0.25, "rgba(0, 0, 0, 0.42)");
+        hudGrad.addColorStop(1, "rgba(0, 0, 0, 0.55)");
+        renderCtx.fillStyle = hudGrad;
+        renderCtx.fillRect(0, hudY, W, hudH);
+        renderCtx.fillStyle = "rgba(235, 240, 248, 0.9)";
+        renderCtx.font = "600 12px system-ui, sans-serif";
+        let hudLine;
+        if (panelKind === "fixed") {
+          hudLine = "Bright line = surface · coral straw is rigid with the lid (no hinge)";
+        } else if (panelKind === "midFlex") {
+          hudLine =
+            "Violet · hinge % slider · upper rigid · lower full length, angle limited by walls";
+        } else {
+          hudLine =
+            "Bright line = surface · teal tube fixed length; walls change angle, not tube length";
+        }
+        renderCtx.fillText(hudLine, 14, hudY + 22);
+        renderCtx.restore();
+      }
+
+      let lastTs = performance.now();
+      function frame(ts) {
+        const dt = Math.min(0.05, (ts - lastTs) / 1000);
+        lastTs = ts;
+
+        const tiltDeg = Number(tiltInput.value);
+        const fillPct = Number(fillInput.value);
+
+        if (autoDemo) {
+          autoT += dt;
+          /*
+           * Auto demo sweeps tilt so viewers see the straw track without dragging. We use a slow
+           * sine so the motion feels product-demo-like rather than chaotic.
+           */
+          const wobble =
+            Math.sin(autoT * 0.82) * 175 + Math.sin(autoT * 0.27) * 18 + Math.sin(autoT * 0.11) * 8;
+          tiltInput.value = String(Math.round(Math.max(-180, Math.min(180, wobble))));
+        }
+
+        stepStrawPhysics(dt);
+        stepStrawMidBottomSegmentPendulumPhysics(dt);
+        syncPendulumAnglesToCavityAfterPhysicsStep(degToRad(Number(tiltInput.value)));
+        drawScene(Number(tiltInput.value), fillPct, "flex");
+        drawScene(Number(tiltInput.value), fillPct, "fixed");
+        drawScene(Number(tiltInput.value), fillPct, "midFlex");
+
+        tiltVal.textContent = `${Number(tiltInput.value)}°`;
+        fillVal.textContent = `${fillPct}%`;
+        bottomGapVal.textContent = `${Number(bottomGapInput.value)} px`;
+        midHingeFracVal.textContent = `${Number(midHingeFracInput.value)}%`;
+
+        requestAnimationFrame(frame);
+      }
+
+      tiltInput.addEventListener("input", function () {
+        /* User-driven tilt disables auto so sliders stay authoritative. */
+        autoDemo = false;
+      });
+
+      fillInput.addEventListener("input", function () {
+        autoDemo = false;
+      });
+
+      bottomGapInput.addEventListener("input", function () {
+        autoDemo = false;
+      });
+
+      midHingeFracInput.addEventListener("input", function () {
+        autoDemo = false;
+      });
+
+      btnAuto.addEventListener("click", function () {
+        autoDemo = true;
+        autoT = 0;
+      });
+
+      btnStop.addEventListener("click", function () {
+        autoDemo = false;
+      });
+
+      requestAnimationFrame(frame);
+    })();
+  </script>
+</body>
+</html>
