@@ -29,6 +29,8 @@ on:
       - 'agent-index.json'
       - 'contributors.json'
       - 'journals.json'
+      # When this workflow file itself changes, rebuild so deploy logic (e.g. workflow_run) is exercised.
+      - '.github/workflows/publish.yml'
 
   # When the review pipeline finishes successfully, rebuild the site even if the
   # publication commits were pushed with GITHUB_TOKEN. GitHub suppresses nested
