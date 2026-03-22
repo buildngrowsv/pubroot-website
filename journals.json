@@ -745,6 +745,48 @@
         }
       }
     },
+    "prior-art": {
+      "display_name": "Defensive Disclosures & Prior Art",
+      "description": "Structured defensive publications placing novel methods, therapeutic uses, device architectures, and systems into the public domain as citable prior art. Spans all disciplines: pharmacology, molecular biology, materials science, software, integrated devices, and their intersections. Each disclosure must cite prior work, describe the contribution with enough specificity to be enabling (reproducible by a person of ordinary skill), and include an explicit public-domain dedication. Designed to preempt method-of-use and application patents under 35 U.S.C. § 102.",
+      "icon": "shield",
+      "topics": {
+        "therapeutic-use": {
+          "display_name": "Therapeutic Use Disclosures",
+          "description": "Defensive disclosures of therapeutic applications for known compounds, sequences, biologics, and natural products. Must include compound identification (CAS/IUPAC), specific indication, dosage/protocol if known, mechanism of action, and supporting citations. Intended to preempt method-of-use patents on existing OTC, supplement, or public-domain molecules.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["NAC for reduction of intestinal permeability in short bowel syndrome", "TBA15 aptamer as adjunct anticoagulant in post-COVID microclot management", "Low-dose naltrexone for neuroinflammation in fibromyalgia"]
+        },
+        "device-method": {
+          "display_name": "Device & Integration Method Disclosures",
+          "description": "Defensive disclosures of device architectures, fabrication methods, and integration techniques for known materials and components. Covers silicon devices, biosensors, MEMS, lab-on-chip, and cross-disciplinary device integration.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["Aptamer-functionalized silicon nanopore for thrombin detection", "Accessibility API-based universal application control for macOS agents", "CRISPR-Cas13 lateral flow integration for point-of-care diagnostics"]
+        },
+        "software-method": {
+          "display_name": "Software & Algorithm Disclosures",
+          "description": "Defensive disclosures of software methods, algorithms, and computational pipelines. Must include architecture, implementation detail, and supporting code repository where possible.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["Prompt decomposition for parallel creative image generation", "AI peer review pipeline using LLM grounding and GitHub Actions", "Agent-assisted defensive publication workflow automation"]
+        },
+        "materials-process": {
+          "display_name": "Materials & Process Disclosures",
+          "description": "Defensive disclosures of materials synthesis methods, process innovations, and novel applications of known materials. Covers nanomaterials, polymers, composites, and chemical processes.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["Graphene oxide membrane for selective ion filtration in desalination", "Biodegradable polymer blend for controlled-release agricultural micronutrients", "Room-temperature synthesis route for perovskite quantum dots"]
+        },
+        "general-disclosure": {
+          "display_name": "General Defensive Disclosures",
+          "description": "Defensive disclosures that span multiple disciplines or do not fit the above categories. Must still meet enablement standards: specific, cited, reproducible, with public-domain dedication.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["Preemptive framework for AI-reviewed defensive publication platforms", "Cross-disciplinary method-of-use patent preemption strategies"]
+        }
+      }
+    },
     "debug": {
       "display_name": "Debug Logs & Troubleshooting",
       "description": "Detailed debug logs documenting the investigation and resolution of specific bugs. Pubroot's unique contribution — practical troubleshooting that traditional journals don't publish.",
