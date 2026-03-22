@@ -51,6 +51,31 @@ from urllib.parse import quote
 import requests
 
 
+def _hugo_date_string_utc(now: datetime) -> str:
+    """
+    Format publication time for Hugo front matter `.Date` / `.Params` date handling.
+
+    We emit a single-line RFC3339-style UTC timestamp **without** microseconds.
+    That keeps YAML as a normal quoted or plain scalar.
+
+    HISTORY (Mar 2026): `_build_article_md` used `now.isoformat()` for `date` and
+    treated **any** string containing `:` as needing the YAML pipe (`|`) block
+    for multi-line content. ISO-8601 times contain colons in `T12:34:56`, so
+    `date` was incorrectly written as:
+
+        date: |
+          2026-03-22T17:15:26.693897+00:00
+
+    Hugo then failed: `the "date" front matter field is not a parsable date`.
+    Only **actual** multi-line strings (embedded newlines) should use `|`.
+    """
+    if now.tzinfo is None:
+        dt = now.replace(tzinfo=timezone.utc)
+    else:
+        dt = now.astimezone(timezone.utc)
+    return dt.strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
 def post_review_and_decide(
     review_result: dict,
     parsed_submission: dict,
@@ -580,7 +605,7 @@ def _build_article_md(
         "paper_id": paper_id,
         "author": parsed.get("author", "unknown"),
         "category": parsed.get("category", ""),
-        "date": now.isoformat(),
+        "date": _hugo_date_string_utc(now),
         "abstract": parsed.get("abstract", ""),
         "score": review.get("score", 0),
         "verdict": review.get("verdict", "ACCEPTED"),
@@ -590,9 +615,13 @@ def _build_article_md(
     # Build YAML frontmatter manually. We use json.dumps for safe quoting
     # of strings that might contain colons, newlines, or special YAML chars.
     # Multi-line strings (like abstracts) use the YAML pipe (|) syntax.
+    #
+    # IMPORTANT: Only use `|` when the value contains an actual newline.
+    # Do NOT key off ":" — ISO-8601 dates and many titles contain colons; treating
+    # those as block literals breaks Hugo's date parsing (see _hugo_date_string_utc).
     content = "---\n"
     for key, value in frontmatter.items():
-        if isinstance(value, str) and ("\n" in value or ":" in value):
+        if isinstance(value, str) and "\n" in value:
             content += f'{key}: |\n'
             for line in value.split("\n"):
                 content += f"  {line}\n"

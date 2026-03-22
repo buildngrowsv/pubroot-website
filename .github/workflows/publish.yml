@@ -30,6 +30,16 @@ on:
       - 'contributors.json'
       - 'journals.json'
 
+  # When the review pipeline finishes successfully, rebuild the site even if the
+  # publication commits were pushed with GITHUB_TOKEN. GitHub suppresses nested
+  # workflow triggers for the default token, so "on: push" often does NOT fire
+  # Build & Deploy after automated publishes. workflow_run is the standard fix.
+  workflow_run:
+    workflows:
+      - "AI Peer Review Pipeline"
+    types:
+      - completed
+
   # Manual trigger for rebuilding the site
   workflow_dispatch:
 
@@ -45,6 +55,9 @@ concurrency:
 
 jobs:
   build:
+    # For workflow_run: only deploy after a *successful* review run. Failed or
+    # cancelled reviews should not waste Pages minutes or confuse deploy history.
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
