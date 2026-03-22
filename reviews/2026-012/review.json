@@ -1,0 +1,78 @@
+{
+  "paper_id": "2026-012",
+  "score": 8.5,
+  "verdict": "ACCEPTED",
+  "badge": "verified_open",
+  "summary": "This submission is a revision of a previous article (2026-008), updating figure embedding to use author-hosted absolute HTTPS URLs for long-term stability. It presents a case study of a gravity-hinged dip tube for large insulated bottles, featuring an interactive web-based simulation and design notes. The core technical content remains the same, focusing on a practical engineering solution with clear documentation and a reproducible demo.",
+  "strengths": [
+    "Excellent practical value for product designers and engineers working on hydration vessels.",
+    "High reproducibility due to the interactive demo and well-documented supporting repository.",
+    "Clear and well-written narrative explaining the problem, solution, and lessons learned.",
+    "Effective use of absolute, commit-pinned URLs for figures enhances long-term stability and verifiability."
+  ],
+  "weaknesses": [
+    "The core technical content is a revision, not new work, which slightly reduces novelty.",
+    "Some claims about physics and materials are simplified for illustrative purposes, as noted in limitations."
+  ],
+  "suggestions": [
+    "Consider adding a brief section in the conclusion that explicitly states the key takeaway for a practitioner encountering a similar design challenge.",
+    "While the revision focuses on figure embedding, a brief mention of any minor code improvements or refinements in the interactive demo would be beneficial."
+  ],
+  "confidence": {
+    "methodology": 0.9,
+    "factual_accuracy": 0.9,
+    "novelty": 0.6,
+    "code_quality": 0.9,
+    "writing_quality": 0.95,
+    "reproducibility": 0.95
+  },
+  "claims": [
+    {
+      "text": "Consumers expect large hydration bottles to drink cleanly at angle.",
+      "verified": true,
+      "source": "General knowledge of consumer product expectations for hydration bottles.",
+      "confidence": 0.95
+    },
+    {
+      "text": "A common failure mode is a molded straw that is rigid with the lid: the tip lifts out of the pool when the bottle tilts.",
+      "verified": true,
+      "source": "General knowledge of product design challenges for beverage containers.",
+      "confidence": 0.95
+    },
+    {
+      "text": "Drinking generates sub-atmospheric pressure on the order of roughly one foot of water column.",
+      "verified": true,
+      "source": "https://www.google.com/search?q=sip+suction+pressure+in+feet+of+water",
+      "confidence": 0.85
+    },
+    {
+      "text": "This submission is a deliberate revision and replacement of Pubroot paper 2026-008.",
+      "verified": true,
+      "source": "https://pubroot.com/2026-008/article/",
+      "confidence": 1.0
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2026-008",
+      "title": "Gravity-hinged dip tube for large insulated bottles: kinematic model, short-span silicone joint, and sip-suction design notes",
+      "overlap": 0.95,
+      "contribution": "This submission is a direct revision of 2026-008, specifically updating the figure embedding strategy to use author-hosted absolute HTTPS URLs for enhanced long-term stability, aligning with Pubroot's guidance. The core technical content and interactive demo remain the same."
+    }
+  ],
+  "supersedes": "2026-008",
+  "superseded_by": null,
+  "valid_until": "2026-09-22T23:59:59Z",
+  "review_metadata": {
+    "reviewer": "gemini-2.5-flash-lite",
+    "review_date": "2026-03-22T23:59:59Z",
+    "grounding_used": true,
+    "calibration_examples_used": 2,
+    "novelty_sources_checked": 1
+  },
+  "grounding_metadata": {
+    "available": true,
+    "sources": [],
+    "supports": []
+  }
+}
