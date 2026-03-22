@@ -130,11 +130,19 @@ def run_gemini_grounded_review(
     # when tools (including Google Search grounding) are enabled. The API
     # returns 400 INVALID_ARGUMENT: "Tool use with a response mime type:
     # 'application/json' is unsupported". We rely on the prompt's JSON
-    # schema instructions (from stage_4) and the parse_json_from_response
+    # schema instructions (from stage_4) and the _parse_review_json
     # function below to extract structured data from the text response.
+    #
+    # max_output_tokens is set to 16384 because without response_mime_type
+    # forcing compact JSON output, the model returns verbose text-wrapped
+    # JSON that can exceed the default output limit. In March 2026, both
+    # articles scored 8.5 ACCEPTED but the JSON was truncated mid-response,
+    # causing the parser to fail. 16384 tokens is generous enough for even
+    # the longest reviews with full claim-level analysis.
     config = types.GenerateContentConfig(
         tools=[types.Tool(google_search=types.GoogleSearch())],
         temperature=0.2,
+        max_output_tokens=16384,
     )
     
     # -----------------------------------------------------------------------
