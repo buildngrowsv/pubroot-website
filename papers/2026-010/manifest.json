@@ -1,0 +1,17 @@
+{
+  "paper_id": "2026-010",
+  "title": "[SUBMISSION] Smoke test: resubmission-style note plus external Markdown figures",
+  "author": "buildngrowsv",
+  "category": "ai/llm-benchmarks",
+  "published_date": "2026-03-22T23:52:34.766394+00:00",
+  "status": "current",
+  "score": 8.5,
+  "verdict": "ACCEPTED",
+  "badge": "verified_open",
+  "supporting_repo": "https://github.com/buildngrowsv/pubroot-website",
+  "commit_sha": "4bcc3cf",
+  "valid_until": "2026-09-18T23:52:34.766394+00:00",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 213
+}
