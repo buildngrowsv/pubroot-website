@@ -46,6 +46,7 @@ import base64
 import re
 from datetime import datetime, timezone, timedelta
 from typing import Optional
+from urllib.parse import quote
 
 import requests
 
@@ -124,26 +125,15 @@ def post_review_and_decide(
     
     comment = _format_review_comment(review, grounding, paper_id, score, verdict)
     gh.post_comment(issue_number, comment)
-    
+
     # -----------------------------------------------------------------------
-    # UPDATE CONTRIBUTOR STATS (always, for both accepted and rejected)
+    # CASE 2: ACCEPTED — Publish to repo (PR with merge, or direct-to-main fallback)
     # -----------------------------------------------------------------------
-    
-    try:
-        _update_contributors(
-            repo_root=repo_root,
-            author=parsed_submission.get("author", "unknown"),
-            score=score,
-            accepted=(verdict == "ACCEPTED"),
-            category=parsed_submission.get("category", "general-technical"),
-        )
-    except Exception as e:
-        errors.append(f"Failed to update contributors.json: {str(e)}")
-    
+    # Contributor stats for accepted papers are updated inside _handle_acceptance
+    # only after we know we can write files, so a failed publish does not bump
+    # acceptance counts twice on retry.
     # -----------------------------------------------------------------------
-    # CASE 2: ACCEPTED — Create PR with published content
-    # -----------------------------------------------------------------------
-    
+
     if verdict == "ACCEPTED" and score >= 6.0:
         try:
             pr_number = _handle_acceptance(
@@ -157,9 +147,10 @@ def post_review_and_decide(
                 issue_number=issue_number,
                 repo_root=repo_root,
             )
-            
+
             gh.add_labels(issue_number, ["accepted", "published"])
-            
+            _remove_labels_if_present(gh, issue_number, ["review-error", "publish-failed"])
+
             return {
                 "success": True,
                 "action_taken": "accepted",
@@ -167,19 +158,39 @@ def post_review_and_decide(
                 "errors": errors,
             }
         except Exception as e:
-            errors.append(f"Failed to create publication PR: {str(e)}")
-            gh.add_labels(issue_number, ["review-error"])
+            err_txt = str(e)
+            errors.append(f"Publication failed after review acceptance: {err_txt}")
+            try:
+                gh.post_comment(
+                    issue_number,
+                    _format_publish_failure_comment(paper_id, err_txt),
+                )
+            except Exception as c_err:
+                errors.append(f"Also failed to post failure comment: {c_err}")
+
+            gh.add_labels(issue_number, ["publish-failed"])
             return {
                 "success": False,
                 "action_taken": "error",
                 "pr_number": None,
                 "errors": errors,
             }
-    
+
     # -----------------------------------------------------------------------
-    # CASE 3: REJECTED — Label and close
+    # CASE 3: REJECTED — Contributor bump, label, close
     # -----------------------------------------------------------------------
-    
+
+    try:
+        _update_contributors(
+            repo_root=repo_root,
+            author=parsed_submission.get("author", "unknown"),
+            score=score,
+            accepted=False,
+            category=parsed_submission.get("category", "general-technical"),
+        )
+    except Exception as e:
+        errors.append(f"Failed to update contributors.json: {str(e)}")
+
     gh.add_labels(issue_number, ["rejected"])
     gh.close_issue(issue_number)
     
@@ -246,7 +257,22 @@ class GitHubAPI:
         resp = requests.get(url, headers=self.headers, timeout=30)
         resp.raise_for_status()
         return resp.json()["object"]["sha"]
-    
+
+    def _git_ref_heads_url(self, branch_name: str) -> str:
+        """
+        Build the URL for a branch ref. Branch names may contain slashes
+        (e.g. paper/2026-003); they must be URL-encoded in the path or
+        GitHub parses them as multiple path segments and returns 404.
+        """
+        return f"{self.base_url}/git/ref/heads/{quote(branch_name, safe='')}"
+
+    def delete_branch_if_exists(self, branch_name: str) -> None:
+        """Delete refs/heads/branch_name if it exists. Ignores 404."""
+        url = f"{self.base_url}/git/refs/heads/{quote(branch_name, safe='')}"
+        resp = requests.delete(url, headers=self.headers, timeout=30)
+        if resp.status_code not in (204, 404):
+            resp.raise_for_status()
+
     def create_branch(self, branch_name: str, sha: str):
         """
         Create a new branch from the given SHA.
@@ -258,12 +284,11 @@ class GitHubAPI:
         """
         ref = f"refs/heads/{branch_name}"
         url_create = f"{self.base_url}/git/refs"
-        url_existing = f"{self.base_url}/git/{ref}"
+        url_existing = self._git_ref_heads_url(branch_name)
 
-        # Check if branch already exists and delete it if so
         check = requests.get(url_existing, headers=self.headers, timeout=30)
         if check.status_code == 200:
-            requests.delete(url_existing, headers=self.headers, timeout=30)
+            self.delete_branch_if_exists(branch_name)
 
         data = {"ref": ref, "sha": sha}
         resp = requests.post(url_create, headers=self.headers, json=data, timeout=30)
@@ -312,10 +337,107 @@ class GitHubAPI:
         resp.raise_for_status()
         return resp.json()
 
+    def path_exists(self, path: str, ref: str = "main") -> bool:
+        """Return True if a file exists at path on the given ref (branch or SHA)."""
+        url = f"{self.base_url}/contents/{path}"
+        resp = requests.get(url, headers=self.headers, params={"ref": ref}, timeout=30)
+        return resp.status_code == 200
+
+    def remove_label(self, issue_number: int, label_name: str) -> None:
+        """Remove a label from an issue (404 if label not on issue is OK)."""
+        enc = quote(label_name, safe="")
+        url = f"{self.base_url}/issues/{issue_number}/labels/{enc}"
+        resp = requests.delete(url, headers=self.headers, timeout=30)
+        if resp.status_code not in (204, 404):
+            resp.raise_for_status()
+
 
 # ---------------------------------------------------------------------------
 # PRIVATE HELPER FUNCTIONS
 # ---------------------------------------------------------------------------
+
+
+def _remove_labels_if_present(gh: GitHubAPI, issue_number: int, labels: list) -> None:
+    for lab in labels:
+        try:
+            gh.remove_label(issue_number, lab)
+        except Exception:
+            pass
+
+
+def _format_publish_failure_comment(paper_id: str, error_detail: str) -> str:
+    return (
+        f"# Publication step failed (review was ACCEPTED)\n\n"
+        f"**Paper ID:** `{paper_id}`\n\n"
+        f"The AI review succeeded, but committing files to the repository failed:\n\n"
+        f"```\n{error_detail[:4000]}\n```\n\n"
+        f"The workflow will retry issues labeled `publish-failed` on the next "
+        f"scheduled run, or a maintainer can re-run the **AI Peer Review Pipeline** "
+        f"workflow manually for this issue number. "
+        f"Re-runs are safe: if `papers/{paper_id}/article.md` already exists on "
+        f"`main`, the publisher skips duplicate work.\n\n"
+        f"---\n*Automated message from Pubroot.*"
+    )
+
+
+def _upload_publication_files_to_branch(
+    gh: GitHubAPI,
+    branch: str,
+    review: dict,
+    grounding: dict,
+    parsed_submission: dict,
+    novelty_results: dict,
+    repo_data: dict,
+    paper_id: str,
+    issue_number: int,
+    repo_root: str,
+    now: datetime,
+) -> None:
+    """
+    Create or update all publication files on the given branch (feature branch
+    or main). Idempotent: safe to call again after a failed PR step when
+    retrying onto main.
+    """
+    article_content = _build_article_md(
+        parsed_submission, review, repo_data, paper_id, now
+    )
+    gh.create_or_update_file(
+        path=f"papers/{paper_id}/article.md",
+        content=article_content,
+        message=f"Publish article: {parsed_submission.get('title', paper_id)}",
+        branch=branch,
+    )
+
+    manifest = _build_manifest(
+        parsed_submission, review, repo_data, paper_id, now, novelty_results
+    )
+    gh.create_or_update_file(
+        path=f"papers/{paper_id}/manifest.json",
+        content=json.dumps(manifest, indent=2),
+        message=f"Add manifest for {paper_id}",
+        branch=branch,
+    )
+
+    review_with_grounding = {**review, "grounding_metadata": grounding}
+    gh.create_or_update_file(
+        path=f"reviews/{paper_id}/review.json",
+        content=json.dumps(review_with_grounding, indent=2),
+        message=f"Add review for {paper_id}",
+        branch=branch,
+    )
+
+    index_entry = _build_index_entry(parsed_submission, review, repo_data, paper_id, now)
+    _update_agent_index(gh, branch, repo_root, index_entry)
+
+    contributors_path = os.path.join(repo_root, "contributors.json")
+    with open(contributors_path, "r") as f:
+        contributors_content = f.read()
+    gh.create_or_update_file(
+        path="contributors.json",
+        content=contributors_content,
+        message=f"Update contributor stats after {paper_id}",
+        branch=branch,
+    )
 
 
 def _handle_acceptance(
@@ -328,93 +450,93 @@ def _handle_acceptance(
     paper_id: str,
     issue_number: int,
     repo_root: str,
-) -> int:
+) -> Optional[int]:
     """
-    Handle the full acceptance workflow: branch, commit, PR, merge.
-    
-    Returns the PR number.
+    Publish accepted work: bump contributor stats locally, upload files, then
+    merge via PR. If the PR path fails (403, merge rules, etc.), fall back to
+    committing the same files directly to main so the site still updates.
+
+    Returns:
+        PR number if merged via PR, or None if published via direct commits to main
+        or if the article was already on main (idempotent retry).
     """
     now = datetime.now(timezone.utc)
     branch_name = f"paper/{paper_id}"
-    
-    # Step 1: Create branch from main HEAD
-    main_sha = gh.get_default_branch_sha()
-    gh.create_branch(branch_name, main_sha)
-    
-    # Step 2: Build and commit article.md
-    # NOTE: We pass review and repo_data to _build_article_md so it can include
-    # score, verdict, and badge in the frontmatter. Without these, the Hugo
-    # single page template (single.html) falls back to "?" and "PENDING" defaults.
-    # This bug was caught during the Feb 2026 taxonomy redesign audit.
-    article_content = _build_article_md(
-        parsed_submission, review, repo_data, paper_id, now
+
+    # Idempotent retries (e.g. cron re-runs after a publish failure): if the article
+    # file is already on main, do not re-upload or double-count contributors.
+    if gh.path_exists(f"papers/{paper_id}/article.md", "main"):
+        return None
+
+    # Contributor stats must be reflected in contributors.json before upload.
+    _update_contributors(
+        repo_root=repo_root,
+        author=parsed_submission.get("author", "unknown"),
+        score=float(review.get("score", 0)),
+        accepted=True,
+        category=parsed_submission.get("category", "general-technical"),
     )
-    gh.create_or_update_file(
-        path=f"papers/{paper_id}/article.md",
-        content=article_content,
-        message=f"Publish article: {parsed_submission.get('title', paper_id)}",
-        branch=branch_name,
-    )
-    
-    # Step 3: Build and commit manifest.json
-    manifest = _build_manifest(
-        parsed_submission, review, repo_data, paper_id, now, novelty_results
-    )
-    gh.create_or_update_file(
-        path=f"papers/{paper_id}/manifest.json",
-        content=json.dumps(manifest, indent=2),
-        message=f"Add manifest for {paper_id}",
-        branch=branch_name,
-    )
-    
-    # Step 4: Commit review.json (includes grounding metadata)
-    review_with_grounding = {**review, "grounding_metadata": grounding}
-    gh.create_or_update_file(
-        path=f"reviews/{paper_id}/review.json",
-        content=json.dumps(review_with_grounding, indent=2),
-        message=f"Add review for {paper_id}",
-        branch=branch_name,
-    )
-    
-    # Step 5: Update agent-index.json
-    index_entry = _build_index_entry(parsed_submission, review, repo_data, paper_id, now)
-    _update_agent_index(gh, branch_name, repo_root, index_entry)
-    
-    # Step 6: Update contributors.json on the branch
-    # (Already updated locally in post_review_and_decide, now commit it)
-    contributors_path = os.path.join(repo_root, "contributors.json")
-    with open(contributors_path, "r") as f:
-        contributors_content = f.read()
-    gh.create_or_update_file(
-        path="contributors.json",
-        content=contributors_content,
-        message=f"Update contributor stats after {paper_id}",
-        branch=branch_name,
-    )
-    
-    # Step 7: Create and merge PR
-    pr_title = f"Publish: {parsed_submission.get('title', paper_id)}"
-    pr_body = (
-        f"## Auto-published by AI Peer Review Pipeline\n\n"
-        f"**Paper ID:** {paper_id}\n"
-        f"**Score:** {review.get('score', '?')}/10\n"
-        f"**Verdict:** {review.get('verdict', '?')}\n"
-        f"**Badge:** {review.get('badge', '?')}\n\n"
-        f"**Summary:** {review.get('summary', 'No summary available.')}\n\n"
-        f"Closes #{issue_number}"
-    )
-    
-    pr_number = gh.create_pull_request(
-        title=pr_title,
-        body=pr_body,
-        head=branch_name,
-        base="main",
-    )
-    
-    # Auto-merge the PR
-    gh.merge_pull_request(pr_number, merge_method="squash")
-    
-    return pr_number
+
+    def _try_pr_path() -> int:
+        main_sha = gh.get_default_branch_sha()
+        gh.create_branch(branch_name, main_sha)
+        _upload_publication_files_to_branch(
+            gh,
+            branch_name,
+            review,
+            grounding,
+            parsed_submission,
+            novelty_results,
+            repo_data,
+            paper_id,
+            issue_number,
+            repo_root,
+            now,
+        )
+        pr_title = f"Publish: {parsed_submission.get('title', paper_id)}"
+        pr_body = (
+            f"## Auto-published by AI Peer Review Pipeline\n\n"
+            f"**Paper ID:** {paper_id}\n"
+            f"**Score:** {review.get('score', '?')}/10\n"
+            f"**Verdict:** {review.get('verdict', '?')}\n"
+            f"**Badge:** {review.get('badge', '?')}\n\n"
+            f"**Summary:** {review.get('summary', 'No summary available.')}\n\n"
+            f"Closes #{issue_number}"
+        )
+        pr_number = gh.create_pull_request(
+            title=pr_title,
+            body=pr_body,
+            head=branch_name,
+            base="main",
+        )
+        gh.merge_pull_request(pr_number, merge_method="squash")
+        return pr_number
+
+    def _direct_main_path() -> None:
+        """
+        Same files, straight to main. GITHUB_TOKEN always has contents:write;
+        PR creation can fail in some org settings even when file writes succeed.
+        """
+        _upload_publication_files_to_branch(
+            gh,
+            "main",
+            review,
+            grounding,
+            parsed_submission,
+            novelty_results,
+            repo_data,
+            paper_id,
+            issue_number,
+            repo_root,
+            now,
+        )
+
+    try:
+        return _try_pr_path()
+    except Exception:
+        gh.delete_branch_if_exists(branch_name)
+        _direct_main_path()
+        return None
 
 
 def _build_article_md(

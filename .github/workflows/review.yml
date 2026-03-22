@@ -60,15 +60,17 @@ concurrency:
   group: review-pipeline
   cancel-in-progress: false
 
+# Explicit token scopes so publication (contents + PRs) works even when the
+# repository default is "Read repository contents and packages permissions".
 permissions:
-  issues: write
   contents: write
+  issues: write
   pull-requests: write
 
 jobs:
   review:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
 
     steps:
       # ---------------------------------------------------------------
@@ -100,6 +102,18 @@ jobs:
           pip install -r _review_agent/requirements.txt
 
       # ---------------------------------------------------------------
+      # Step 3b: Ensure labels used by the pipeline exist
+      # ---------------------------------------------------------------
+      # GitHub rejects add_labels if the label was never created. Creating
+      # idempotently avoids manual setup when onboarding a new fork.
+      # ---------------------------------------------------------------
+      - name: Ensure pipeline labels exist
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh label create "publish-failed" --color "d73a4a" --description "Review passed; git publish step failed — safe to retry" 2>/dev/null || true
+
+      # ---------------------------------------------------------------
       # Step 4: Determine which issue to process
       # ---------------------------------------------------------------
       # For issue:opened triggers, use the event payload issue number.
@@ -121,20 +135,30 @@ jobs:
             echo "issue_number=$DISPATCH_ISSUE" >> $GITHUB_OUTPUT
             echo "Processing issue #$DISPATCH_ISSUE (manual dispatch)"
           else
-            # Cron trigger: find highest-priority unprocessed issue
-            # Look for issues without 'accepted', 'rejected', 'review-error',
-            # or 'validation-failed' labels
+            # Cron: first retry publish-failed (review already passed; only
+            # publication failed — often fixed by direct-to-main fallback now).
             ISSUE=$(gh issue list \
               --repo "$GITHUB_REPOSITORY" \
               --state open \
-              --label "priority:critical,priority:high,priority:normal,priority:low" \
-              --json number,labels \
-              --jq 'map(select(.labels | map(.name) | (contains(["accepted"]) or contains(["rejected"]) or contains(["review-error"]) or contains(["validation-failed"])) | not)) | sort_by(.labels | map(select(.name | startswith("priority:"))) | .[0].name) | .[0].number // empty' \
+              --label "publish-failed" \
+              --json number \
+              --jq '.[0].number // empty' \
               2>/dev/null || true)
 
             if [ -z "$ISSUE" ]; then
-              # No unprocessed issues with priority labels — check for any open
-              # issues from the submission template that haven't been labeled yet
+              # Then pick highest-priority submission not yet finished.
+              # Include review-error for Gemini failures, but NOT publish-failed
+              # (handled above). Exclude validation-failed, accepted, rejected.
+              ISSUE=$(gh issue list \
+                --repo "$GITHUB_REPOSITORY" \
+                --state open \
+                --label "priority:critical,priority:high,priority:normal,priority:low" \
+                --json number,labels \
+                --jq 'map(select(.labels | map(.name) | (contains(["accepted"]) or contains(["rejected"]) or contains(["validation-failed"])) | not)) | sort_by(.labels | map(select(.name | startswith("priority:"))) | .[0].name) | .[0].number // empty' \
+                2>/dev/null || true)
+            fi
+
+            if [ -z "$ISSUE" ]; then
               ISSUE=$(gh issue list \
                 --repo "$GITHUB_REPOSITORY" \
                 --state open \
