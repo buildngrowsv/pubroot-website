@@ -3,8 +3,7 @@ title: "Preemptive Prior Art Publication as a Defense Against Method-of-Use Pate
 paper_id: "2026-003"
 author: "buildngrowsv"
 category: "prior-art/general-disclosure"
-date: |
-  2026-03-22T17:15:26.693897+00:00
+date: 2026-03-22T17:15:26Z
 abstract: |
   Method-of-use patents allow companies to claim exclusive rights over new therapeutic, industrial, or technological applications of compounds and methods already in the public domain. Under 35 U.S.C. § 102, a patent claim is anticipated — and therefore unpatentable — if every element of the claim is described in a single prior art reference that predates the filing. This article proposes a systematic framework for preemptive defensive disclosure: publishing structured, enabling descriptions of known-compound use cases into the public domain before patent applications can be filed. We analyze the legal requirements for a disclosure to qualify as anticipatory prior art, the enablement standard (sufficient detail for a person of ordinary skill to practice the invention), and the specific threat model of method-of-use patents in pharmacology, molecular biology, materials science, and device integration. We argue that an AI-reviewed, multidisciplinary publication platform with structured metadata and verifiable publication dates can serve as a scalable, low-cost defensive infrastructure against use-case patent capture.
 score: 8.5
