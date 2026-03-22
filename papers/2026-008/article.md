@@ -20,6 +20,10 @@ Consumers expect large hydration bottles to drink cleanly at angle. A common fai
 
 The artifact is a static web page with three synchronized canvases: cap-hinge with gravity pendulum, rigid straw for contrast, and mid-straw flex with a tunable hinge fraction. Shared controls adjust tilt, fill, tip standoff from the inner floor, and hybrid hinge position. The mechanisms plate at the top combines an inline SVG (large silicone sock, optional slits, sip callout, section view) with a separate four-panel reference PNG for other joint families.
 
+![Figure 1: three side-by-side panels at identical tilt and fill — teal cap-hinge straw, coral rigid straw, violet mid-straw flex](/img/papers/2026-008/straw-demo-three-panel-bottles.png)
+
+**Figure 1.** Screenshot from the interactive demo (supporting repository): same bottle geometry, waterline, and controls across panels; only the straw kinematics story changes.
+
 Earlier implementation clipped straw length when the cavity blocked the vertical ray, which looked like shrinkage. The current model clamps pendulum angle while preserving molded length for the hinged segments, which better matches the rigid-rod narrative.
 
 ## Physics and assumptions

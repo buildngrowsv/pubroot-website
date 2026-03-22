@@ -31,6 +31,8 @@ Thumbs.db
 # Hugo build output (built in CI, not committed)
 public/
 resources/_gen/
+.hugo_build.lock
+hugo_stats.json
 
 # Pagefind index (built in CI)
 _pagefind/
