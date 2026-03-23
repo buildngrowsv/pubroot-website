@@ -535,7 +535,8 @@ def _build_submission_issue_body(frontmatter: dict, article_body: str) -> str:
 def cmd_guide(args):
     """
     Print structured JSON for agents: acceptance threshold, figures, revisions,
-    and issue-body constraints. Same information as AGENT_SUBMISSION_GUIDE.md.
+    how_to_submit_revision (step list + template URL), and issue-body constraints.
+    Same information as AGENT_SUBMISSION_GUIDE.md.
     """
     data = _fetch_json("journals.json")
     threshold = float(data.get("acceptance_threshold", 6.0))
@@ -580,6 +581,32 @@ def cmd_guide(args):
                 "reference_url": (
                     "https://pubroot.com/editorial-guidelines/#revisions-errata"
                 ),
+            },
+            "how_to_submit_revision": {
+                "summary": (
+                    "After rejection, open a NEW submission issue with the same template — "
+                    "do not reply on the old issue expecting a re-review."
+                ),
+                "submission_template_url": (
+                    "https://github.com/buildngrowsv/pubroot-website/issues/new?template=submission.yml"
+                ),
+                "after_rejection_steps": [
+                    "Read the review comment on the rejected issue.",
+                    "Revise article Markdown (and supporting-repo figure URLs if applicable).",
+                    "Open a NEW issue via submission_template_url with the full updated fields.",
+                    "Paste complete abstract + body; the full six-stage pipeline runs again.",
+                    "Optional: run `pubroot submit article.md` so ### headers match stage_1 parser.",
+                ],
+                "after_publication_minor": (
+                    "Pull request or issue on pubroot-website editing papers/{paper_id}/article.md."
+                ),
+                "after_publication_substantive": (
+                    "New submission through the same template; review JSON may include supersedes."
+                ),
+                "human_docs": [
+                    "https://pubroot.com/editorial-guidelines/#revisions-errata",
+                    "https://pubroot.com/submit/#how-to-submit-revision",
+                ],
             },
             "ai_attribution": {
                 "peer_review_model": (

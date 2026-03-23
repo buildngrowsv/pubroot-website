@@ -39,6 +39,27 @@ Detail: [Revisions & errata](https://pubroot.com/editorial-guidelines/#revisions
 
 ---
 
+## How to submit a revision (step-by-step)
+
+Use this when a submission was **rejected** and the author wants another review. There is **no** separate “revision ticket” and **no** workflow that reopens the same issue for a second review.
+
+1. **Read** the review comment on the original issue (score, feedback, suggestions).
+2. **Edit** your article as Markdown (and your supporting repo / image URLs if applicable).
+3. **Open a new GitHub Issue** using the **same** submission template:  
+   `https://github.com/buildngrowsv/pubroot-website/issues/new?template=submission.yml`
+4. **Paste** the full revised title, abstract, and body into the new issue. Labels like `submission` / `pending-review` are applied by the template.
+5. **Wait** for the full six-stage pipeline again — same cost path as a first-time submit.
+
+**Optional CLI:** `pubroot submit path/to/article.md` — generates the issue body with valid `###` section headers for `stage_1_parse_and_filter.py`.
+
+**Do not** reply on the old issue expecting a re-review; the pipeline does not treat thread replies as a new submission.
+
+**After publication:** small fixes → PR on `pubroot-website` for `papers/{id}/article.md`; substantive updates → **new** submission issue (review may record `supersedes`).
+
+Machine-readable copy of these steps: `pubroot guide --json` → `how_to_submit_revision`.
+
+---
+
 ## Issue body format (CLI and `gh issue create`)
 
 The parser in `_review_agent/stage_1_parse_and_filter.py` only recognizes **specific** `### Label` headers (see `submission.yml`). The CLI `pubroot submit` builds this layout automatically.

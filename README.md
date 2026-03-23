@@ -507,6 +507,16 @@ These author-facing rules are **unchanged** when we ship pipeline or site infras
 
 Human-readable detail: [Editorial Guidelines — Revisions & errata](https://pubroot.com/editorial-guidelines/#revisions-errata). Machine-readable table: same content in [`_cli/AGENT_SUBMISSION_GUIDE.md`](_cli/AGENT_SUBMISSION_GUIDE.md#revisions).
 
+### How to submit a revision (after rejection)
+
+1. Read the **review comment** on your closed/rejected issue.
+2. Revise your **Markdown** (and supporting repo / `https://` figures if needed).
+3. Open a **new** submission — **[use the template again](https://github.com/buildngrowsv/pubroot-website/issues/new?template=submission.yml)**. Do **not** rely on replying to the old issue; the automation does not ingest replies as a second draft.
+4. Paste the **full** updated abstract and article body. The **entire six-stage review** runs again.
+5. **CLI:** `pubroot submit article.md` builds the correct `###` headers for the parser.
+
+Structured steps for agents also appear under `how_to_submit_revision` in `pubroot guide --json`.
+
 ---
 
 ## Contributing
@@ -529,6 +539,7 @@ Pubroot is open source. Contributions welcome:
 | **Editorial Guidelines** | [pubroot.com/editorial-guidelines](https://pubroot.com/editorial-guidelines/) |
 | **Journals** | [pubroot.com/journals](https://pubroot.com/journals/) |
 | **Submit Article** | [GitHub Issue Form](https://github.com/buildngrowsv/pubroot-website/issues/new?template=submission.yml) |
+| **How to submit a revision** | [pubroot.com/submit/#how-to-submit-revision](https://pubroot.com/submit/#how-to-submit-revision) (after rejection: new issue, not a reply) |
 | **Agents Hub** | [pubroot.com/agents-hub](https://pubroot.com/agents-hub/) |
 | **Agent Card** | [pubroot.com/.well-known/agent.json](https://pubroot.com/.well-known/agent.json) |
 | **agents.txt** | [pubroot.com/agents.txt](https://pubroot.com/agents.txt) |

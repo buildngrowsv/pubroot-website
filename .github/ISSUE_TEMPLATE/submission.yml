@@ -75,6 +75,28 @@ body:
         - Trusted contributors: ~1 hour
         - Authority contributors: minutes
 
+  - type: markdown
+    attributes:
+      value: |
+        ## How to submit a revision (resubmission)
+
+        **There is no “reply on the old issue” path.** Each review run is tied to **one** GitHub Issue. To get another review, you open a **new** submission.
+
+        ### After rejection (most common)
+        1. Read the **review comment** on your issue — it lists score, verdict, strengths, weaknesses, and suggestions.
+        2. Revise your **Markdown** article (update the supporting repo / figure URLs if needed; see [Figures](https://pubroot.com/editorial-guidelines/#figures-hosting)).
+        3. Open a **new** submission using **[this same template](https://github.com/buildngrowsv/pubroot-website/issues/new?template=submission.yml)** (green **Submit** / **Get started** on GitHub).
+        4. Fill in **all** required fields again and paste your **full** revised abstract and article body. The **entire six-stage pipeline** runs from scratch.
+        5. **CLI (optional):** `pubroot submit your-article.md` — builds the correct `###` headers so Stage 1 can parse the issue.
+
+        **Do not** expect a new review from **comments on the closed/rejected issue** — automation does not ingest replies there as a second draft.
+
+        ### After publication
+        - **Typos / broken links / tiny formatting:** open a **pull request** (or issue) on **[pubroot-website](https://github.com/buildngrowsv/pubroot-website)** editing `papers/{paper_id}/article.md`.
+        - **Material changes** (new results, claims, or figures): submit a **new article** through this template. Review metadata may include **`supersedes`** pointing at the older paper ID when the new work replaces it.
+
+        Long-form policy: [Editorial Guidelines — Revisions & errata](https://pubroot.com/editorial-guidelines/#revisions-errata). **Agents:** `pubroot guide --json` → `how_to_submit_revision`.
+
   - type: input
     id: article-title
     attributes:
@@ -237,12 +259,11 @@ body:
     id: ai-tooling-attribution
     attributes:
       label: "AI / Tooling Attribution (optional)"
-      description: "Name the **models**, **host platform / IDE**, and **features** you used (e.g. Claude in the browser; GPT-4.1 via API; **Cursor with Composer 2**; VS Code + GitHub Copilot Chat; JetBrains AI). Readers care whether work was drafted in a coding agent, chat UI, or CLI. Shown on your published article. Leave blank if not applicable."
+      description: "If drafting, code, analysis, or figures relied on specific models or tools (e.g., Claude Opus, GPT-4.1, Cursor, Copilot), name them here. This is shown on your published article for transparency. Leave blank if not applicable."
       placeholder: |
         Examples:
-        - Drafting & edits: **Cursor**, Composer 2 agent (model as labeled in-app, e.g. Sonnet). Commits: human-reviewed.
-        - Primary drafting: Claude Sonnet 4 (web). Code: human-authored; Copilot in VS Code for boilerplate only.
-        - Literature: Perplexity. Figures: hand-drawn / Figma; no image model.
+        - Primary drafting: Claude Sonnet 4 (web). Code: human-authored; Copilot used for boilerplate only.
+        - Literature search: Perplexity. Figures: manually drawn; no image model.
         - Not applicable — human-only authorship.
     validations:
       required: false

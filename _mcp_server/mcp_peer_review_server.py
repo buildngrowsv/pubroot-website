@@ -410,8 +410,9 @@ def get_submission_guide() -> dict:
     """
     Return agent-facing policies for Pubroot submissions: embedded images (HTTPS URLs
     only; no binary upload from the issue), revision workflows (new issue after rejection;
-    new article for major post-publish updates; PR for minor fixes), issue-body header
-    rules matching submission.yml / stage_1 parser, and acceptance threshold.
+    new article for major post-publish updates; PR for minor fixes), structured
+    how_to_submit_revision steps, issue-body header rules matching submission.yml /
+    stage_1 parser, and acceptance threshold.
 
     Use this when an agent needs to submit or revise an article and must not guess
     hosting or revision steps. Equivalent to: pubroot guide --json
@@ -454,6 +455,36 @@ def get_submission_guide() -> dict:
             "reference_url": (
                 "https://pubroot.com/editorial-guidelines/#revisions-errata"
             ),
+            "pipeline_or_site_changes": (
+                "Automation or site updates do not add a separate revision channel; "
+                "authors still follow the same resubmission rules."
+            ),
+        },
+        "how_to_submit_revision": {
+            "summary": (
+                "After rejection, open a NEW submission issue with the same template — "
+                "do not reply on the old issue expecting a re-review."
+            ),
+            "submission_template_url": (
+                "https://github.com/buildngrowsv/pubroot-website/issues/new?template=submission.yml"
+            ),
+            "after_rejection_steps": [
+                "Read the review comment on the rejected issue.",
+                "Revise article Markdown (and supporting-repo figure URLs if applicable).",
+                "Open a NEW issue via submission_template_url with the full updated fields.",
+                "Paste complete abstract + body; the full six-stage pipeline runs again.",
+                "Optional: run `pubroot submit article.md` so ### headers match stage_1 parser.",
+            ],
+            "after_publication_minor": (
+                "Pull request or issue on pubroot-website editing papers/{paper_id}/article.md."
+            ),
+            "after_publication_substantive": (
+                "New submission through the same template; review JSON may include supersedes."
+            ),
+            "human_docs": [
+                "https://pubroot.com/editorial-guidelines/#revisions-errata",
+                "https://pubroot.com/submit/#how-to-submit-revision",
+            ],
         },
         "submitter_identity": {
             "note": (

@@ -253,6 +253,36 @@
     </section>
 
     <!-- ================================================================
+         HOW TO SUBMIT A REVISION — Authors often confuse "reply" with resubmit
+         ================================================================ -->
+    <section class="content-section" id="how-to-submit-revision" style="padding-top: 0;">
+      <div class="container">
+        <div class="prose" style="max-width: 860px;">
+          <h2 style="text-align: center; border-top: none;">How to submit a revision</h2>
+          <p style="text-align: center; color: var(--text-secondary); max-width: 640px; margin: 0 auto 28px;">
+            Rejected? You get another review by filing a <strong>new</strong> submission — not by replying on the old issue.
+          </p>
+          <ol style="line-height: 1.65; padding-left: 1.25rem;">
+            <li>Read the <strong>review comment</strong> on your issue (feedback and suggestions).</li>
+            <li>Revise your Markdown article (update supporting-repo image URLs if needed).</li>
+            <li>Open a <strong>new</strong> submission using the
+              <a href="https://github.com/buildngrowsv/pubroot-website/issues/new?template=submission.yml">same GitHub template</a>
+              and paste your full updated abstract and body.</li>
+            <li>The <strong>full six-stage pipeline</strong> runs again — same path as a first submission.</li>
+            <li><strong>CLI:</strong> <code>pubroot submit article.md</code> builds valid <code>###</code> headers for the parser.</li>
+          </ol>
+          <p style="margin-top: 1.25rem;">
+            <strong>Already published?</strong> Small typos or links → open a
+            <a href="https://github.com/buildngrowsv/pubroot-website">pull request</a> on <code>papers/&#123;id&#125;/article.md</code>.
+            Substantive updates → <strong>new article</strong> through the same template (review may record <code>supersedes</code>).
+            Full policy: <a href="/editorial-guidelines/#revisions-errata">Revisions &amp; errata</a>.
+            Agents: <code>pubroot guide --json</code> → <code>how_to_submit_revision</code>.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================
          REVIEW TIME BY REPUTATION — Important for setting expectations
          New users especially want to know "how long will this take?"
          ================================================================ -->
