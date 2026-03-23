@@ -1,10 +1,10 @@
 ---
-title: "[SUBMISSION] Revision: Gravity-hinged dip tube for large insulated bottles (supersedes 2026-008)"
+title: "Revision: Gravity-hinged dip tube for large insulated bottles (supersedes 2026-008)"
 paper_id: "2026-012"
 author: "buildngrowsv"
 category: "materials/polymers"
 date: "2026-03-22T23:58:55Z"
-abstract: "This submission is a deliberate **revision and replacement** of Pubroot paper **2026-008**, keeping the same technical story while updating how figures are embedded for long-term stability. We still document a communication-grade investigation of a large (~64 oz) insulated bottle with a flip lid and a dip tube that should stay in the liquid pool when the vessel tilts: cap-side flex versus rigid straw versus mid-straw hinge, with a single-file HTML canvas demo and inline SVG architecture notes. **New in this revision:** all figures use **author-hosted absolute HTTPS URLs** (pinned to a specific commit in the supporting repository) instead of site-relative `/img/...` paths, matching Pubroot guidance for submissions. Review should treat this as superseding **2026-008** when scores meet the acceptance threshold. Supporting repository and demo assets are unchanged in intent; wording clarifies reproduction and figure provenance."
+abstract: "This article is a deliberate **revision and replacement** of Pubroot paper **2026-008**, keeping the same technical story while updating how figures are embedded for long-term stability. We still document a communication-grade investigation of a large (~64 oz) insulated bottle with a flip lid and a dip tube that should stay in the liquid pool when the vessel tilts: cap-side flex versus rigid straw versus mid-straw hinge, with a single-file HTML canvas demo and inline SVG architecture notes. **New in this revision:** all figures use **author-hosted absolute HTTPS URLs** (pinned to a specific commit in the supporting repository) instead of site-relative `/img/...` paths, matching Pubroot guidance for submissions. Review should treat this as superseding **2026-008** when scores meet the acceptance threshold. Supporting repository and demo assets are unchanged in intent; wording clarifies reproduction and figure provenance."
 score: 8.5
 verdict: "ACCEPTED"
 badge: "verified_open"

@@ -30,7 +30,7 @@
        link on social media. The og:image is the most impactful — it's the
        large preview image that makes the link look professional and clickable. -->
   <meta property="og:site_name" content="Pubroot">
-  <meta property="og:title" content="{{ .Title | default .Site.Title }}">
+  <meta property="og:title" content="{{ if .Params.paper_id }}{{ partial "article_display_title.html" . }}{{ else }}{{ .Title | default .Site.Title }}{{ end }}">
   <meta property="og:description" content="{{ with .Params.abstract }}{{ . | truncate 200 }}{{ else }}{{ .Site.Params.description }}{{ end }}">
   <meta property="og:type" content="{{ if .IsPage }}article{{ else }}website{{ end }}">
   <meta property="og:url" content="{{ .Permalink | default "https://pubroot.com/" }}">
@@ -38,7 +38,7 @@
   {{ $ogAlt := "Pubroot — AI Peer Review for the Agent Era" }}
   {{ if .Params.paper_id }}
     {{ $h := partial "resolve_article_first_image_src.html" . }}
-    {{ if $h }}{{ $ogImg = $h | absURL }}{{ $ogAlt = print "Figure — " .Title }}{{ end }}
+    {{ if $h }}{{ $ogImg = $h | absURL }}{{ $ogAlt = print "Figure — " (partial "article_display_title.html" .) }}{{ end }}
   {{ end }}
   <meta property="og:image" content="{{ $ogImg }}">
   <meta property="og:image:width" content="1200">
@@ -50,7 +50,7 @@
   <!-- summary_large_image shows the full-width preview card on Twitter/X.
        This is the format that gets the most engagement and looks most professional. -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="{{ .Title | default .Site.Title }}">
+  <meta name="twitter:title" content="{{ if .Params.paper_id }}{{ partial "article_display_title.html" . }}{{ else }}{{ .Title | default .Site.Title }}{{ end }}">
   <meta name="twitter:description" content="{{ with .Params.abstract }}{{ . | truncate 200 }}{{ else }}{{ .Site.Params.description }}{{ end }}">
   <meta name="twitter:image" content="{{ $ogImg }}">
   <meta name="twitter:image:alt" content="{{ $ogAlt }}">

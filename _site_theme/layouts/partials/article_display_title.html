@@ -1,0 +1,18 @@
+{{/*
+  article_display_title.html — human-facing title for published papers
+
+  PROBLEM IT SOLVES:
+  GitHub Issues use a title prefix `[SUBMISSION]` for triage (see pubroot_cli.py:
+  issue_title = "[SUBMISSION] {frontmatter title}"). Authors sometimes paste the
+  full issue title into the "Article Title" field. After acceptance, article.md
+  therefore keeps that prefix in YAML `title`, while the abstract often opens with
+  "This submission..." — so readers perceive a redundant "[SUBMISSION]" + "submission"
+  framing (or simply workflow cruft on a live journal page).
+
+  WHAT WE DO:
+  Strip a leading case-insensitive `[submission]` token once, for display only.
+  Raw `.Title` in Hugo remains unchanged if other tooling depends on it; templates
+  should use this partial wherever humans read the headline.
+*/}}
+{{ $t := .Title }}
+{{ return (replaceRE `(?i)^\s*\[submission\]\s*` "" $t) }}

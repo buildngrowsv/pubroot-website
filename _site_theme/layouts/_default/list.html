@@ -55,7 +55,7 @@
           </span>
           <span class="category-tag">{{ .Params.category | default "general" }}</span>
         </div>
-        <h3><a href="{{ .Permalink }}">{{ .Title }}</a></h3>
+        <h3><a href="{{ .Permalink }}">{{ partial "article_display_title.html" . }}</a></h3>
         <p class="card-meta">
           <span class="author">{{ .Params.author | default "Unknown" }}</span>
           <span class="sep">&middot;</span>

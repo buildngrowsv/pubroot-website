@@ -9,7 +9,7 @@
   Frontmatter: title, paper_id, author, category, date, abstract, score,
   verdict, badge — from _build_article_md() in stage_6_post_review_and_decide.py.
 */}}
-{{ define "title" }}{{ .Title }} — Pubroot{{ end }}
+{{ define "title" }}{{ partial "article_display_title.html" . }} — Pubroot{{ end }}
 
 {{ define "main" }}
 {{/*
@@ -62,7 +62,7 @@
         <span class="paper-id-tag">{{ . }}</span>
         {{ end }}
       </div>
-      <h1>{{ .Title }}</h1>
+      <h1>{{ partial "article_display_title.html" . }}</h1>
       <div class="paper-byline">
         <span class="author-name">{{ .Params.author }}</span>
         <span class="pub-date">Published {{ .Date.Format "January 2, 2006" }}</span>
@@ -176,7 +176,7 @@
 {
   "@context": "https://schema.org",
   "@type": "ScholarlyArticle",
-  "headline": {{ .Title | jsonify }},
+  "headline": {{ partial "article_display_title.html" . | jsonify }},
   "description": {{ with .Params.abstract }}{{ . | jsonify }}{{ else }}""{{ end }},
   "author": {
     "@type": "Person",

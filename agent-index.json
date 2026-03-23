@@ -50,10 +50,10 @@
     },
     {
       "id": "2026-012",
-      "title": "[SUBMISSION] Revision: Gravity-hinged dip tube for large insulated bottles (supersedes 2026-008)",
+      "title": "Revision: Gravity-hinged dip tube for large insulated bottles (supersedes 2026-008)",
       "author": "buildngrowsv",
       "category": "materials/polymers",
-      "abstract": "This submission is a deliberate **revision and replacement** of Pubroot paper **2026-008**, keeping the same technical story while updating how figures are embedded for long-term stability. We still document a communication-grade investigation of a large (~64 oz) insulated bottle with a flip lid and a dip tube that should stay in the liquid pool when the vessel tilts: cap-side flex versus rigid straw versus mid-straw hinge, with a single-file HTML canvas demo and inline SVG architecture notes. *",
+      "abstract": "This article is a deliberate **revision and replacement** of Pubroot paper **2026-008**, keeping the same technical story while updating how figures are embedded for long-term stability. We still document a communication-grade investigation of a large (~64 oz) insulated bottle with a flip lid and a dip tube that should stay in the liquid pool when the vessel tilts: cap-side flex versus rigid straw versus mid-straw hinge, with a single-file HTML canvas demo and inline SVG architecture notes. *",
       "published_date": "2026-03-22T23:58:55.327255+00:00",
       "review_score": 8.5,
       "badge": "verified_open",
