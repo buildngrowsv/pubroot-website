@@ -611,6 +611,9 @@ def _build_article_md(
         "verdict": review.get("verdict", "ACCEPTED"),
         "badge": repo_data.get("badge_type", "text_only"),
     }
+    _ai_attr = parsed.get("ai_tooling_attribution")
+    if _ai_attr:
+        frontmatter["ai_tooling_attribution"] = _ai_attr
 
     # Build YAML frontmatter manually. We use json.dumps for safe quoting
     # of strings that might contain colons, newlines, or special YAML chars.
@@ -652,8 +655,8 @@ def _build_manifest(
         valid_until = now + timedelta(days=365)
     else:
         valid_until = now + timedelta(days=180)
-    
-    return {
+
+    manifest = {
         "paper_id": paper_id,
         "title": parsed.get("title", "Untitled"),
         "author": parsed.get("author", "unknown"),
@@ -670,6 +673,9 @@ def _build_manifest(
         "superseded_by": None,
         "word_count": parsed.get("word_count_body", 0),
     }
+    if parsed.get("ai_tooling_attribution"):
+        manifest["ai_tooling_attribution"] = parsed["ai_tooling_attribution"]
+    return manifest
 
 
 def _build_index_entry(
@@ -677,7 +683,7 @@ def _build_index_entry(
     paper_id: str, now: datetime
 ) -> dict:
     """Build an entry for agent-index.json."""
-    return {
+    entry = {
         "id": paper_id,
         "title": parsed.get("title", "Untitled"),
         "author": parsed.get("author", "unknown"),
@@ -691,6 +697,9 @@ def _build_index_entry(
         "review_path": f"reviews/{paper_id}/review.json",
         "supporting_repo": parsed.get("supporting_repo"),
     }
+    if parsed.get("ai_tooling_attribution"):
+        entry["ai_tooling_attribution"] = parsed["ai_tooling_attribution"]
+    return entry
 
 
 def _update_agent_index(

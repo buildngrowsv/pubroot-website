@@ -733,6 +733,32 @@ h1, h2, h3, h4 {
 .paper-byline .date-sep { margin: 0 4px; color: var(--text-secondary); }
 .pub-date-revised { font-weight: 500; color: var(--text); }
 
+/* Submitter-provided AI / tooling disclosure (optional front matter) */
+.ai-tooling-attribution {
+  margin-top: 16px;
+  padding: 14px 18px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  max-width: 100%;
+}
+.ai-tooling-heading {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary);
+  margin: 0 0 8px;
+}
+.ai-tooling-text {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.65;
+  color: var(--text);
+  white-space: pre-wrap;
+}
+
 /*
   Hero thumbnail on single paper pages — matches listing card intent (first figure).
   Wide letterboxed frame so diagrams stay readable; max-height avoids dominating mobile.

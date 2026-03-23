@@ -73,6 +73,12 @@
         <span class="pub-date">Published {{ .Date.Format "January 2, 2006" }}</span>
         {{ end }}
       </div>
+      {{ with .Params.ai_tooling_attribution }}
+      <div class="ai-tooling-attribution">
+        <h4 class="ai-tooling-heading">Author — AI &amp; tooling</h4>
+        <p class="ai-tooling-text">{{ . }}</p>
+      </div>
+      {{ end }}
     </header>
 
     {{ with $heroSrc }}

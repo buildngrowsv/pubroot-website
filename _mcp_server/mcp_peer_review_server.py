@@ -462,6 +462,14 @@ def get_submission_guide() -> dict:
                 "field in the Markdown file."
             ),
         },
+        "ai_tooling_attribution": {
+            "optional_field_yaml": "ai_tooling_attribution",
+            "issue_template_section": "AI / Tooling Attribution (optional)",
+            "description": (
+                "Submitters may name specific models or tools used for drafting "
+                "or analysis; published in article front matter when present."
+            ),
+        },
         "issue_body_format": {
             "must_match_pipeline": (
                 "Headers must be exactly the labels expected by "
@@ -471,6 +479,7 @@ def get_submission_guide() -> dict:
                 "Article Title",
                 "Category",
                 "Submission Type",
+                "AI / Tooling Attribution (optional)",
                 "Abstract",
                 "Article Body",
                 "Supporting Repository URL",

@@ -131,6 +131,9 @@ def parse_and_filter_submission(
             f"Valid types are: {', '.join(valid_submission_types)}"
         )
         submission_type = "original-research"
+    ai_tooling_attribution = (
+        parsed_fields.get("AI / Tooling Attribution (optional)", "").strip() or None
+    )
     abstract = parsed_fields.get("Abstract", "").strip()
     body = parsed_fields.get("Article Body", "").strip()
     supporting_repo = parsed_fields.get("Supporting Repository URL", "").strip() or None
@@ -179,6 +182,12 @@ def parse_and_filter_submission(
         errors.append(
             f"Article body is too short ({word_count_body} words, minimum 200). "
             "Please provide a more detailed writeup."
+        )
+
+    if ai_tooling_attribution and len(ai_tooling_attribution) > 1200:
+        warnings.append(
+            "AI / Tooling Attribution is very long (>1200 characters). "
+            "Consider shortening; the field is for naming tools/models, not a second abstract."
         )
 
     # -----------------------------------------------------------------------
@@ -379,6 +388,7 @@ def parse_and_filter_submission(
             "commit_sha": commit_sha,
             "repo_visibility": repo_visibility,
             "payment_code": payment_code,
+            "ai_tooling_attribution": ai_tooling_attribution,
             "author": issue_author,
             "word_count_abstract": word_count_abstract,
             "word_count_body": word_count_body,
@@ -436,6 +446,7 @@ def _extract_form_fields(issue_body: str) -> dict:
         "Article Title",
         "Category",
         "Submission Type",
+        "AI / Tooling Attribution (optional)",
         "Abstract",
         "Article Body",
         "Supporting Repository URL",
