@@ -494,6 +494,11 @@ def _build_submission_issue_body(frontmatter: dict, article_body: str) -> str:
     if repo_visibility not in ("public", "private", "no-repo"):
         repo_visibility = "public"
     payment = (frontmatter.get("payment_code") or "").strip()
+    ai_tooling = (
+        frontmatter.get("ai_tooling_attribution")
+        or frontmatter.get("ai_tooling")
+        or ""
+    ).strip()
 
     agreement = (
         "- [X] I confirm this is original work or properly attributed\n"
@@ -508,6 +513,7 @@ def _build_submission_issue_body(frontmatter: dict, article_body: str) -> str:
         f"### Article Title\n\n{title}",
         f"### Category\n\n{category}",
         f"### Submission Type\n\n{submission_type}",
+        f"### AI / Tooling Attribution (optional)\n\n{_opt(ai_tooling)}",
         f"### Abstract\n\n{abstract}",
         f"### Article Body\n\n{article_body.strip()}",
         f"### Supporting Repository URL\n\n{_opt(repo_url)}",
@@ -566,9 +572,22 @@ def cmd_guide(args):
                     "Typos, broken links, small formatting: pull request or issue "
                     "on the pubroot-website repo."
                 ),
+                "pipeline_or_site_changes": (
+                    "Updates to automation, Hugo, or GitHub Actions do not introduce "
+                    "a separate revision channel; authors still follow the three rules above."
+                ),
                 "same_github_user_as_prior_paper_not_enforced_by_automation": True,
                 "reference_url": (
                     "https://pubroot.com/editorial-guidelines/#revisions-errata"
+                ),
+            },
+            "ai_attribution": {
+                "peer_review_model": (
+                    "Google Gemini 2.5 Flash-Lite with Google Search grounding (Stage 5)."
+                ),
+                "repository_development_assist": (
+                    "Parts of pubroot-website were built/maintained with Cursor Composer 2; "
+                    "Composer does not run the public review step."
                 ),
             },
             "submitter_identity": {
@@ -576,6 +595,15 @@ def cmd_guide(args):
                     "Attributed author in our index is the GitHub login of the "
                     "user who opens the issue (issue author), not a free-text "
                     "field in the Markdown file."
+                ),
+            },
+            "ai_tooling_attribution": {
+                "optional_field_yaml": "ai_tooling_attribution",
+                "issue_template_section": "AI / Tooling Attribution (optional)",
+                "description": (
+                    "Submitters may name specific models or tools used for drafting, "
+                    "code, or analysis. Published in article front matter and "
+                    "agent-index when present."
                 ),
             },
             "issue_body_format": {
@@ -587,6 +615,7 @@ def cmd_guide(args):
                     "Article Title",
                     "Category",
                     "Submission Type",
+                    "AI / Tooling Attribution (optional)",
                     "Abstract",
                     "Article Body",
                     "Supporting Repository URL",

@@ -58,7 +58,7 @@ body:
         - **Blockquotes** (`>`) — for quoting other sources
         - **Figures (images)** — embed with Markdown `![description](https://...)` using a **stable HTTPS URL you control**. The submission form only stores text: the publish step copies your Markdown into the repo; it does **not** ingest binary uploads from the issue. **Recommended:** put PNG/SVG/WebP in your **supporting repository** (same commit you pin in “Commit SHA” when possible) and link via `raw.githubusercontent.com` or `github.com/.../blob/...?raw=1` so the figure version matches the reviewed code. Other CDNs or object storage are fine if URLs stay reachable. Avoid fragile hotlinks you cannot maintain.
 
-        **Revisions:** If your article is **rejected**, treat feedback as a revision cycle and open a **new submission issue** with an updated article body (same workflow as a first-time submit). If your article is **already published**, there is no separate “revision ticket” in the template today: substantive updates are handled as a **new submission** (the review JSON can record `supersedes` when the new work replaces an older paper—see Editorial Guidelines). Small typos or broken links may be fixed via the **pubroot-website** GitHub repo (maintainer or PR), like any open-source documentation project.
+        **Revisions:** If your article is **rejected**, treat feedback as a revision cycle and open a **new submission issue** with an updated article body (same workflow as a first-time submit). If your article is **already published**, there is no separate “revision ticket” in the template today: substantive updates are handled as a **new submission** (the review JSON can record `supersedes` when the new work replaces an older paper—see Editorial Guidelines). Small typos or broken links may be fixed via the **pubroot-website** GitHub repo (maintainer or PR), like any open-source documentation project. **Pipeline or site updates** (automation, deploy, Hugo) do **not** change these author paths—you still use a **new issue** to resubmit after rejection, not a reply on the old issue.
 
         **Recommended structure:**
         - Introduction / Background (what and why)
@@ -232,6 +232,19 @@ body:
       default: 0
     validations:
       required: true
+
+  - type: textarea
+    id: ai-tooling-attribution
+    attributes:
+      label: "AI / Tooling Attribution (optional)"
+      description: "If drafting, code, analysis, or figures relied on specific models or tools (e.g., Claude Opus, GPT-4.1, Cursor, Copilot), name them here. This is shown on your published article for transparency. Leave blank if not applicable."
+      placeholder: |
+        Examples:
+        - Primary drafting: Claude Sonnet 4 (web). Code: human-authored; Copilot used for boilerplate only.
+        - Literature search: Perplexity. Figures: manually drawn; no image model.
+        - Not applicable — human-only authorship.
+    validations:
+      required: false
 
   - type: textarea
     id: abstract

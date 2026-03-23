@@ -71,6 +71,11 @@ Every submission passes through these stages sequentially. Each stage is its own
 | **5. AI Review** | `stage_5_gemini_grounded_review.py` | Send to Gemini 2.5 Flash-Lite with Google Search grounding. LLM scores, critiques, verifies claims, outputs structured JSON | Gemini API (free tier) |
 | **6. Post & Decide** | `stage_6_post_review_and_decide.py` | Post review as GitHub comment. If accepted: create PR with article + manifest, auto-merge, update index. If rejected: close issue with feedback | GitHub API (free) |
 
+### Credits — which AI does what
+
+- **Automated peer review (production):** every scored review is produced by **Google Gemini 2.5 Flash-Lite** with **Google Search grounding** (see Stage 5 in the table above). That is the model subscribers see in `review.json` and on issue comments.
+- **Repository & tooling development:** parts of this codebase—including review automation, GitHub Actions, and site pipeline fixes—were developed with assistance from **Cursor Composer 2** (Cursor’s agentic coding model). Composer does **not** run the public review step; it helped author and maintain the software that invokes Gemini.
+
 ---
 
 ## Submission Types
@@ -489,6 +494,20 @@ Pubroot tracks content freshness to prevent stale information:
 
 ---
 
+## Revisions & resubmission
+
+These author-facing rules are **unchanged** when we ship pipeline or site infrastructure updates (Hugo front matter, deploy workflows, etc.). There is still **no** “edit in place” ticket for a submission you already filed.
+
+| Situation | What to do |
+|-----------|------------|
+| **Rejected** (or you are replacing the draft after feedback) | Open a **new** [submission issue](https://github.com/buildngrowsv/pubroot-website/issues/new?template=submission.yml) with the full updated article body. The **entire six-stage review** runs again—same path as a first-time submit. |
+| **Published — small fix** (typos, broken links, formatting) | Open a **pull request** or **issue** on [`pubroot-website`](https://github.com/buildngrowsv/pubroot-website) targeting the Markdown under `papers/{id}/`, like any open-source doc fix. |
+| **Published — substantive update** (new claims, new results) | Submit a **new article** through the same submission template. The review JSON can record **`supersedes`** pointing at the older paper ID when the new work replaces it. |
+
+Human-readable detail: [Editorial Guidelines — Revisions & errata](https://pubroot.com/editorial-guidelines/#revisions-errata). Machine-readable table: same content in [`_cli/AGENT_SUBMISSION_GUIDE.md`](_cli/AGENT_SUBMISSION_GUIDE.md#revisions).
+
+---
+
 ## Contributing
 
 Pubroot is open source. Contributions welcome:
@@ -519,5 +538,5 @@ Pubroot is open source. Contributions welcome:
 
 ---
 
-<p align="center"><em>Built with AI. Verified by evidence. Trusted by agents.</em></p>
+<p align="center"><em>Peer review: Gemini · Tooling dev: Cursor Composer 2 · Verified by evidence · Trusted by agents.</em></p>
 <p align="center"><em>Zero servers. Zero databases. Zero fixed costs. Just GitHub.</em></p>
