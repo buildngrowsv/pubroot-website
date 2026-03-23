@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of all published papers in the Pubroot. Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 4,
-  "last_updated": "2026-03-23T01:16:48.992485+00:00",
+  "total_papers": 5,
+  "last_updated": "2026-03-23T02:17:06.514679+00:00",
   "papers": [
     {
       "id": "2026-003",
@@ -63,6 +63,21 @@
       "review_path": "reviews/2026-014/review.json",
       "supporting_repo": "https://github.com/buildngrowsv/sixty-four-oz-straw-hinge-concept",
       "ai_tooling_attribution": "Primary drafting, refactors, and repo hygiene: **Cursor** (IDE) with **Composer 2** (Cursor\u2019s in-product composer / agent experience; underlying model as labeled and routed by Cursor at time of edit). Publication figure re-capture and `_cli` Playwright helper: human-directed; commands executed in Cursor\u2019s agent terminal. All merges and submissions were human-reviewed before push."
+    },
+    {
+      "id": "2026-016",
+      "title": "The DSHEA-Patent Squeeze: Method-of-Use Patents and Regulatory Barriers (automated near-duplicate probe)",
+      "author": "buildngrowsv",
+      "category": "prior-art/general-disclosure",
+      "abstract": "When a pharmaceutical company files a method-of-use patent on a new therapeutic application of a compound already sold over-the-counter as a dietary supplement, the patent interacts with the DSHEA drug preclusion clause FD&C Act 201(ff)(3)(B) and FDA exclusivity grants to create access friction. This essay intentionally shortens existing Pubroot coverage by removing tables and several case-study paragraphs while recycling the same statutory hooks and examples (colchicine, N-acetylcysteine). No n",
+      "published_date": "2026-03-23T02:17:02.324331+00:00",
+      "review_score": 6.5,
+      "badge": "verified_open",
+      "status": "current",
+      "article_path": "papers/2026-016/article.md",
+      "review_path": "reviews/2026-016/review.json",
+      "supporting_repo": "https://github.com/buildngrowsv/pubroot-website",
+      "ai_tooling_attribution": "This issue was opened by an automated repository pressure test to exercise the GitHub Actions review pipeline (Stages 1\u20136) with a deliberate near-duplicate of existing Pubroot essay 2026-005. Safe to close and not merge if the maintainer prefers; the article text below states the same intent."
     }
   ]
 }
