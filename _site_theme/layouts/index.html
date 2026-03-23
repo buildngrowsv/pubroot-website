@@ -44,6 +44,7 @@
   <link rel="apple-touch-icon" sizes="180x180" href="/img/apple-touch-icon.png">
   <meta name="theme-color" content="#00B4A0">
   <meta name="msapplication-TileColor" content="#00B4A0">
+  <link rel="sitemap" type="application/xml" href="/sitemap.xml">
 
   <link href="/_pagefind/pagefind-ui.css" rel="stylesheet">
   <link rel="stylesheet" href="/css/main.css">
@@ -89,6 +90,12 @@
           <span class="logo-text">pubroot</span>
         </a>
       </div>
+      <!-- Mobile hamburger toggle — pure CSS checkbox-based menu.
+           On desktop (>768px) the hamburger is hidden. -->
+      <input type="checkbox" id="nav-toggle" aria-hidden="true">
+      <label for="nav-toggle" class="nav-hamburger" aria-label="Toggle navigation menu">
+        <span></span><span></span><span></span>
+      </label>
       <nav class="main-nav">
         <a href="/">Publications</a>
         <a href="/about/">About</a>
@@ -203,56 +210,59 @@
          ICON NOTE (Feb 2026): All emojis replaced with Lucide SVG icons for
          consistent, professional rendering across all platforms. Lucide icons
          inherit color from CSS and can be sized/styled unlike emojis. -->
-    <section class="agent-ecosystem" style="padding: 56px 0; background: linear-gradient(180deg, var(--hero-gradient-start) 0%, var(--bg) 100%); border-top: 1px solid var(--border);">
+    <!-- Agent Ecosystem — Featured section highlighting the AI agent hub.
+         All inline styles have been extracted to CSS classes in main.css
+         for maintainability and dark mode compatibility (Mar 2026 cleanup). -->
+    <section class="agent-ecosystem">
       <div class="container">
-        <div style="text-align:center; margin-bottom:36px;">
-          <h2 style="font-size:1.6rem; margin-bottom:10px;"><i data-lucide="bot" style="width:28px;height:28px;vertical-align:-4px;margin-right:6px;color:var(--accent);"></i> Agent Ecosystem</h2>
-          <p style="color: var(--text-secondary); font-size:1rem; max-width:640px; margin:0 auto; line-height:1.7;">
-            Pubroot is the peer-reviewed knowledge base for the AI agent era. 
+        <div class="agent-ecosystem-header">
+          <h2><i data-lucide="bot" class="icon-lg icon-accent" style="vertical-align:-4px;margin-right:6px;"></i> Agent Ecosystem</h2>
+          <p>
+            Pubroot is the peer-reviewed knowledge base for the AI agent era.
             Discover research on computer use agents, general-purpose agents, and the frameworks that power them.
           </p>
         </div>
 
         <!-- OpenClaw Feature Banner -->
-        <div style="background: linear-gradient(135deg, var(--feature-gradient-start), var(--feature-gradient-end)); border: 2px solid var(--accent); border-radius: 14px; padding: 28px 32px; margin-bottom: 24px; display: flex; align-items: center; gap: 24px; flex-wrap: wrap;">
-          <div style="flex-shrink:0; color: var(--accent);"><i data-lucide="paw-print" style="width:40px;height:40px;"></i></div>
-          <div style="flex:1; min-width:200px;">
-            <div style="font-size: 1.2rem; font-weight: 700; margin-bottom: 4px;">OpenClaw <span style="font-family: var(--font-mono); font-size: 0.72rem; padding: 2px 10px; border-radius: 12px; background: var(--accent); color: white; margin-left: 10px; vertical-align: middle;"><i data-lucide="star" style="width:11px;height:11px;vertical-align:-1px;margin-right:2px;"></i> FEATURED</span></div>
-            <p style="font-size: 0.92rem; color: var(--text-secondary); margin: 0; line-height: 1.6;">
-              The leading open-source AI agent — 150K+ GitHub stars, 50+ integrations, persistent memory, 
+        <div class="feature-banner">
+          <div class="feature-banner-icon"><i data-lucide="paw-print" class="icon-2xl"></i></div>
+          <div class="feature-banner-body">
+            <div class="feature-banner-title">OpenClaw <span class="featured-badge"><i data-lucide="star" style="width:11px;height:11px;vertical-align:-1px;margin-right:2px;"></i> FEATURED</span></div>
+            <p>
+              The leading open-source AI agent — 150K+ GitHub stars, 50+ integrations, persistent memory,
               self-hosted. Connects to WhatsApp, Slack, Discord, and more.
             </p>
           </div>
-          <a href="/agents-hub/" style="font-family: var(--font-body); font-size: 0.88rem; font-weight: 600; padding: 10px 22px; border-radius: 8px; background: var(--accent); color: white; text-decoration: none; white-space: nowrap;">Explore →</a>
+          <a href="/agents-hub/" class="feature-banner-cta">Explore &rarr;</a>
         </div>
 
         <!-- Three category cards -->
-        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
-          <a href="/agents-hub/#cua" style="text-decoration:none; color:inherit; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 24px; transition: all 0.2s;">
-            <div style="margin-bottom:10px; color: var(--accent);"><i data-lucide="monitor" style="width:28px;height:28px;"></i></div>
-            <div style="font-size:1rem; font-weight:600; margin-bottom:6px;">Computer Use Agents</div>
-            <div style="font-size:0.86rem; color:var(--text-secondary); line-height:1.55;">
+        <div class="agent-category-grid">
+          <a href="/agents-hub/#cua" class="agent-category-card">
+            <div class="agent-category-icon"><i data-lucide="monitor" class="icon-lg"></i></div>
+            <div class="agent-category-title">Computer Use Agents</div>
+            <div class="agent-category-desc">
               Claude Computer Use, OpenAI Operator, Browser Use — agents that control browsers and desktops autonomously.
             </div>
           </a>
-          <a href="/agents-hub/#general" style="text-decoration:none; color:inherit; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 24px; transition: all 0.2s;">
-            <div style="margin-bottom:10px; color: var(--accent);"><i data-lucide="bot" style="width:28px;height:28px;"></i></div>
-            <div style="font-size:1rem; font-weight:600; margin-bottom:6px;">General-Purpose Agents</div>
-            <div style="font-size:0.86rem; color:var(--text-secondary); line-height:1.55;">
+          <a href="/agents-hub/#general" class="agent-category-card">
+            <div class="agent-category-icon"><i data-lucide="bot" class="icon-lg"></i></div>
+            <div class="agent-category-title">General-Purpose Agents</div>
+            <div class="agent-category-desc">
               OpenClaw, Devin, AutoGPT — agents that handle real-world tasks end-to-end with persistent memory.
             </div>
           </a>
-          <a href="/agents-hub/#frameworks" style="text-decoration:none; color:inherit; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 24px; transition: all 0.2s;">
-            <div style="margin-bottom:10px; color: var(--accent);"><i data-lucide="wrench" style="width:28px;height:28px;"></i></div>
-            <div style="font-size:1rem; font-weight:600; margin-bottom:6px;">Agent Frameworks</div>
-            <div style="font-size:0.86rem; color:var(--text-secondary); line-height:1.55;">
+          <a href="/agents-hub/#frameworks" class="agent-category-card">
+            <div class="agent-category-icon"><i data-lucide="wrench" class="icon-lg"></i></div>
+            <div class="agent-category-title">Agent Frameworks</div>
+            <div class="agent-category-desc">
               LangGraph, CrewAI, MCP, A2A — the developer ecosystem for building and orchestrating agents.
             </div>
           </a>
         </div>
 
-        <div style="text-align:center; margin-top:24px;">
-          <a href="/agents-hub/" style="font-family: var(--font-mono); font-size: 0.88rem; color: var(--accent); font-weight:500; text-decoration:none;">View full Agents Hub →</a>
+        <div class="agent-ecosystem-footer">
+          <a href="/agents-hub/">View full Agents Hub &rarr;</a>
         </div>
       </div>
     </section>

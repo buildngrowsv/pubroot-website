@@ -62,6 +62,13 @@
   --cta-gradient-start: #E0F7F4;
   --cta-gradient-end: #E8FBF8;
 
+  /* ---- Badge color tokens ----
+     Extracted from hardcoded hex so dark mode can override cleanly.
+     These control the border and background of verification badges. */
+  --badge-verified-open-border: #D1FAE5;
+  --badge-verified-private-bg: #FFFBEB;
+  --badge-verified-private-border: #FEF3C7;
+
   /* ---- Footer color tokens ----
      The footer has its own dark color scheme even in light mode.
      In dark mode these shift subtly to differentiate from the body bg. */
@@ -116,6 +123,11 @@
   --feature-gradient-end: #0D2520;
   --cta-gradient-start: #0D2F2B;
   --cta-gradient-end: #0D2520;
+
+  /* Dark mode badge tokens — pastel borders become muted tones against dark bg */
+  --badge-verified-open-border: #166534;
+  --badge-verified-private-bg: #2A2010;
+  --badge-verified-private-border: #854D0E;
 
   /* Dark mode footer — slightly deeper than body to stay distinct */
   --footer-bg: #0A0B10;
@@ -237,6 +249,77 @@ h1, h2, h3, h4 {
 .nav-submit:hover {
   background: var(--accent-hover) !important;
   text-decoration: none !important;
+}
+
+/* ============================================================
+   MOBILE NAV — Hamburger Menu (< 768px)
+   ============================================================
+   On small screens the full nav links overflow. This adds a
+   hamburger toggle that expands a vertical nav drawer. The toggle
+   is hidden on desktop via display:none.
+
+   HOW IT WORKS:
+   - #nav-toggle checkbox (hidden) controls the drawer via CSS :checked
+   - .nav-hamburger label triggers the checkbox — no JavaScript needed
+   - .main-nav gets position:fixed as a slide-down drawer when checked
+   - Pure CSS approach avoids adding more JS to the critical path
+   ============================================================ */
+.nav-hamburger {
+  display: none; /* Hidden on desktop */
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+.nav-hamburger span {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background: var(--text);
+  border-radius: 1px;
+  transition: transform 0.2s, opacity 0.2s;
+}
+#nav-toggle { display: none; }
+
+@media (max-width: 768px) {
+  .nav-hamburger { display: flex; }
+  .main-nav {
+    display: none;
+    position: absolute;
+    top: 60px;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    box-shadow: var(--shadow-md);
+    padding: 16px 24px;
+    gap: 4px;
+    z-index: 99;
+  }
+  .main-nav a {
+    padding: 10px 0;
+    font-size: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .main-nav a:last-of-type { border-bottom: none; }
+  .nav-submit { margin-top: 8px; text-align: center; }
+  .theme-toggle { margin-top: 8px; align-self: flex-start; }
+  #nav-toggle:checked ~ .main-nav { display: flex; }
+  /* Animate hamburger to X when open */
+  #nav-toggle:checked ~ .nav-hamburger span:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+  }
+  #nav-toggle:checked ~ .nav-hamburger span:nth-child(2) { opacity: 0; }
+  #nav-toggle:checked ~ .nav-hamburger span:nth-child(3) {
+    transform: rotate(-45deg) translate(5px, -5px);
+  }
 }
 
 /* ============================================================
@@ -442,9 +525,11 @@ h1, h2, h3, h4 {
   margin-bottom: 12px;
   transition: box-shadow 0.15s, border-color 0.15s;
 }
+/* Hover uses surface-hover instead of hardcoded #ccc so dark mode works
+   automatically — no need for the separate [data-theme="dark"] override. */
 .paper-card:hover {
   box-shadow: var(--shadow-md);
-  border-color: #ccc;
+  border-color: var(--surface-hover);
 }
 .card-left { flex: 1; min-width: 0; }
 .card-right {
@@ -521,15 +606,17 @@ h1, h2, h3, h4 {
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
+/* Badge border/background colors use CSS variables so dark mode
+   switches them automatically without needing [data-theme] overrides. */
 .badge-verified_open {
   background: var(--success-light);
   color: var(--success);
-  border: 1px solid #D1FAE5;
+  border: 1px solid var(--badge-verified-open-border, #D1FAE5);
 }
 .badge-verified_private {
-  background: #FFFBEB;
+  background: var(--badge-verified-private-bg, #FFFBEB);
   color: var(--warning);
-  border: 1px solid #FEF3C7;
+  border: 1px solid var(--badge-verified-private-border, #FEF3C7);
 }
 .badge-text_only {
   background: var(--surface);
@@ -1107,6 +1194,146 @@ h1, h2, h3, h4 {
 }
 
 /* ============================================================
+   AGENT ECOSYSTEM — Homepage featured section
+   ============================================================
+   Extracted from inline styles (Mar 2026) for maintainability
+   and proper dark mode support. Gradient backgrounds use the
+   same CSS variable tokens as the hero section.
+   ============================================================ */
+.agent-ecosystem {
+  padding: 56px 0;
+  background: linear-gradient(180deg, var(--hero-gradient-start) 0%, var(--bg) 100%);
+  border-top: 1px solid var(--border);
+}
+.agent-ecosystem-header {
+  text-align: center;
+  margin-bottom: 36px;
+}
+.agent-ecosystem-header h2 {
+  font-size: 1.6rem;
+  margin-bottom: 10px;
+}
+.agent-ecosystem-header p {
+  color: var(--text-secondary);
+  font-size: 1rem;
+  max-width: 640px;
+  margin: 0 auto;
+  line-height: 1.7;
+}
+
+/* Feature banner — highlighted project card (e.g. OpenClaw) */
+.feature-banner {
+  background: linear-gradient(135deg, var(--feature-gradient-start), var(--feature-gradient-end));
+  border: 2px solid var(--accent);
+  border-radius: 14px;
+  padding: 28px 32px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.feature-banner-icon {
+  flex-shrink: 0;
+  color: var(--accent);
+}
+.feature-banner-body {
+  flex: 1;
+  min-width: 200px;
+}
+.feature-banner-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.featured-badge {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  padding: 2px 10px;
+  border-radius: 12px;
+  background: var(--accent);
+  color: white;
+  margin-left: 10px;
+  vertical-align: middle;
+}
+.feature-banner-body p {
+  font-size: 0.92rem;
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.6;
+}
+.feature-banner-cta {
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 600;
+  padding: 10px 22px;
+  border-radius: 8px;
+  background: var(--accent);
+  color: white;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+.feature-banner-cta:hover {
+  background: var(--accent-hover);
+  color: white;
+  text-decoration: none;
+}
+
+/* Agent category cards — three-column grid */
+.agent-category-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+@media (max-width: 768px) {
+  .agent-category-grid { grid-template-columns: 1fr; }
+}
+.agent-category-card {
+  text-decoration: none;
+  color: inherit;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 24px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.agent-category-card:hover {
+  border-color: var(--accent);
+  box-shadow: var(--shadow-md);
+  text-decoration: none;
+  color: inherit;
+}
+.agent-category-icon {
+  margin-bottom: 10px;
+  color: var(--accent);
+}
+.agent-category-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.agent-category-desc {
+  font-size: 0.86rem;
+  color: var(--text-secondary);
+  line-height: 1.55;
+}
+.agent-ecosystem-footer {
+  text-align: center;
+  margin-top: 24px;
+}
+.agent-ecosystem-footer a {
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  color: var(--accent);
+  font-weight: 500;
+  text-decoration: none;
+}
+.agent-ecosystem-footer a:hover {
+  text-decoration: underline;
+}
+
+/* ============================================================
    FOOTER
    ============================================================ */
 .site-footer {
@@ -1269,19 +1496,10 @@ h1, h2, h3, h4 {
   background: #1E1F2E;
 }
 
-/* Paper card hover border — hardcoded #ccc in light mode */
-[data-theme="dark"] .paper-card:hover {
-  border-color: var(--border);
-}
-
-/* Badge border overrides for dark mode — the light-mode pastel
-   borders become too subtle on dark backgrounds */
-[data-theme="dark"] .badge-verified_open {
-  border-color: #166534;
-}
-[data-theme="dark"] .badge-verified_private {
-  border-color: #854D0E;
-}
+/* NOTE: Paper card hover and badge border overrides were previously here
+   but have been moved into CSS variables (--badge-verified-open-border,
+   --badge-verified-private-border, --surface-hover) so dark mode works
+   automatically via the variable system. No element-specific overrides needed. */
 
 /* Pagefind search overrides for dark mode — the search input needs
    to contrast against the dark hero gradient */
@@ -1302,6 +1520,7 @@ html {
 }
 body, .site-header, .site-footer, .hero, .how-it-works,
 .topics-bar, .paper-card, .review-panel, .abstract-block,
-.empty-state, .score-circle, .theme-toggle {
+.empty-state, .score-circle, .theme-toggle,
+.agent-ecosystem, .feature-banner, .agent-category-card {
   transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
