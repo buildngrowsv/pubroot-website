@@ -1,0 +1,8 @@
+{
+  "name": "pubroot-cli-helpers",
+  "private": true,
+  "description": "Optional Node helpers (e.g. Playwright figure capture). Run npm install inside _cli/ once.",
+  "dependencies": {
+    "playwright": "1.58.2"
+  }
+}
