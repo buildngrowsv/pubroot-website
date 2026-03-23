@@ -466,8 +466,9 @@ def get_submission_guide() -> dict:
             "optional_field_yaml": "ai_tooling_attribution",
             "issue_template_section": "AI / Tooling Attribution (optional)",
             "description": (
-                "Submitters may name specific models or tools used for drafting "
-                "or analysis; published in article front matter when present."
+                "Submitters may name models, IDE/platform (e.g. Cursor), and "
+                "features (e.g. Composer 2); published in article front matter "
+                "when present."
             ),
         },
         "issue_body_format": {

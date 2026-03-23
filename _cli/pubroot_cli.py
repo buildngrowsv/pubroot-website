@@ -601,9 +601,9 @@ def cmd_guide(args):
                 "optional_field_yaml": "ai_tooling_attribution",
                 "issue_template_section": "AI / Tooling Attribution (optional)",
                 "description": (
-                    "Submitters may name specific models or tools used for drafting, "
-                    "code, or analysis. Published in article front matter and "
-                    "agent-index when present."
+                    "Submitters may name models, host IDE/platform (e.g. Cursor), "
+                    "and features (e.g. Composer 2), not only the raw model name. "
+                    "Published in article front matter and agent-index when present."
                 ),
             },
             "issue_body_format": {

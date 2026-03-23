@@ -237,11 +237,12 @@ body:
     id: ai-tooling-attribution
     attributes:
       label: "AI / Tooling Attribution (optional)"
-      description: "If drafting, code, analysis, or figures relied on specific models or tools (e.g., Claude Opus, GPT-4.1, Cursor, Copilot), name them here. This is shown on your published article for transparency. Leave blank if not applicable."
+      description: "Name the **models**, **host platform / IDE**, and **features** you used (e.g. Claude in the browser; GPT-4.1 via API; **Cursor with Composer 2**; VS Code + GitHub Copilot Chat; JetBrains AI). Readers care whether work was drafted in a coding agent, chat UI, or CLI. Shown on your published article. Leave blank if not applicable."
       placeholder: |
         Examples:
-        - Primary drafting: Claude Sonnet 4 (web). Code: human-authored; Copilot used for boilerplate only.
-        - Literature search: Perplexity. Figures: manually drawn; no image model.
+        - Drafting & edits: **Cursor**, Composer 2 agent (model as labeled in-app, e.g. Sonnet). Commits: human-reviewed.
+        - Primary drafting: Claude Sonnet 4 (web). Code: human-authored; Copilot in VS Code for boilerplate only.
+        - Literature: Perplexity. Figures: hand-drawn / Figma; no image model.
         - Not applicable — human-only authorship.
     validations:
       required: false

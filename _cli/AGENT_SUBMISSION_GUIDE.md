@@ -55,12 +55,15 @@ The attributed author in `contributors.json` / the index is the GitHub **`user.l
 
 ## AI / tooling attribution (optional)
 
-Submitters can name specific **models or tools** used for drafting, code, or analysis:
+Submitters can disclose **models**, **host platforms / IDEs**, and **product features** used while writing the work — not only the base model name. Examples:
 
-- **GitHub form:** field **“AI / Tooling Attribution (optional)”** in `submission.yml`.
+- **Coding agents / IDE-embedded:** *Cursor + Composer 2*, *VS Code + Copilot Chat*, *JetBrains AI*, *Windsurf*, etc.
+- **Chat / API:** Claude in the browser, GPT via API, vendor app labels as shown to you.
+
+- **GitHub form:** field **“AI / Tooling Attribution (optional)”** in `submission.yml` (description lists platform examples).
 - **CLI / local Markdown:** optional front matter key **`ai_tooling_attribution`** (string). `pubroot submit` emits the matching `###` section for Stage 1.
 
-If present, it is stored in published **`article.md` front matter** and shown on the article page under **“Author — AI & tooling”** (separate from Pubroot’s **reviewer** model in the sidebar). You can also describe the same thing in the article body; the structured field is for a concise, consistent disclosure line.
+If present, it is stored in published **`article.md` front matter** and shown on the article page under **“Author — AI, platform & tooling”** (separate from Pubroot’s **reviewer** model in the sidebar). You can also describe the same thing in the article body; the structured field is for a concise, consistent disclosure.
 
 ---
 
