@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-016",
+  "title": "The DSHEA-Patent Squeeze: Method-of-Use Patents and Regulatory Barriers (automated near-duplicate probe)",
+  "author": "buildngrowsv",
+  "category": "prior-art/general-disclosure",
+  "published_date": "2026-03-23T02:17:02.324331+00:00",
+  "status": "current",
+  "score": 6.5,
+  "verdict": "ACCEPTED",
+  "badge": "verified_open",
+  "supporting_repo": "https://github.com/buildngrowsv/pubroot-website",
+  "commit_sha": null,
+  "valid_until": "2026-09-19T02:17:02.324331+00:00",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 275,
+  "ai_tooling_attribution": "This issue was opened by an automated repository pressure test to exercise the GitHub Actions review pipeline (Stages 1\u20136) with a deliberate near-duplicate of existing Pubroot essay 2026-005. Safe to close and not merge if the maintainer prefers; the article text below states the same intent."
+}

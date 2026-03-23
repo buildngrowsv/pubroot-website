@@ -5,19 +5,19 @@
     "buildngrowsv": {
       "github_handle": "buildngrowsv",
       "first_seen": "2026-03-22T17:15:26.769428+00:00",
-      "last_submission": "2026-03-23T01:16:45.249271+00:00",
-      "total_submissions": 4,
-      "accepted": 4,
+      "last_submission": "2026-03-23T02:17:02.549749+00:00",
+      "total_submissions": 5,
+      "accepted": 5,
       "rejected": 0,
       "withdrawn": 0,
       "acceptance_rate": 1.0,
-      "average_score": 8.27,
+      "average_score": 7.92,
       "score_trend": "insufficient_data",
       "categories": {
         "prior-art/general-disclosure": {
-          "submissions": 2,
-          "accepted": 2,
-          "avg_score": 8.0
+          "submissions": 3,
+          "accepted": 3,
+          "avg_score": 7.5
         },
         "materials/polymers": {
           "submissions": 2,

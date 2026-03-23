@@ -1,0 +1,86 @@
+{
+  "paper_id": "2026-016",
+  "score": 6.5,
+  "verdict": "ACCEPTED",
+  "badge": "verified_open",
+  "summary": "This submission is a deliberately shortened version of a previous article, intended for pipeline testing. It reiterates the interaction between method-of-use patents, DSHEA preclusion, and FDA exclusivity, using colchicine and N-acetylcysteine as examples. While it correctly identifies the core issues, its novelty is critically low due to its self-proclaimed nature as a near-duplicate.",
+  "strengths": [
+    "Accurately identifies and explains the interaction between method-of-use patents, DSHEA preclusion, and FDA exclusivity.",
+    "Uses relevant case examples (colchicine, N-acetylcysteine) to illustrate the described mechanisms.",
+    "Clearly states its purpose as an automated pressure test for pipeline evaluation, which is a valid use case for a knowledge base."
+  ],
+  "weaknesses": [
+    "Extremely low novelty, as explicitly stated by the author, making it a near-duplicate of existing work (2026-005).",
+    "Lacks new empirical data or novel legal analysis, relying solely on existing statutory hooks and examples.",
+    "The brevity, while intentional, limits the depth of the discussion and the potential for new insights."
+  ],
+  "suggestions": [
+    "For future submissions intended as original research, ensure genuine novelty and a deeper analytical contribution beyond summarizing existing concepts.",
+    "If the goal is to test pipeline functionality, consider a more robust set of test cases that explore edge scenarios or more complex interactions.",
+    "While the case examples are relevant, a more detailed breakdown of how the patent and regulatory aspects specifically created 'access friction' for each case would strengthen the points."
+  ],
+  "confidence": {
+    "methodology": 0.7,
+    "factual_accuracy": 0.9,
+    "novelty": 0.2,
+    "code_quality": null,
+    "writing_quality": 0.8,
+    "reproducibility": null
+  },
+  "claims": [
+    {
+      "text": "When a pharmaceutical company files a method-of-use patent on a new therapeutic application of a compound already sold over-the-counter as a dietary supplement, the patent interacts with the DSHEA drug preclusion clause FD&C Act 201(ff)(3)(B) and FDA exclusivity grants to create access friction.",
+      "verified": true,
+      "source": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQH5FBDoozCxnka29gLlmtvHN1jbXFZTdM9PNOdSOGmim0qI1rC4ZFGdaYFlhnZ574CWxv2Z8Ui3Xocvjl-6WhyYy9wM1ZSKu2BXxZJQwhrV3nWE-eFipfMlfTDWQJ5b4k9_jgHF1ASSLTaJEaE4RiDS_qJfe-TlbOOeWarOyXMsV8hB6vCV1bnePE1FqWM81DyoTMDI4m19SKW6G3zrE4EG-luEfe4ojmKxq7M=, https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQG6rKnUtphcGiY3oEMGj8XNoZMlEYM0aV5mzC3wo92oHBtZ1B0hPzgI0yJFKQnHWlI9nZ7kCUNH_Sta_FfFqvTHWtZ23CWlutrmDyf8OHkTnnqgq_T5vj0IeBzahh5sVSgTTPh4tGdRmcBaKPrAL2wDDNRj2Pch1IPtkSPdWQT0Utcztwd0kTT1fJUkKrM4JhZGOXbAc7eTRoGj-r7g, https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFrsYr7f7YdkdQBZCJ4jxUlVMxZ6C85z4ByKnK3W1fXvNW7Tin916L8vvNU5_ywA88pNeYH9T0adoT-pbjgU8VPIm_zf17QFs7pKkFIw0AVfuDl4BbTaIZDqfEXPFmxJ2XlI5pw3jywZr_W0ftg7gjF9nAa-fc=",
+      "confidence": 0.95
+    },
+    {
+      "text": "Colchicine illustrates large price increases after exclusivity plus patents.",
+      "verified": true,
+      "source": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQG6rKnUtphcGiY3oEMGj8XNoZMlEYM0aV5mzC3wo92oHBtZ1B0hPzgI0yJFKQnHWlI9nZ7kCUNH_Sta_FfFqvTHWtZ23CWlutrmDyf8OHkTnnqgq_T5vj0IeBzahh5sVSgTTPh4tGdRmcBaKPrAL2wDDNRj2Pch1IPtkSPdWQT0Utcztwd0kTT1fJUkKrM4JhZGOXbAc7eTRoGj-r7g, https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFrsYr7f7YdkdQBZCJ4jxUlVMxZ6C85z4ByKnK3W1fXvNW7Tin916L8vvNU5_ywA88pNeYH9T0adoT-pbjgU8VPIm_zf17QFs7pKkFIw0AVfuDl4BbTaIZDqfEXPFmxJ2XlI5pw3jywZr_W0ftg7gjF9nAa-fc=",
+      "confidence": 0.95
+    },
+    {
+      "text": "N-acetylcysteine illustrates FDA warning letters and supplement market tension.",
+      "verified": true,
+      "source": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQH5FBDoozCxnka29gLlmtvHN1jbXFZTdM9PNOdSOGmim0qI1rC4ZFGdaYFlhnZ574CWxv2Z8Ui3Xocvjl-6WhyYy9wM1ZSKu2BXxZJQwhrV3nWE-eFipfMlfTDWQJ5b4k9_jgHF1ASSLTaJEaE4RiDS_qJfe-TlbOOeWarOyXMsV8hB6vCV1bnePE1FqWM81DyoTMDI4m19SKW6G3zrE4EG-luEfe4ojmKxq7M=, https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQE0oA2Vzt_wJyX5sijRbYk8sbEM4ji7_4ZTl2IhcvpNnN3-c72aLAGA-p8y9nP1_PRQ4nTGd_tFSUUHw7BZBETPPoIBJDR-w1sMUEk94qJ8of36ZJXaMF1mTuO3z7NOUF_wY8mVOEN5uSqRaqH6HtL5OIYASwu7k0dXflJIGUnbbJJMmf1g8rnAPOPvBBt6BM0U9li8imRKpSH5KHuAYkZzKrjWDH6ab3Pj_dY9CaLlc4deyDS5hoGZ4Cd38V89pn45UslA4G2krQe3e6P6f-ZEJhqkovngMSoECTUj_k9_MvQXsfD8A0HGr-t_31NOC9-x9SiqjwaqYa-T2s6K865Q-q6cPOf5sCEMUUb2NOEC13RQYiAqOl0oIA==",
+      "confidence": 0.95
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2026-005",
+      "title": "The DSHEA-Patent Squeeze: How Method-of-Use Patents Amplify Regulatory Barriers to Public-Domain Compounds",
+      "overlap": 0.85,
+      "contribution": "This submission is a deliberate near-duplicate of '2026-005' and offers no new empirical data or legal analysis. Its contribution is limited to testing the pipeline's ability to identify and score such submissions."
+    },
+    {
+      "id": "2026-003",
+      "title": "Preemptive Prior Art Publication as a Defense Against Method-of-Use Patents on Known Compounds and Methods",
+      "overlap": 0.1,
+      "contribution": "This submission does not directly address or build upon the specific strategies discussed in '2026-003' regarding preemptive prior art publication."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2026-09-23T02:16:00Z",
+  "review_metadata": {
+    "reviewer": "gemini-2.5-flash-lite",
+    "review_date": "2026-03-23T02:16:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 2
+  },
+  "grounding_metadata": {
+    "available": true,
+    "web_search_queries": [
+      "DSHEA drug preclusion clause FD&C Act 201(ff)(3)(B)",
+      "method-of-use patents DSHEA interaction",
+      "colchicine price increase DSHEA patent",
+      "N-acetylcysteine FDA warning letters supplement market tension",
+      "method-of-use patents regulatory barriers public-domain compounds"
+    ],
+    "sources": [],
+    "supports": []
+  }
+}
