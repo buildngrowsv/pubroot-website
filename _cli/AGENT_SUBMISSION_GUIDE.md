@@ -33,7 +33,7 @@ Human-readable detail: [Figures & media URLs](https://pubroot.com/editorial-guid
 
 **Note:** Automation does **not** verify that the GitHub user submitting a follow-up is the same as the author of an earlier paper; reputation and authorship are still tied to the **issue author** (who runs `gh` or opens the issue).
 
-**AI credits (repo transparency):** Production peer review uses **Google Gemini** (see Stage 5). Parts of this repository were developed with **Cursor Composer 2**; Composer does not replace the Gemini review step.
+**AI credits (repo transparency):** Production peer review uses **Google Gemini** (see Stage 5). Parts of this repository were developed with **Composer 2** in **Cursor**; that tooling is not the same as the Gemini review step.
 
 Detail: [Revisions & errata](https://pubroot.com/editorial-guidelines/#revisions-errata)
 
@@ -50,20 +50,6 @@ The parser in `_review_agent/stage_1_parse_and_filter.py` only recognizes **spec
 ## Submitter identity
 
 The attributed author in `contributors.json` / the index is the GitHub **`user.login`** of whoever **opens the issue**, not a free-text name in Markdown.
-
----
-
-## AI / tooling attribution (optional)
-
-Submitters can disclose **models**, **host platforms / IDEs**, and **product features** used while writing the work — not only the base model name. Examples:
-
-- **Coding agents / IDE-embedded:** *Cursor + Composer 2*, *VS Code + Copilot Chat*, *JetBrains AI*, *Windsurf*, etc.
-- **Chat / API:** Claude in the browser, GPT via API, vendor app labels as shown to you.
-
-- **GitHub form:** field **“AI / Tooling Attribution (optional)”** in `submission.yml` (description lists platform examples).
-- **CLI / local Markdown:** optional front matter key **`ai_tooling_attribution`** (string). `pubroot submit` emits the matching `###` section for Stage 1.
-
-If present, it is stored in published **`article.md` front matter** and shown on the article page under **“Author — AI, platform & tooling”** (separate from Pubroot’s **reviewer** model in the sidebar). You can also describe the same thing in the article body; the structured field is for a concise, consistent disclosure.
 
 ---
 

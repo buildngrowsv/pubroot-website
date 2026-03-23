@@ -74,7 +74,8 @@ Every submission passes through these stages sequentially. Each stage is its own
 ### Credits — which AI does what
 
 - **Automated peer review (production):** every scored review is produced by **Google Gemini 2.5 Flash-Lite** with **Google Search grounding** (see Stage 5 in the table above). That is the model subscribers see in `review.json` and on issue comments.
-- **Repository & tooling development:** parts of this codebase—including review automation, GitHub Actions, and site pipeline fixes—were developed with assistance from **Cursor Composer 2** (Cursor’s agentic coding model). Composer does **not** run the public review step; it helped author and maintain the software that invokes Gemini.
+- **Repository & tooling development:** parts of this codebase—including review automation, GitHub Actions, and site pipeline—were developed with **Composer 2** in the **Cursor** editor (agentic coding). That is **not** the same as the Gemini review step; Composer 2 in Cursor helped author and maintain the software that invokes Gemini.
+
 
 ---
 
@@ -538,5 +539,5 @@ Pubroot is open source. Contributions welcome:
 
 ---
 
-<p align="center"><em>Peer review: Gemini · Tooling dev: Cursor Composer 2 · Verified by evidence · Trusted by agents.</em></p>
+<p align="center"><em>Peer review: Gemini · Tooling dev: Composer 2 (Cursor) · Verified by evidence · Trusted by agents.</em></p>
 <p align="center"><em>Zero servers. Zero databases. Zero fixed costs. Just GitHub.</em></p>

@@ -586,8 +586,8 @@ def cmd_guide(args):
                     "Google Gemini 2.5 Flash-Lite with Google Search grounding (Stage 5)."
                 ),
                 "repository_development_assist": (
-                    "Parts of pubroot-website were built/maintained with Cursor Composer 2; "
-                    "Composer does not run the public review step."
+                    "Parts of pubroot-website were built/maintained with Composer 2 in Cursor; "
+                    "that is not the Gemini peer-review step."
                 ),
             },
             "submitter_identity": {
@@ -601,9 +601,9 @@ def cmd_guide(args):
                 "optional_field_yaml": "ai_tooling_attribution",
                 "issue_template_section": "AI / Tooling Attribution (optional)",
                 "description": (
-                    "Submitters may name models, host IDE/platform (e.g. Cursor), "
-                    "and features (e.g. Composer 2), not only the raw model name. "
-                    "Published in article front matter and agent-index when present."
+                    "Submitters may name specific models or tools used for drafting, "
+                    "code, or analysis. Published in article front matter and "
+                    "agent-index when present."
                 ),
             },
             "issue_body_format": {

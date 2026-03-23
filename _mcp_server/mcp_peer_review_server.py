@@ -466,9 +466,16 @@ def get_submission_guide() -> dict:
             "optional_field_yaml": "ai_tooling_attribution",
             "issue_template_section": "AI / Tooling Attribution (optional)",
             "description": (
-                "Submitters may name models, IDE/platform (e.g. Cursor), and "
-                "features (e.g. Composer 2); published in article front matter "
-                "when present."
+                "Submitters may name models and how they were used (e.g. "
+                "**Composer 2 in Cursor** for agentic coding; Claude in the browser). "
+                "Published in article front matter when present."
+            ),
+        },
+        "ai_attribution_catalog": {
+            "file": "ai_attribution_catalog.json",
+            "purpose": (
+                "Canonical IDs for primary_model_id and primary_platform_id; "
+                "submission.yml dropdown options must match catalog labels exactly."
             ),
         },
         "issue_body_format": {
@@ -480,6 +487,8 @@ def get_submission_guide() -> dict:
                 "Article Title",
                 "Category",
                 "Submission Type",
+                "Primary AI model (optional)",
+                "Primary platform / IDE (optional)",
                 "AI / Tooling Attribution (optional)",
                 "Abstract",
                 "Article Body",
