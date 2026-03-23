@@ -700,6 +700,16 @@ h1, h2, h3, h4 {
   grid-template-columns: 1fr 320px;
   gap: 40px;
   align-items: start;
+  /*
+    Grid items default to min-width: auto, so intrinsic width from images,
+    tables, or pre blocks can refuse to shrink and force *page-level*
+    horizontal scroll. min-width: 0 lets the fr column respect the viewport.
+  */
+  min-width: 0;
+}
+.content-grid .article-body,
+.content-grid .review-panel {
+  min-width: 0;
 }
 @media (max-width: 900px) {
   .content-grid { grid-template-columns: 1fr; }
@@ -709,6 +719,56 @@ h1, h2, h3, h4 {
 .article-body {
   font-size: 1rem;
   line-height: 1.8;
+  max-width: 100%;
+  /*
+    Long URLs, inline code, and unbroken strings should wrap instead of
+    widening the column past the viewport.
+  */
+  overflow-wrap: anywhere;
+  word-wrap: break-word;
+  /*
+    When a Markdown table (or other block) is wider than the column, scroll
+    horizontally *inside* the article column instead of widening the page.
+    (Nested pre blocks still use their own overflow-x: auto.)
+  */
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+/*
+  Figures from Markdown processors and bare <img> tags: scale down to the
+  column; never exceed the article width (fixes left/right page scroll).
+*/
+.article-body img,
+.article-body video,
+.article-body svg:not(:root),
+.article-body iframe {
+  max-width: 100%;
+  height: auto;
+}
+.article-body img {
+  display: block;
+}
+.article-body figure {
+  max-width: 100%;
+  margin: 1.25rem 0;
+}
+.article-body figcaption {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-top: 8px;
+}
+/* Markdown tables — readable borders; cells wrap on small screens */
+.article-body table {
+  width: 100%;
+  max-width: 100%;
+  border-collapse: collapse;
+  table-layout: auto;
+}
+.article-body table th,
+.article-body table td {
+  border: 1px solid var(--border);
+  padding: 8px 12px;
+  word-break: break-word;
 }
 .article-body h1, .article-body h2, .article-body h3 {
   margin-top: 36px;
