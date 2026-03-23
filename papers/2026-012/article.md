@@ -12,7 +12,7 @@ badge: "verified_open"
 
 ## Revision scope (supersedes 2026-008)
 
-Pubroot **2026-008** already published the narrative and linked the supporting repository. This issue resubmits the same case study as a **formal revision**: the article text is refreshed, and **Figure 1** and **Figure 2** are embedded with **raw.githubusercontent.com** URLs pinned to commit `d845ff1e9dc3068134cbffbbc30723dd6e67edf4` so readers and the site renderer load bytes from the author-controlled repo rather than a relative path under the journal static tree. That aligns the published Markdown with the “host your own figures” workflow described in the submission template.
+Pubroot **2026-008** already published the narrative and linked the supporting repository. This issue resubmits the same case study as a **formal revision**: the article text is refreshed, and **Figure 1** and **Figure 2** are embedded with **raw.githubusercontent.com** URLs pinned to commit `d3f94217a853ce0542adb417f7a542c6f66564a5` so readers and the site renderer load bytes from the author-controlled repo rather than a relative path under the journal static tree. That aligns the published Markdown with the “host your own figures” workflow described in the submission template.
 
 ## Introduction
 
@@ -22,11 +22,11 @@ Consumers expect large hydration bottles to drink cleanly at angle. A common fai
 
 The artifact is a static web page with three synchronized canvases: cap-hinge with gravity pendulum, rigid straw for contrast, and mid-straw flex with a tunable hinge fraction. Shared controls adjust tilt, fill, tip standoff from the inner floor, and hybrid hinge position. The mechanisms plate combines an inline SVG with a separate reference PNG for other joint families.
 
-![Figure 1: three synchronized bottles at 85° drink tilt — teal cap-hinge, coral rigid, violet mid-hinge](https://raw.githubusercontent.com/buildngrowsv/sixty-four-oz-straw-hinge-concept/d845ff1e9dc3068134cbffbbc30723dd6e67edf4/figures/straw-demo-three-panel-bottles.png)
+![Figure 1: three synchronized bottles at 85° drink tilt — teal cap-hinge, coral rigid, violet mid-hinge](https://raw.githubusercontent.com/buildngrowsv/sixty-four-oz-straw-hinge-concept/d3f94217a853ce0542adb417f7a542c6f66564a5/figures/straw-demo-three-panel-bottles.png)
 
-**Figure 1.** Headless capture with **tilt 85°** and **fill 66%**: near-horizontal drink posture so gravity clearly separates the pendulum straws from the lid-rigid straw. Sliders in-frame document the settings. Same repro URL query as in **2026-008** (`?tilt=85&fill=66` on the demo HTML).
+**Figure 1.** Headless capture with **tilt 85°** and **fill 10%**: near-horizontal drink posture with a **shallow pool** so gravity clearly separates the pendulum straws from the lid-rigid straw. Sliders in-frame document the settings. Same repro URL query as in **2026-008** (`?tilt=85&fill=10` on the demo HTML).
 
-![Figure 2: compliant mechanism concept diagram board](https://raw.githubusercontent.com/buildngrowsv/sixty-four-oz-straw-hinge-concept/d845ff1e9dc3068134cbffbbc30723dd6e67edf4/SixtyFourOunceStrawCompliantMechanismConceptDiagram.png)
+![Figure 2: compliant mechanism concept diagram board](https://raw.githubusercontent.com/buildngrowsv/sixty-four-oz-straw-hinge-concept/d3f94217a853ce0542adb417f7a542c6f66564a5/SixtyFourOunceStrawCompliantMechanismConceptDiagram.png)
 
 **Figure 2.** Reference board PNG shipped with the concept package for joint-family comparisons.
 
@@ -42,7 +42,7 @@ Drinking generates sub-atmospheric pressure on the order of roughly one foot of 
 
 ## Reproduction
 
-Clone the supporting repository, open the main HTML file in a browser, or serve the folder with any static file host. All asset paths are relative inside the repo. Pin reviews to commit `d845ff1e9dc3068134cbffbbc30723dd6e67edf4` so figure URLs and code match.
+Clone the supporting repository, open the main HTML file in a browser, or serve the folder with any static file host. All asset paths are relative inside the repo. Pin reviews to commit `d3f94217a853ce0542adb417f7a542c6f66564a5` so figure URLs and code match.
 
 ## Limitations
 

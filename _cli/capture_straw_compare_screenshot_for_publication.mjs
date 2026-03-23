@@ -19,7 +19,9 @@
  * RUN (serve the supporting-repo demo on PORT, e.g. python3 -m http.server 58410):
  *   node _cli/capture_straw_compare_screenshot_for_publication.mjs 85 \
  *     http://127.0.0.1:58410/SixtyFourOunceFlexibleJointStrawBottleConceptAnimation.html \
- *     /tmp/straw-compare.png
+ *     /tmp/straw-compare.png 10
+ *
+ * Args: tilt, demoUrl, [outPath], [fillPercent] — fill defaults to 10 (low pool stresses reach).
  *
  * DEPENDS:
  *   Playwright driving channel=chrome when present (macOS); otherwise bundled Chromium.
@@ -29,10 +31,12 @@ import { chromium } from "playwright";
 const tilt = process.argv[2] || "85";
 const pageUrl = process.argv[3];
 const outPath = process.argv[4] || `/tmp/straw-compare-tilt-${tilt}.png`;
+/* Fill % (demo slider 8–100). Low values shrink the pool so “can the tip still wet?” reads harsher. */
+const fillPct = process.argv[5] != null && process.argv[5] !== "" ? process.argv[5] : "10";
 
 if (!pageUrl) {
   console.error(
-    "Usage: node capture_straw_compare_screenshot_for_publication.mjs <tiltDeg> <demoUrl> [outPath]"
+    "Usage: node capture_straw_compare_screenshot_for_publication.mjs <tiltDeg> <demoUrl> [outPath] [fillPercent]"
   );
   process.exit(1);
 }
@@ -45,7 +49,7 @@ const browser = await chromium.launch({ channel: "chrome" });
 const page = await browser.newPage({ viewport: { width: vw, height: vh } });
 const url = new URL(pageUrl);
 url.searchParams.set("tilt", tilt);
-url.searchParams.set("fill", "66");
+url.searchParams.set("fill", fillPct);
 
 await page.goto(url.toString(), { waitUntil: "networkidle", timeout: 60_000 });
 await page.waitForTimeout(9500);
@@ -84,5 +88,5 @@ const clip = {
 };
 
 await page.screenshot({ path: outPath, clip });
-console.log(JSON.stringify({ tilt, outPath, clip, url: url.toString() }));
+console.log(JSON.stringify({ tilt, fillPct, outPath, clip, url: url.toString() }));
 await browser.close();

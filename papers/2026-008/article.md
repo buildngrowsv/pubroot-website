@@ -22,7 +22,7 @@ The artifact is a static web page with three synchronized canvases: cap-hinge wi
 
 ![Figure 1: three synchronized bottles at 85° drink tilt — teal cap-hinge reaches the pool; coral rigid straw stays lid-aligned; violet mid-hinge splits the story](/img/papers/2026-008/straw-demo-three-panel-bottles.png)
 
-**Figure 1.** Screenshot from the interactive demo with **tilt 85°** (just shy of horizontal) and **fill 66%**: the **world waterline** stays level while the bottle is tipped so the three straw models diverge clearly. Slider readouts are included in-frame. Reproduce with `SixtyFourOunceFlexibleJointStrawBottleConceptAnimation.html?tilt=85&fill=66` in the supporting repository, or re-capture via `pubroot-website/_cli/capture_straw_compare_screenshot_for_publication.mjs`.
+**Figure 1.** Screenshot from the interactive demo with **tilt 85°** (just shy of horizontal) and **fill 10%**: a **small corner pool** so the **world waterline** still reads level while the reach difference between pendulum straws and the lid-rigid straw is stark. Slider readouts are included in-frame. Reproduce with `SixtyFourOunceFlexibleJointStrawBottleConceptAnimation.html?tilt=85&fill=10` in the supporting repository, or re-capture via `pubroot-website/_cli/capture_straw_compare_screenshot_for_publication.mjs` (optional fifth arg: fill percent).
 
 Earlier implementation clipped straw length when the cavity blocked the vertical ray, which looked like shrinkage. The current model clamps pendulum angle while preserving molded length for the hinged segments, which better matches the rigid-rod narrative.
 
