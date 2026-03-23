@@ -43,6 +43,7 @@
 
     {{ range .Pages.ByDate.Reverse }}
     <article class="paper-card" data-category="{{ .Params.category | default "" }}">
+      {{ partial "article_list_first_image_thumbnail.html" . }}
       <div class="card-left">
         <div class="card-badges">
           <span class="badge badge-{{ .Params.badge | default "text_only" }}">

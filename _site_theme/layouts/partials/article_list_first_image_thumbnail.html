@@ -1,0 +1,14 @@
+{{/*
+  article_list_first_image_thumbnail.html — optional preview image for paper list cards
+
+  See resolve_article_first_image_src.html for URL resolution rules.
+
+  WHY OPTIONAL LINK + aria-hidden:
+  The card title remains the primary navigation affordance; the thumbnail is supplementary.
+*/}}
+{{- $src := partial "resolve_article_first_image_src.html" . -}}
+{{- if $src -}}
+<a href="{{ .Permalink }}" class="card-thumb-wrap" aria-hidden="true" tabindex="-1">
+  <img class="card-thumb" src="{{ $src | safeURL }}" alt="" loading="lazy" decoding="async" width="132" height="132" />
+</a>
+{{- end -}}

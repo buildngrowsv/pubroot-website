@@ -1,0 +1,32 @@
+{{/*
+  resolve_article_first_image_src.html — returns the first usable image URL for a paper Page
+
+  RETURNS:
+  A string URL for the hero/card/thumbnail, or an empty string if none.
+
+  ORDER:
+  1) Front matter `thumbnail` when set (explicit pipeline or editorial override).
+  2) First Markdown image `![alt](url)` in `.RawContent`.
+
+  CALLED FROM:
+  - article_list_first_image_thumbnail.html (homepage / list cards)
+  - _default/single.html (hero + optional body de-duplication)
+  - _default/baseof.html via the same partial for og:image / Twitter card on paper pages
+
+  WHY CENTRALIZED:
+  One definition prevents card vs article vs social preview from disagreeing on
+  which asset is “the” first figure.
+*/}}
+{{- $src := "" -}}
+{{- with .Params.thumbnail -}}
+  {{- $src = . -}}
+{{- else -}}
+  {{- $matches := findRESubmatch `!\[[^\]]*\]\(([^)]+)\)` .RawContent -}}
+  {{- if $matches -}}
+    {{- $first := index $matches 0 -}}
+    {{- if ge (len $first) 2 -}}
+      {{- $src = index $first 1 | strings.TrimSpace -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- return $src -}}

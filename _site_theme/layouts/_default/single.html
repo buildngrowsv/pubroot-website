@@ -12,6 +12,20 @@
 {{ define "title" }}{{ .Title }} — Pubroot{{ end }}
 
 {{ define "main" }}
+{{/*
+  Hero image: same URL rules as listing cards (resolve_article_first_image_src.html).
+  When the URL came from the first Markdown figure (not `thumbnail` FM), we strip that
+  line from RawContent before RenderString so the figure is not duplicated inline.
+*/}}
+{{ $heroSrc := partial "resolve_article_first_image_src.html" . }}
+{{ $thumbFromFm := isset .Params "thumbnail" }}
+{{ $articleHTML := .Content }}
+{{ if and $heroSrc (not $thumbFromFm) }}
+  {{ $stripped := replaceRE `!\[[^\]]*\]\([^)]+\)` "" .RawContent 1 }}
+  {{ $articleHTML = .RenderString $stripped }}
+{{ end }}
+{{ $heroAbs := "" }}
+{{ if $heroSrc }}{{ $heroAbs = $heroSrc | absURL }}{{ end }}
 <article class="paper-full">
   <div class="container">
     <!-- Breadcrumb — shows the journal/topic path for context.
@@ -55,6 +69,12 @@
       </div>
     </header>
 
+    {{ with $heroSrc }}
+    <figure class="article-hero-thumb">
+      <img src="{{ . | safeURL }}" alt="" loading="lazy" decoding="async" width="1100" height="520" />
+    </figure>
+    {{ end }}
+
     <!-- Abstract block -->
     {{ with .Params.abstract }}
     <div class="abstract-block">
@@ -67,7 +87,7 @@
     <div class="content-grid">
       <!-- Article body -->
       <div class="article-body">
-        {{ .Content }}
+        {{ $articleHTML }}
       </div>
 
       <!-- Review sidebar -->
@@ -176,7 +196,7 @@
     "@type": "WebPage",
     "@id": "{{ .Permalink }}"
   },
-  "image": "https://pubroot.com/img/og-image.png",
+  "image": {{ if $heroAbs }}{{ $heroAbs | jsonify }}{{ else }}"https://pubroot.com/img/og-image.png"{{ end }},
   "articleSection": {{ .Params.category | default "" | jsonify }},
   "reviewRating": {
     "@type": "Rating",

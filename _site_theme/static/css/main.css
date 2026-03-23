@@ -452,6 +452,58 @@ h1, h2, h3, h4 {
   flex-shrink: 0;
 }
 
+/*
+  Listing thumbnail — first Markdown image (or `thumbnail` front matter) on paper cards.
+  Fixed aspect square; object-fit keeps diagrams readable without stretching.
+  Sits before .card-left so flex order is: [thumb?] | text | score.
+*/
+.card-thumb-wrap {
+  flex-shrink: 0;
+  width: 132px;
+  height: 132px;
+  margin-right: 20px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  align-self: flex-start;
+  display: block;
+  line-height: 0;
+}
+.card-thumb-wrap:hover {
+  border-color: var(--accent);
+  box-shadow: 0 2px 12px rgba(0, 180, 160, 0.18);
+}
+.card-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+@media (max-width: 640px) {
+  .paper-card {
+    flex-wrap: wrap;
+  }
+  .card-thumb-wrap {
+    width: 100%;
+    height: auto;
+    max-height: 200px;
+    margin-right: 0;
+    margin-bottom: 12px;
+  }
+  .card-thumb {
+    max-height: 200px;
+    object-fit: contain;
+    background: var(--surface);
+  }
+  .card-right {
+    margin-left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+  }
+}
+
 .card-badges {
   display: flex;
   gap: 8px;
@@ -670,6 +722,27 @@ h1, h2, h3, h4 {
   font-size: 0.9rem;
 }
 .author-name { font-weight: 600; color: var(--text); }
+
+/*
+  Hero thumbnail on single paper pages — matches listing card intent (first figure).
+  Wide letterboxed frame so diagrams stay readable; max-height avoids dominating mobile.
+*/
+.article-hero-thumb {
+  margin: 0 0 28px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  overflow: hidden;
+  line-height: 0;
+}
+.article-hero-thumb img {
+  width: 100%;
+  height: auto;
+  max-height: min(52vh, 520px);
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;
+}
 
 /* Abstract */
 .abstract-block {
