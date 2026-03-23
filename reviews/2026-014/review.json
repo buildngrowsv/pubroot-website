@@ -1,0 +1,78 @@
+{
+  "paper_id": "2026-014",
+  "score": 8.5,
+  "verdict": "ACCEPTED",
+  "badge": "verified_open",
+  "summary": "This revised case study documents the authoring process of a kinematic model for a gravity-hinged dip tube, explicitly disclosing the use of Cursor and Composer 2. The core physics and interactive demo remain consistent with the previous version, offering practical insights into a common hydration bottle design challenge.",
+  "strengths": [
+    "Clear disclosure of AI-assisted authoring tools (Cursor, Composer 2), providing valuable metadata for reviewers and readers.",
+    "The interactive demo is well-implemented and effectively illustrates the kinematic principles of different straw designs.",
+    "The article clearly explains the practical problem (drinking from tilted bottles) and the proposed solution.",
+    "Reproducibility is excellent, with a supporting repository and specific commit hash provided for verification."
+  ],
+  "weaknesses": [
+    "The novelty is low, as this is a revision of a previously published article (2026-008) with only the authoring disclosure as a new element.",
+    "While the physics are explained, the claims are primarily illustrative kinematics rather than rigorously verified physical measurements."
+  ],
+  "suggestions": [
+    "Consider adding a brief section on the specific benefits or drawbacks encountered when using Cursor and Composer 2 for this type of technical documentation.",
+    "While not strictly necessary for a case study, a more detailed explanation of the simulation parameters and their physical meaning could enhance understanding."
+  ],
+  "confidence": {
+    "methodology": 0.9,
+    "factual_accuracy": 0.8,
+    "novelty": 0.3,
+    "code_quality": 1.0,
+    "writing_quality": 0.9,
+    "reproducibility": 1.0
+  },
+  "claims": [
+    {
+      "text": "The interactive HTML canvas demo, prose, and repository maintenance were carried out primarily in Cursor using Composer 2.",
+      "verified": true,
+      "source": "Submission body and README.md",
+      "confidence": 1.0
+    },
+    {
+      "text": "Figures use raw.githubusercontent.com URLs pinned to commit d3f94217a853ce0542adb417f7a542c6f66564a5 so the Markdown stays durable on pubroot.com.",
+      "verified": true,
+      "source": "Submission body and README.md",
+      "confidence": 1.0
+    },
+    {
+      "text": "The underlying physics story is unchanged: cap-side flex versus rigid straw versus mid-straw hinge, world-level waterline, and author-hosted figures pinned to the supporting repository.",
+      "verified": true,
+      "source": "Submission body and comparison with 2026-008 abstract",
+      "confidence": 1.0
+    },
+    {
+      "text": "Figures remain at 85\u00b0 tilt and 10% fill for a shallow-pool reach comparison.",
+      "verified": true,
+      "source": "Submission body, Figure 1 caption, and README.md",
+      "confidence": 1.0
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2026-008",
+      "title": "Gravity-hinged dip tube for large insulated bottles: kinematic model, short-span silicone joint, and sip-suction design notes",
+      "overlap": 0.95,
+      "contribution": "This revision adds explicit disclosure of the AI authoring tools (Cursor and Composer 2) used in the creation process, providing metadata about the development workflow without altering the core technical content or kinematic model."
+    }
+  ],
+  "supersedes": "2026-008",
+  "superseded_by": null,
+  "valid_until": "2026-09-23T00:00:00Z",
+  "review_metadata": {
+    "reviewer": "gemini-2.5-flash-lite",
+    "review_date": "2026-03-23T01:16:59.409075+00:00",
+    "grounding_used": true,
+    "calibration_examples_used": 2,
+    "novelty_sources_checked": 1
+  },
+  "grounding_metadata": {
+    "available": true,
+    "sources": [],
+    "supports": []
+  }
+}

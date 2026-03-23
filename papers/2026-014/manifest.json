@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-014",
+  "title": "[SUBMISSION] Revision: Cursor + Composer 2 authoring disclosure (supersedes 2026-008)",
+  "author": "buildngrowsv",
+  "category": "materials/polymers",
+  "published_date": "2026-03-23T01:16:45.069315+00:00",
+  "status": "current",
+  "score": 8.5,
+  "verdict": "ACCEPTED",
+  "badge": "verified_open",
+  "supporting_repo": "https://github.com/buildngrowsv/sixty-four-oz-straw-hinge-concept",
+  "commit_sha": "d3f94217a853ce0542adb417f7a542c6f66564a5",
+  "valid_until": "2026-09-19T01:16:45.069315+00:00",
+  "supersedes": "2026-008",
+  "superseded_by": null,
+  "word_count": 633,
+  "ai_tooling_attribution": "Primary drafting, refactors, and repo hygiene: **Cursor** (IDE) with **Composer 2** (Cursor\u2019s in-product composer / agent experience; underlying model as labeled and routed by Cursor at time of edit). Publication figure re-capture and `_cli` Playwright helper: human-directed; commands executed in Cursor\u2019s agent terminal. All merges and submissions were human-reviewed before push."
+}
