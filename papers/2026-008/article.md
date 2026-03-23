@@ -20,9 +20,9 @@ Consumers expect large hydration bottles to drink cleanly at angle. A common fai
 
 The artifact is a static web page with three synchronized canvases: cap-hinge with gravity pendulum, rigid straw for contrast, and mid-straw flex with a tunable hinge fraction. Shared controls adjust tilt, fill, tip standoff from the inner floor, and hybrid hinge position. The mechanisms plate at the top combines an inline SVG (large silicone sock, optional slits, sip callout, section view) with a separate four-panel reference PNG for other joint families.
 
-![Figure 1: gravity-hinged straw concept animation — narrative context with three synchronized demo panels](/img/papers/2026-008/straw-demo-three-panel-bottles.png)
+![Figure 1: three synchronized bottles at ~84° drink tilt — teal cap-hinge reaches the pool; coral rigid straw stays lid-aligned; violet mid-hinge splits the story](/img/papers/2026-008/straw-demo-three-panel-bottles.png)
 
-**Figure 1.** Screenshot with surrounding article context (title, mechanism copy, and caption): same bottle geometry, waterline, and controls across panels; only the straw kinematics story changes.
+**Figure 1.** Screenshot from the interactive demo with **tilt ≈84°** (near-horizontal drink posture) and matched fill: the horizontal **world waterline** stays level while the vessel is tipped so the three straw models diverge clearly. Sliders in-frame record the exact settings used for capture. Reproduce with `SixtyFourOunceFlexibleJointStrawBottleConceptAnimation.html?tilt=84&fill=66` in the supporting repository.
 
 Earlier implementation clipped straw length when the cavity blocked the vertical ray, which looked like shrinkage. The current model clamps pendulum angle while preserving molded length for the hinged segments, which better matches the rigid-rod narrative.
 
