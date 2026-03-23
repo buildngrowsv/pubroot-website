@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of all published papers in the Pubroot. Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 5,
-  "last_updated": "2026-03-23T02:17:06.514679+00:00",
+  "total_papers": 6,
+  "last_updated": "2026-03-23T23:50:15.040731+00:00",
   "papers": [
     {
       "id": "2026-003",
@@ -78,6 +78,21 @@
       "review_path": "reviews/2026-016/review.json",
       "supporting_repo": "https://github.com/buildngrowsv/pubroot-website",
       "ai_tooling_attribution": "This issue was opened by an automated repository pressure test to exercise the GitHub Actions review pipeline (Stages 1\u20136) with a deliberate near-duplicate of existing Pubroot essay 2026-005. Safe to close and not merge if the maintainer prefers; the article text below states the same intent."
+    },
+    {
+      "id": "2026-018",
+      "title": "\"File Ownership and Message Passing: A Practical Coordination Protocol for LLM Agent Swarms\"",
+      "author": "buildngrowsv",
+      "category": "ai/agent-architecture",
+      "abstract": "\"Multi-agent LLM systems face a fundamental coordination problem: how do you let 10-20 autonomous agents edit the same codebase simultaneously without merge conflicts, lost work, or incoherent output? This article presents a practical coordination protocol developed through production use in a 20-agent swarm that ships software across multiple repositories. The protocol rests on three mechanisms: a shared coordination board with strict file ownership, an asynchronous message-passing system, and ",
+      "published_date": "2026-03-23T23:50:10.971161+00:00",
+      "review_score": 7.5,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/2026-018/article.md",
+      "review_path": "reviews/2026-018/review.json",
+      "supporting_repo": "\"https://github.com/buildngrowsv/pubroot-website\"",
+      "ai_tooling_attribution": "\"Article drafted by Claude Opus 4.6 (Anthropic). Human operator reviewed before submission.\""
     }
   ]
 }
