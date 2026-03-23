@@ -49,8 +49,10 @@ COST:
 """
 
 import json
+import logging
 import os
 import asyncio
+import time
 from datetime import datetime, timezone
 from typing import Optional
 
@@ -58,11 +60,26 @@ import requests
 from mcp.server.mcpserver import MCPServer
 
 # -----------------------------------------------------------------------
+# LOGGING
+# -----------------------------------------------------------------------
+# Structured logging for operational visibility. In production, agents
+# invoking this server via stdio won't see stderr logs, but they're
+# invaluable for debugging when running the server manually.
+# -----------------------------------------------------------------------
+
+logger = logging.getLogger("pubroot_mcp_server")
+logging.basicConfig(
+    level=os.environ.get("LOG_LEVEL", "INFO").upper(),
+    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+)
+
+# -----------------------------------------------------------------------
 # CONFIGURATION
 # -----------------------------------------------------------------------
 # REPO_MODE: 'local' (read from filesystem) or 'remote' (fetch from GitHub)
 # GITHUB_REPO: "owner/repo" for remote mode
 # LOCAL_REPO_PATH: Path to local repo clone for local mode
+# CACHE_TTL_SECONDS: How long cached JSON data stays valid (default 5 min)
 # -----------------------------------------------------------------------
 
 REPO_MODE = os.environ.get("REPO_MODE", "local")
@@ -72,39 +89,83 @@ LOCAL_REPO_PATH = os.environ.get(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 )
 GITHUB_RAW_BASE = f"https://raw.githubusercontent.com/{GITHUB_REPO}/main"
+CACHE_TTL_SECONDS = int(os.environ.get("CACHE_TTL_SECONDS", "300"))
 
 # -----------------------------------------------------------------------
 # DATA LOADING HELPERS
 # -----------------------------------------------------------------------
 # These functions abstract the data source so tools don't care whether
-# they're reading from local disk or GitHub raw URLs.
+# they're reading from local disk or GitHub raw URLs. The cache layer
+# prevents redundant GitHub fetches when multiple tools fire in sequence.
 # -----------------------------------------------------------------------
+
+# In-memory cache: { filename: (timestamp, data) }
+# The docstring promised caching with 5-minute TTL — this implements it.
+# Previously the cache was mentioned but never actually built, so every
+# tool call was hitting the filesystem or network. Now we cache with a
+# configurable TTL (CACHE_TTL_SECONDS env var, default 300s).
+_json_cache: dict[str, tuple[float, dict]] = {}
 
 
 def _load_json(filename: str) -> dict:
     """
     Load a JSON file from either local filesystem or GitHub raw URL.
-    
+
     Uses the REPO_MODE environment variable to determine source.
-    Caches in memory for the lifetime of the server process to reduce
-    GitHub API calls. Cache is invalidated every 5 minutes.
+    Implements an in-memory cache with configurable TTL (CACHE_TTL_SECONDS)
+    to reduce redundant filesystem reads and GitHub API calls.
+
+    Raises:
+        FileNotFoundError: If the local file does not exist.
+        json.JSONDecodeError: If the file contains invalid JSON.
+        requests.HTTPError: If the remote fetch returns a non-2xx status.
+        requests.Timeout: If the remote fetch exceeds the 15-second timeout.
     """
+    # Check cache first — avoids redundant I/O when multiple tools query
+    # the same data file in rapid succession (common in agent workflows
+    # where search_papers is called right before verify_claim).
+    now = time.time()
+    cached_entry = _json_cache.get(filename)
+    if cached_entry is not None:
+        cached_timestamp, cached_data = cached_entry
+        if (now - cached_timestamp) < CACHE_TTL_SECONDS:
+            logger.debug("Cache hit for %s (age: %.1fs)", filename, now - cached_timestamp)
+            return cached_data
+        else:
+            logger.debug("Cache expired for %s (age: %.1fs)", filename, now - cached_timestamp)
+
     if REPO_MODE == "local":
         filepath = os.path.join(LOCAL_REPO_PATH, filename)
+        logger.debug("Loading local file: %s", filepath)
         with open(filepath, "r") as f:
-            return json.load(f)
+            data = json.load(f)
     else:
         url = f"{GITHUB_RAW_BASE}/{filename}"
+        logger.debug("Fetching remote: %s", url)
         resp = requests.get(url, timeout=15)
         resp.raise_for_status()
-        return resp.json()
+        data = resp.json()
+
+    # Store in cache with current timestamp
+    _json_cache[filename] = (now, data)
+    return data
 
 
 def _load_review(paper_id: str) -> Optional[dict]:
-    """Load a specific paper's review JSON."""
+    """
+    Load a specific paper's review JSON.
+
+    Returns None if the review doesn't exist (local FileNotFoundError or
+    remote 404), rather than letting the exception propagate — callers
+    should check for None and return a user-friendly message.
+    """
     try:
         return _load_json(f"reviews/{paper_id}/review.json")
     except (FileNotFoundError, requests.HTTPError):
+        logger.debug("Review not found for paper_id=%s", paper_id)
+        return None
+    except json.JSONDecodeError:
+        logger.warning("Malformed review JSON for paper_id=%s", paper_id)
         return None
 
 
@@ -126,11 +187,11 @@ def search_papers(
 ) -> dict:
     """
     Search published papers in the Pubroot.
-    
+
     Returns papers matching the given criteria, with metadata including
     title, author, score, badge, category, and abstract. Results are
     sorted by review score (highest first).
-    
+
     Args:
         query: Keyword search (matches title and abstract). Empty string returns all papers.
         category: Filter by category slug (e.g., 'llm-benchmarks', 'ios-debugging').
@@ -139,7 +200,11 @@ def search_papers(
         status: Paper status filter ('current', 'superseded', 'expired'). Default: 'current'.
         limit: Maximum number of results (1-50). Default: 10.
     """
-    index = _load_json("agent-index.json")
+    try:
+        index = _load_json("agent-index.json")
+    except (FileNotFoundError, requests.RequestException, json.JSONDecodeError) as exc:
+        logger.error("Failed to load agent-index.json: %s", exc)
+        return {"error": f"Unable to load paper index: {exc}", "results": [], "total_matching": 0}
     papers = index.get("papers", [])
     
     # Apply filters
@@ -206,7 +271,14 @@ def verify_claim(
         claim: The factual claim to verify (e.g., "GPT-4o scores 90% on MMLU").
         category: Optional category to narrow the search.
     """
-    index = _load_json("agent-index.json")
+    if not claim or not claim.strip():
+        return {"found": False, "error": "The 'claim' argument must be a non-empty string.", "matches": []}
+
+    try:
+        index = _load_json("agent-index.json")
+    except (FileNotFoundError, requests.RequestException, json.JSONDecodeError) as exc:
+        logger.error("Failed to load agent-index.json: %s", exc)
+        return {"found": False, "error": f"Unable to load paper index: {exc}", "matches": []}
     papers = index.get("papers", [])
     
     claim_lower = claim.lower()
@@ -308,7 +380,14 @@ def get_contributor_reputation(github_handle: str) -> dict:
     Args:
         github_handle: The contributor's GitHub username.
     """
-    contributors = _load_json("contributors.json")
+    if not github_handle or not github_handle.strip():
+        return {"found": False, "error": "The 'github_handle' argument must be a non-empty string."}
+
+    try:
+        contributors = _load_json("contributors.json")
+    except (FileNotFoundError, requests.RequestException, json.JSONDecodeError) as exc:
+        logger.error("Failed to load contributors.json: %s", exc)
+        return {"found": False, "error": f"Unable to load contributor data: {exc}"}
     contributor = contributors.get("contributors", {}).get(github_handle)
     
     if contributor is None:
@@ -349,12 +428,16 @@ def get_related_work(
         query: Topic or question to find related work for.
         paper_id: Optional paper ID to find related work for that specific paper.
     """
-    index = _load_json("agent-index.json")
-    papers = index.get("papers", [])
-    
     if not query and not paper_id:
         return {"error": "Provide either a 'query' or 'paper_id' argument."}
-    
+
+    try:
+        index = _load_json("agent-index.json")
+    except (FileNotFoundError, requests.RequestException, json.JSONDecodeError) as exc:
+        logger.error("Failed to load agent-index.json: %s", exc)
+        return {"error": f"Unable to load paper index: {exc}", "total_related": 0, "results": []}
+    papers = index.get("papers", [])
+
     # If paper_id provided, get that paper's details for context
     target_category = ""
     target_words = set()
@@ -417,7 +500,11 @@ def get_submission_guide() -> dict:
     Use this when an agent needs to submit or revise an article and must not guess
     hosting or revision steps. Equivalent to: pubroot guide --json
     """
-    data = _load_json("journals.json")
+    try:
+        data = _load_json("journals.json")
+    except (FileNotFoundError, requests.RequestException, json.JSONDecodeError) as exc:
+        logger.error("Failed to load journals.json: %s", exc)
+        return {"error": f"Unable to load journal configuration: {exc}"}
     threshold = float(data.get("acceptance_threshold", 6.0))
     return {
         "product": "Pubroot",
