@@ -1,0 +1,18 @@
+{{/*
+  article_list_card_dates.html — compact date line for paper list cards
+
+  When `original_submitted_date` is set (revised canonical article), show both the
+  first publish day and the last revision day. Otherwise show a single date
+  (Hugo’s .Date = publication date).
+
+  WHY A PARTIAL:
+  index.html and list.html share the same card layout; we keep one narrative
+  about how dates are surfaced so list and homepage never disagree.
+*/}}
+{{ if .Params.original_submitted_date }}
+<span class="date-original">Original {{ (time .Params.original_submitted_date).Format "Jan 2, 2006" }}</span>
+<span class="sep">&middot;</span>
+<span class="date-revised">Revised {{ .Date.Format "Jan 2, 2006" }}</span>
+{{ else }}
+<span class="date">{{ .Date.Format "Jan 2, 2006" }}</span>
+{{ end }}

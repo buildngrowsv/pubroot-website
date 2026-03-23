@@ -564,6 +564,12 @@ h1, h2, h3, h4 {
 .card-meta .author { font-weight: 500; }
 .card-meta .sep { margin: 0 6px; }
 .card-meta .paper-id { font-family: var(--font-mono); font-size: 0.8rem; }
+.card-meta .date-original,
+.card-meta .date-revised {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+}
+.card-meta .date-revised { font-weight: 500; color: var(--text); }
 
 .card-abstract {
   font-size: 0.9rem;
@@ -717,11 +723,15 @@ h1, h2, h3, h4 {
 }
 .paper-byline {
   display: flex;
-  gap: 16px;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 16px;
   color: var(--text-secondary);
   font-size: 0.9rem;
 }
 .author-name { font-weight: 600; color: var(--text); }
+.paper-byline .date-sep { margin: 0 4px; color: var(--text-secondary); }
+.pub-date-revised { font-weight: 500; color: var(--text); }
 
 /*
   Hero thumbnail on single paper pages — matches listing card intent (first figure).

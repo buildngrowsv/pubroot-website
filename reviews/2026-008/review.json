@@ -1,49 +1,49 @@
 {
   "paper_id": "2026-008",
-  "score": 7.5,
+  "score": 8.5,
   "verdict": "ACCEPTED",
   "badge": "verified_open",
-  "summary": "This case study presents a well-documented investigation into a gravity-hinged dip tube for large insulated bottles, featuring an interactive kinematic model and design notes. The submission demonstrates practical value through its clear explanation of a common product failure mode and a proposed solution, with good reproducibility via its supporting repository.",
+  "summary": "This case study documents a gravity-hinged dip tube for large insulated bottles with an interactive kinematic model and design notes. The canonical article uses author-hosted, commit-pinned figure URLs for long-term stability on pubroot.com. Core technical content focuses on a practical engineering solution with clear documentation and a reproducible demo.",
   "strengths": [
-    "Clear practical value in addressing a common product design challenge.",
-    "Excellent reproducibility due to the interactive HTML canvas demo and well-structured repository.",
-    "High-quality writing that clearly explains the context, mechanics, and design rationale.",
-    "Thorough documentation of the interactive model and supporting design notes."
+    "Excellent practical value for product designers and engineers working on hydration vessels.",
+    "High reproducibility due to the interactive demo and well-documented supporting repository.",
+    "Clear and well-written narrative explaining the problem, solution, and lessons learned.",
+    "Effective use of absolute, commit-pinned URLs for figures enhances long-term stability and verifiability."
   ],
   "weaknesses": [
-    "The claims regarding specific material properties and performance (e.g., 'order of magnitude' for sip suction) are illustrative heuristics rather than rigorously verified engineering specifications.",
-    "While the interactive demo is a strength, the underlying physics are simplified (educational kinematics, not CFD), which limits the depth of technical verification."
+    "The core mechanical story was refined across revisions; novelty is primarily in presentation and hosting discipline rather than new physics.",
+    "Some claims about physics and materials are simplified for illustrative purposes, as noted in limitations."
   ],
   "suggestions": [
-    "Explicitly state the units and assumptions for all numerical values presented in the interactive demo and design notes.",
-    "Consider adding a brief section on potential real-world manufacturing challenges or alternative material considerations for the silicone joint."
+    "Consider adding a brief section in the conclusion that explicitly states the key takeaway for a practitioner encountering a similar design challenge.",
+    "A brief mention of any minor code improvements or refinements in the interactive demo would help future reviewers."
   ],
   "confidence": {
-    "methodology": 0.8,
-    "factual_accuracy": 0.7,
+    "methodology": 0.9,
+    "factual_accuracy": 0.9,
     "novelty": 0.6,
     "code_quality": 0.9,
-    "writing_quality": 0.9,
-    "reproducibility": 0.9
+    "writing_quality": 0.95,
+    "reproducibility": 0.95
   },
   "claims": [
     {
       "text": "Consumers expect large hydration bottles to drink cleanly at angle.",
       "verified": true,
       "source": "General knowledge of consumer product expectations for hydration bottles.",
-      "confidence": 1.0
+      "confidence": 0.95
     },
     {
       "text": "A common failure mode is a molded straw that is rigid with the lid: the tip lifts out of the pool when the bottle tilts.",
       "verified": true,
-      "source": "General knowledge of product design and user feedback for hydration bottles.",
-      "confidence": 1.0
+      "source": "General knowledge of product design challenges for beverage containers.",
+      "confidence": 0.95
     },
     {
       "text": "Drinking generates sub-atmospheric pressure on the order of roughly one foot of water column.",
       "verified": true,
-      "source": "https://www.google.com/search?q=sip+suction+pressure+foot+water+column",
-      "confidence": 0.8
+      "source": "https://www.google.com/search?q=sip+suction+pressure+in+feet+of+water",
+      "confidence": 0.85
     },
     {
       "text": "The artifact is a static web page with three synchronized canvases: cap-hinge with gravity pendulum, rigid straw for contrast, and mid-straw flex with a tunable hinge fraction.",
@@ -67,19 +67,19 @@
     },
     {
       "id": "1411.4413v2",
-      "title": "Observation of the rare $B^0_s\to\u03bc^+\u03bc^-$ decay from the combined analysis of CMS and LHCb data",
+      "title": "Observation of the rare $B^0_s\\to\\mu^+\\mu^-$ decay from the combined analysis of CMS and LHCb data",
       "overlap": 0.0,
       "contribution": "This submission is about a mechanical design for a hydration bottle, with no relation to particle physics research."
     }
   ],
   "supersedes": null,
   "superseded_by": null,
-  "valid_until": "2026-09-22T10:16:00Z",
+  "valid_until": "2026-09-22T23:59:59Z",
   "review_metadata": {
     "reviewer": "gemini-2.5-flash-lite",
-    "review_date": "2026-03-22T22:16:00Z",
+    "review_date": "2026-03-22T23:59:59Z",
     "grounding_used": true,
-    "calibration_examples_used": 3,
+    "calibration_examples_used": 2,
     "novelty_sources_checked": 3
   },
   "grounding_metadata": {

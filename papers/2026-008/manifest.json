@@ -4,14 +4,15 @@
   "author": "buildngrowsv",
   "category": "materials/polymers",
   "published_date": "2026-03-22T22:16:59.409075+00:00",
+  "last_revised_date": "2026-03-22T23:58:55.327255+00:00",
   "status": "current",
-  "score": 7.5,
+  "score": 8.5,
   "verdict": "ACCEPTED",
   "badge": "verified_open",
   "supporting_repo": "https://github.com/buildngrowsv/sixty-four-oz-straw-hinge-concept",
   "commit_sha": "d3f94217a853ce0542adb417f7a542c6f66564a5",
-  "valid_until": "2026-09-18T22:16:59.409075+00:00",
+  "valid_until": "2026-09-18T23:58:55.327255+00:00",
   "supersedes": null,
   "superseded_by": null,
-  "word_count": 412
+  "word_count": 620
 }

@@ -65,7 +65,13 @@
       <h1>{{ partial "article_display_title.html" . }}</h1>
       <div class="paper-byline">
         <span class="author-name">{{ .Params.author }}</span>
+        {{ if .Params.original_submitted_date }}
+        <span class="pub-date">Originally submitted {{ (time .Params.original_submitted_date).Format "January 2, 2006" }}</span>
+        <span class="date-sep">&middot;</span>
+        <span class="pub-date pub-date-revised">Last revised {{ .Date.Format "January 2, 2006" }}</span>
+        {{ else }}
         <span class="pub-date">Published {{ .Date.Format "January 2, 2006" }}</span>
+        {{ end }}
       </div>
     </header>
 
@@ -182,7 +188,9 @@
     "@type": "Person",
     "name": {{ .Params.author | default "Unknown" | jsonify }}
   },
-  "datePublished": "{{ .Date.Format "2006-01-02" }}",
+  "datePublished": "{{ if .Params.original_submitted_date }}{{ (time .Params.original_submitted_date).Format "2006-01-02T15:04:05Z07:00" }}{{ else }}{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}{{ end }}",
+  {{ if .Params.original_submitted_date }}"dateModified": "{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}",
+  {{ end }}
   "publisher": {
     "@type": "Organization",
     "name": "Pubroot",

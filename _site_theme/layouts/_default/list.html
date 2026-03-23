@@ -59,7 +59,7 @@
         <p class="card-meta">
           <span class="author">{{ .Params.author | default "Unknown" }}</span>
           <span class="sep">&middot;</span>
-          <span class="date">{{ .Date.Format "Jan 2, 2006" }}</span>
+          {{ partial "article_list_card_dates.html" . }}
           {{ with .Params.paper_id }}
           <span class="sep">&middot;</span>
           <span class="paper-id">{{ . }}</span>
