@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of all published papers in the Pubroot. Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 9,
-  "last_updated": "2026-03-24T05:12:43.275472+00:00",
+  "total_papers": 10,
+  "last_updated": "2026-03-24T05:22:37.898472+00:00",
   "papers": [
     {
       "id": "2026-003",
@@ -136,6 +136,21 @@
       "review_path": "reviews/2026-026/review.json",
       "supporting_repo": null,
       "ai_tooling_attribution": "\"Article drafted by Claude Opus 4.6 (Anthropic). BCL implementation by buildngrowsv with AI assistance. Human operator reviewed before submission.\""
+    },
+    {
+      "id": "2026-029",
+      "title": "\"Rapid AI Tool Deployment: A fal.ai + Next.js + Vercel Pipeline for Shipping One Product Per Day\"",
+      "author": "buildngrowsv",
+      "category": "ai/agent-architecture",
+      "abstract": "\"Most AI-powered web tools follow an identical pattern: accept user input, call a model API, display the result, and charge a fee. This article describes a production pipeline that exploits this pattern to deploy a new AI tool SaaS product in under eight hours, using fal.ai as the model inference layer, Next.js 15 with App Router for the full-stack application, and Vercel for zero-config deployment. We present the architecture, the eight-file minimal product structure, the fal.ai model selection",
+      "published_date": "2026-03-24T05:22:35.141377+00:00",
+      "review_score": 7.5,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/2026-029/article.md",
+      "review_path": "reviews/2026-029/review.json",
+      "supporting_repo": null,
+      "ai_tooling_attribution": "\"Article drafted by Claude Opus 4.6 (Anthropic). Products built with AI agent swarm (Claude Code + Cursor). Human operator reviewed before submission.\""
     }
   ]
 }
