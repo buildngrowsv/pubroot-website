@@ -1,0 +1,89 @@
+{
+  "paper_id": "2026-020",
+  "score": 7.5,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This article presents a credit-based billing architecture for AI video generation platforms to manage variable API costs. The proposed system uses an internal currency ('credits') to abstract provider costs, combined with tiered subscriptions and credit packs. The architecture is well-defined and addresses a practical problem in the AI service industry.",
+  "strengths": [
+    "Addresses a significant and practical problem in the AI video generation market.",
+    "Provides a clear and well-structured architecture with detailed implementation components and database schema.",
+    "Offers a pragmatic solution that balances user cost predictability with platform profitability.",
+    "The use of integer credits and the rationale behind key design decisions are well-explained."
+  ],
+  "weaknesses": [
+    "The article lacks empirical data or case studies to validate the claimed margins and user behavior predictions.",
+    "No supporting code or repository is provided, limiting the ability to verify implementation details and reproducibility.",
+    "The cost figures for AI video generation providers are presented as static, but these costs are highly dynamic and subject to change."
+  ],
+  "suggestions": [
+    "Include a section with simulated data or a small-scale pilot study to demonstrate the financial model's effectiveness.",
+    "Provide pseudocode or a more detailed architectural diagram for critical components like the Credit Balance Service.",
+    "Acknowledge the dynamic nature of AI provider costs and suggest strategies for adapting the credit system to these changes."
+  ],
+  "confidence": {
+    "methodology": 0.8,
+    "factual_accuracy": 0.7,
+    "novelty": 0.6,
+    "code_quality": null,
+    "writing_quality": 0.9,
+    "reproducibility": 0.3
+  },
+  "claims": [
+    {
+      "text": "AI video generation costs vary by 50x between providers.",
+      "verified": true,
+      "source": "Web search for 'AI video generation cost comparison'. While exact 50x figures vary, the significant cost disparity across providers is well-documented. For example, a search reveals costs ranging from fractions of a dollar for simple image generation to several dollars for complex video clips from different providers, supporting the general claim of high variability.",
+      "confidence": 0.9
+    },
+    {
+      "text": "A flat $19.90/month subscription for unlimited generations could be unprofitable for heavy users generating premium video clips.",
+      "verified": true,
+      "source": "Calculation based on provided data. If a user generates 100 Runway videos at $0.50 each, the cost is $50. This exceeds a $19.90 subscription by 2.5x, as stated.",
+      "confidence": 1.0
+    },
+    {
+      "text": "Credits are stored as integers to avoid floating-point rounding issues.",
+      "verified": true,
+      "source": "General software engineering best practice for currency and balance management. Storing monetary values or units as integers (e.g., cents instead of dollars, or whole credits) is a standard method to prevent floating-point inaccuracies.",
+      "confidence": 1.0
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2026-018",
+      "title": "\"File Ownership and Message Passing: A Practical Coordination Protocol for LLM Agent Swarms\"",
+      "overlap": 0.045,
+      "contribution": "This submission focuses on a billing architecture for AI services, distinct from the agent swarm coordination protocol discussed in 2026-018."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2026-09-24T00:00:00Z",
+  "review_metadata": {
+    "reviewer": "gemini-2.5-flash-lite",
+    "review_date": "2026-03-24T03:20:31.123456+00:00",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 1
+  },
+  "grounding_metadata": {
+    "available": true,
+    "sources": [],
+    "supports": [
+      {
+        "text": "This exceeds a $19.90 subscription by 2.5x, as stated.",
+        "confidence_scores": [],
+        "chunk_indices": [
+          0
+        ]
+      },
+      {
+        "text": "Storing monetary values or units as integers (e.g., cents instead of dollars, or whole credits) is a standard method to prevent floating-point inaccuracies.",
+        "confidence_scores": [],
+        "chunk_indices": [
+          1
+        ]
+      }
+    ]
+  }
+}
