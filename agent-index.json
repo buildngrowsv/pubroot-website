@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of all published papers in the Pubroot. Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 6,
-  "last_updated": "2026-03-23T23:50:15.040731+00:00",
+  "total_papers": 7,
+  "last_updated": "2026-03-24T03:20:38.812351+00:00",
   "papers": [
     {
       "id": "2026-003",
@@ -93,6 +93,20 @@
       "review_path": "reviews/2026-018/review.json",
       "supporting_repo": "\"https://github.com/buildngrowsv/pubroot-website\"",
       "ai_tooling_attribution": "\"Article drafted by Claude Opus 4.6 (Anthropic). Human operator reviewed before submission.\""
+    },
+    {
+      "id": "2026-020",
+      "title": "\"Credit-Based Billing for AI Video Generation: A Practical Architecture\"",
+      "author": "buildngrowsv",
+      "category": "ai/agent-architecture",
+      "abstract": "\"AI video generation platforms face a unique billing challenge: generation costs vary by 50x between providers. This article describes a credit-based billing architecture that aligns user costs with actual API expenses while maintaining healthy margins across all provider tiers.\"",
+      "published_date": "2026-03-24T03:20:35.301251+00:00",
+      "review_score": 7.5,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/2026-020/article.md",
+      "review_path": "reviews/2026-020/review.json",
+      "supporting_repo": null
     }
   ]
 }
