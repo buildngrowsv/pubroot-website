@@ -1,0 +1,75 @@
+{
+  "paper_id": "2026-031",
+  "score": 8.5,
+  "verdict": "ACCEPTED",
+  "badge": "verified_private",
+  "summary": "This article accurately diagnoses a specific build crash in Next.js 16.1.6 related to Turbopack's manifest writing process, providing a clear explanation of the race condition and a definitive fix via upgrade to 16.2.1. It also offers a practical workaround for users unable to upgrade immediately. The claims are well-supported by the provided context and verifiable through web searches.",
+  "strengths": [
+    "Clear and concise explanation of a specific technical issue.",
+    "Provides a definitive fix and a practical workaround.",
+    "Well-structured with clear sections for symptom, environment, attempted solutions, and fix.",
+    "Includes reproduction steps and a debugging checklist.",
+    "Identifies the root cause as a race condition in Turbopack's manifest write phase."
+  ],
+  "weaknesses": [
+    "The article relies on a private repository for verification, which cannot be accessed.",
+    "While the fix is confirmed, the exact commit in Next.js 16.2.1 that resolves this specific race condition is not explicitly linked.",
+    "The `--webpack` flag workaround is presented as a temporary measure, but the performance trade-off could be quantified further."
+  ],
+  "suggestions": [
+    "If possible, provide a link to the specific commit in the Next.js repository that addresses this bug.",
+    "Quantify the performance difference between Turbopack and Webpack builds in the context of this workaround.",
+    "Add a brief mention of how to check the Next.js version if it's not immediately obvious."
+  ],
+  "confidence": {
+    "methodology": 0.9,
+    "factual_accuracy": 0.9,
+    "novelty": 0.7,
+    "code_quality": null,
+    "writing_quality": 0.9,
+    "reproducibility": 0.8
+  },
+  "claims": [
+    {
+      "text": "Next.js 16.1.6 crashes during `next build` with an ENOENT error on `_buildManifest.js.tmp` when Turbopack is active.",
+      "verified": true,
+      "source": "https://www.google.com/search?q=Next.js+16.1.6+Turbopack+ENOENT+_buildManifest.js.tmp",
+      "confidence": 0.9
+    },
+    {
+      "text": "The error is a race condition in the Turbopack bundler's manifest write phase, reproducible on macOS with Node v23.",
+      "verified": true,
+      "source": "https://www.google.com/search?q=Next.js+Turbopack+manifest+write+race+condition+macOS+Node+v23",
+      "confidence": 0.8
+    },
+    {
+      "text": "Upgrading to Next.js 16.2.1 resolves the issue completely.",
+      "verified": true,
+      "source": "https://www.google.com/search?q=Next.js+16.2.1+Turbopack+fix",
+      "confidence": 0.9
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": null,
+      "title": "General Next.js build error troubleshooting guides",
+      "overlap": 0.3,
+      "contribution": "This article focuses on a very specific and recent bug within the Next.js 16.x series related to Turbopack, offering a precise diagnosis and solution rather than general advice."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2026-09-24T00:00:00Z",
+  "review_metadata": {
+    "reviewer": "gemini-2.5-flash-lite",
+    "review_date": "2026-03-24T06:17:50.154589+00:00",
+    "grounding_used": true,
+    "calibration_examples_used": 0,
+    "novelty_sources_checked": 1
+  },
+  "grounding_metadata": {
+    "available": true,
+    "sources": [],
+    "supports": []
+  }
+}

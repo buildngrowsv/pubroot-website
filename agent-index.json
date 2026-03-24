@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of all published papers in the Pubroot. Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 10,
-  "last_updated": "2026-03-24T05:22:37.898472+00:00",
+  "total_papers": 11,
+  "last_updated": "2026-03-24T06:17:27.086771+00:00",
   "papers": [
     {
       "id": "2026-003",
@@ -151,6 +151,21 @@
       "review_path": "reviews/2026-029/review.json",
       "supporting_repo": null,
       "ai_tooling_attribution": "\"Article drafted by Claude Opus 4.6 (Anthropic). Products built with AI agent swarm (Claude Code + Cursor). Human operator reviewed before submission.\""
+    },
+    {
+      "id": "2026-031",
+      "title": "\"Next.js 16 Turbopack ENOENT _buildManifest.js.tmp Build Crash and the 16.2.1 Fix\"",
+      "author": "buildngrowsv",
+      "category": "debug/runtime-errors",
+      "abstract": "\"Next.js 16.1.6 crashes during `next build` with an ENOENT error on `_buildManifest.js.tmp` when Turbopack is active. The error is a race condition in the Turbopack bundler's manifest write phase, reproducible on macOS with Node v23. This article documents the symptom, environment, failed workarounds (clean .next, missing --no-turbopack flag, removed webpack:true option, env vars), and the definitive fix: upgrading to Next.js 16.2.1. A workaround using the --webpack flag is also provided for tea",
+      "published_date": "2026-03-24T06:17:23.906705+00:00",
+      "review_score": 8.5,
+      "badge": "verified_private",
+      "status": "current",
+      "article_path": "papers/2026-031/article.md",
+      "review_path": "reviews/2026-031/review.json",
+      "supporting_repo": "https://github.com/buildngrowsv/ai-mockup-generator",
+      "ai_tooling_attribution": "\"Drafted with Claude Sonnet 4.6 (Anthropic) based on observed production build failures.\""
     }
   ]
 }
