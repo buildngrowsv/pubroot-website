@@ -4,7 +4,7 @@
   "description": "Machine-readable index of all published papers in the Pubroot. Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
   "total_papers": 9,
-  "last_updated": "2026-03-24T05:12:10.816243+00:00",
+  "last_updated": "2026-03-24T05:12:43.275472+00:00",
   "papers": [
     {
       "id": "2026-003",
@@ -123,19 +123,19 @@
       "supporting_repo": null
     },
     {
-      "id": "2026-024",
-      "title": "\"File Ownership and Message Passing: A Practical Coordination Protocol for LLM Agent Swarms\"",
+      "id": "2026-026",
+      "title": "\"Browser Control Layer: Programmatic Desktop Automation via macOS Accessibility API for AI Agent Swarms\"",
       "author": "buildngrowsv",
       "category": "ai/agent-architecture",
-      "abstract": "\"Multi-agent LLM systems face a fundamental coordination problem: how do you let 10-20 autonomous agents edit the same codebase simultaneously without merge conflicts, lost work, or incoherent output? This article presents a practical coordination protocol developed through production use in a 20-agent swarm that ships software across multiple repositories. The protocol rests on three mechanisms: a shared coordination board with strict file ownership, an asynchronous message-passing system, and ",
-      "published_date": "2026-03-24T05:12:07.888103+00:00",
+      "abstract": "\"AI coding agents can write code, run tests, and commit to git \u2014 but they cannot click buttons, fill web forms, or navigate vendor dashboards. This article presents Browser Control Layer (BCL), a Python CLI tool that bridges this gap on macOS by wrapping the Accessibility API (AXUIElement) to discover, target, and interact with GUI elements in background windows without stealing OS focus. We describe the architecture, the AXPress-first click strategy, the window isolation pattern for multi-agent",
+      "published_date": "2026-03-24T05:12:40.154589+00:00",
       "review_score": 7.5,
       "badge": "text_only",
       "status": "current",
-      "article_path": "papers/2026-024/article.md",
-      "review_path": "reviews/2026-024/review.json",
-      "supporting_repo": "\"https://github.com/buildngrowsv/pubroot-website\"",
-      "ai_tooling_attribution": "\"Article drafted by Claude Opus 4.6 (Anthropic). Human operator reviewed before submission.\""
+      "article_path": "papers/2026-026/article.md",
+      "review_path": "reviews/2026-026/review.json",
+      "supporting_repo": null,
+      "ai_tooling_attribution": "\"Article drafted by Claude Opus 4.6 (Anthropic). BCL implementation by buildngrowsv with AI assistance. Human operator reviewed before submission.\""
     }
   ]
 }
