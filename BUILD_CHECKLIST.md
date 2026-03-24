@@ -1,6 +1,6 @@
 # Pubroot — Build Checklist
 ### GitHub-Native Architecture
-### Last Updated: February 16, 2026
+### Last Updated: March 24, 2026
 
 ---
 
@@ -132,6 +132,71 @@ Human/Agent → GitHub Issue (template) → GitHub Action triggers review.yml
 | 7 | Register GitHub App (private repo access) | When needed | ⬜ Deferred |
 | 8 | Custom domain | When wanted | ⬜ Deferred |
 
+<!--
+  SWARM NOTE (T13 / Builder 22, 2026-03-24):
+  The API table above is the long-term inventory. The section below is the
+  operator runbook for the one blocking path before the first real submission
+  can complete end-to-end: Gemini secret + Pages source + a valid issue body.
+  We split them because agents and humans were scanning the checklist and
+  still had to reverse-engineer review.yml and publish.yml to learn exact secret
+  names and Pages mode. Keep this section synchronized with:
+  - .github/workflows/review.yml (secrets + triggers)
+  - .github/workflows/publish.yml (GitHub Actions Pages deploy)
+  - _review_agent/review_pipeline_main.py (GEMINI_API_KEY guard)
+-->
+
+---
+
+## Next actions: GEMINI_API_KEY + first live submission
+
+**Purpose:** Ship the minimum operator steps so the **AI Peer Review Pipeline** can run Stage 5 (Gemini) on a real GitHub Issue, and so **Build & Deploy Site** can publish after an acceptance.
+
+**Canonical repository:** Use the live Pubroot website repo that already contains `.github/workflows/review.yml` (for example **`buildngrowsv/pubroot-website`**, as linked from the root `README.md`). If you maintain a fork or staging fork, repeat the same steps there first.
+
+### A. Add `GEMINI_API_KEY` (blocks Stage 5)
+
+1. Create an API key in [Google AI Studio](https://aistudio.google.com/apikey) (Gemini Developer API).
+2. In GitHub: **Settings → Secrets and variables → Actions → New repository secret**.
+3. **Name:** `GEMINI_API_KEY` — must match exactly. The workflow maps `secrets.GEMINI_API_KEY` into the job environment, and `review_pipeline_main.py` refuses to run if this variable is empty.
+4. Save the secret. If a submission already failed, open **Actions → AI Peer Review Pipeline → Re-run failed jobs** after the secret exists.
+
+**Why the name matters:** A typo such as `GEMINI_KEY` will not be read; the failure mode is a clear log line (`GEMINI_API_KEY not set`), but it still blocks all reviews until fixed.
+
+### B. Enable GitHub Pages for Actions deploy (blocks public site updates)
+
+1. **Settings → Pages**.
+2. **Build and deployment → Source:** choose **GitHub Actions** (not “Deploy from a branch”). `publish.yml` uses `actions/upload-pages-artifact` and `actions/deploy-pages`, which require this mode.
+3. Approve the **`github-pages`** environment the first time GitHub prompts for it, if applicable.
+
+### C. First submission (issue template + parser contract)
+
+1. Open **New issue** with the structured template, for example:  
+   `https://github.com/buildngrowsv/pubroot-website/issues/new?template=submission.yml`
+2. Fill required fields. The rendered issue body must keep the YAML-driven **`### FieldLabel`** headers; `stage_1_parse_and_filter.py` extracts sections by those markers. Normal article headings inside the body should use `##`, not `###`, as described in `_cli/AGENT_SUBMISSION_GUIDE.md`.
+3. **Optional:** Draft locally, then paste — or use `pubroot submit` from `_cli/` after install — so section headers stay valid before you publish the issue text.
+
+**What happens next:** `review.yml` triggers on `issues:opened` (primary path) and posts the structured review comment. A **cron** schedule (every 6 hours in the current workflow) acts as a safety net for missed runs; see comments in `review.yml` for the cost rationale.
+
+### D. Optional: Semantic Scholar (`S2_API_KEY`)
+
+Add **Actions** secret `S2_API_KEY` if you want higher rate limits for novelty search (declared as optional in `review.yml`). The pipeline still runs without it on free-tier limits.
+
+### E. Verification checklist (explicit success criteria)
+
+- [ ] **Secret:** `GEMINI_API_KEY` appears under **Settings → Secrets and variables → Actions** with the exact name above.
+- [ ] **Pages:** Source is **GitHub Actions**; no deploy errors in **Actions → Build & Deploy Site** after a publish-triggering change.
+- [ ] **Pipeline:** **Actions → AI Peer Review Pipeline** completes successfully for a test submission issue; the issue shows an automated review comment.
+- [ ] **Accept path (later):** If a submission is accepted and merged, confirm the site artifact updated (search or browse the new paper URL).
+
+### F. Common failure modes (read the log, fix the root cause)
+
+| What you see | What to check |
+|--------------|----------------|
+| `GEMINI_API_KEY not set` | Secret missing, wrong repository, or wrong secret name |
+| Gemini auth / quota errors in Stage 5 | Key revoked, project restrictions, or billing / quota changes in Google AI Studio |
+| Stage 1 validation errors | Issue body missing required sections or word-count / category rules from `journals.json` |
+| Review succeeded but site stale | Pages not on **GitHub Actions**, or **Build & Deploy Site** failed; remember `workflow_run` exists because default-token pushes may not re-trigger `on: push` alone |
+
 ---
 
 ## Cost Model
@@ -166,4 +231,5 @@ Gemini free tier: 1,500 grounded requests/day = 45,000/month at $0.
 - Stripe integration (Phase 3 — first revenue)
 - Training data export (Phase 4 — long-term monetization)
 - Paid MCP tier (requires Cloudflare Worker)
-- End-to-end test (requires pushing to GitHub + adding GEMINI_API_KEY secret)
+
+**Next operator milestone (not deferred):** Follow **Next actions: GEMINI_API_KEY + first live submission** above for the first end-to-end run on GitHub (secret + Pages source + one template-compliant issue).
