@@ -1,0 +1,5 @@
+{
+  "schema_version": "1.0",
+  "description": "Verified Stripe payments for Pubroot priority review submissions. This file is updated by the Stripe webhook handler (Cloudflare Worker) when a checkout.session.completed event fires. The review pipeline reads this file to verify payment codes submitted in GitHub Issues. Each payment code maps to a Stripe Payment Intent and tracks whether it has been consumed by a submission.",
+  "payments": {}
+}

@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<!--
+  Priority Review Payment Confirmation — Pubroot
+
+  PURPOSE:
+  This page is the Stripe Payment Link redirect target. After a submitter pays
+  $5 for a Priority Review via the Stripe Payment Link, Stripe redirects them
+  here. The page displays a payment code derived from the Stripe checkout
+  session ID that the submitter must paste into their GitHub Issue submission.
+
+  HOW IT WORKS:
+  1. Stripe Payment Link redirects to:
+     https://pubroot.com/priority-review-confirmation/?session_id={CHECKOUT_SESSION_ID}
+  2. This page reads the session_id query parameter from the URL
+  3. It extracts the last 8 characters of the session_id to generate the
+     payment code: "PAID-{last_8_chars}"
+  4. The submitter copies this code and pastes it into the "Payment Code
+     (Optional)" field when creating their GitHub Issue submission
+  5. The review pipeline (verify_payment_code.py) validates the code against
+     the payments/_verified_payments.json ledger (populated by the Stripe
+     webhook handler)
+
+  DESIGN DECISIONS:
+  - This is a static HTML page (same pattern as /submit/, /about/, /journals/)
+    because Pubroot is a Hugo static site deployed on GitHub Pages — no backend.
+  - The payment code derivation happens client-side from the URL query parameter.
+    The actual verification happens server-side in the review pipeline.
+  - If no session_id is in the URL (direct visit), the page shows a generic
+    "how it works" explanation instead.
+  - Styled with the same Pubroot theme (pages.css, main.css) for visual
+    consistency with the rest of the site.
+
+  STRIPE PAYMENT LINK CONFIGURATION (when Stripe account is set up):
+  - Product: "Pubroot Priority Review" ($5, one-time)
+  - After payment redirect URL:
+    https://pubroot.com/priority-review-confirmation/?session_id={CHECKOUT_SESSION_ID}
+  - The {CHECKOUT_SESSION_ID} is a Stripe template variable that gets replaced
+    with the actual session ID automatically.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Priority Review Payment Confirmed — Pubroot</title>
+
+  <!-- SEO -->
+  <meta name="description" content="Your priority review payment has been confirmed. Copy your payment code and include it in your Pubroot submission.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="canonical" href="https://pubroot.com/priority-review-confirmation/">
+
+  <!-- Open Graph -->
+  <meta property="og:site_name" content="Pubroot">
+  <meta property="og:title" content="Priority Review Payment Confirmed — Pubroot">
+  <meta property="og:description" content="Your payment has been confirmed. Copy your code and submit your article for priority review.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://pubroot.com/priority-review-confirmation/">
+  <meta property="og:image" content="https://pubroot.com/img/og-image.png">
+
+  <!-- Favicons -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/img/apple-touch-icon.png">
+  <meta name="theme-color" content="#00B4A0">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/pages.css">
+
+  <!-- Anti-flash theme script -->
+  <script>
+    (function(){var t=null;try{t=localStorage.getItem('pubroot-theme')}catch(e){}if(!t){try{t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'}catch(e){t='light'}}if(t==='dark'){document.documentElement.setAttribute('data-theme','dark')}})();
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+  <style>
+    /* -----------------------------------------------------------------------
+       Priority Review Confirmation — Page-Specific Styles
+       -----------------------------------------------------------------------
+       These extend the base Pubroot theme (main.css + pages.css) with styles
+       specific to the payment confirmation flow. The design uses the Pubroot
+       teal (#00B4A0) accent for the success state and keeps the academic,
+       clean aesthetic consistent with the rest of the site.
+       ----------------------------------------------------------------------- */
+
+    .confirmation-card {
+      max-width: 640px;
+      margin: 2rem auto;
+      padding: 2.5rem;
+      border-radius: 12px;
+      border: 1px solid var(--border-color, #e2e8f0);
+      background: var(--card-bg, #ffffff);
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+    }
+
+    .confirmation-icon {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 1.5rem;
+      border-radius: 50%;
+      background: #00B4A0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .confirmation-icon svg {
+      width: 32px;
+      height: 32px;
+      color: #fff;
+      stroke: #fff;
+    }
+
+    .confirmation-card h2 {
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 0.5rem;
+      color: var(--text-primary, #1a202c);
+    }
+
+    .confirmation-subtitle {
+      text-align: center;
+      color: var(--text-secondary, #4a5568);
+      font-size: 0.95rem;
+      margin-bottom: 2rem;
+    }
+
+    .payment-code-box {
+      background: var(--code-bg, #f7fafc);
+      border: 2px dashed #00B4A0;
+      border-radius: 8px;
+      padding: 1.25rem;
+      text-align: center;
+      margin: 1.5rem 0;
+      position: relative;
+    }
+
+    .payment-code-label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-secondary, #718096);
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+    }
+
+    .payment-code-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #00B4A0;
+      letter-spacing: 0.05em;
+      word-break: break-all;
+      user-select: all;
+      cursor: pointer;
+    }
+
+    .copy-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 1rem;
+      padding: 0.6rem 1.25rem;
+      background: #00B4A0;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+    .copy-button:hover {
+      background: #009e8c;
+    }
+    .copy-button:active {
+      transform: scale(0.97);
+    }
+    .copy-button.copied {
+      background: #2d7a6f;
+    }
+
+    .next-steps {
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border-color, #e2e8f0);
+    }
+
+    .next-steps h3 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: var(--text-primary, #1a202c);
+    }
+
+    .steps-list {
+      list-style: none;
+      padding: 0;
+      counter-reset: step;
+    }
+
+    .steps-list li {
+      position: relative;
+      padding-left: 2.5rem;
+      margin-bottom: 0.75rem;
+      line-height: 1.5;
+      color: var(--text-secondary, #4a5568);
+      font-size: 0.95rem;
+    }
+
+    .steps-list li::before {
+      counter-increment: step;
+      content: counter(step);
+      position: absolute;
+      left: 0;
+      top: 0.1rem;
+      width: 1.6rem;
+      height: 1.6rem;
+      border-radius: 50%;
+      background: var(--code-bg, #edf2f7);
+      color: #00B4A0;
+      font-weight: 700;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .steps-list a {
+      color: #00B4A0;
+      text-decoration: underline;
+      font-weight: 500;
+    }
+
+    .no-session-notice {
+      text-align: center;
+      padding: 2rem 1rem;
+      color: var(--text-secondary, #718096);
+    }
+    .no-session-notice h2 {
+      color: var(--text-primary, #1a202c);
+      margin-bottom: 1rem;
+    }
+    .no-session-notice p {
+      margin-bottom: 1rem;
+      max-width: 480px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .no-session-notice a.btn-submit-primary {
+      display: inline-block;
+      margin-top: 0.5rem;
+    }
+
+    /* -----------------------------------------------------------------------
+       Dark mode overrides — these apply when data-theme="dark" is set on
+       <html> by the anti-flash script or theme toggle. We override only the
+       custom properties that differ from the page-specific default values.
+       ----------------------------------------------------------------------- */
+    [data-theme="dark"] .confirmation-card {
+      background: var(--card-bg, #1a202c);
+      border-color: var(--border-color, #2d3748);
+    }
+    [data-theme="dark"] .payment-code-box {
+      background: var(--code-bg, #2d3748);
+    }
+    [data-theme="dark"] .steps-list li::before {
+      background: var(--code-bg, #2d3748);
+    }
+  </style>
+</head>
+<body>
+  <!-- Header (matches baseof.html — keep in sync) -->
+  <header class="site-header">
+    <div class="container">
+      <div class="header-left">
+        <a href="/" class="logo">
+          <span class="logo-mark">P</span>
+          <span class="logo-text">pubroot</span>
+        </a>
+      </div>
+      <input type="checkbox" id="nav-toggle" aria-hidden="true">
+      <label for="nav-toggle" class="nav-hamburger" aria-label="Toggle navigation menu">
+        <span></span><span></span><span></span>
+      </label>
+      <nav class="main-nav">
+        <a href="/">Publications</a>
+        <a href="/about/">About</a>
+        <a href="/editorial-guidelines/">Guidelines</a>
+        <a href="/journals/">Journals</a>
+        <a href="/guides/">Guides</a>
+        <a href="/agents-hub/">Agents Hub</a>
+        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+          <i data-lucide="moon" class="theme-icon-dark" style="width:18px;height:18px;"></i>
+          <i data-lucide="sun" class="theme-icon-light" style="width:18px;height:18px;"></i>
+        </button>
+        <a href="/submit/" class="nav-submit">Submit Article</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="site-main">
+    <section class="page-hero">
+      <div class="container">
+        <div class="page-hero-content" style="max-width: 780px;">
+          <h1>Priority Review</h1>
+          <p class="page-hero-sub">
+            Your payment helps sustain Pubroot and moves your submission to the front of the review queue.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="container">
+      <!-- ================================================================
+           CONFIRMATION CARD (shown when session_id is present in URL)
+           ================================================================
+           This card is shown after a successful Stripe checkout. The JS below
+           reads the session_id query parameter and derives the payment code.
+           ================================================================ -->
+      <div id="confirmation-view" class="confirmation-card" style="display: none;">
+        <div class="confirmation-icon">
+          <i data-lucide="check" style="width:32px;height:32px;"></i>
+        </div>
+        <h2>Payment Confirmed</h2>
+        <p class="confirmation-subtitle">
+          Thank you for supporting Pubroot. Your submission will receive priority review.
+        </p>
+
+        <div class="payment-code-box">
+          <div class="payment-code-label">Your Payment Code</div>
+          <div id="payment-code-display" class="payment-code-value">PAID-________</div>
+          <button id="copy-btn" class="copy-button" onclick="copyPaymentCode()">
+            <i data-lucide="copy" style="width:16px;height:16px;"></i>
+            Copy Code
+          </button>
+        </div>
+
+        <div class="next-steps">
+          <h3>Next Steps</h3>
+          <ol class="steps-list">
+            <li>Copy the payment code above</li>
+            <li>
+              <a href="https://github.com/buildngrowsv/pubroot-website/issues/new?template=submission.yml"
+                 target="_blank" rel="noopener">
+                Create your submission on GitHub
+              </a>
+            </li>
+            <li>Paste the code in the <strong>"Payment Code (Optional)"</strong> field</li>
+            <li>Submit — your article will be reviewed with priority</li>
+          </ol>
+        </div>
+      </div>
+
+      <!-- ================================================================
+           NO SESSION VIEW (shown when visiting the page directly)
+           ================================================================
+           If someone navigates here without a Stripe session_id, they see
+           an explanation of the priority review feature with a link to pay.
+           The Stripe Payment Link URL is a placeholder until the account
+           is set up.
+           ================================================================ -->
+      <div id="no-session-view" class="confirmation-card no-session-notice" style="display: none;">
+        <h2>Priority Review — $5</h2>
+        <p>
+          Skip the queue and get your Pubroot submission reviewed first.
+          Free submissions are reviewed within 24 hours. Priority submissions
+          are reviewed within minutes.
+        </p>
+        <p>
+          After payment, you'll receive a code to include in your GitHub Issue submission.
+        </p>
+        <!-- -----------------------------------------------------------------------
+             PLACEHOLDER PAYMENT LINK
+             -----------------------------------------------------------------------
+             This href will be updated to the actual Stripe Payment Link URL once
+             the Stripe account is created and the "Pubroot Priority Review" product
+             is configured. The Payment Link should be set to redirect to:
+             https://pubroot.com/priority-review-confirmation/?session_id={CHECKOUT_SESSION_ID}
+             ----------------------------------------------------------------------- -->
+        <a href="#stripe-payment-link-placeholder"
+           class="btn-submit-primary"
+           id="pay-button">
+          Pay $5 for Priority Review
+        </a>
+        <p style="font-size: 0.8rem; margin-top: 1rem; color: var(--text-tertiary, #a0aec0);">
+          One-time payment. Processed securely by Stripe. No account required.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer (matches baseof.html — keep in sync) -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <span class="logo-mark">P</span>
+          <span class="logo-text">pubroot</span>
+          <p class="footer-tagline">AI peer review for the agent era.</p>
+        </div>
+        <div class="footer-links-group">
+          <h4>Platform</h4>
+          <a href="/">Publications</a>
+          <a href="/submit/">Submit</a>
+          <a href="/about/">About</a>
+          <a href="/editorial-guidelines/">Guidelines</a>
+          <a href="/journals/">Journals</a>
+          <a href="/guides/">Guides</a>
+          <a href="/agents-hub/">Agents Hub</a>
+        </div>
+        <div class="footer-links-group">
+          <h4>For Agents</h4>
+          <a href="/guides/">CLI Setup Guide</a>
+          <a href="/.well-known/agent.json">Agent Card (A2A)</a>
+          <a href="/agents.txt">agents.txt</a>
+          <a href="/llms.txt">llms.txt</a>
+          <a href="/agent-index.json">Paper Index</a>
+        </div>
+        <div class="footer-links-group">
+          <h4>Open Source</h4>
+          <a href="https://github.com/buildngrowsv/pubroot-website">GitHub Repository</a>
+          <a href="https://github.com/buildngrowsv/pubroot-website/issues">Issues</a>
+          <a href="/journals.json">Taxonomy (JSON)</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Pubroot. All published content is openly accessible.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ====================================================================
+       CLIENT-SIDE PAYMENT CODE DERIVATION
+       ====================================================================
+       This script reads the Stripe checkout session_id from the URL query
+       parameters and derives a payment code from it. The code format is:
+       "PAID-{last_8_chars_of_session_id}"
+
+       The session_id is a Stripe Checkout Session ID that looks like:
+       "cs_test_a1b2c3d4e5f6g7h8i9j0..."
+
+       We take the last 8 characters to create a short, memorable code that
+       the submitter can easily copy and paste into their GitHub Issue.
+
+       The actual payment verification happens server-side in the review
+       pipeline (verify_payment_code.py checks against _verified_payments.json).
+       ==================================================================== -->
+  <script>
+    (function() {
+      var params = new URLSearchParams(window.location.search);
+      var sessionId = params.get('session_id');
+      var confirmationView = document.getElementById('confirmation-view');
+      var noSessionView = document.getElementById('no-session-view');
+
+      if (sessionId && sessionId.length >= 8) {
+        /* Derive the payment code from the last 8 characters of the
+           Stripe Checkout Session ID. This matches the format that the
+           Stripe webhook handler writes to _verified_payments.json. */
+        var codeSuffix = sessionId.slice(-8);
+        var paymentCode = 'PAID-' + codeSuffix;
+
+        document.getElementById('payment-code-display').textContent = paymentCode;
+        confirmationView.style.display = 'block';
+        noSessionView.style.display = 'none';
+      } else {
+        /* No session_id in URL — show the "how to get a priority review"
+           explanation instead of the confirmation card. */
+        confirmationView.style.display = 'none';
+        noSessionView.style.display = 'block';
+      }
+
+      /* Initialize Lucide icons after content is visible */
+      if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+      }
+    })();
+
+    /* Copy the payment code to clipboard when the button is clicked.
+       Uses the modern Clipboard API with a fallback for older browsers. */
+    function copyPaymentCode() {
+      var codeEl = document.getElementById('payment-code-display');
+      var code = codeEl.textContent;
+      var btn = document.getElementById('copy-btn');
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(code).then(function() {
+          btn.innerHTML = '<i data-lucide="check" style="width:16px;height:16px;"></i> Copied!';
+          btn.classList.add('copied');
+          if (typeof lucide !== 'undefined') { lucide.createIcons(); }
+          setTimeout(function() {
+            btn.innerHTML = '<i data-lucide="copy" style="width:16px;height:16px;"></i> Copy Code';
+            btn.classList.remove('copied');
+            if (typeof lucide !== 'undefined') { lucide.createIcons(); }
+          }, 2000);
+        });
+      } else {
+        /* Fallback for older browsers: select the text and use execCommand */
+        var range = document.createRange();
+        range.selectNodeContents(codeEl);
+        var sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+        try {
+          document.execCommand('copy');
+          btn.innerHTML = '<i data-lucide="check" style="width:16px;height:16px;"></i> Copied!';
+          btn.classList.add('copied');
+          if (typeof lucide !== 'undefined') { lucide.createIcons(); }
+        } catch (e) {
+          /* If copy fails, at least the text is selected for manual Cmd+C */
+        }
+      }
+    }
+  </script>
+  <script src="/js/theme-toggle-behavior.js"></script>
+</body>
+</html>

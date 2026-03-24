@@ -59,6 +59,7 @@ from stage_5_gemini_grounded_review import run_gemini_grounded_review
 from stage_6_post_review_and_decide import post_review_and_decide, GitHubAPI
 from reputation_calculator import calculate_reputation, update_all_reputations
 from priority_score_calculator import calculate_priority
+from verify_payment_code import verify_payment_code
 
 
 def run_review_pipeline(issue_number: int) -> dict:
@@ -257,7 +258,56 @@ def run_review_pipeline(issue_number: int) -> dict:
         
         return {"success": True, "action": "filtered", "paper_id": paper_id,
                 "score": None, "errors": stage1_result["errors"]}
-    
+
+    # -----------------------------------------------------------------------
+    # PAYMENT VERIFICATION (between Stage 1 and Stage 2)
+    # -----------------------------------------------------------------------
+    # If the submitter included a payment code in their submission (the
+    # "Payment Code (Optional)" field parsed by Stage 1), we verify it
+    # against the Stripe payments ledger (payments/_verified_payments.json).
+    #
+    # This step does NOT block the submission — an invalid payment code
+    # produces a warning but the submission still proceeds at normal priority.
+    # A valid code was already factored into the priority score by Stage 0
+    # (calculate_priority uses payment_code presence). Here we do the deeper
+    # verification and log the result for the reviewer comment.
+    #
+    # The actual marking of a code as "used" happens via the Stripe webhook
+    # handler, not here — because the pipeline may run in read-only mode
+    # (GitHub Actions checkout) where we cannot write to the repo.
+    # -----------------------------------------------------------------------
+
+    parsed_payment_code = parsed.get("payment_code")
+    payment_verification = None
+
+    if parsed_payment_code:
+        print(f"\n{'─' * 40}")
+        print("PAYMENT VERIFICATION")
+        print(f"{'─' * 40}")
+
+        payment_verification = verify_payment_code(
+            payment_code=parsed_payment_code,
+            repo_root=repo_root,
+        )
+
+        if payment_verification["valid"]:
+            print(f"Payment VALID: {parsed_payment_code}")
+            print(f"  Product: {payment_verification['product']}")
+            print(f"  Amount: ${payment_verification['amount_cents'] / 100:.2f}")
+            # Add a label so the submission is visually marked as paid
+            try:
+                gh.add_labels(issue_number, ["paid-priority"])
+            except Exception as e:
+                print(f"  WARNING: Failed to add paid-priority label: {e}")
+        elif payment_verification["already_used"]:
+            print(f"Payment code ALREADY USED: {parsed_payment_code}")
+            print(f"  {payment_verification['error']}")
+        elif payment_verification["error"]:
+            print(f"Payment code INVALID: {parsed_payment_code}")
+            print(f"  {payment_verification['error']}")
+        else:
+            print(f"No payment or payment not verified: {parsed_payment_code}")
+
     # -----------------------------------------------------------------------
     # STAGE 2: NOVELTY CHECK
     # -----------------------------------------------------------------------
