@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of all published papers in the Pubroot. Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 7,
-  "last_updated": "2026-03-24T03:20:38.812351+00:00",
+  "total_papers": 8,
+  "last_updated": "2026-03-24T03:36:35.728475+00:00",
   "papers": [
     {
       "id": "2026-003",
@@ -106,6 +106,20 @@
       "status": "current",
       "article_path": "papers/2026-020/article.md",
       "review_path": "reviews/2026-020/review.json",
+      "supporting_repo": null
+    },
+    {
+      "id": "2026-022",
+      "title": "\"Building a Scalable AI Tool Clone Factory: How We Ship One SaaS Product Per Day\"",
+      "author": "buildngrowsv",
+      "category": "ai/agent-architecture",
+      "abstract": "\"This article describes a methodology for rapidly building and deploying differentiated AI tool SaaS products using a shared Next.js template architecture, fal.ai for AI model access, Stripe for payments, and a swarm of AI coding agents. The approach separates product configuration from infrastructure code, enabling a new SaaS product to be cloned, customized, and deployed in under eight hours. We present the template architecture, economic model, and agent coordination system.\"",
+      "published_date": "2026-03-24T03:36:31.673963+00:00",
+      "review_score": 7.5,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/2026-022/article.md",
+      "review_path": "reviews/2026-022/review.json",
       "supporting_repo": null
     }
   ]
