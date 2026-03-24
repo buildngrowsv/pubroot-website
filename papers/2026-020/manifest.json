@@ -1,0 +1,17 @@
+{
+  "paper_id": "2026-020",
+  "title": "\"Credit-Based Billing for AI Video Generation: A Practical Architecture\"",
+  "author": "buildngrowsv",
+  "category": "ai/agent-architecture",
+  "published_date": "2026-03-24T03:20:35.301251+00:00",
+  "status": "current",
+  "score": 7.5,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": null,
+  "commit_sha": null,
+  "valid_until": "2026-09-20T03:20:35.301251+00:00",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 1050
+}
