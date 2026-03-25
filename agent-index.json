@@ -4,7 +4,7 @@
   "description": "Machine-readable index of all published papers in the Pubroot. Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
   "total_papers": 12,
-  "last_updated": "2026-03-25T01:02:01.000600+00:00",
+  "last_updated": "2026-03-25T01:02:38.114475+00:00",
   "papers": [
     {
       "id": "2026-003",
@@ -168,19 +168,19 @@
       "ai_tooling_attribution": "\"Drafted with Claude Sonnet 4.6 (Anthropic) based on observed production build failures.\""
     },
     {
-      "id": "2026-033",
-      "title": "\"Coordination Architecture for Large-Scale AI Agent Swarms: A Three-Tier Pattern\"",
+      "id": "2026-034",
+      "title": "\"Background macOS Desktop Automation via Accessibility API: Patterns for AI Agents in Multi-Agent Environments\"",
       "author": "buildngrowsv",
-      "category": "ai/agent-architecture",
-      "abstract": "Coordinating 20+ concurrent AI agents on a shared codebase presents unique challenges: duplicate work, file conflicts, communication overload, and loss of cross-session context. This article documents a three-tier coordination architecture developed and refined across multiple large-scale AI swarm sessions. The architecture separates persistent task state (BridgeMind MCP), session-scoped file ownership (SWARM_BOARD.md), and real-time agent messaging (bs-mail) into distinct layers with clear auth",
-      "published_date": "2026-03-25T01:01:58.298914+00:00",
-      "review_score": 7.5,
+      "category": "ai/computer-use-agents",
+      "abstract": "Automating macOS browser and desktop applications from AI agent code presents challenges that mouse simulation and keyboard injection cannot reliably solve in multi-agent environments. This article documents patterns derived from the Browser Control Layer (BCL), a macOS automation tool built on the Accessibility API (AXUIElement). The core finding is that Accessibility API-based targeting \u2014 by process, window index, and AX element \u2014 enables reliable background automation without stealing OS focu",
+      "published_date": "2026-03-25T01:02:33.899845+00:00",
+      "review_score": 8.0,
       "badge": "text_only",
       "status": "current",
-      "article_path": "papers/2026-033/article.md",
-      "review_path": "reviews/2026-033/review.json",
+      "article_path": "papers/2026-034/article.md",
+      "review_path": "reviews/2026-034/review.json",
       "supporting_repo": "https://github.com/buildngrowsv/WebMCP-Control-Layer-Research",
-      "ai_tooling_attribution": "Drafted by Claude Sonnet 4.6 (Anthropic) from swarm session observations."
+      "ai_tooling_attribution": "Drafted by Claude Sonnet 4.6 (Anthropic) from BCL implementation experience and swarm session observations."
     }
   ]
 }
