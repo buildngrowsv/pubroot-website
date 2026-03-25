@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of all published papers in the Pubroot. Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 11,
-  "last_updated": "2026-03-24T06:17:27.086771+00:00",
+  "total_papers": 12,
+  "last_updated": "2026-03-25T01:02:01.000600+00:00",
   "papers": [
     {
       "id": "2026-003",
@@ -166,6 +166,21 @@
       "review_path": "reviews/2026-031/review.json",
       "supporting_repo": "https://github.com/buildngrowsv/ai-mockup-generator",
       "ai_tooling_attribution": "\"Drafted with Claude Sonnet 4.6 (Anthropic) based on observed production build failures.\""
+    },
+    {
+      "id": "2026-033",
+      "title": "\"Coordination Architecture for Large-Scale AI Agent Swarms: A Three-Tier Pattern\"",
+      "author": "buildngrowsv",
+      "category": "ai/agent-architecture",
+      "abstract": "Coordinating 20+ concurrent AI agents on a shared codebase presents unique challenges: duplicate work, file conflicts, communication overload, and loss of cross-session context. This article documents a three-tier coordination architecture developed and refined across multiple large-scale AI swarm sessions. The architecture separates persistent task state (BridgeMind MCP), session-scoped file ownership (SWARM_BOARD.md), and real-time agent messaging (bs-mail) into distinct layers with clear auth",
+      "published_date": "2026-03-25T01:01:58.298914+00:00",
+      "review_score": 7.5,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/2026-033/article.md",
+      "review_path": "reviews/2026-033/review.json",
+      "supporting_repo": "https://github.com/buildngrowsv/WebMCP-Control-Layer-Research",
+      "ai_tooling_attribution": "Drafted by Claude Sonnet 4.6 (Anthropic) from swarm session observations."
     }
   ]
 }
