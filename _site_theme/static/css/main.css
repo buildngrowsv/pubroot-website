@@ -565,16 +565,43 @@ h1, h2, h3, h4 {
   object-fit: cover;
   display: block;
 }
-@media (max-width: 640px) {
+/*
+  Mobile / narrow tablet: paper cards must not keep a horizontal row of
+  [text | score circle]. When a thumbnail exists, flex-wrap put the thumb on
+  row 1 but left card-left and card-right on row 2 — the circle stayed beside
+  the text and squeezed the title and abstract into a narrow strip for the
+  whole card height (including lines “below” the circle). Stacking with
+  flex-direction: column gives card-left the full content width; the score row
+  follows and does not participate in a side-by-side shrink.
+*/
+@media (max-width: 768px) {
   .paper-card {
-    flex-wrap: wrap;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    /*
+      Base .paper-card uses justify-content: space-between for the desktop row.
+      In column mode that can insert large vertical gaps if the card ever gains
+      a min-height; flex-start keeps thumb → text → score tightly stacked.
+    */
+    justify-content: flex-start;
+    gap: 12px;
+  }
+  .card-left {
+    /*
+      Reset flex:1 so the text column does not share a row with .card-right;
+      width 100% is the full card inner width after padding.
+    */
+    flex: none;
+    width: 100%;
+    min-width: 0;
   }
   .card-thumb-wrap {
     width: 100%;
     height: auto;
     max-height: 200px;
     margin-right: 0;
-    margin-bottom: 12px;
+    margin-bottom: 0;
   }
   .card-thumb {
     max-height: 200px;
@@ -584,8 +611,10 @@ h1, h2, h3, h4 {
   .card-right {
     margin-left: 0;
     width: 100%;
+    max-width: 100%;
     display: flex;
-    justify-content: flex-end;
+    justify-content: flex-start;
+    align-self: flex-start;
   }
 }
 
