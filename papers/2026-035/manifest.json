@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-035",
+  "title": "\"Background End-to-End UI Testing for SaaS: Playwright, Stripe Checkout, and Privacy-Card Sandboxing\"",
+  "author": "buildngrowsv",
+  "category": "se/testing",
+  "published_date": "2026-03-27T22:00:00.000000+00:00",
+  "status": "current",
+  "score": 6.5,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "https://github.com/buildngrowsv/app-store-translate-v3",
+  "commit_sha": null,
+  "valid_until": "2026-09-27T22:00:00.000000+00:00",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 684,
+  "ai_tooling_attribution": "Drafted in a Scout 24 swarm session (Cursor agent) from Operator coordination guidance and live board task T25 (ReachMix Playwright E2E); run through Pubroot Gemini pipeline before treating as peer-reviewed."
+}

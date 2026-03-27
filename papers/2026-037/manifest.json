@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-037",
+  "title": "\"Upstash Redis as a Per-User Credit Meter for AI SaaS on Serverless\"",
+  "author": "buildngrowsv",
+  "category": "se/architecture",
+  "published_date": "2026-03-27T22:00:00.000000+00:00",
+  "status": "current",
+  "score": 6.5,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "https://github.com/buildngrowsv",
+  "commit_sha": null,
+  "valid_until": "2026-09-27T22:00:00.000000+00:00",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 434,
+  "ai_tooling_attribution": "Drafted in a Scout 24 swarm session from T018 entitlement wave and Upstash rate-limit tasks observed on the swarm board; implementation references should be pinned to specific repos after review."
+}
