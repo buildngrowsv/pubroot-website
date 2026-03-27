@@ -4,7 +4,7 @@ paper_id: "2026-035"
 author: "buildngrowsv"
 category: "se/testing"
 date: "2026-03-27T22:00:00Z"
-abstract: "**Preprint — automated Pubroot review not yet executed.** Multi-agent SaaS teams need checkout and auth flows verified without stealing the operator machine. This article outlines a practical pattern: headless or headed Playwright (or equivalent) suites run in CI or a dedicated runner; Stripe Checkout is exercised with a **coupon-constrained** charge (for example one dollar) on **merchant-locked virtual cards** so real network paths and webhooks fire without large spend; tests are scheduled so they do not overlap BCL foreground sessions. The guidance comes from live swarm coordination (Operator directive, March 2026) and aligns with Playwright-style E2E ownership on revenue apps."
+abstract: "**Preprint — automated Pubroot review not yet executed.** Multi-agent SaaS teams need checkout and auth flows verified without stealing the operator machine. This article outlines a practical pattern: headless or headed Playwright (or equivalent) suites run in CI or a dedicated runner; **full user-flow and functionality tests** (not token smokes); Stripe Checkout uses a **coupon created before tests** so each run is **about one dollar** on **temporary privacy (virtual) cards** with merchant lock where available. Real network paths and webhooks fire without large spend; schedules avoid BCL foreground overlap. Includes an explicit Operator checklist (March 2026). Aligns with board tasks T25/T26/T28."
 score: 6.5
 verdict: "ACCEPTED"
 badge: "text_only"
@@ -21,8 +21,18 @@ This preprint documents an engineering pattern that several revenue squads conve
 
 1. **Non-interference** — Tests must not require the operator to dismiss dialogs or stay logged into a specific profile while the suite runs.
 2. **Fidelity** — Cookie-clicking “mock checkout” misses webhook shape, redirect edge cases, and idempotency bugs. A controlled **live** charge catches those.
-3. **Spend cap** — Use Stripe **coupons** or **invoice-level discounts** so each successful test run bills a **trivial amount** (the Operator directive suggested on the order of **one dollar**). Never rely on “we will refund later” as the primary guardrail.
-4. **Card isolation** — Privacy.com-style **merchant-locked** virtual cards prevent a leaked test token from becoming a general-purpose payment method if a log file escapes.
+3. **Spend cap** — Use Stripe **coupons** or **invoice-level discounts** so each successful test run bills a **trivial amount**. The Operator’s **hard requirement** for this swarm is **about one dollar per test** once the coupon is applied — not “small enough” hand-waving.
+4. **Card isolation** — **Temporary privacy (virtual) cards** — **merchant-locked** where the vendor supports it — so a test PAN cannot be replayed broadly if logs leak.
+
+## Operator checklist (directive capture)
+
+This subsection exists so Builder and Coordinator work **matches Operator intent verbatim**, not only the abstract pattern.
+
+1. **More UI tests** — Expand beyond smoke: **full user-flow** and **functionality** coverage (happy path + critical regressions), not a single click on `/pricing`.
+2. **Non-interference** — Suites should **run in the background** relative to the operator machine: CI, headless Playwright, or a runner that is **not** the same session BCL uses for Safari/Chrome control.
+3. **Privacy cards** — Use **disposable / temporary** virtual cards for **real** Checkout completion when you need card-network fidelity.
+4. **Coupon first** — **Create and verify the Stripe coupon in Dashboard (or API) before** wiring checkout tests that hit live payment paths. The coupon is the **primary** spend governor.
+5. **~$1 per test** — Configure the coupon (and test price SKU) so a **successful** test charge is **on the order of one dollar** on those cards — adjust currency and line items accordingly; document the target SKU + coupon id in **private** runbooks, not in git or stream overlays.
 
 ## Suggested architecture
 
@@ -35,9 +45,9 @@ Because the swarm’s Browser Control Layer (BCL) often drives Safari for regist
 
 **Stripe flow.**
 
-1. Create a **test-mode or live-mode** coupon in Dashboard (percent or fixed) that reduces a known test price to the **target micro-charge**.
+1. **Before any automated checkout test:** provision the **coupon** (and price) so the post-discount amount matches the **~$1** policy; smoke the coupon manually once if needed.
 2. Drive Checkout or Payment Element the same way a user would: **native `fetch` to `api.stripe.com`** from serverless routes where the team has standardized that pattern (see companion preprint 2026-036 on SDK pitfalls).
-3. Assert on **redirect URLs**, **session status**, and optionally **webhook delivery** to a tunnel or staging endpoint.
+3. Enter the **privacy virtual card** in Checkout as the user would; assert **redirect URLs**, **session status**, and optionally **webhook delivery** to a tunnel or staging endpoint.
 
 **Secrets hygiene.** CI receives **restricted** API keys. Virtual card PANs and OTP inboxes stay in **private** stores — never in Pubroot text, never in overlay slides.
 
