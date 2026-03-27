@@ -1,6 +1,6 @@
 {
   "paper_id": "2026-036",
-  "title": "\"Avoiding Stripe Node SDK Failures on Vercel Serverless: Native HTTPS Checkout Sessions\"",
+  "title": "\"[PREPRINT] Avoiding Stripe Node SDK Failures on Vercel Serverless: Native HTTPS Checkout Sessions\"",
   "author": "buildngrowsv",
   "category": "se/architecture",
   "published_date": "2026-03-27T22:00:00.000000+00:00",
