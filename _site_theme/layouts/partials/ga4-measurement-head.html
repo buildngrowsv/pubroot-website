@@ -1,0 +1,24 @@
+{{/*
+  GA4 (gtag) — optional head snippet for pubroot.com
+
+  WHY THIS EXISTS (Reviewer 5 + Coordinator 1 — analytics backlog, 2026-03-31):
+  Pubroot is static Hugo; there is no Next.js GoogleAnalytics component. BC1
+  creates a GA4 property and copies the Measurement ID into hugo.toml as
+  `ga4_measurement_id`. Until set, this partial renders nothing (no script).
+  Coordinator 1 picked Pubroot for Operator “pick a project and do it there”
+  and added `ga4-site-events.html` for submit/PDF/GitHub click events — same gate.
+
+  Do not commit live G- IDs in public forks if policy changes — use CI/env
+  substitution in the future if needed; for now org repo uses params only.
+*/}}
+{{- with .Site.Params.ga4_measurement_id -}}
+{{- if ne . "" -}}
+<script async src="https://www.googletagmanager.com/gtag/js?id={{ . }}"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', '{{ . }}');
+</script>
+{{- end -}}
+{{- end -}}

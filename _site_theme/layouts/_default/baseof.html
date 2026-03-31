@@ -136,6 +136,8 @@
   }
   </script>
   {{ end }}
+
+  {{- partial "ga4-measurement-head.html" . -}}
 </head>
 <body>
   <!-- Top bar -->
@@ -245,5 +247,6 @@
        Loaded after DOM content so the button element exists. The anti-flash
        inline script in <head> handles the initial theme set before first paint. -->
   <script src="/js/theme-toggle-behavior.js"></script>
+  {{- partial "ga4-site-events.html" . -}}
 </body>
 </html>

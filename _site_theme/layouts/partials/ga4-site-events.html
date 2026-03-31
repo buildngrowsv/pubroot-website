@@ -1,0 +1,70 @@
+{{/*
+  Pubroot — sitewide GA4 event delegation (gtag)
+
+  WHY THIS EXISTS (Operator → Coordinator 1, 2026-03-31):
+  Operator asked to pick one project and execute analytics there. Pubroot is
+  static Hugo — there is no Next.js GoogleAnalytics component. BC1+VCC still
+  owns creating the GA4 property and pasting the real Measurement ID into
+  hugo.toml (ga4_measurement_id). This partial only fires gtag('event', …) when
+  that param is already non-empty, so local and staging builds without GA4 stay
+  silent.
+
+  PRODUCT STORY: We need more than page_view — submitters are the conversion
+  funnel for Pubroot. Tracking explicit clicks on “Submit” paths and PDF /
+  outbound research links tells us whether navigation and discovery work before
+  we spend on distribution. Event names are chosen to map cleanly to GA4 Explore
+  and optional “key events” once BC1 verifies them in Realtime.
+
+  TECHNICAL: Single delegated listener on document (capture phase) avoids
+  editing every template. gtag must exist — guaranteed when this partial renders
+  because we gate on the same ga4_measurement_id as ga4-measurement-head.html.
+*/}}
+{{- $ga := .Site.Params.ga4_measurement_id -}}
+{{- if and $ga (ne $ga "") -}}
+<script>
+(function () {
+  if (typeof gtag !== 'function') return;
+
+  document.addEventListener('click', function (ev) {
+    var t = ev.target;
+    if (!t || t.nodeType !== 1) return;
+    var a = t.closest && t.closest('a[href]');
+    if (!a || !a.href) return;
+    var href = a.getAttribute('href') || '';
+    var abs = '';
+    try { abs = new URL(a.href, window.location.origin).pathname; } catch (e) { return; }
+
+    /* Primary CTA — any navigation toward the submission flow */
+    if (abs.indexOf('/submit') === 0 || href.indexOf('/submit') !== -1) {
+      gtag('event', 'pubroot_submit_cta_click', {
+        event_category: 'engagement',
+        event_label: abs || href,
+        link_url: a.href
+      });
+      return;
+    }
+
+    /* Peer-reviewed artifact — PDFs are high-signal reads */
+    if (/\.pdf(\?|$)/i.test(href) || /\.pdf(\?|$)/i.test(a.href)) {
+      gtag('event', 'file_download', {
+        file_extension: 'pdf',
+        link_url: a.href
+      });
+      return;
+    }
+
+    /* Outbound to GitHub (repo, issues, CLI tree) — distribution / trust */
+    try {
+      var u = new URL(a.href);
+      if (u.hostname === 'github.com') {
+        gtag('event', 'outbound_click', {
+          event_category: 'outbound',
+          event_label: 'github',
+          link_url: a.href
+        });
+      }
+    } catch (e) { /* ignore */ }
+  }, true);
+})();
+</script>
+{{- end -}}
