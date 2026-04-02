@@ -11,7 +11,7 @@
   Do not commit live G- IDs in public forks if policy changes — use CI/env
   substitution in the future if needed; for now org repo uses params only.
 */}}
-{{- with .Site.Params.ga4_measurement_id -}}
+{{- with index .Site.Params "ga4_measurement_id" -}}
 {{- if ne . "" -}}
 <script async src="https://www.googletagmanager.com/gtag/js?id={{ . }}"></script>
 <script>

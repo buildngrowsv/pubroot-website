@@ -19,7 +19,7 @@
   editing every template. gtag must exist — guaranteed when this partial renders
   because we gate on the same ga4_measurement_id as ga4-measurement-head.html.
 */}}
-{{- $ga := .Site.Params.ga4_measurement_id -}}
+{{- $ga := index .Site.Params "ga4_measurement_id" -}}
 {{- if and $ga (ne $ga "") -}}
 <script>
 (function () {

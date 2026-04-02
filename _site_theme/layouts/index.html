@@ -79,6 +79,7 @@
     ]
   }
   </script>
+  {{- partial "ga4-measurement-head.html" . -}}
 </head>
 <body>
   <!-- Header -->
@@ -504,5 +505,6 @@
   </script>
   <!-- Theme toggle behavior — handles click, localStorage, and meta theme-color -->
   <script src="/js/theme-toggle-behavior.js"></script>
+  {{- partial "ga4-site-events.html" . -}}
 </body>
 </html>
