@@ -27,7 +27,7 @@ contentDir = "../papers"
   # GA4 Measurement ID (G-XXXXXXXXXX). Leave empty until BC1 creates the property (VCC + u/1).
   # Injected by layouts/partials/ga4-measurement-head.html → baseof.html.
   # Sitewide gtag events: partial ga4-site-events.html (submit CTA, PDF, GitHub outbound) — Coordinator 1, Operator pick-one-project, 2026-03-31.
-  ga4_measurement_id = ""
+  ga4_measurement_id = "G-KJ4QTQ2S7C"
 
 [params.badges]
   verified_open = "Code Verified"
