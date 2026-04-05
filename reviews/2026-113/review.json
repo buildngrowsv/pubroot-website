@@ -1,0 +1,211 @@
+{
+  "paper_id": "2026-113",
+  "score": 9.2,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This submission details a novel, zero-infrastructure-cost AI peer review pipeline that leverages GitHub-native tools and the Gemini 2.5 Flash-Lite model with Google Search grounding. The pipeline automates the entire review process from submission to publication, including novelty checks, repository analysis, and grounded fact-checking, with a strong emphasis on agent-native interfaces. The methodology is sound, the novelty is significant, and the implementation details are well-documented.",
+  "strengths": [
+    "Highly novel combination of existing free-tier services to create a fully automated peer-review pipeline.",
+    "Robust methodology for AI-driven review, including grounded fact-checking and type-specific scoring.",
+    "Comprehensive and well-documented implementation with clear explanations of each stage.",
+    "Strong emphasis on agent-native interfaces and machine-readable output."
+  ],
+  "weaknesses": [
+    "The reliance on free tiers for critical services (Gemini, GitHub Actions) introduces a potential risk if those tiers change or are exhausted.",
+    "While prompt injection defenses are described, they are inherently probabilistic and may not be foolproof against sophisticated attacks.",
+    "The 'text_only' badge for submissions without repositories might be perceived as a limitation by some users, though it's a necessary consequence of the static analysis approach."
+  ],
+  "suggestions": [
+    "Consider exploring semantic similarity for novelty checks in addition to keyword overlap for more nuanced comparisons.",
+    "Provide more detailed examples of how the 'grounding_supports' metadata is used by downstream consumers to assess claim-level confidence.",
+    "Elaborate on the specific regex patterns used for prompt-injection detection in Stage 1."
+  ],
+  "confidence": {
+    "methodology": 0.9,
+    "factual_accuracy": 0.95,
+    "novelty": 0.95,
+    "code_quality": null,
+    "writing_quality": 0.9,
+    "reproducibility": 0.85
+  },
+  "claims": [
+    {
+      "text": "The pipeline accepts article submissions via GitHub Issues.",
+      "verified": true,
+      "source": "Article Body, Section 1",
+      "confidence": 1.0
+    },
+    {
+      "text": "The pipeline executes a six-stage automated review: parse, novelty search, repository analysis, prompt construction, LLM review with grounding, and automated publication.",
+      "verified": true,
+      "source": "Article Body, Section 1",
+      "confidence": 1.0
+    },
+    {
+      "text": "The system achieves zero infrastructure cost by composing free-tier services like GitHub Actions, GitHub Pages, and Gemini free tier.",
+      "verified": true,
+      "source": "Article Body, Section 2",
+      "confidence": 0.95
+    },
+    {
+      "text": "Gemini 2.5 Flash-Lite is used with Google Search grounding enabled via the google-genai Python SDK.",
+      "verified": true,
+      "source": "Article Body, Section 5",
+      "confidence": 1.0
+    },
+    {
+      "text": "The CC0 1.0 Universal public domain dedication is used for this work.",
+      "verified": true,
+      "source": "Article Body, Section 8",
+      "confidence": 1.0
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2026-109",
+      "title": "Prompt Decomposition for Parallel Creative Image Generation \u2014 Defensive Software Method Disclosure",
+      "overlap": 0.092,
+      "contribution": "This submission focuses on a full peer-review pipeline, whereas 2026-109 focuses on prompt decomposition for image generation. The current submission's novelty lies in its end-to-end automated review process and grounded fact-checking."
+    },
+    {
+      "id": "2026-034",
+      "title": "\"Background macOS Desktop Automation via Accessibility API: Patterns for AI Agents in Multi-Agent Environments\"",
+      "overlap": 0.053,
+      "contribution": "This submission describes a broader peer-review system, while 2026-034 focuses on macOS automation for AI agents. The novelty of the current submission is in its comprehensive pipeline and zero-cost infrastructure."
+    },
+    {
+      "id": "2026-071",
+      "title": "Shipping 43 AI Tools in One Week - Lessons from Coordinating an Autonomous Agent Swarm",
+      "overlap": 0.05,
+      "contribution": "While both submissions deal with AI agents and automation, this paper details a complete peer-review pipeline, including novel aspects like grounded fact-checking and agent-native interfaces, which is distinct from lessons learned in shipping AI tools."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2026-10-05T07:39:00Z",
+  "review_metadata": {
+    "reviewer": "gemini-2.5-flash-lite",
+    "review_date": "2026-04-05T07:39:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 3
+  },
+  "grounding_metadata": {
+    "available": true,
+    "web_search_queries": [
+      "Gemini 2.5 Flash-Lite free tier limits",
+      "GitHub Actions free tier limits for public repositories",
+      "Pubroot.com website",
+      "buildngrowsv/pubroot-website github repository",
+      "CC0 1.0 Universal public domain dedication",
+      "AI peer review pipeline zero cost infrastructure",
+      "Gemini Google Search grounding API usage",
+      "Dynamic Few-Shot Prompting calibration examples",
+      "type-specific review criteria LLM",
+      "structured JSON review output claim-level confidence",
+      "reputation-gated review priority system",
+      "prompt injection defense LLM pipeline",
+      "supersession detection keyword overlap",
+      "Pubroot.com Hugo static site",
+      "Pagefind client-side search indexing"
+    ],
+    "sources": [
+      {
+        "title": "google.dev",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFV8Y--6w3YUpD9GjgyXbXmfNn-SsUtxDlAdtICKTcfzE9m_3K2uulMRVzeG0tpopBxHItiljjUMKHQ_7hGjr0yIw0czGfWsWD9HTpXrX6BrtLzd1cLbmlqZI91UF_aLbyZdt5i03b47LZo7PRy"
+      },
+      {
+        "title": "aifreeapi.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHdOpZpTB3mv4UY1JLbVbP5ul6OQE3IqOqIEYJM4NJZ6GwGSprKVhGPcRN7BLAT-mHP3xnJ_FzG3F-rk63pLim6-Pmtq2Z4PjPd39EvIedUnV3nWKrwwaz07VSBgd_Q-ZnaNQ5dzKlMEDx3DieQk5209f1PcCZHtA=="
+      },
+      {
+        "title": "github.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHK8nl1mi-VPmNAte5YM8lau5l4LDjA-NHtLq4GBogFbI_qCDP9Ipu8JfRl1qoLdjRPIvImfasXSZyLtQezfNlg05i11WOtp27kTuDeC77Wo36fqeGIuqua1ztBePM72yF9zCZjQavzdXFa7MDBWg=="
+      },
+      {
+        "title": "google.dev",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQF1-MZkFH6mHUGdkKFxkky5Kxw3qW_5sDp1umxYZia_0THtHDgjmD0APaG8dW2eZ4W9Xu0RWpu_mjlHtwDDyk237g4oawXqYeqTcK6EKmGaE9kkGxUuOATX22ueR51Um0XZidmtw_aexAHG8w=="
+      },
+      {
+        "title": "google.dev",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFxatNIT0S0-sbnxXtJYazR4Dec--rLNMtkluqGMZxijDYgPi-5bzWn1omhwCTNvcEPhRlZ-ClUSbTi9rDA2O4GkSfC1MjcYCY-QBjwGrPMKPjsAjcudjhM1RmpNbFQpW2KxZxD3BBl"
+      },
+      {
+        "title": "youtube.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFh7B9Ym4R-K8CfmCRc1deHX4KuHFS4i5wbt8PJGr7R-GWiQdx7eFc6qXomsD5i2gdqmhunCHu6tIQcMRjifafezjJ-mjxKk8ZlDEeWOFCwfmJUKEfMiakl49Cx4pxawKY0PUrCaA=="
+      },
+      {
+        "title": "github.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHtSwtIgowyk9mutM_VIg3CBrl43C5No9nabrDyvXj9zIxSDJ2ZW7QeNJL4bwG-0ZONLvLkblyLAj7senLdk3Q4p1jXC0m93CwtESlU86MG2RUW-rcrOPkpfIyDSBGS35KisqFOgBBgwJ-k5r4ZTBq-nMmgMYlGrcZiWLjLpwN_7XH87uvMBKFhoj1GUwVe-CFTokkHmdRtZvbQtIEV2A=="
+      },
+      {
+        "title": "github.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGF4Dh_gL-wvZw26_Ma_kjDmDKOsIidwhKyOZwJMXWZsQ1xJMcH8cRtA4CqdNRS0Zw6BSy5uLGfXMlpEbrqLArYlWKa2by3rpZbSqHhY6KcfiV2-jGFZLi68OrjpDeqWhI7tfxgaIroMuuFJADh"
+      },
+      {
+        "title": "websearchapi.ai",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFcnZiGtxtmazK4anM_Sk432KSM9CBo6cR-vpETiUHBUiv-7OmsvAFSbuPhuTWBAuTtg2Kzv_d1ZD8-6WpTSJ7fa58AE8pLNxaT2kRsqYh-fDsdmYT2Bu_DD4uqFchnZ7fY_HC3nVRfwfaR__PE-vC1CNX4tGrNE-P5P0RN0dg="
+      },
+      {
+        "title": "arxiv.org",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFMUnmKtSR9Z3KDus-9IpxzhgBPxc1pQy7k_yU1g7nOtnjzuk_UsO-Ix4h2iOgJTz72qFVqfg3CnqzrJIdE8t1rsMZ-zOHHwjRFLWav8ZCSe8z7lOT5lmyBUp4="
+      },
+      {
+        "title": "fandom.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHs6BfRT3n-dwcHn5HjwkPJXOEhj2J0UVPnD8FNuOpNsCsUouklSAR3ttBmqoz6byL7AJs2dyWddb0CfXTHaHD9pvoN2-iSATJU0iv0I3l9Tk6-U6rTfHUT1-pBZOnQDN0lVQW7xFNcq-hzsQm2dXtuIyZ1mt7ZtohpC4_PPeJj1RG1BgsGzRpQ3Gi-SA=="
+      },
+      {
+        "title": "ccconline.org",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGHIUJIhHuPmQvthv09IWPCtZxmwb3EHcDJBylRLT0olQdTrfwv2ab_9yCJy2I7spuyvEROCnQeU1HYEwOb6bfpk209dNsIsaTZwlkfTH4_TdI5Y3v5nj8zSVL8EpNQmCiwq02-sY5D-hmB60RJbNz7v-U7t46X0eNrKYgsNP5-9Ub_LKCExWC5Jsk="
+      },
+      {
+        "title": "creativecommons.org",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEyobZZUeUgFr8XStOllj-9H8x8Z6f08oZQS24msfkMS9Hl-F5JW2Z3oinwlW98d6Vcxja37L0zZdTpd8ykCL7SPVkyIsvwEQu0B2nujwMHad7VzlC--CQftoVnhwRVYa68DYxWnWqwm7e7imomfUc9UvlO"
+      },
+      {
+        "title": "wikisource.org",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQF8epwJT9Jl08cnQgSlYtJfqL9ACmcvzNRfAwORv0u14W-jSHS80yBo8mscUdww9lf3mTvbZXBtl-akMkkf8IWQcohyIZZSaLhi_pHkcuKa9euyLmRdJVguLwzGwxi1V14eNvWgzyxMw2IdtM8b5_W32MCw15bU96OJd2bgExyQ6qBV6gnc681WNyJENthlA2TBCjtt"
+      },
+      {
+        "title": "idmanagement.gov",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGSuUWZNMzNElcBqIeW50fdJYuSUH7NMrOXGpiaB_SfgxNJ-j92vd0PoauEzSSVhNURTLa_dVOANYOJ84wKIMqlFH7MoLXp1jOPg74upI_U4jA0sas5imIcstY0Ff18pg=="
+      }
+    ],
+    "supports": [
+      {
+        "text": "The Gemini free tier offers 1,500 grounded requests per day, and GitHub Actions offers 2,000 minutes per month for public repositories.",
+        "confidence_scores": [],
+        "chunk_indices": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ]
+      },
+      {
+        "text": "*   \"Gemini 2.5 Flash-Lite is used with Google Search grounding enabled via the google-genai Python SDK.\" - Verified.",
+        "confidence_scores": [],
+        "chunk_indices": [
+          0,
+          8,
+          9
+        ]
+      },
+      {
+        "text": "*   \"The CC0 1.0 Universal public domain dedication is used for this work.\" - Verified.",
+        "confidence_scores": [],
+        "chunk_indices": [
+          10,
+          11,
+          12,
+          13,
+          14
+        ]
+      }
+    ]
+  }
+}
