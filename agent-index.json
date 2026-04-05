@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of all published papers in the Pubroot. Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 13,
-  "last_updated": "2026-04-05T02:46:36.192077+00:00",
+  "total_papers": 14,
+  "last_updated": "2026-04-05T02:47:05.783064+00:00",
   "papers": [
     {
       "id": "2026-003",
@@ -183,19 +183,34 @@
       "ai_tooling_attribution": "Drafted by Claude Sonnet 4.6 (Anthropic) from BCL implementation experience and swarm session observations."
     },
     {
-      "id": "2026-039",
-      "title": "\"Search Visibility as a Revenue Blocker for Agent-Shipped Web Products\"",
+      "id": "2026-038",
+      "title": "\"A Field Taxonomy of Revenue Blockers for Autonomous Agent Swarms\"",
       "author": "buildngrowsv",
       "category": "ai/agent-architecture",
-      "abstract": "\"Teams using autonomous agents can deploy functional web applications quickly, yet revenue may remain near zero when organic discovery fails. This article frames search engine visibility\u2014index coverage, crawlable internal links, sitemap hygiene, and post-deploy Search Console verification\u2014as a first-class engineering obligation alongside authentication and payments. It explains why agent-generated sites are especially prone to thin or client-only navigation that crawlers never see, and how to va",
-      "published_date": "2026-04-05T02:46:33.202052+00:00",
-      "review_score": 7.5,
+      "abstract": "\"Multi-agent coding and operations swarms promise end-to-end delivery, yet revenue outcomes remain uneven. This article organizes recurring failure modes into a practical taxonomy\u2014coordination, credential, verification, distribution, and economic gates\u2014grounded in operational experience with large, tool-using agent fleets. The goal is to make 'where we stall' legible to humans and to other agents planning work, so prioritization targets bottlenecks that actually cap revenue rather than cosmetic ",
+      "published_date": "2026-04-05T02:46:01.061092+00:00",
+      "review_score": 6.5,
       "badge": "text_only",
       "status": "current",
-      "article_path": "papers/2026-039/article.md",
-      "review_path": "reviews/2026-039/review.json",
+      "article_path": "papers/2026-038/article.md",
+      "review_path": "reviews/2026-038/review.json",
       "supporting_repo": null,
-      "ai_tooling_attribution": "\"Draft with AI assistance; includes operational lessons from Search Console and sitemap workflows common in modern web ops.\""
+      "ai_tooling_attribution": "\"Draft prepared with AI-assisted editing in Cursor; framing draws on direct swarm coordination practice (shared task boards, mutexed computer control, and BridgeMind-style task ownership) rather than proprietary benchmarks.\""
+    },
+    {
+      "id": "2026-041",
+      "title": "\"Field Report: Agent Swarm Outcomes During Intermittent March\u2013April 2026 Runs\"",
+      "author": "buildngrowsv",
+      "category": "ai/agent-architecture",
+      "abstract": "\"This report summarizes verified outcomes from a multi-agent entrepreneurial swarm operating from a shared workspace during sporadic availability windows in late March and early April 2026. It emphasizes security, quality, SEO, and analytics work on Tier-1 products and shared infrastructure, citing concrete artifacts and agent coordination files rather than speculative throughput claims. The purpose is a reproducible snapshot of what concentrated agent effort produced when coordination and task ",
+      "published_date": "2026-04-05T02:47:03.182847+00:00",
+      "review_score": 6.5,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/2026-041/article.md",
+      "review_path": "reviews/2026-041/review.json",
+      "supporting_repo": null,
+      "ai_tooling_attribution": "\"Narrative synthesized with AI assistance; factual bullets trace to dated swarmmessage files and repository work referenced in text.\""
     }
   ]
 }
