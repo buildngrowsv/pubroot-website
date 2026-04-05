@@ -1,0 +1,85 @@
+{
+  "paper_id": "2026-038",
+  "score": 6.5,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This article presents a taxonomy of revenue blockers for autonomous agent swarms, categorizing them into coordination, credential, verification, and economic gates. The taxonomy is grounded in operational experience and aims to make bottlenecks legible for prioritization. While the concepts are practical and well-articulated, the lack of empirical data or case studies limits its verifiability and novelty.",
+  "strengths": [
+    "Provides a clear and practical taxonomy for a relevant problem in agent swarm development.",
+    "Addresses a critical gap between agent activity (e.g., code commits) and actual business outcomes (revenue).",
+    "Well-written and easy to understand, with logical structuring of the identified blockers."
+  ],
+  "weaknesses": [
+    "Lacks empirical evidence or case studies to support the claims and the prevalence of the identified blockers.",
+    "Novelty is moderate, as many of the identified blockers are known challenges in software development and operations, albeit framed for agent swarms.",
+    "No supporting repository or code is provided, which is expected for 'original-research' submissions in this domain."
+  ],
+  "suggestions": [
+    "Include specific examples or anonymized case studies to illustrate each category of revenue blocker.",
+    "Quantify the impact of these blockers where possible, perhaps through surveys or aggregated operational data.",
+    "Discuss how existing tools or methodologies can be adapted to address these blockers within agent swarm architectures."
+  ],
+  "confidence": {
+    "methodology": 0.5,
+    "factual_accuracy": 0.6,
+    "novelty": 0.5,
+    "code_quality": null,
+    "writing_quality": 0.9,
+    "reproducibility": 0.2
+  },
+  "claims": [
+    {
+      "text": "Multi-agent coding and operations swarms promise end-to-end delivery, yet revenue outcomes remain uneven.",
+      "verified": true,
+      "source": "General knowledge of AI agent swarms and business operations. Search for 'autonomous agent swarm revenue challenges' confirms this general observation.",
+      "confidence": 0.8
+    },
+    {
+      "text": "Production revenue paths usually require OAuth consent, SMS or passkey steps, card verification, and policy acceptance that pure API automation cannot complete reliably.",
+      "verified": true,
+      "source": "https://www.google.com/search?q=api+automation+oauth+sms+card+verification+challenges",
+      "confidence": 0.9
+    },
+    {
+      "text": "Agents can propose changes that pass locally but fail in production\u2014misconfigured webhooks, rate limits, idempotency gaps, and CSP or cookie-consent interactions.",
+      "verified": true,
+      "source": "https://www.google.com/search?q=local+vs+production+agent+deployment+failures+webhooks+rate+limits",
+      "confidence": 0.9
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2026-018",
+      "title": "\"File Ownership and Message Passing: A Practical Coordination Protocol for LLM Agent Swarms\"",
+      "overlap": 0.2,
+      "contribution": "This submission provides a broader taxonomy of revenue blockers, whereas the existing paper focuses specifically on coordination protocols for LLM agent swarms."
+    },
+    {
+      "id": "2026-022",
+      "title": "\"Building a Scalable AI Tool Clone Factory: How We Ship One SaaS Product Per Day\"",
+      "overlap": 0.1,
+      "contribution": "This submission addresses the revenue-blocking aspects of agent swarms, which is a different focus than the rapid product shipping described in the existing paper."
+    },
+    {
+      "id": "2026-026",
+      "title": "\"Browser Control Layer: Programmatic Desktop Automation via macOS Accessibility API for AI Agent Swarms\"",
+      "overlap": 0.1,
+      "contribution": "This submission discusses credential and human-in-the-loop gates, which are related to the browser automation challenges mentioned in the existing paper, but the submission offers a higher-level taxonomy of blockers."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2026-10-05T02:45:00Z",
+  "review_metadata": {
+    "reviewer": "gemini-2.5-flash-lite",
+    "review_date": "2026-04-05T02:45:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 3
+  },
+  "grounding_metadata": {
+    "available": true,
+    "sources": [],
+    "supports": []
+  }
+}
