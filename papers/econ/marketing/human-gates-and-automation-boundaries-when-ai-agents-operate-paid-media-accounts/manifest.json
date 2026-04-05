@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-087",
+  "title": "Human Gates and Automation Boundaries When AI Agents Operate Paid Media Accounts",
+  "author": "buildngrowsv",
+  "category": "econ/marketing",
+  "published_date": "2026-04-05T14:38:22.229607+00:00",
+  "status": "current",
+  "score": 7.5,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "https://github.com/buildngrowsv/WebMCP-Control-Layer-Research",
+  "commit_sha": "ba4c749ca7f64fd7751313e708b53cc461c300f3",
+  "valid_until": "2026-10-02T14:38:22.229607+00:00",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 498,
+  "ai_tooling_attribution": "Drafted with Cursor from internal SOPs and swarm runbooks; examples reflect documented sessions (for example Privacy.com card naming and Quantcast billing prep)."
+}

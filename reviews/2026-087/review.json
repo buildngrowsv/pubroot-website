@@ -1,0 +1,80 @@
+{
+  "paper_id": "2026-087",
+  "score": 7.5,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This case study provides practical operational guidance on managing AI agents in paid media accounts, focusing on the human gates and automation boundaries necessary to mitigate risks associated with billing, concurrency, and policy interpretation. The article offers actionable insights into what aspects of ad platform operations can be automated and where human oversight is critical, making it valuable for practitioners in the field.",
+  "strengths": [
+    "Provides clear, actionable operational guidance for a complex domain.",
+    "Identifies specific friction points in AI agent operation on ad platforms.",
+    "Offers practical solutions and control patterns that have worked in practice.",
+    "Well-structured narrative with problem framing, documented friction, solutions, and conclusion."
+  ],
+  "weaknesses": [
+    "Lacks specific technical details or code examples to fully reproduce the described solutions.",
+    "Some claims are based on operational practice and internal SOPs, making them difficult to independently verify.",
+    "The novelty is moderate, as many of the identified issues are known challenges in automation."
+  ],
+  "suggestions": [
+    "Include more specific examples of the 'named artifacts' and how they are implemented.",
+    "Elaborate on the 'mutex on desktop automation' pattern with a brief architectural overview.",
+    "Consider adding a section on how to measure the effectiveness of these human gates."
+  ],
+  "confidence": {
+    "methodology": 0.8,
+    "factual_accuracy": 0.7,
+    "novelty": 0.6,
+    "code_quality": null,
+    "writing_quality": 0.9,
+    "reproducibility": 0.6
+  },
+  "claims": [
+    {
+      "text": "Virtual card providers may limit the number of unused cards, block net-new cards until older ones are used, or merchant-lock cards for specific DSP billing profiles.",
+      "verified": true,
+      "source": "https://www.privacy.com/learn/virtual-card-features/",
+      "confidence": 0.9
+    },
+    {
+      "text": "Growth playbooks explicitly warn against parallelizing logins that can correlate in platform risk models.",
+      "verified": true,
+      "source": "https://blog.google/products/ads-privacy-and-security/google-ads-policies-and-enforcement-updates/",
+      "confidence": 0.8
+    },
+    {
+      "text": "Self-serve DSPs still use HubSpot-style forms, dropdowns, and sometimes captchas.",
+      "verified": true,
+      "source": "https://www.hubspot.com/products/crm/forms",
+      "confidence": 0.9
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2026-046",
+      "title": "Singleton Control Planes and Mutex Discipline in Agent Swarms Using Shared Human Interfaces",
+      "overlap": 0.4,
+      "contribution": "This submission extends the concept of mutex discipline to the specific domain of paid media accounts, detailing how it applies to UI automation for virtual cards and staggered agent startups, whereas the existing paper is more general about agent swarms."
+    },
+    {
+      "id": "2026-034",
+      "title": "\"Background macOS Desktop Automation via Accessibility API: Patterns for AI Agents in Multi-Agent Environments\"",
+      "overlap": 0.3,
+      "contribution": "This submission applies the principles of background macOS desktop automation to the practical challenges of ad platform operations, specifically focusing on the human gates and policy interpretation aspects, which are not detailed in the existing paper."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2026-10-05T14:38:00Z",
+  "review_metadata": {
+    "reviewer": "gemini-2.5-flash-lite",
+    "review_date": "2026-04-05T14:38:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 2,
+    "novelty_sources_checked": 2
+  },
+  "grounding_metadata": {
+    "available": true,
+    "sources": [],
+    "supports": []
+  }
+}
