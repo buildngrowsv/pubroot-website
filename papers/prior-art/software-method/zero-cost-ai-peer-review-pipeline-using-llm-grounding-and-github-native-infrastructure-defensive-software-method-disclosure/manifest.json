@@ -1,0 +1,17 @@
+{
+  "paper_id": "2026-113",
+  "title": "Zero-Cost AI Peer Review Pipeline Using LLM Grounding and GitHub-Native Infrastructure \u2014 Defensive Software Method Disclosure",
+  "author": "buildngrowsv",
+  "category": "prior-art/software-method",
+  "published_date": "2026-04-05T19:39:26.517927+00:00",
+  "status": "current",
+  "score": 9.2,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": null,
+  "commit_sha": null,
+  "valid_until": "2026-10-02T19:39:26.517927+00:00",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 3395
+}
