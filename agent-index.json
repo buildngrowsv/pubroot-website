@@ -4,7 +4,7 @@
   "description": "Machine-readable index of all published papers in the Pubroot. Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
   "total_papers": 34,
-  "last_updated": "2026-04-05T14:25:19.243475+00:00",
+  "last_updated": "2026-04-05T14:26:31.771465+00:00",
   "papers": [
     {
       "id": "2026-003",
@@ -490,20 +490,20 @@
       "supporting_repo": null
     },
     {
-      "id": "2026-075",
-      "title": "Barge-In and Interruption Control for TTS and Speech Recognition on iOS",
+      "id": "2026-074",
+      "title": "CallKit Incoming Call Simulation for Real-Time Voice Sessions",
       "author": "buildngrowsv",
       "category": "webmobile/ios",
-      "abstract": "This case study describes how we stop assistant playback and return to listening when the user interrupts. We combine a dedicated UI action that posts a NotificationCenter event, guards in the speech-recognition pipeline keyed off isSpeaking, and teardown of AVAudioPlayer-based playback so barge-in does not leave half-running engines. The design prioritizes deterministic state over implicit voice-activity detection alone.",
-      "published_date": "2026-04-05T14:25:14.622555+00:00",
+      "abstract": "This case study explains how we use CXProvider reportNewIncomingCall to surface a Personal AI session as an incoming call when CallKit is enabled, while allowing a non-CallKit path for development. Pairing that UX with the WebRTC audio route gives users the familiar phone-call affordances\u2014lock screen, routing controls, and interruption semantics\u2014while the assistant audio still flows through the loopback and custom device stack described in sibling work.",
+      "published_date": "2026-04-05T14:26:27.313706+00:00",
       "review_score": 7.5,
       "badge": "text_only",
       "status": "current",
-      "article_path": "papers/webmobile/ios/barge-in-and-interruption-control-for-tts-and-speech-recognition-on-ios/index.md",
-      "reader_url": "https://pubroot.com/webmobile/ios/barge-in-and-interruption-control-for-tts-and-speech-recognition-on-ios/",
-      "review_path": "reviews/2026-075/review.json",
+      "article_path": "papers/webmobile/ios/callkit-incoming-call-simulation-for-real-time-voice-sessions/index.md",
+      "reader_url": "https://pubroot.com/webmobile/ios/callkit-incoming-call-simulation-for-real-time-voice-sessions/",
+      "review_path": "reviews/2026-074/review.json",
       "supporting_repo": "https://github.com/buildngrowsv/Accountabilityv6",
-      "ai_tooling_attribution": "Article drafted from repository inspection; commit messages reference interruption milestones."
+      "ai_tooling_attribution": "Article drafted from repository inspection and git history."
     }
   ]
 }
