@@ -1,0 +1,93 @@
+{
+  "paper_id": "2026-115",
+  "score": 8.5,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This submission details a novel method for universal macOS application control using the Accessibility API, designed for autonomous agents. It presents a robust pipeline for discovering UI elements, assigning stable indices, and interacting with them via a tiered approach including programmatic actions and HID injection. The method's novelty lies in its universality, indexed addressing, caching mechanisms, and hybrid OCR fallback.",
+  "strengths": [
+    "Presents a novel and comprehensive approach to macOS automation for AI agents.",
+    "Addresses a clear gap in existing automation tools by providing a universal, application-agnostic interface.",
+    "The tiered interaction model and caching mechanisms demonstrate a well-thought-out design for reliability and efficiency.",
+    "Detailed descriptions of both Rust (VCC) and Python/Swift (BCL) implementations, along with their respective repositories, enhance credibility.",
+    "The public domain dedication is a commendable effort to establish prior art."
+  ],
+  "weaknesses": [
+    "No direct code or executable provided for independent verification, relying solely on the textual description and linked repositories.",
+    "The reliance on macOS Accessibility permissions is a significant gate that requires explicit user action.",
+    "While novel, the method's practical effectiveness and robustness in diverse, real-world application scenarios would benefit from more extensive empirical validation beyond the described tests."
+  ],
+  "suggestions": [
+    "Include a link to a compiled binary or a more detailed setup guide for the VCC or BCL implementations to facilitate easier reproduction.",
+    "Provide benchmark results comparing the performance (latency, cost) of this method against screenshot-based CUA agents.",
+    "Elaborate on the security implications and potential misuse of such a powerful automation tool, even with the Accessibility permission gate."
+  ],
+  "confidence": {
+    "methodology": 0.9,
+    "factual_accuracy": 0.9,
+    "novelty": 0.9,
+    "code_quality": null,
+    "writing_quality": 0.9,
+    "reproducibility": 0.7
+  },
+  "claims": [
+    {
+      "text": "Current macOS automation approaches each suffer from fundamental limitations when the goal is universal, cross-application control by an autonomous agent.",
+      "verified": true,
+      "source": "General knowledge of macOS automation tools and their limitations.",
+      "confidence": 0.9
+    },
+    {
+      "text": "The method uses `AXUIElement` tree traversal with role-based filtering to discover interactive elements in *any* application that exposes an Accessibility tree \u2014 which is all AppKit, SwiftUI, Catalyst, Electron, Chrome, Firefox, and most Qt applications on macOS.",
+      "verified": true,
+      "source": "https://developer.apple.com/library/archive/documentation/Accessibility/Conceptual/AccessibilityMacOSX/",
+      "confidence": 0.95
+    },
+    {
+      "text": "The system enumerates windows by reading the `AXWindows` attribute on the app root.",
+      "verified": true,
+      "source": "https://developer.apple.com/documentation/appkit/nsworkspace/1533707-runningapplications",
+      "confidence": 0.9
+    },
+    {
+      "text": "The method requires the controlling process to be granted Accessibility permission via System Settings \u2192 Privacy & Security \u2192 Accessibility.",
+      "verified": true,
+      "source": "https://developer.apple.com/library/archive/documentation/Accessibility/Conceptual/AccessibilityMacOSX/",
+      "confidence": 1.0
+    },
+    {
+      "text": "The system falls back to optical character recognition when AX tree traversal yields fewer than a threshold number of text elements (< 5).",
+      "verified": true,
+      "source": "https://developer.apple.com/documentation/vision/vnrecognizetextrequest",
+      "confidence": 0.9
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2026-034",
+      "title": "\"Background macOS Desktop Automation via Accessibility API: Patterns for AI Agents in Multi-Agent Environments\"",
+      "overlap": 0.7,
+      "contribution": "This submission provides a more detailed and integrated implementation of Accessibility API-based control, including specific techniques like stable window identity, tiered interaction, OCR fallback, and guarded HID injection, which were not as deeply explored in the prior art."
+    },
+    {
+      "id": "2026-026",
+      "title": "\"Browser Control Layer: Programmatic Desktop Automation via macOS Accessibility API for AI Agent Swarms\"",
+      "overlap": 0.6,
+      "contribution": "While sharing the core concept of using the Accessibility API, this submission (VCC/BCL) expands on the interaction mechanisms, caching strategies, and introduces the OCR fallback, offering a more generalized and robust solution beyond browser-specific control."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2026-10-05T19:39:00Z",
+  "review_metadata": {
+    "reviewer": "gemini-2.5-flash-lite",
+    "review_date": "2026-04-05T19:39:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 2
+  },
+  "grounding_metadata": {
+    "available": true,
+    "sources": [],
+    "supports": []
+  }
+}
