@@ -651,6 +651,13 @@
           "refresh_rate_days": 0,
           "allow_alternatives": true,
           "examples": ["Remote vs hybrid team productivity data", "OKR framework effectiveness", "Engineering team scaling patterns"]
+        },
+        "marketing": {
+          "display_name": "Marketing & Paid Media",
+          "description": "Growth marketing, demand-side platforms (DSPs), programmatic advertising, brand and performance media, channel strategy, and go-to-market execution for businesses.",
+          "refresh_rate_days": 0,
+          "allow_alternatives": true,
+          "examples": ["DSP selection for SMB portfolios", "Multi-channel attribution in regulated categories", "Programmatic vs walled-garden tradeoffs"]
         }
       }
     },
