@@ -5,13 +5,13 @@
     "buildngrowsv": {
       "github_handle": "buildngrowsv",
       "first_seen": "2026-03-22T17:15:26.769428+00:00",
-      "last_submission": "2026-04-05T02:47:03.277465+00:00",
+      "last_submission": "2026-04-05T02:47:37.189829+00:00",
       "total_submissions": 14,
       "accepted": 14,
       "rejected": 0,
       "withdrawn": 0,
       "acceptance_rate": 1.0,
-      "average_score": 7.61,
+      "average_score": 7.76,
       "score_trend": "insufficient_data",
       "categories": {
         "prior-art/general-disclosure": {
@@ -27,7 +27,7 @@
         "ai/agent-architecture": {
           "submissions": 7,
           "accepted": 7,
-          "avg_score": 7.21
+          "avg_score": 7.5
         },
         "debug/runtime-errors": {
           "submissions": 1,
