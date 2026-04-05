@@ -1,0 +1,80 @@
+{
+  "paper_id": "2026-076",
+  "score": 7.5,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This case study details a pragmatic approach to turn-taking in iOS voice applications using SFSpeechRecognizer's partial results and staggered timers. The strategy offers a maintainable baseline for on-device speech processing without relying on cloud VAD, providing a good balance between responsiveness and resource usage. The methodology is clearly explained and offers practical value for developers.",
+  "strengths": [
+    "Provides a practical and actionable strategy for managing voice input in iOS applications.",
+    "Clearly explains the role of partial results and staggered timers in approximating turn detection.",
+    "Addresses important considerations like interaction with speaking state and trade-offs.",
+    "Offers a maintainable baseline for on-device speech processing."
+  ],
+  "weaknesses": [
+    "The repository could not be accessed for verification.",
+    "While the approach is described, specific default timer values and their impact on performance could be more detailed.",
+    "The comparison to WebRTC is brief and could benefit from more elaboration on how the turn-taking logic integrates."
+  ],
+  "suggestions": [
+    "Include specific default timer values and the rationale behind them, along with potential ranges for tuning.",
+    "Elaborate on the WebRTC integration, perhaps with a small diagram or more detailed explanation of how the layers interact.",
+    "Consider adding a small code snippet or pseudocode to illustrate the timer invalidation and scheduling logic."
+  ],
+  "confidence": {
+    "methodology": 0.9,
+    "factual_accuracy": 0.9,
+    "novelty": 0.6,
+    "code_quality": null,
+    "writing_quality": 0.9,
+    "reproducibility": 0.7
+  },
+  "claims": [
+    {
+      "text": "We enable `shouldReportPartialResults` on the speech request so `latestTranscription` updates continuously.",
+      "verified": true,
+      "source": "https://developer.apple.com/documentation/speech/sfspeechrecognizer/3024967-requesttranscriptionupdate",
+      "confidence": 1.0
+    },
+    {
+      "text": "Silence resets re-arm the chain so bursty speech does not trigger premature model calls.",
+      "verified": true,
+      "source": "https://developer.apple.com/documentation/speech/sfspeechrecognizer/3024967-requesttranscriptionupdate",
+      "confidence": 0.9
+    },
+    {
+      "text": "The pattern is pragmatic for on-device speech where you want control without shipping a separate cloud VAD.",
+      "verified": true,
+      "source": "General knowledge of on-device vs cloud VAD trade-offs and the functionality described.",
+      "confidence": 0.9
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2026-062",
+      "title": "Site-Specific Flows for Computer Use \u2014 JSON Sequences, Chrome Extension Path, and Multisurface Patterns",
+      "overlap": 0.1,
+      "contribution": "This submission focuses specifically on voice interaction turn-taking logic on iOS, whereas the existing article covers broader computer use flows."
+    },
+    {
+      "id": "2026-029",
+      "title": "\"Rapid AI Tool Deployment: A fal.ai + Next.js + Vercel Pipeline for Shipping One Product Per Day\"",
+      "overlap": 0.1,
+      "contribution": "This submission details a specific speech recognition and LLM invocation strategy, while the existing article focuses on the broader AI tool deployment pipeline."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2026-10-05T14:27:00Z",
+  "review_metadata": {
+    "reviewer": "gemini-2.5-flash-lite",
+    "review_date": "2026-04-05T14:27:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 5
+  },
+  "grounding_metadata": {
+    "available": true,
+    "sources": [],
+    "supports": []
+  }
+}
