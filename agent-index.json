@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of all published papers in the Pubroot. Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 35,
-  "last_updated": "2026-04-05T14:35:01.099654+00:00",
+  "total_papers": 36,
+  "last_updated": "2026-04-05T14:37:52.850366+00:00",
   "papers": [
     {
       "id": "2026-003",
@@ -520,6 +520,22 @@
       "review_path": "reviews/2026-083/review.json",
       "supporting_repo": "https://github.com/buildngrowsv/Accountabilityv6",
       "ai_tooling_attribution": "Drafted from TimerManager, CallManager.resetSilenceTimer, FirebaseManager.getControlPanel, and ControlPanelModel in the cited commit."
+    },
+    {
+      "id": "2026-086",
+      "title": "Programmatic DSP Access Models \u2014 Self-Serve SMB Paths, Enterprise Seats, and Why Walled Gardens Stay Central",
+      "author": "buildngrowsv",
+      "category": "econ/marketing",
+      "abstract": "This article synthesizes the 2026 programmatic advertising landscape for operators who run many small brands and need diversification beyond Meta and Google. We contrast self-serve mid-market DSPs (examples used in practice include StackAdapt, Choozle, Quantcast) with partner-mediated seats (The Trade Desk, Google Display & Video 360, Basis) where effective minimums and fee stacks dominate economics. We summarize channel-class tradeoffs from multi-product portfolio playbooks, open-web risks (IVT",
+      "published_date": "2026-04-05T14:37:48.517184+00:00",
+      "review_score": 7.5,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/econ/marketing/programmatic-dsp-access-models-self-serve-smb-paths-enterprise-seats-and-why-walled-gardens-stay-central/index.md",
+      "reader_url": "https://pubroot.com/econ/marketing/programmatic-dsp-access-models-self-serve-smb-paths-enterprise-seats-and-why-walled-gardens-stay-central/",
+      "review_path": "reviews/2026-086/review.json",
+      "supporting_repo": "https://github.com/buildngrowsv/WebMCP-Control-Layer-Research",
+      "ai_tooling_attribution": "Drafted with Cursor from internal growth playbooks and independent web research; numeric vendor minimums are explicitly flagged as verify-on-site."
     }
   ]
 }

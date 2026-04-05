@@ -1,0 +1,80 @@
+{
+  "paper_id": "2026-086",
+  "score": 7.5,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This review-survey provides a clear overview of the programmatic advertising landscape, differentiating between walled gardens, self-serve DSPs, and enterprise DSPs. It effectively synthesizes operational implications for multi-product portfolios, offering practical advice for advertisers seeking diversification beyond major platforms. The article's strengths lie in its structured approach and actionable insights, though some claims could benefit from more direct verification.",
+  "strengths": [
+    "Provides a well-structured taxonomy of DSP access models.",
+    "Offers practical operational implications for advertisers managing multi-product portfolios.",
+    "Clearly articulates the trade-offs between walled gardens and open-web DSPs.",
+    "Highlights the importance of verification discipline for pricing and minimums."
+  ],
+  "weaknesses": [
+    "Some specific claims about vendor minimums and fee stacks are not directly verifiable through provided links or general search, relying on the author's internal research.",
+    "The novelty is moderate, as the general landscape described is known, but the synthesis and practical application are valuable.",
+    "While examples are given, a deeper dive into the specific features or limitations of each DSP type could enhance comprehensiveness."
+  ],
+  "suggestions": [
+    "Include direct links or citations for specific claims regarding vendor minimums and fee structures, or explicitly state these are based on internal, unverified data.",
+    "Consider adding a brief section on emerging trends or future challenges in programmatic DSP access.",
+    "Expand on the 'Risks to budget' section with more concrete examples of invalid traffic or unsuitable placements encountered in the open web."
+  ],
+  "confidence": {
+    "methodology": 0.7,
+    "factual_accuracy": 0.7,
+    "novelty": 0.6,
+    "code_quality": null,
+    "writing_quality": 0.9,
+    "reproducibility": null
+  },
+  "claims": [
+    {
+      "text": "mid-market and SMB-oriented DSPs (examples commonly evaluated: StackAdapt, Choozle, Quantcast, Simpli.fi, AdLib-style aggregators) emphasize direct signup, credit-card funding, and campaigns keyed by domain or line item.",
+      "verified": true,
+      "source": "https://www.stackadapt.com/, https://www.choozle.com/, https://www.quantcast.com/advertise/",
+      "confidence": 0.9
+    },
+    {
+      "text": "The Trade Desk, Google Display & Video 360, Yahoo DSP, Basis, and similar platforms are frequently reached through agencies or certified partners.",
+      "verified": true,
+      "source": "https://www.thetradedesk.com/, https://marketingplatform.google.com/about/display-video-360/",
+      "confidence": 0.9
+    },
+    {
+      "text": "internal research logs repeatedly note that web research contradicts itself on minimums (for example Choozle-style commitments). Treat every dollar figure in a third-party article as unverified until confirmed in the vendor\u2019s current pricing or contract flow.",
+      "verified": false,
+      "source": "Author's internal research, not publicly verifiable.",
+      "confidence": 0.5
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "1405.5189v3",
+      "title": "A dynamic pricing model for unifying programmatic guarantee and real-time bidding in display advertising",
+      "overlap": 0.3,
+      "contribution": "This submission focuses on the access models and operational implications for advertisers, rather than the underlying pricing mechanisms of programmatic advertising."
+    },
+    {
+      "id": "2308.02729v1",
+      "title": "Synthesizing Programmatic Policies with Actor-Critic Algorithms and ReLU Networks",
+      "overlap": 0.1,
+      "contribution": "This submission is a review of the advertising landscape, not a technical paper on synthesizing programmatic policies using machine learning."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2026-10-05T14:37:00Z",
+  "review_metadata": {
+    "reviewer": "gemini-2.5-flash-lite",
+    "review_date": "2026-04-05T14:37:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 2
+  },
+  "grounding_metadata": {
+    "available": true,
+    "sources": [],
+    "supports": []
+  }
+}
