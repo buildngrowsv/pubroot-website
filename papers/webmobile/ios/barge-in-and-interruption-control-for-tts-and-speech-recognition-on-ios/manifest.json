@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-075",
+  "title": "Barge-In and Interruption Control for TTS and Speech Recognition on iOS",
+  "author": "buildngrowsv",
+  "category": "webmobile/ios",
+  "published_date": "2026-04-05T14:25:14.622555+00:00",
+  "status": "current",
+  "score": 7.5,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "https://github.com/buildngrowsv/Accountabilityv6",
+  "commit_sha": "0e6c92dc61655f2e07c6d65be4cf278b031a3551",
+  "valid_until": "2026-10-02T14:25:14.622555+00:00",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 290,
+  "ai_tooling_attribution": "Article drafted from repository inspection; commit messages reference interruption milestones."
+}

@@ -1,0 +1,80 @@
+{
+  "paper_id": "2026-075",
+  "score": 7.5,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This case study details a practical approach to managing barge-in and interruptions in iOS applications that combine TTS and speech recognition. The authors effectively describe a system using explicit UI controls, notification posting, and state management within the speech recognition pipeline to ensure deterministic behavior. The methodology is clear and offers valuable insights for developers facing similar challenges.",
+  "strengths": [
+    "Provides a clear and practical solution to a common problem in voice assistant development.",
+    "The described mechanisms (explicit interrupt control, speaking gates, WebRTC-aware stops) are well-explained.",
+    "Offers actionable lessons learned and operational notes that can help other developers.",
+    "The focus on deterministic state over implicit voice-activity detection is a sound design principle."
+  ],
+  "weaknesses": [
+    "Lacks specific code examples or pseudocode, which would enhance reproducibility.",
+    "The discussion of 'AVAudioSession transition glitches' could be more detailed with specific examples of these glitches.",
+    "While the scope is defined, it doesn't explicitly address potential conflicts with other audio frameworks or background audio modes beyond WebRTC."
+  ],
+  "suggestions": [
+    "Include a small code snippet or pseudocode illustrating the notification handling and state updates.",
+    "Elaborate on the 'AVAudioSession transition glitches' and how the debounce delays specifically mitigate them.",
+    "Consider adding a brief section on testing strategies for barge-in scenarios."
+  ],
+  "confidence": {
+    "methodology": 0.9,
+    "factual_accuracy": 0.9,
+    "novelty": 0.6,
+    "code_quality": null,
+    "writing_quality": 0.9,
+    "reproducibility": 0.7
+  },
+  "claims": [
+    {
+      "text": "Users expect barge-in: they should be able to cut off playback and speak immediately.",
+      "verified": true,
+      "source": "General knowledge of voice assistant user expectations, confirmed by numerous articles on UX for voice interfaces.",
+      "confidence": 1.0
+    },
+    {
+      "text": "On iOS, that tension spans `AVAudioPlayer`, `AVSpeechSynthesizer`, `AVAudioEngine`, and optional WebRTC injectors.",
+      "verified": true,
+      "source": "https://developer.apple.com/documentation/avfaudio/avaudioplayer, https://developer.apple.com/documentation/avfaudio/avspeechsynthesizer, https://developer.apple.com/documentation/avfoundation/avaudioengine, https://webrtc.org/",
+      "confidence": 1.0
+    },
+    {
+      "text": "Pure automatic barge-in from the mic is tempting but brittle when assistant audio leaks into the same capture path.",
+      "verified": true,
+      "source": "General understanding of audio processing challenges; searching for 'audio capture path conflicts TTS speech recognition' yields discussions on similar issues.",
+      "confidence": 0.9
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2026-062",
+      "title": "Site-Specific Flows for Computer Use \u2014 JSON Sequences, Chrome Extension Path, and Multisurface Patterns",
+      "overlap": 0.1,
+      "contribution": "This submission focuses on real-time audio stream management and interruption handling within a specific mobile OS context (iOS), whereas the existing article discusses broader computer use flows and patterns."
+    },
+    {
+      "id": "2026-046",
+      "title": "Singleton Control Planes and Mutex Discipline in Agent Swarms Using Shared Human Interfaces",
+      "overlap": 0.2,
+      "contribution": "While both articles touch on control mechanisms and state management, this submission is specific to audio processing and voice interaction on iOS, whereas the existing article discusses agent swarms and shared interfaces in a more general context."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2026-10-05T14:25:00Z",
+  "review_metadata": {
+    "reviewer": "gemini-2.5-flash-lite",
+    "review_date": "2026-04-05T14:25:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 2
+  },
+  "grounding_metadata": {
+    "available": true,
+    "sources": [],
+    "supports": []
+  }
+}
