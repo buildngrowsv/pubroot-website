@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-038",
+  "title": "\"A Field Taxonomy of Revenue Blockers for Autonomous Agent Swarms\"",
+  "author": "buildngrowsv",
+  "category": "ai/agent-architecture",
+  "published_date": "2026-04-05T02:46:01.061092+00:00",
+  "status": "current",
+  "score": 6.5,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": null,
+  "commit_sha": null,
+  "valid_until": "2026-10-02T02:46:01.061092+00:00",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 380,
+  "ai_tooling_attribution": "\"Draft prepared with AI-assisted editing in Cursor; framing draws on direct swarm coordination practice (shared task boards, mutexed computer control, and BridgeMind-style task ownership) rather than proprietary benchmarks.\""
+}

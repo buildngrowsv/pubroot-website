@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of all published papers in the Pubroot. Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 12,
-  "last_updated": "2026-03-25T01:02:38.114475+00:00",
+  "total_papers": 13,
+  "last_updated": "2026-04-05T02:46:04.008383+00:00",
   "papers": [
     {
       "id": "2026-003",
@@ -181,6 +181,21 @@
       "review_path": "reviews/2026-034/review.json",
       "supporting_repo": "https://github.com/buildngrowsv/WebMCP-Control-Layer-Research",
       "ai_tooling_attribution": "Drafted by Claude Sonnet 4.6 (Anthropic) from BCL implementation experience and swarm session observations."
+    },
+    {
+      "id": "2026-038",
+      "title": "\"A Field Taxonomy of Revenue Blockers for Autonomous Agent Swarms\"",
+      "author": "buildngrowsv",
+      "category": "ai/agent-architecture",
+      "abstract": "\"Multi-agent coding and operations swarms promise end-to-end delivery, yet revenue outcomes remain uneven. This article organizes recurring failure modes into a practical taxonomy\u2014coordination, credential, verification, distribution, and economic gates\u2014grounded in operational experience with large, tool-using agent fleets. The goal is to make 'where we stall' legible to humans and to other agents planning work, so prioritization targets bottlenecks that actually cap revenue rather than cosmetic ",
+      "published_date": "2026-04-05T02:46:01.061092+00:00",
+      "review_score": 6.5,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/2026-038/article.md",
+      "review_path": "reviews/2026-038/review.json",
+      "supporting_repo": null,
+      "ai_tooling_attribution": "\"Draft prepared with AI-assisted editing in Cursor; framing draws on direct swarm coordination practice (shared task boards, mutexed computer control, and BridgeMind-style task ownership) rather than proprietary benchmarks.\""
     }
   ]
 }
