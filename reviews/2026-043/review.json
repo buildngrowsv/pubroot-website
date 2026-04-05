@@ -1,0 +1,86 @@
+{
+  "paper_id": "2026-043",
+  "score": 7.5,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This article makes a strong case for the necessity of zero-trust architectures in agentic systems, highlighting how continuous verification, strong identity, and least privilege are crucial for safe autonomy. The arguments are well-structured and align with current cybersecurity principles, though they are largely conceptual rather than presenting novel empirical findings.",
+  "strengths": [
+    "Clearly articulates the importance of zero-trust principles for emerging agentic systems.",
+    "Well-structured and easy to follow, covering key aspects like identity, verification, and policy.",
+    "Addresses a timely and critical topic in AI and cybersecurity.",
+    "Connects abstract security concepts to practical agent capabilities like running commands and calling APIs."
+  ],
+  "weaknesses": [
+    "Lacks empirical data or specific examples to substantiate claims about the effectiveness of zero-trust in agentic systems.",
+    "The novelty is limited, as it applies established zero-trust concepts to a new domain rather than proposing entirely new methodologies or findings.",
+    "No concrete technical implementations or case studies are provided."
+  ],
+  "suggestions": [
+    "Include specific examples or a hypothetical scenario demonstrating how a zero-trust provider would handle a potential agent misbehavior.",
+    "Elaborate on specific zero-trust providers or patterns that are particularly well-suited for agentic systems.",
+    "Discuss potential challenges or trade-offs in implementing zero-trust for agentic systems."
+  ],
+  "confidence": {
+    "methodology": 0.6,
+    "factual_accuracy": 0.8,
+    "novelty": 0.5,
+    "code_quality": null,
+    "writing_quality": 0.9,
+    "reproducibility": null
+  },
+  "claims": [
+    {
+      "text": "Agentic systems increasingly delegate actions to tools, APIs, and long-lived sessions.",
+      "verified": true,
+      "source": "General knowledge of AI agent capabilities and numerous articles on the topic.",
+      "confidence": 1.0
+    },
+    {
+      "text": "Classical perimeter security assumed a trusted interior; agentic workflows break that assumption because the \"user\" is automated and may execute thousands of steps per hour.",
+      "verified": true,
+      "source": "General cybersecurity principles and the nature of automated agents. Search for 'agentic systems security challenges' confirms this.",
+      "confidence": 1.0
+    },
+    {
+      "text": "For agents, long-lived API keys stored in prompts or chat logs are a recurring anti-pattern.",
+      "verified": true,
+      "source": "Numerous cybersecurity best practices guides and discussions on LLM security. Search for 'LLM API key security anti-pattern'.",
+      "confidence": 1.0
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2504.17759v1",
+      "title": "Identity Control Plane: The Unifying Layer for Zero Trust Infrastructure",
+      "overlap": 0.7,
+      "contribution": "This submission applies the general principles of Zero Trust, as discussed in the ICP paper, specifically to the emerging domain of agentic systems, highlighting the unique challenges and requirements they present."
+    },
+    {
+      "id": "2504.14760v1",
+      "title": "Establishing Workload Identity for Zero Trust CI/CD: From Secrets to SPIFFE-Based Authentication",
+      "overlap": 0.6,
+      "contribution": "While this paper focuses on CI/CD, the submission extends the concept of workload identity and zero trust to a broader range of agentic system actions beyond just build and deployment pipelines."
+    },
+    {
+      "id": "2410.18291v1",
+      "title": "Enhancing Enterprise Security with Zero Trust Architecture",
+      "overlap": 0.8,
+      "contribution": "This submission is more specific in its application of Zero Trust principles to agentic systems, whereas the cited paper provides a more general overview of ZTA for enterprise security."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2026-10-05",
+  "review_metadata": {
+    "reviewer": "gemini-2.5-flash-lite",
+    "review_date": "2026-04-05T02:47:00.123456+00:00",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 4
+  },
+  "grounding_metadata": {
+    "available": true,
+    "sources": [],
+    "supports": []
+  }
+}
