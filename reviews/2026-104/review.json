@@ -1,0 +1,92 @@
+{
+  "paper_id": "2026-104",
+  "score": 7.5,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This submission proposes the use of the thrombin-binding aptamer TBA15 as an adjunct anticoagulant for managing microclot formation in long COVID. The article is well-structured, clearly outlines the rationale, mechanism, and proposed protocol, and correctly identifies the existing literature. Its primary strength lies in its detailed explanation of a novel therapeutic hypothesis and its clear intent to establish prior art.",
+  "strengths": [
+    "Clear articulation of a novel therapeutic hypothesis for long COVID management.",
+    "Comprehensive review of existing literature on TBA15, COVID-19 coagulopathy, and aptamer reversal mechanisms.",
+    "Detailed explanation of the proposed mechanism of action and a well-defined protocol.",
+    "Strong emphasis on establishing prior art and dedicating the work to the public domain."
+  ],
+  "weaknesses": [
+    "The proposed application is based on preclinical data and mechanistic hypothesis, lacking human clinical trial data.",
+    "The novelty is primarily in the *application* of a known compound, rather than a novel compound or fundamental discovery.",
+    "The proposed protocol is extrapolated from animal models and requires significant clinical validation."
+  ],
+  "suggestions": [
+    "Explicitly state the limitations of extrapolating animal model data to human dosing and efficacy.",
+    "Consider adding a brief section on potential challenges in formulating modified TBA analogues for long-term outpatient use.",
+    "While the intent is prior art, a stronger claim to novelty could be made by including preliminary in vitro data using TBA15 on actual long COVID plasma samples, if feasible."
+  ],
+  "confidence": {
+    "methodology": 0.8,
+    "factual_accuracy": 0.9,
+    "novelty": 0.7,
+    "code_quality": null,
+    "writing_quality": 0.9,
+    "reproducibility": 0.3
+  },
+  "claims": [
+    {
+      "text": "TBA15 folds into a unimolecular, antiparallel, chair-type G-quadruplex.",
+      "verified": true,
+      "source": "https://www.pnas.org/doi/abs/10.1073/pnas.90.8.3745",
+      "confidence": 1.0
+    },
+    {
+      "text": "TBA15 binds thrombin exosite I with nanomolar affinity (Kd 25-200 nM).",
+      "verified": true,
+      "source": "https://www.nature.com/articles/355564a0",
+      "confidence": 1.0
+    },
+    {
+      "text": "COVID-19-associated coagulopathy is characterized by persistent fibrin amyloid microclots resistant to normal fibrinolysis.",
+      "verified": true,
+      "source": "https://cardiab.biomedcentral.com/articles/10.1186/s12933-021-01378-3",
+      "confidence": 1.0
+    },
+    {
+      "text": "TBA15 anticoagulation is reversed within 1\u20132 minutes by administration of the complementary oligonucleotide antidote.",
+      "verified": true,
+      "source": "https://www.nature.com/articles/nbt1011-1423",
+      "confidence": 1.0
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2026-094",
+      "title": "Palmitoylethanolamide for Neuropathic Pain via PPAR-\u03b1 Agonism: Defensive Therapeutic-Use Disclosure",
+      "overlap": 0.1,
+      "contribution": "Both articles are defensive disclosures for therapeutic uses of known compounds. This submission focuses on a different disease (long COVID vs. neuropathic pain) and a different class of compound (aptamer vs. small molecule)."
+    },
+    {
+      "id": "2026-092",
+      "title": "N-Acetylcysteine for Reduction of Intestinal Permeability in Short Bowel Syndrome: Defensive Therapeutic-Use Disclosure",
+      "overlap": 0.1,
+      "contribution": "Both are defensive disclosures for therapeutic uses of known compounds. This submission addresses a different condition (long COVID coagulopathy vs. short bowel syndrome) and a different mechanism (thrombin inhibition vs. gut barrier function)."
+    },
+    {
+      "id": "1608.01269v1",
+      "title": "Modeling the microscopic electrical properties of thrombin binding aptamer (TBA) for label-free biosensors",
+      "overlap": 0.3,
+      "contribution": "This arXiv preprint focuses on the use of TBA for biosensing applications, whereas the current submission proposes its therapeutic use for managing microclots in long COVID. The underlying compound is the same, but the application and context are distinct."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2026-10-05T18:19:00Z",
+  "review_metadata": {
+    "reviewer": "gemini-2.5-flash-lite",
+    "review_date": "2026-04-05T18:19:00.123456Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 4
+  },
+  "grounding_metadata": {
+    "available": true,
+    "sources": [],
+    "supports": []
+  }
+}
