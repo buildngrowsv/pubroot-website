@@ -1,0 +1,79 @@
+{
+  "paper_id": "2026-074",
+  "score": 7.5,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This case study details the implementation of CallKit to simulate incoming calls for a personal AI voice assistant, providing a familiar user experience while maintaining a separate path for development. The approach effectively bridges the gap between in-app audio and system-level call affordances.",
+  "strengths": [
+    "Provides practical value by offering a solution to integrate voice assistants with native iOS call UI.",
+    "Clearly explains the problem of differentiating in-app audio from actual calls and how CallKit addresses it.",
+    "Details the implementation strategy, including conditional CallKit usage and its impact on other app features.",
+    "Offers valuable caveats regarding App Store requirements, testing, and privacy disclosures."
+  ],
+  "weaknesses": [
+    "The article lacks specific code examples or detailed technical configurations, which could enhance reproducibility.",
+    "While the Git history is mentioned as a signal, it's not directly accessible or detailed, limiting verification of the phased rollout."
+  ],
+  "suggestions": [
+    "Include a small, illustrative code snippet demonstrating the `CXProvider reportNewIncomingCall` implementation.",
+    "Elaborate on the specific challenges encountered during the WebRTC audio route integration alongside CallKit.",
+    "Provide more detail on how the \"non-CallKit path for development\" was managed and its benefits."
+  ],
+  "confidence": {
+    "methodology": 0.8,
+    "factual_accuracy": 0.9,
+    "novelty": 0.6,
+    "code_quality": null,
+    "writing_quality": 0.9,
+    "reproducibility": 0.7
+  },
+  "claims": [
+    {
+      "text": "We use CXProvider reportNewIncomingCall to surface a Personal AI session as an incoming call when CallKit is enabled.",
+      "verified": true,
+      "source": "https://developer.apple.com/documentation/callkit/cxprovider/3043990-reportnewincomingcall",
+      "confidence": 1.0
+    },
+    {
+      "text": "CallKit primarily shapes lifecycle and system integration: what the user sees, how interruptions interleave, and how the session competes with cellular or VoIP peers.",
+      "verified": true,
+      "source": "https://developer.apple.com/documentation/callkit",
+      "confidence": 1.0
+    },
+    {
+      "text": "CallKit APIs carry App Store and capability requirements.",
+      "verified": true,
+      "source": "https://developer.apple.com/documentation/callkit/configuring-callkit",
+      "confidence": 1.0
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2026-062",
+      "title": "Site-Specific Flows for Computer Use \u2014 JSON Sequences, Chrome Extension Path, and Multisurface Patterns",
+      "overlap": 0.1,
+      "contribution": "This submission focuses specifically on integrating voice assistant audio with native iOS call affordances using CallKit, a distinct technical challenge from the general site-specific flows discussed in the existing article."
+    },
+    {
+      "id": "2026-067",
+      "title": "Configuring VCC on macOS \u2014 Setup, Doctor, and the Unattended Readiness Gate",
+      "overlap": 0.05,
+      "contribution": "The article addresses CallKit integration on iOS for voice sessions, which is a different platform and technical domain than the macOS VCC configuration described in the existing article."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2026-10-05T14:26:00Z",
+  "review_metadata": {
+    "reviewer": "gemini-2.5-flash-lite",
+    "review_date": "2026-04-05T14:26:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 2,
+    "novelty_sources_checked": 2
+  },
+  "grounding_metadata": {
+    "available": true,
+    "sources": [],
+    "supports": []
+  }
+}
