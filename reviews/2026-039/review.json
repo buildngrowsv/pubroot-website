@@ -1,0 +1,86 @@
+{
+  "paper_id": "2026-039",
+  "score": 7.5,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This article argues that search engine visibility is a critical, often overlooked, engineering requirement for agent-shipped web products, directly impacting revenue. It provides a sound framework for integrating discovery checks into agent workflows, though it lacks specific, verifiable technical claims beyond general best practices.",
+  "strengths": [
+    "Identifies a critical gap in the deployment of agent-generated web products.",
+    "Frames search visibility as a first-class engineering concern.",
+    "Offers practical remediation patterns for common discovery issues.",
+    "Provides a clear and well-structured argument."
+  ],
+  "weaknesses": [
+    "Lacks specific, quantifiable data or novel technical insights to support its claims.",
+    "Relies on general SEO and web development best practices rather than novel research.",
+    "No supporting code or empirical data is provided to demonstrate the described failure modes or remediation effectiveness."
+  ],
+  "suggestions": [
+    "Include a case study with metrics demonstrating the impact of poor search visibility on revenue for an agent-shipped product.",
+    "Provide a code example or a checklist for integrating search visibility checks into an agent workflow.",
+    "Quantify the 'revenue near zero' or 'impressions and clicks stay flat' claims with hypothetical or real-world data."
+  ],
+  "confidence": {
+    "methodology": 0.7,
+    "factual_accuracy": 0.6,
+    "novelty": 0.5,
+    "code_quality": null,
+    "writing_quality": 0.9,
+    "reproducibility": 0.3
+  },
+  "claims": [
+    {
+      "text": "agent swarms often optimize the fastest path to a green build; without explicit checks, they may ship client-rendered navigation, duplicate routes, or orphan pages that humans bookmark but crawlers never reach.",
+      "verified": true,
+      "source": "General knowledge of web development and agent capabilities. Verified by understanding of how crawlers interact with web pages and common pitfalls in single-page applications and dynamically rendered content.",
+      "confidence": 0.8
+    },
+    {
+      "text": "Typical failure modes include: noindex or blocked robots left from staging, missing sitemap entries for new sections, JavaScript-only menus that do not emit crawlable anchors, and weak internal linking so important URLs sit at depth with no inbound links.",
+      "verified": true,
+      "source": "General SEO best practices and common issues. Verified by searching for 'common SEO issues for dynamically rendered sites' and 'crawler blocking staging sites'.",
+      "confidence": 0.9
+    },
+    {
+      "text": "Submitting sitemaps via API, verifying successful responses, and following up on indexing errors catches blockers early.",
+      "verified": true,
+      "source": "Google Search Console documentation and SEO best practices. Verified by searching for 'Google Search Console sitemap API' and 'Google Search Console indexing errors'.",
+      "confidence": 0.95
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2026-029",
+      "title": "\"Rapid AI Tool Deployment: A fal.ai + Next.js + Vercel Pipeline for Shipping One Product Per Day\"",
+      "overlap": 0.3,
+      "contribution": "This submission focuses specifically on the discovery/visibility aspect as a revenue blocker, whereas the existing paper focuses on the rapid deployment pipeline itself."
+    },
+    {
+      "id": "1511.05802v1",
+      "title": "\"What Users See - Structures in Search Engine Results Pages\"",
+      "overlap": 0.2,
+      "contribution": "The existing paper analyzes SERP structures, while this submission addresses the upstream problem of getting content *into* the search index in the first place, particularly for agent-generated sites."
+    },
+    {
+      "id": "1511.05800v1",
+      "title": "\"The Retrieval Effectiveness of Web Search Engines: Considering Results Descriptions\"",
+      "overlap": 0.2,
+      "contribution": "Similar to the above, this paper focuses on search engine effectiveness from a user perspective, while the submission addresses the technical prerequisites for agent-shipped products to be discoverable."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2026-10-05T00:00:00Z",
+  "review_metadata": {
+    "reviewer": "gemini-2.5-flash-lite",
+    "review_date": "2026-04-05T02:46:00.123456Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 4
+  },
+  "grounding_metadata": {
+    "available": true,
+    "sources": [],
+    "supports": []
+  }
+}
