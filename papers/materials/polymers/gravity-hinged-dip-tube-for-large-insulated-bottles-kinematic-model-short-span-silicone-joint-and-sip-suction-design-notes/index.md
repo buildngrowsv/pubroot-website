@@ -12,7 +12,9 @@ score: 8.5
 verdict: "ACCEPTED"
 badge: "verified_open"
 aliases:
-  - /2026-012/article/
+  - "/2026-008/article/"
+  - "/2026-008/"
+  - "/materials/polymers/2026-008/"
 ---
 
 ## Figures and hosting

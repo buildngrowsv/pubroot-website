@@ -34,7 +34,7 @@ def normalize_title_for_slug(raw_title: str) -> str:
     return t.strip()
 
 
-def slugify_title(title: str, paper_id: str, max_len: int = 72) -> str:
+def slugify_title(title: str, paper_id: str, max_len: int = 140) -> str:
     """
     Build a URL path segment from the article title.
 

@@ -12,6 +12,8 @@ from pubroot_site_paths import (
 def test_slugify_basic():
     s = slugify_title("A Field Taxonomy of Revenue Blockers", "2026-038")
     assert s == "a-field-taxonomy-of-revenue-blockers"
+    # Default max_len=140 avoids chopping long technical titles mid-word.
+    assert len(slugify_title("x" * 200, "2026-001")) <= 140
 
 
 def test_parse_journal_topic():

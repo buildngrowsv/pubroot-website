@@ -12,6 +12,7 @@ badge: "verified_open"
 aliases:
   - "/2026-003/article/"
   - "/2026-003/"
+  - "/prior-art/general-disclosure/preemptive-prior-art-publication-as-a-defense-against-method-of-use-pate/"
 ---
 
 ## 1. The Problem: Use-Case Patent Capture
