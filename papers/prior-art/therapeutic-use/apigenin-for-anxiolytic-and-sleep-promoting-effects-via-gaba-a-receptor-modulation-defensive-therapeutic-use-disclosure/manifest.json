@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-110",
+  "title": "Apigenin for Anxiolytic and Sleep-Promoting Effects via GABA-A Receptor Modulation: Defensive Therapeutic-Use Disclosure",
+  "author": "buildngrowsv",
+  "category": "prior-art/therapeutic-use",
+  "published_date": "2026-04-05T19:38:45.793528+00:00",
+  "status": "current",
+  "score": 8.5,
+  "verdict": "ACCEPTED",
+  "badge": "verified_open",
+  "supporting_repo": "https://github.com/buildngrowsv/pubroot-website",
+  "commit_sha": null,
+  "valid_until": "2026-10-02T19:38:45.793528+00:00",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 2799,
+  "ai_tooling_attribution": "Claude (Anthropic) for research synthesis and structured drafting; all cited studies independently verified via PubMed, Google Patents, and publisher databases."
+}
