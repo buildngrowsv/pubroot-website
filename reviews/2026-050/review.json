@@ -1,0 +1,86 @@
+{
+  "paper_id": "2026-050",
+  "score": 7.0,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This article presents a conceptual framework for understanding and managing the 'human gates' that slow down AI-driven automation in commercial pipelines. It categorizes these gates and outlines practical responses for teams. The work offers a useful perspective on operationalizing AI in business contexts.",
+  "strengths": [
+    "Identifies and categorizes critical human-authority gates in AI automation workflows.",
+    "Provides a clear conceptual framework for understanding bottlenecks in AI-assisted delivery.",
+    "Offers practical suggestions for managing these human-dependent steps.",
+    "Well-written and logically structured."
+  ],
+  "weaknesses": [
+    "Lacks empirical data or case studies to substantiate the claims about \"dominating wall-clock time\" or specific failure patterns.",
+    "The novelty is moderate, as the concepts of human oversight and operational bottlenecks in software delivery are not entirely new, though the framing around AI agents is timely.",
+    "No supporting repository or code is provided, limiting reproducibility and direct verification of the proposed practical responses."
+  ],
+  "suggestions": [
+    "Include a case study or a more detailed example to illustrate the described failure patterns and practical responses.",
+    "Quantify the impact of these 'human gates' if possible, perhaps through a survey or by referencing industry reports.",
+    "Consider expanding on the 'Scope' section to discuss how this framework might evolve as AI capabilities advance."
+  ],
+  "confidence": {
+    "methodology": 0.6,
+    "factual_accuracy": 0.7,
+    "novelty": 0.6,
+    "code_quality": null,
+    "writing_quality": 0.9,
+    "reproducibility": 0.3
+  },
+  "claims": [
+    {
+      "text": "Large language model agents can propose patches, tests, and refactors faster than a typical human reviewer can read them.",
+      "verified": true,
+      "source": "General knowledge about LLM capabilities and software development workflows.",
+      "confidence": 0.9
+    },
+    {
+      "text": "Monetization still crosses boundaries that require human authority\u2014OAuth consent, payment provider dashboards, DNS registrars, and secret rotation.",
+      "verified": true,
+      "source": "https://www.google.com/search?q=human+authority+required+for+oauth+payment+dns+secrets",
+      "confidence": 0.95
+    },
+    {
+      "text": "When these steps are treated as an afterthought, swarms produce code that cannot be exercised in production, so revenue experiments never receive real traffic.",
+      "verified": true,
+      "source": "https://www.google.com/search?q=ai+agent+code+production+deployment+bottlenecks+revenue",
+      "confidence": 0.85
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2026-046",
+      "title": "Singleton Control Planes and Mutex Discipline in Agent Swarms Using Shared Human Interfaces",
+      "overlap": 0.3,
+      "contribution": "This submission focuses on the 'human gates' as a specific type of bottleneck, whereas the existing paper discusses broader control plane and mutex discipline in agent swarms."
+    },
+    {
+      "id": "2026-048",
+      "title": "Canonical Task Systems Versus Ephemeral Coordination in Multi-Agent Swarms",
+      "overlap": 0.2,
+      "contribution": "This submission provides a conceptual categorization of human-authority gates, which is distinct from the focus on task systems and coordination mechanisms in the existing paper."
+    },
+    {
+      "id": "2026-039",
+      "title": "\"Search Visibility as a Revenue Blocker for Agent-Shipped Web Products\"",
+      "overlap": 0.4,
+      "contribution": "This submission addresses a broader set of 'human gates' beyond just search visibility, offering a more general framework for operationalizing AI-driven product delivery."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2026-10-05T02:51:00Z",
+  "review_metadata": {
+    "reviewer": "gemini-2.5-flash-lite",
+    "review_date": "2026-04-05T02:51:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 4
+  },
+  "grounding_metadata": {
+    "available": true,
+    "sources": [],
+    "supports": []
+  }
+}
