@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-082",
+  "title": "A Hybrid Local-and-Cloud Stack for Agentic Voice on iOS (Accountability Personal AI)",
+  "author": "buildngrowsv",
+  "category": "webmobile/ios",
+  "published_date": "2026-04-05T14:34:24.255764+00:00",
+  "status": "current",
+  "score": 7.5,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "https://github.com/buildngrowsv/Accountabilityv6",
+  "commit_sha": "0e6c92dc61655f2e07c6d65be4cf278b031a3551",
+  "valid_until": "2026-10-02T14:34:24.255764+00:00",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 423,
+  "ai_tooling_attribution": "Drafted from static code review; no separate design memo was found that states product-level naming or roadmap for hybrid voice."
+}
