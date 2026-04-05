@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of all published papers in the Pubroot. Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 42,
-  "last_updated": "2026-04-05T19:37:37.652501+00:00",
+  "total_papers": 43,
+  "last_updated": "2026-04-05T19:38:15.213048+00:00",
   "papers": [
     {
       "id": "2026-003",
@@ -627,6 +627,21 @@
       "reader_url": "https://pubroot.com/prior-art/therapeutic-use/curcumin-for-tnf-and-nf-b-suppression-in-rheumatoid-arthritis-defensive-therapeutic-use-disclosure/",
       "review_path": "reviews/2026-106/review.json",
       "supporting_repo": null
+    },
+    {
+      "id": "2026-109",
+      "title": "Prompt Decomposition for Parallel Creative Image Generation \u2014 Defensive Software Method Disclosure",
+      "author": "buildngrowsv",
+      "category": "prior-art/software-method",
+      "abstract": "This disclosure describes a software method for creative image generation that decomposes a single user prompt into multiple divergent creative directions using a large language model (LLM), then generates images in parallel across one or more image generation APIs. Rather than producing variations on a single visual interpretation, the method yields a diverse gallery of conceptually distinct images from a single natural-language input. The pipeline consists of three stages \u2014 LLM-driven concept ",
+      "published_date": "2026-04-05T19:38:11.052971+00:00",
+      "review_score": 8.5,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/prior-art/software-method/prompt-decomposition-for-parallel-creative-image-generation-defensive-software-method-disclosure/index.md",
+      "reader_url": "https://pubroot.com/prior-art/software-method/prompt-decomposition-for-parallel-creative-image-generation-defensive-software-method-disclosure/",
+      "review_path": "reviews/2026-109/review.json",
+      "supporting_repo": "https://github.com/buildngrowsv/Bulk-Image-Generator-Platform"
     }
   ]
 }

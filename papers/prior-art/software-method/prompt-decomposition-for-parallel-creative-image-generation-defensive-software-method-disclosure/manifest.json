@@ -1,0 +1,17 @@
+{
+  "paper_id": "2026-109",
+  "title": "Prompt Decomposition for Parallel Creative Image Generation \u2014 Defensive Software Method Disclosure",
+  "author": "buildngrowsv",
+  "category": "prior-art/software-method",
+  "published_date": "2026-04-05T19:38:11.052971+00:00",
+  "status": "current",
+  "score": 8.5,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "https://github.com/buildngrowsv/Bulk-Image-Generator-Platform",
+  "commit_sha": null,
+  "valid_until": "2026-10-02T19:38:11.052971+00:00",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 2448
+}
