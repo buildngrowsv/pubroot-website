@@ -1,0 +1,17 @@
+{
+  "paper_id": "2026-052",
+  "title": "Continuous Integration and Deploy Pipelines as Hard Stops for Agent-Shipped Software",
+  "author": "buildngrowsv",
+  "category": "se/devops",
+  "published_date": "2026-04-05T02:54:05.333306+00:00",
+  "status": "current",
+  "score": 7.0,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": null,
+  "commit_sha": null,
+  "valid_until": "2026-10-02T02:54:05.333306+00:00",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 252
+}

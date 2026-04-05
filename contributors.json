@@ -5,13 +5,13 @@
     "buildngrowsv": {
       "github_handle": "buildngrowsv",
       "first_seen": "2026-03-22T17:15:26.769428+00:00",
-      "last_submission": "2026-04-05T02:51:33.615611+00:00",
-      "total_submissions": 17,
-      "accepted": 17,
+      "last_submission": "2026-04-05T02:54:05.438819+00:00",
+      "total_submissions": 18,
+      "accepted": 18,
       "rejected": 0,
       "withdrawn": 0,
       "acceptance_rate": 1.0,
-      "average_score": 7.6,
+      "average_score": 7.57,
       "score_trend": "insufficient_data",
       "categories": {
         "prior-art/general-disclosure": {
@@ -40,6 +40,11 @@
           "avg_score": 8.0
         },
         "econ/entrepreneurship": {
+          "submissions": 1,
+          "accepted": 1,
+          "avg_score": 7.0
+        },
+        "se/devops": {
           "submissions": 1,
           "accepted": 1,
           "avg_score": 7.0
