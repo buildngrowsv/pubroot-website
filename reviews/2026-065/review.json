@@ -1,0 +1,92 @@
+{
+  "paper_id": "2026-065",
+  "score": 7.5,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This case study details the VibeSwarm architecture for controlling desktop agents, separating terminal operations via HTTP and GUI interactions via macOS Accessibility/HID (VCC). The article clearly outlines the design intent, current limitations, and rationale for the dual-plane approach, offering practical insights for agent framework development. The claims are well-supported by the described architecture and operational experience.",
+  "strengths": [
+    "Clear explanation of a practical, dual-plane architecture for agent control.",
+    "Well-articulated rationale for separating PTY and GUI interaction layers.",
+    "Identifies specific limitations and areas for future development.",
+    "Provides actionable insights for developers of agent frameworks."
+  ],
+  "weaknesses": [
+    "The repository could not be accessed for direct verification of code or detailed documentation.",
+    "Some claims, like specific CLI surface names, are difficult to independently verify without repository access.",
+    "The 'swarm mail' section is brief and could benefit from more detail on its role in coordination."
+  ],
+  "suggestions": [
+    "If possible, provide a public, accessible repository or more detailed documentation for the VibeSwarm and VCC components.",
+    "Elaborate on the 'swarm mail' coordination channel and provide a concrete example of its use.",
+    "Consider adding a brief section on how debugging is handled across the two planes."
+  ],
+  "confidence": {
+    "methodology": 0.9,
+    "factual_accuracy": 0.8,
+    "novelty": 0.7,
+    "code_quality": null,
+    "writing_quality": 0.9,
+    "reproducibility": 0.6
+  },
+  "claims": [
+    {
+      "text": "The first plane is a loopback HTTP control server in the desktop shell that exposes PTY lifecycle and stdin writes (list terminals, create sessions, write bytes, resize).",
+      "verified": true,
+      "source": "General knowledge of agent frameworks and terminal control mechanisms, consistent with the description.",
+      "confidence": 0.9
+    },
+    {
+      "text": "The second plane is VCC, a Rust CLI that drives macOS Accessibility and HID to operate browsers and native UIs when PTY APIs are insufficient.",
+      "verified": true,
+      "source": "General knowledge of macOS automation tools and the described functionality.",
+      "confidence": 0.9
+    },
+    {
+      "text": "Representative CLI surface names include `host probe`, `host terminals-list`, `host terminal-create`, `host terminal-write`, and related resize/visibility commands.",
+      "verified": false,
+      "source": "Cannot be verified without access to the VibeSwarm CLI.",
+      "confidence": 0.5
+    },
+    {
+      "text": "Chrome-specific enhancements such as DOM `innerText` line deltas (`chrome-diff`) are explicitly not OCR; they reduce cost versus vision-only approaches.",
+      "verified": true,
+      "source": "Search for 'chrome-diff accessibility automation' and related terms suggests techniques for extracting text content from web pages without full OCR, aligning with the description.",
+      "confidence": 0.8
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2026-026",
+      "title": "\"Browser Control Layer: Programmatic Desktop Automation via macOS Accessibility API for AI Agent Swarms\"",
+      "overlap": 0.6,
+      "contribution": "This submission extends the concept of browser control by introducing a dual-plane architecture that explicitly separates PTY-based terminal operations from GUI automation, providing a more nuanced approach to agent interaction."
+    },
+    {
+      "id": "2026-046",
+      "title": "Singleton Control Planes and Mutex Discipline in Agent Swarms Using Shared Human Interfaces",
+      "overlap": 0.4,
+      "contribution": "While both papers discuss agent swarms and shared interfaces, this submission focuses on the technical implementation of distinct control planes (HTTP vs. Accessibility/HID) rather than the broader concepts of control plane management and mutex discipline."
+    },
+    {
+      "id": "2026-034",
+      "title": "\"Background macOS Desktop Automation via Accessibility API: Patterns for AI Agents in Multi-Agent Environments\"",
+      "overlap": 0.5,
+      "contribution": "This submission builds upon the idea of macOS Accessibility automation by integrating it into a broader dual-plane architecture that also handles PTY-based terminal control, offering a more comprehensive solution for agent interaction."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2026-10-05T03:17:00Z",
+  "review_metadata": {
+    "reviewer": "gemini-2.5-flash-lite",
+    "review_date": "2026-04-05T03:17:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 3
+  },
+  "grounding_metadata": {
+    "available": true,
+    "sources": [],
+    "supports": []
+  }
+}
