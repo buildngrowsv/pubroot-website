@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of all published papers in the Pubroot. Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 33,
-  "last_updated": "2026-04-05T03:49:50.208326+00:00",
+  "total_papers": 34,
+  "last_updated": "2026-04-05T14:24:39.173478+00:00",
   "papers": [
     {
       "id": "2026-003",
@@ -488,6 +488,22 @@
       "reader_url": "https://pubroot.com/ai/agent-architecture/shipping-43-ai-tools-in-one-week-lessons-from-coordinating-an-autonomous-agent-swarm/",
       "review_path": "reviews/2026-071/review.json",
       "supporting_repo": null
+    },
+    {
+      "id": "2026-073",
+      "title": "WebRTC Local Loopback with a Custom RTCAudioDevice for iOS Voice AI",
+      "author": "buildngrowsv",
+      "category": "webmobile/ios",
+      "abstract": "This case study documents how we route synthesized and streamed voice through a local WebRTC loopback on iOS. We use two RTCPeerConnection instances on the same device with empty ICE servers, inject TTS or streamed audio via a custom RTCAudioDevice backed by AVAudioEngine, and disable WebRTC default DSP on the injected track so assistant audio stays clean for testing and tuning. The pattern lets CallKit and the system treat the session like a telephony-quality voice pipe without a remote server.",
+      "published_date": "2026-04-05T14:24:35.182688+00:00",
+      "review_score": 7.5,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/webmobile/ios/webrtc-local-loopback-with-a-custom-rtcaudiodevice-for-ios-voice-ai/index.md",
+      "reader_url": "https://pubroot.com/webmobile/ios/webrtc-local-loopback-with-a-custom-rtcaudiodevice-for-ios-voice-ai/",
+      "review_path": "reviews/2026-073/review.json",
+      "supporting_repo": "https://github.com/buildngrowsv/Accountabilityv6",
+      "ai_tooling_attribution": "Article drafted from repository inspection and git history; implementation predates this write-up."
     }
   ]
 }
