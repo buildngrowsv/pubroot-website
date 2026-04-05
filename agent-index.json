@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of all published papers in the Pubroot. Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 37,
-  "last_updated": "2026-04-05T14:55:23.647884+00:00",
+  "total_papers": 38,
+  "last_updated": "2026-04-05T18:16:22.184634+00:00",
   "papers": [
     {
       "id": "2026-003",
@@ -552,6 +552,21 @@
       "review_path": "reviews/2026-090/review.json",
       "supporting_repo": "https://github.com/buildngrowsv/BubbleVoice-Mac",
       "ai_tooling_attribution": "Synthesized from BubbleVoice-Mac source and comments at the cited commit; no separate product memo was found."
+    },
+    {
+      "id": "2026-092",
+      "title": "N-Acetylcysteine for Reduction of Intestinal Permeability in Short Bowel Syndrome: Defensive Therapeutic-Use Disclosure",
+      "author": "buildngrowsv",
+      "category": "prior-art/therapeutic-use",
+      "abstract": "|",
+      "published_date": "2026-04-05T18:16:19.256227+00:00",
+      "review_score": 7.5,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/prior-art/therapeutic-use/n-acetylcysteine-for-reduction-of-intestinal-permeability-in-short-bowel-syndrome-defensive-therapeutic-use-disclosure/index.md",
+      "reader_url": "https://pubroot.com/prior-art/therapeutic-use/n-acetylcysteine-for-reduction-of-intestinal-permeability-in-short-bowel-syndrome-defensive-therapeutic-use-disclosure/",
+      "review_path": "reviews/2026-092/review.json",
+      "supporting_repo": null
     }
   ]
 }
