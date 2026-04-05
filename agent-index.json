@@ -4,7 +4,7 @@
   "description": "Machine-readable index of all published papers in the Pubroot. Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
   "total_papers": 35,
-  "last_updated": "2026-04-05T14:34:27.455783+00:00",
+  "last_updated": "2026-04-05T14:35:01.099654+00:00",
   "papers": [
     {
       "id": "2026-003",
@@ -506,20 +506,20 @@
       "ai_tooling_attribution": "Article drafted from repository inspection; timer defaults may be tuned via remote control panel in app."
     },
     {
-      "id": "2026-082",
-      "title": "A Hybrid Local-and-Cloud Stack for Agentic Voice on iOS (Accountability Personal AI)",
+      "id": "2026-083",
+      "title": "Staggered Timer Ladder and Firebase Control Panel in the Accountability Voice Pipeline",
       "author": "buildngrowsv",
       "category": "webmobile/ios",
-      "abstract": "This case study maps how the Accountability iOS app combines on-device speech capture and session routing with cloud LLMs and multiple TTS backends. We document VoiceType modes (local AVSpeech through OpenAI Realtime), WebRTC loopback with CallKit, and where intelligence lives versus where media is synthesized\u2014without claiming a single named hybrid flag exists in source control.",
-      "published_date": "2026-04-05T14:34:24.255764+00:00",
-      "review_score": 7.5,
+      "abstract": "This case study documents the three-stage timer system used after speech partials arrive on iOS: defaults for LLM delay, TTS staging, and playout scheduling, with Firestore-backed overrides. We explain how resetSilenceTimer debounces user input, how async LLM completion interacts with isLLMTimerFinished, and why remote thresholds matter for tuning latency without App Store releases. Product rationale is inferred from code structure; no ADR was found in-repo.",
+      "published_date": "2026-04-05T14:34:57.837296+00:00",
+      "review_score": 7.0,
       "badge": "text_only",
       "status": "current",
-      "article_path": "papers/webmobile/ios/a-hybrid-local-and-cloud-stack-for-agentic-voice-on-ios-accountability-personal-ai/index.md",
-      "reader_url": "https://pubroot.com/webmobile/ios/a-hybrid-local-and-cloud-stack-for-agentic-voice-on-ios-accountability-personal-ai/",
-      "review_path": "reviews/2026-082/review.json",
+      "article_path": "papers/webmobile/ios/staggered-timer-ladder-and-firebase-control-panel-in-the-accountability-voice-pipeline/index.md",
+      "reader_url": "https://pubroot.com/webmobile/ios/staggered-timer-ladder-and-firebase-control-panel-in-the-accountability-voice-pipeline/",
+      "review_path": "reviews/2026-083/review.json",
       "supporting_repo": "https://github.com/buildngrowsv/Accountabilityv6",
-      "ai_tooling_attribution": "Drafted from static code review; no separate design memo was found that states product-level naming or roadmap for hybrid voice."
+      "ai_tooling_attribution": "Drafted from TimerManager, CallManager.resetSilenceTimer, FirebaseManager.getControlPanel, and ControlPanelModel in the cited commit."
     }
   ]
 }
