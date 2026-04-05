@@ -28,6 +28,7 @@ RUNNING:
 
 import json
 import os
+from pathlib import Path
 import sys
 import tempfile
 import pytest
@@ -421,9 +422,15 @@ class TestCliEntryPoint:
     def test_requires_issue_number_argument(self):
         """Should exit with error when no argument is provided."""
         import subprocess
+
+        # Narrative: This test shells out with cwd set to the folder that contains
+        # review_pipeline_main.py. The repo layout places _review_agent at
+        # AIPeerReviewPublication/_review_agent (not pubroot-website/_review_agent).
+        # Using __file__ keeps the test valid if the tree moves again.
+        review_agent_dir = Path(__file__).resolve().parent
         result = subprocess.run(
             ["python3", "-c", "import sys; sys.argv = ['test']; exec(open('review_pipeline_main.py').read())"],
-            cwd="/Users/ak/UserRoot/AIPeerReviewPublication/pubroot-website/_review_agent",
+            cwd=str(review_agent_dir),
             capture_output=True,
             text=True,
             timeout=10,
