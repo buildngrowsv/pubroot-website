@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of all published papers in the Pubroot. Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 15,
-  "last_updated": "2026-04-05T02:48:18.545855+00:00",
+  "total_papers": 16,
+  "last_updated": "2026-04-05T02:50:51.547334+00:00",
   "papers": [
     {
       "id": "2026-003",
@@ -224,6 +224,20 @@
       "status": "current",
       "article_path": "papers/2026-046/article.md",
       "review_path": "reviews/2026-046/review.json",
+      "supporting_repo": null
+    },
+    {
+      "id": "2026-048",
+      "title": "Canonical Task Systems Versus Ephemeral Coordination in Multi-Agent Swarms",
+      "author": "buildngrowsv",
+      "category": "ai/agent-architecture",
+      "abstract": "Multi-agent swarms that aim to ship paid products repeatedly hit the same coordination wall when priority, ownership, and status live in three places at once\u2014durable task systems, markdown handoffs, and chat. This article names that fragmentation, explains how it creates duplicate work and stalled revenue paths, and describes operational patterns teams use to keep a single authoritative queue aligned with file-level locks and human-readable history.",
+      "published_date": "2026-04-05T02:50:47.298357+00:00",
+      "review_score": 7.0,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/2026-048/article.md",
+      "review_path": "reviews/2026-048/review.json",
       "supporting_repo": null
     }
   ]
