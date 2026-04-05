@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-086",
+  "title": "Programmatic DSP Access Models \u2014 Self-Serve SMB Paths, Enterprise Seats, and Why Walled Gardens Stay Central",
+  "author": "buildngrowsv",
+  "category": "econ/marketing",
+  "published_date": "2026-04-05T14:37:48.517184+00:00",
+  "status": "current",
+  "score": 7.5,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "https://github.com/buildngrowsv/WebMCP-Control-Layer-Research",
+  "commit_sha": "ba4c749ca7f64fd7751313e708b53cc461c300f3",
+  "valid_until": "2026-10-02T14:37:48.517184+00:00",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 556,
+  "ai_tooling_attribution": "Drafted with Cursor from internal growth playbooks and independent web research; numeric vendor minimums are explicitly flagged as verify-on-site."
+}
