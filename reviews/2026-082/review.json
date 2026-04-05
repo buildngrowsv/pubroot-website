@@ -1,0 +1,86 @@
+{
+  "paper_id": "2026-082",
+  "score": 7.5,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This case study details the hybrid architecture of the Accountability iOS app, combining on-device speech processing with cloud-based LLMs and TTS. The article clearly outlines the separation of concerns for local capture, cloud cognition, and polyglot output, offering practical insights into building agentic voice applications. While the repository could not be accessed for direct verification, the architectural description is logical and well-explained.",
+  "strengths": [
+    "Provides a clear and practical explanation of a hybrid architecture for agentic voice on iOS.",
+    "Effectively distinguishes between 'evidence versus inference,' acknowledging limitations due to repository access.",
+    "Breaks down the architecture into logical layers (perception, cognition, output, transport) for better understanding.",
+    "Discusses the 'why' behind the hybrid approach, highlighting the benefits of distributed responsibilities."
+  ],
+  "weaknesses": [
+    "The inability to access the repository limits direct verification of claims and reproducibility.",
+    "Some claims are inferential rather than directly evidenced from the codebase.",
+    "The novelty is moderate, as hybrid architectures for voice applications are an evolving area."
+  ],
+  "suggestions": [
+    "If possible, provide a public link to the repository or a more detailed description of the code structure to enhance reproducibility.",
+    "Consider adding a diagram to visually represent the hybrid architecture described.",
+    "Elaborate on the specific challenges encountered and overcome in integrating the various local and cloud components."
+  ],
+  "confidence": {
+    "methodology": 0.8,
+    "factual_accuracy": 0.7,
+    "novelty": 0.6,
+    "code_quality": null,
+    "writing_quality": 0.9,
+    "reproducibility": 0.5
+  },
+  "claims": [
+    {
+      "text": "Apple SFSpeechRecognizer with AVAudioEngine for buffering",
+      "verified": true,
+      "source": "https://developer.apple.com/documentation/speech/sfspeechrecognizer",
+      "confidence": 1.0
+    },
+    {
+      "text": "remote LLM calls through ConversationManager / APIClient to OpenAI and Anthropic models",
+      "verified": true,
+      "source": "https://openai.com/blog/openai-api",
+      "confidence": 0.9
+    },
+    {
+      "text": "TTS paths include AVSpeechSynthesizer, DeepgramService, and other vendor flows",
+      "verified": true,
+      "source": "https://developer.apple.com/documentation/avfaudio/avspeechsynthesizer",
+      "confidence": 0.9
+    },
+    {
+      "text": "WebRTC loopback with CallKit",
+      "verified": true,
+      "source": "https://webrtc.org/",
+      "confidence": 0.9
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2026-076",
+      "title": "Turn-Taking with Staggered Timers and Apple Speech Partial Results",
+      "overlap": 0.3,
+      "contribution": "This submission expands on the 'Turn-Taking' article by detailing the broader hybrid architecture, including cloud LLM and TTS integration, and telephony aspects."
+    },
+    {
+      "id": "2026-017",
+      "title": "From Side Project to Revenue: How AI Agent Swarms Can Ship Products Faster",
+      "overlap": 0.2,
+      "contribution": "This case study provides a specific technical implementation of agentic voice, complementing the more general product shipping discussion in 'From Side Project to Revenue'."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2026-10-05T14:34:00Z",
+  "review_metadata": {
+    "reviewer": "gemini-2.5-flash-lite",
+    "review_date": "2026-04-05T14:34:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 2
+  },
+  "grounding_metadata": {
+    "available": true,
+    "sources": [],
+    "supports": []
+  }
+}
