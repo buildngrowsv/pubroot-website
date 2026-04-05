@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of all published papers in the Pubroot. Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 18,
-  "last_updated": "2026-04-05T02:54:08.049293+00:00",
+  "total_papers": 19,
+  "last_updated": "2026-04-05T03:10:26.653598+00:00",
   "papers": [
     {
       "id": "2026-003",
@@ -16,9 +16,10 @@
       "review_score": 8.5,
       "badge": "verified_open",
       "status": "current",
-      "article_path": "papers/2026-003/article.md",
+      "article_path": "papers/prior-art/general-disclosure/preemptive-prior-art-publication-as-a-defense-against-method-of-use-pate/index.md",
       "review_path": "reviews/2026-003/review.json",
-      "supporting_repo": "https://github.com/buildngrowsv/pubroot-website"
+      "supporting_repo": "https://github.com/buildngrowsv/pubroot-website",
+      "reader_url": "https://pubroot.com/prior-art/general-disclosure/preemptive-prior-art-publication-as-a-defense-against-method-of-use-pate/"
     },
     {
       "id": "2026-005",
@@ -30,9 +31,10 @@
       "review_score": 7.5,
       "badge": "verified_open",
       "status": "current",
-      "article_path": "papers/2026-005/article.md",
+      "article_path": "papers/prior-art/general-disclosure/the-dshea-patent-squeeze-how-method-of-use-patents-amplify-regulatory-ba/index.md",
       "review_path": "reviews/2026-005/review.json",
-      "supporting_repo": "https://github.com/buildngrowsv/pubroot-website"
+      "supporting_repo": "https://github.com/buildngrowsv/pubroot-website",
+      "reader_url": "https://pubroot.com/prior-art/general-disclosure/the-dshea-patent-squeeze-how-method-of-use-patents-amplify-regulatory-ba/"
     },
     {
       "id": "2026-008",
@@ -45,9 +47,10 @@
       "review_score": 8.5,
       "badge": "verified_open",
       "status": "current",
-      "article_path": "papers/2026-008/article.md",
+      "article_path": "papers/materials/polymers/2026-008/index.md",
       "review_path": "reviews/2026-008/review.json",
-      "supporting_repo": "https://github.com/buildngrowsv/sixty-four-oz-straw-hinge-concept"
+      "supporting_repo": "https://github.com/buildngrowsv/sixty-four-oz-straw-hinge-concept",
+      "reader_url": "https://pubroot.com/materials/polymers/2026-008/"
     },
     {
       "id": "2026-014",
@@ -59,10 +62,11 @@
       "review_score": 8.5,
       "badge": "verified_open",
       "status": "current",
-      "article_path": "papers/2026-014/article.md",
+      "article_path": "papers/materials/polymers/submission-revision-cursor-composer-2-authoring-disclosure-supersedes-20/index.md",
       "review_path": "reviews/2026-014/review.json",
       "supporting_repo": "https://github.com/buildngrowsv/sixty-four-oz-straw-hinge-concept",
-      "ai_tooling_attribution": "Primary drafting, refactors, and repo hygiene: **Cursor** (IDE) with **Composer 2** (Cursor\u2019s in-product composer / agent experience; underlying model as labeled and routed by Cursor at time of edit). Publication figure re-capture and `_cli` Playwright helper: human-directed; commands executed in Cursor\u2019s agent terminal. All merges and submissions were human-reviewed before push."
+      "ai_tooling_attribution": "Primary drafting, refactors, and repo hygiene: **Cursor** (IDE) with **Composer 2** (Cursor\u2019s in-product composer / agent experience; underlying model as labeled and routed by Cursor at time of edit). Publication figure re-capture and `_cli` Playwright helper: human-directed; commands executed in Cursor\u2019s agent terminal. All merges and submissions were human-reviewed before push.",
+      "reader_url": "https://pubroot.com/materials/polymers/submission-revision-cursor-composer-2-authoring-disclosure-supersedes-20/"
     },
     {
       "id": "2026-016",
@@ -74,10 +78,11 @@
       "review_score": 6.5,
       "badge": "verified_open",
       "status": "current",
-      "article_path": "papers/2026-016/article.md",
+      "article_path": "papers/prior-art/general-disclosure/the-dshea-patent-squeeze-method-of-use-patents-and-regulatory-barriers-a/index.md",
       "review_path": "reviews/2026-016/review.json",
       "supporting_repo": "https://github.com/buildngrowsv/pubroot-website",
-      "ai_tooling_attribution": "This issue was opened by an automated repository pressure test to exercise the GitHub Actions review pipeline (Stages 1\u20136) with a deliberate near-duplicate of existing Pubroot essay 2026-005. Safe to close and not merge if the maintainer prefers; the article text below states the same intent."
+      "ai_tooling_attribution": "This issue was opened by an automated repository pressure test to exercise the GitHub Actions review pipeline (Stages 1\u20136) with a deliberate near-duplicate of existing Pubroot essay 2026-005. Safe to close and not merge if the maintainer prefers; the article text below states the same intent.",
+      "reader_url": "https://pubroot.com/prior-art/general-disclosure/the-dshea-patent-squeeze-method-of-use-patents-and-regulatory-barriers-a/"
     },
     {
       "id": "2026-018",
@@ -89,10 +94,11 @@
       "review_score": 7.5,
       "badge": "text_only",
       "status": "current",
-      "article_path": "papers/2026-018/article.md",
+      "article_path": "papers/ai/agent-architecture/file-ownership-and-message-passing-a-practical-coordination-protocol-for/index.md",
       "review_path": "reviews/2026-018/review.json",
       "supporting_repo": "\"https://github.com/buildngrowsv/pubroot-website\"",
-      "ai_tooling_attribution": "\"Article drafted by Claude Opus 4.6 (Anthropic). Human operator reviewed before submission.\""
+      "ai_tooling_attribution": "\"Article drafted by Claude Opus 4.6 (Anthropic). Human operator reviewed before submission.\"",
+      "reader_url": "https://pubroot.com/ai/agent-architecture/file-ownership-and-message-passing-a-practical-coordination-protocol-for/"
     },
     {
       "id": "2026-020",
@@ -104,9 +110,10 @@
       "review_score": 7.5,
       "badge": "text_only",
       "status": "current",
-      "article_path": "papers/2026-020/article.md",
+      "article_path": "papers/ai/agent-architecture/credit-based-billing-for-ai-video-generation-a-practical-architecture/index.md",
       "review_path": "reviews/2026-020/review.json",
-      "supporting_repo": null
+      "supporting_repo": null,
+      "reader_url": "https://pubroot.com/ai/agent-architecture/credit-based-billing-for-ai-video-generation-a-practical-architecture/"
     },
     {
       "id": "2026-022",
@@ -118,9 +125,10 @@
       "review_score": 7.5,
       "badge": "text_only",
       "status": "current",
-      "article_path": "papers/2026-022/article.md",
+      "article_path": "papers/ai/agent-architecture/building-a-scalable-ai-tool-clone-factory-how-we-ship-one-saas-product-p/index.md",
       "review_path": "reviews/2026-022/review.json",
-      "supporting_repo": null
+      "supporting_repo": null,
+      "reader_url": "https://pubroot.com/ai/agent-architecture/building-a-scalable-ai-tool-clone-factory-how-we-ship-one-saas-product-p/"
     },
     {
       "id": "2026-026",
@@ -132,10 +140,11 @@
       "review_score": 7.5,
       "badge": "text_only",
       "status": "current",
-      "article_path": "papers/2026-026/article.md",
+      "article_path": "papers/ai/agent-architecture/browser-control-layer-programmatic-desktop-automation-via-macos-accessib/index.md",
       "review_path": "reviews/2026-026/review.json",
       "supporting_repo": null,
-      "ai_tooling_attribution": "\"Article drafted by Claude Opus 4.6 (Anthropic). BCL implementation by buildngrowsv with AI assistance. Human operator reviewed before submission.\""
+      "ai_tooling_attribution": "\"Article drafted by Claude Opus 4.6 (Anthropic). BCL implementation by buildngrowsv with AI assistance. Human operator reviewed before submission.\"",
+      "reader_url": "https://pubroot.com/ai/agent-architecture/browser-control-layer-programmatic-desktop-automation-via-macos-accessib/"
     },
     {
       "id": "2026-029",
@@ -147,10 +156,11 @@
       "review_score": 7.5,
       "badge": "text_only",
       "status": "current",
-      "article_path": "papers/2026-029/article.md",
+      "article_path": "papers/ai/agent-architecture/rapid-ai-tool-deployment-a-fal-ai-next-js-vercel-pipeline-for-shipping-o/index.md",
       "review_path": "reviews/2026-029/review.json",
       "supporting_repo": null,
-      "ai_tooling_attribution": "\"Article drafted by Claude Opus 4.6 (Anthropic). Products built with AI agent swarm (Claude Code + Cursor). Human operator reviewed before submission.\""
+      "ai_tooling_attribution": "\"Article drafted by Claude Opus 4.6 (Anthropic). Products built with AI agent swarm (Claude Code + Cursor). Human operator reviewed before submission.\"",
+      "reader_url": "https://pubroot.com/ai/agent-architecture/rapid-ai-tool-deployment-a-fal-ai-next-js-vercel-pipeline-for-shipping-o/"
     },
     {
       "id": "2026-031",
@@ -162,10 +172,11 @@
       "review_score": 8.5,
       "badge": "verified_private",
       "status": "current",
-      "article_path": "papers/2026-031/article.md",
+      "article_path": "papers/debug/runtime-errors/next-js-16-turbopack-enoent-buildmanifest-js-tmp-build-crash-and-the-16/index.md",
       "review_path": "reviews/2026-031/review.json",
       "supporting_repo": "https://github.com/buildngrowsv/ai-mockup-generator",
-      "ai_tooling_attribution": "\"Drafted with Claude Sonnet 4.6 (Anthropic) based on observed production build failures.\""
+      "ai_tooling_attribution": "\"Drafted with Claude Sonnet 4.6 (Anthropic) based on observed production build failures.\"",
+      "reader_url": "https://pubroot.com/debug/runtime-errors/next-js-16-turbopack-enoent-buildmanifest-js-tmp-build-crash-and-the-16/"
     },
     {
       "id": "2026-034",
@@ -177,10 +188,11 @@
       "review_score": 8.0,
       "badge": "text_only",
       "status": "current",
-      "article_path": "papers/2026-034/article.md",
+      "article_path": "papers/ai/computer-use-agents/background-macos-desktop-automation-via-accessibility-api-patterns-for-a/index.md",
       "review_path": "reviews/2026-034/review.json",
       "supporting_repo": "https://github.com/buildngrowsv/WebMCP-Control-Layer-Research",
-      "ai_tooling_attribution": "Drafted by Claude Sonnet 4.6 (Anthropic) from BCL implementation experience and swarm session observations."
+      "ai_tooling_attribution": "Drafted by Claude Sonnet 4.6 (Anthropic) from BCL implementation experience and swarm session observations.",
+      "reader_url": "https://pubroot.com/ai/computer-use-agents/background-macos-desktop-automation-via-accessibility-api-patterns-for-a/"
     },
     {
       "id": "2026-039",
@@ -192,10 +204,11 @@
       "review_score": 7.5,
       "badge": "text_only",
       "status": "current",
-      "article_path": "papers/2026-039/article.md",
+      "article_path": "papers/ai/agent-architecture/search-visibility-as-a-revenue-blocker-for-agent-shipped-web-products/index.md",
       "review_path": "reviews/2026-039/review.json",
       "supporting_repo": null,
-      "ai_tooling_attribution": "\"Draft with AI assistance; includes operational lessons from Search Console and sitemap workflows common in modern web ops.\""
+      "ai_tooling_attribution": "\"Draft with AI assistance; includes operational lessons from Search Console and sitemap workflows common in modern web ops.\"",
+      "reader_url": "https://pubroot.com/ai/agent-architecture/search-visibility-as-a-revenue-blocker-for-agent-shipped-web-products/"
     },
     {
       "id": "2026-043",
@@ -207,10 +220,11 @@
       "review_score": 7.5,
       "badge": "text_only",
       "status": "current",
-      "article_path": "papers/2026-043/article.md",
+      "article_path": "papers/ai/agent-architecture/why-zero-trust-providers-matter-for-the-next-wave-of-agentic-systems/index.md",
       "review_path": "reviews/2026-043/review.json",
       "supporting_repo": null,
-      "ai_tooling_attribution": "\"Draft prepared with AI-assisted editing; technical claims align with widely documented zero-trust principles (identity-centric access, micro-segmentation, continuous validation) applied to tool-using agents.\""
+      "ai_tooling_attribution": "\"Draft prepared with AI-assisted editing; technical claims align with widely documented zero-trust principles (identity-centric access, micro-segmentation, continuous validation) applied to tool-using agents.\"",
+      "reader_url": "https://pubroot.com/ai/agent-architecture/why-zero-trust-providers-matter-for-the-next-wave-of-agentic-systems/"
     },
     {
       "id": "2026-046",
@@ -222,9 +236,10 @@
       "review_score": 6.5,
       "badge": "text_only",
       "status": "current",
-      "article_path": "papers/2026-046/article.md",
+      "article_path": "papers/ai/agent-architecture/singleton-control-planes-and-mutex-discipline-in-agent-swarms-using-shar/index.md",
       "review_path": "reviews/2026-046/review.json",
-      "supporting_repo": null
+      "supporting_repo": null,
+      "reader_url": "https://pubroot.com/ai/agent-architecture/singleton-control-planes-and-mutex-discipline-in-agent-swarms-using-shar/"
     },
     {
       "id": "2026-048",
@@ -236,9 +251,10 @@
       "review_score": 7.0,
       "badge": "text_only",
       "status": "current",
-      "article_path": "papers/2026-048/article.md",
+      "article_path": "papers/ai/agent-architecture/canonical-task-systems-versus-ephemeral-coordination-in-multi-agent-swar/index.md",
       "review_path": "reviews/2026-048/review.json",
-      "supporting_repo": null
+      "supporting_repo": null,
+      "reader_url": "https://pubroot.com/ai/agent-architecture/canonical-task-systems-versus-ephemeral-coordination-in-multi-agent-swar/"
     },
     {
       "id": "2026-050",
@@ -250,9 +266,10 @@
       "review_score": 7.0,
       "badge": "text_only",
       "status": "current",
-      "article_path": "papers/2026-050/article.md",
+      "article_path": "papers/econ/entrepreneurship/human-gates-credential-boundaries-and-why-agent-swarms-stall-before-reve/index.md",
       "review_path": "reviews/2026-050/review.json",
-      "supporting_repo": null
+      "supporting_repo": null,
+      "reader_url": "https://pubroot.com/econ/entrepreneurship/human-gates-credential-boundaries-and-why-agent-swarms-stall-before-reve/"
     },
     {
       "id": "2026-052",
@@ -264,9 +281,26 @@
       "review_score": 7.0,
       "badge": "text_only",
       "status": "current",
-      "article_path": "papers/2026-052/article.md",
+      "article_path": "papers/se/devops/continuous-integration-and-deploy-pipelines-as-hard-stops-for-agent-ship/index.md",
       "review_path": "reviews/2026-052/review.json",
-      "supporting_repo": null
+      "supporting_repo": null,
+      "reader_url": "https://pubroot.com/se/devops/continuous-integration-and-deploy-pipelines-as-hard-stops-for-agent-ship/"
+    },
+    {
+      "id": "2026-024",
+      "title": "File Ownership and Message Passing: A Practical Coordination Protocol for LLM Agent Swarms",
+      "author": "buildngrowsv",
+      "category": "ai/agent-architecture",
+      "abstract": "Multi-agent LLM systems face a fundamental coordination problem: how do you let 10-20 autonomous agents edit the same codebase simultaneously without merge conflicts, lost work, or incoherent output? This article presents a practical coordination protocol developed through production use in a 20-agent swarm that ships software across multiple repositories. The protocol rests on three mechanisms: a shared coordination board with strict file ownership, an asynchronous message-passing system, and a",
+      "published_date": "2026-03-24T05:12:07.888103+00:00",
+      "review_score": 7.5,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/ai/agent-architecture/file-ownership-and-message-passing-a-practical-coordination-protocol-for-2026-024/index.md",
+      "review_path": "reviews/2026-024/review.json",
+      "supporting_repo": "https://github.com/buildngrowsv/pubroot-website",
+      "reader_url": "https://pubroot.com/ai/agent-architecture/file-ownership-and-message-passing-a-practical-coordination-protocol-for-2026-024/",
+      "ai_tooling_attribution": "Article drafted by Claude Opus 4.6 (Anthropic). Human operator reviewed before submission."
     }
   ]
 }

@@ -375,7 +375,7 @@ Everything runs on **GitHub's free tier** — zero servers, zero databases, zero
 | **Editorial Guidelines** | [pubroot.com/editorial-guidelines](https://pubroot.com/editorial-guidelines/) | Submission types, scoring rubric, review criteria, author-hosted figures (Markdown `https://` URLs), revision/errata expectations |
 | **Journals** | [pubroot.com/journals](https://pubroot.com/journals/) | All 18 journals with expandable topic lists |
 | **Agents Hub** | [pubroot.com/agents-hub](https://pubroot.com/agents-hub/) | CUA, General Agents (OpenClaw), Frameworks |
-| **Paper Pages** | [pubroot.com/papers/{id}](https://pubroot.com) | Individual articles with review sidebar |
+| **Paper Pages** | `https://pubroot.com/{journal}/{topic}/{slug}/` | Individual articles with review sidebar |
 
 ---
 
@@ -502,7 +502,7 @@ These author-facing rules are **unchanged** when we ship pipeline or site infras
 | Situation | What to do |
 |-----------|------------|
 | **Rejected** (or you are replacing the draft after feedback) | Open a **new** [submission issue](https://github.com/buildngrowsv/pubroot-website/issues/new?template=submission.yml) with the full updated article body. The **entire six-stage review** runs again—same path as a first-time submit. |
-| **Published — small fix** (typos, broken links, formatting) | Open a **pull request** or **issue** on [`pubroot-website`](https://github.com/buildngrowsv/pubroot-website) targeting the Markdown under `papers/{id}/`, like any open-source doc fix. |
+| **Published — small fix** (typos, broken links, formatting) | Open a **pull request** or **issue** on [`pubroot-website`](https://github.com/buildngrowsv/pubroot-website) targeting `papers/{journal}/{topic}/{slug}/index.md` (see `agent-index.json` **article_path**). |
 | **Published — substantive update** (new claims, new results) | Submit a **new article** through the same submission template. The review JSON can record **`supersedes`** pointing at the older paper ID when the new work replaces it. |
 
 Human-readable detail: [Editorial Guidelines — Revisions & errata](https://pubroot.com/editorial-guidelines/#revisions-errata). Machine-readable table: same content in [`_cli/AGENT_SUBMISSION_GUIDE.md`](_cli/AGENT_SUBMISSION_GUIDE.md#revisions).

@@ -240,11 +240,20 @@ def cmd_search(args):
         if args.badge and paper.get("badge") != args.badge:
             continue
 
-        # Keyword search (title + abstract)
+        # Keyword search (title + abstract + paper id)
+        #
+        # WHY include id: reviewers and operators often paste `2026-048` to verify
+        # a submission; matching only title/abstract returned zero results and looked
+        # like the paper was not published even when agent-index.json contained it.
         if query_lower:
             title = paper.get("title", "").lower()
             abstract = paper.get("abstract", "").lower()
-            if query_lower not in title and query_lower not in abstract:
+            pid = (paper.get("id") or "").lower()
+            if (
+                query_lower not in title
+                and query_lower not in abstract
+                and query_lower != pid
+            ):
                 continue
 
         results.append(paper)
@@ -598,7 +607,9 @@ def cmd_guide(args):
                     "Optional: run `pubroot submit article.md` so ### headers match stage_1 parser.",
                 ],
                 "after_publication_minor": (
-                    "Pull request or issue on pubroot-website editing papers/{paper_id}/article.md."
+                    "Pull request on pubroot-website editing the published Markdown at "
+                    "papers/{journal}/{topic}/{slug}/index.md (see agent-index article_path "
+                    "or frontmatter paper_id)."
                 ),
                 "after_publication_substantive": (
                     "New submission through the same template; review JSON may include supersedes."

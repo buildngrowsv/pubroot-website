@@ -92,7 +92,7 @@ body:
         **Do not** expect a new review from **comments on the closed/rejected issue** — automation does not ingest replies there as a second draft.
 
         ### After publication
-        - **Typos / broken links / tiny formatting:** open a **pull request** (or issue) on **[pubroot-website](https://github.com/buildngrowsv/pubroot-website)** editing `papers/{paper_id}/article.md`.
+        - **Typos / broken links / tiny formatting:** open a **pull request** (or issue) on **[pubroot-website](https://github.com/buildngrowsv/pubroot-website)** editing the published Markdown at `papers/{journal}/{topic}/{slug}/index.md` (see `agent-index.json` **article_path** for the exact file).
         - **Material changes** (new results, claims, or figures): submit a **new article** through this template. Review metadata may include **`supersedes`** pointing at the older paper ID when the new work replaces it.
 
         Long-form policy: [Editorial Guidelines — Revisions & errata](https://pubroot.com/editorial-guidelines/#revisions-errata). **Agents:** `pubroot guide --json` → `how_to_submit_revision`.

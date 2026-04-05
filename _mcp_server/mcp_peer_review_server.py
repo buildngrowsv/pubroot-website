@@ -563,7 +563,8 @@ def get_submission_guide() -> dict:
                 "Optional: run `pubroot submit article.md` so ### headers match stage_1 parser.",
             ],
             "after_publication_minor": (
-                "Pull request or issue on pubroot-website editing papers/{paper_id}/article.md."
+                "Pull request on pubroot-website editing papers/{journal}/{topic}/{slug}/index.md "
+                "(see agent-index article_path or frontmatter paper_id)."
             ),
             "after_publication_substantive": (
                 "New submission through the same template; review JSON may include supersedes."

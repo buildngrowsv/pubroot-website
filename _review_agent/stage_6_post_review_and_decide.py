@@ -8,7 +8,7 @@ PURPOSE:
     IF ACCEPTED (score >= 6.0):
       1. Post the formatted review as a GitHub Issue comment
       2. Create a branch paper/{paper-id}
-      3. Commit article.md + manifest.json to papers/{paper-id}/
+      3. Commit index.md + manifest.json to papers/{journal}/{topic}/{slug}/
       4. Commit review.json to reviews/{paper-id}/
       5. Update contributors.json with the new submission stats
       6. Update agent-index.json with the new paper entry
@@ -49,6 +49,41 @@ from typing import Optional
 from urllib.parse import quote
 
 import requests
+
+from pubroot_site_paths import (
+    article_index_rel,
+    manifest_rel,
+    parse_journal_topic,
+    reader_url as build_reader_url,
+    slugify_title,
+)
+
+# Canonical site origin for agent-index.json reader_url (override in CI if needed).
+PUBROOT_SITE_BASE = os.environ.get("PUBROOT_SITE_BASE", "https://pubroot.com")
+
+
+def _resolve_publication_paths(gh, parsed: dict, paper_id: str) -> dict:
+    """
+    Compute journal/topic/slug and repo-relative paths for the SEO layout:
+    papers/{journal}/{topic}/{slug}/index.md
+
+    Slug is derived from the title (see slugify_title). Idempotent re-runs rely on
+    path_exists on this path in _handle_acceptance — if the path already exists,
+    the publish step is skipped (same paper), so we do not disambiguate here.
+    Rare title collisions in the same journal/topic would require a manual slug
+    fix in a follow-up PR.
+    """
+    journal, topic = parse_journal_topic(parsed.get("category", ""))
+    slug = slugify_title(parsed.get("title", "Untitled"), paper_id)
+    idx_rel = article_index_rel(journal, topic, slug)
+    return {
+        "journal": journal,
+        "topic": topic,
+        "slug": slug,
+        "article_index_path": idx_rel,
+        "manifest_path": manifest_rel(journal, topic, slug),
+        "reader_url": build_reader_url(PUBROOT_SITE_BASE, journal, topic, slug),
+    }
 
 
 def _hugo_date_string_utc(now: datetime) -> str:
@@ -399,8 +434,10 @@ def _format_publish_failure_comment(paper_id: str, error_detail: str) -> str:
         f"The workflow will retry issues labeled `publish-failed` on the next "
         f"scheduled run, or a maintainer can re-run the **AI Peer Review Pipeline** "
         f"workflow manually for this issue number. "
-        f"Re-runs are safe: if `papers/{paper_id}/article.md` already exists on "
-        f"`main`, the publisher skips duplicate work.\n\n"
+        f"Re-runs are safe: if the article file already exists on `main` (legacy "
+        f"`papers/{paper_id}/article.md` or the SEO path under "
+        f"`papers/{{journal}}/{{topic}}/{{slug}}/index.md`), the publisher skips "
+        f"duplicate work.\n\n"
         f"---\n*Automated message from Pubroot.*"
     )
 
@@ -422,12 +459,21 @@ def _upload_publication_files_to_branch(
     Create or update all publication files on the given branch (feature branch
     or main). Idempotent: safe to call again after a failed PR step when
     retrying onto main.
+
+    LAYOUT (Apr 2026): articles live under papers/{journal}/{topic}/{slug}/index.md
+    for SEO-friendly URLs; legacy_aliases is only used by one-off migrations.
     """
+    paths = _resolve_publication_paths(gh, parsed_submission, paper_id)
     article_content = _build_article_md(
-        parsed_submission, review, repo_data, paper_id, now
+        parsed_submission,
+        review,
+        repo_data,
+        paper_id,
+        now,
+        legacy_aliases=None,
     )
     gh.create_or_update_file(
-        path=f"papers/{paper_id}/article.md",
+        path=paths["article_index_path"],
         content=article_content,
         message=f"Publish article: {parsed_submission.get('title', paper_id)}",
         branch=branch,
@@ -437,7 +483,7 @@ def _upload_publication_files_to_branch(
         parsed_submission, review, repo_data, paper_id, now, novelty_results
     )
     gh.create_or_update_file(
-        path=f"papers/{paper_id}/manifest.json",
+        path=paths["manifest_path"],
         content=json.dumps(manifest, indent=2),
         message=f"Add manifest for {paper_id}",
         branch=branch,
@@ -451,7 +497,15 @@ def _upload_publication_files_to_branch(
         branch=branch,
     )
 
-    index_entry = _build_index_entry(parsed_submission, review, repo_data, paper_id, now)
+    index_entry = _build_index_entry(
+        parsed_submission,
+        review,
+        repo_data,
+        paper_id,
+        now,
+        paths["article_index_path"],
+        paths["reader_url"],
+    )
     _update_agent_index(gh, branch, repo_root, index_entry)
 
     contributors_path = os.path.join(repo_root, "contributors.json")
@@ -489,8 +543,11 @@ def _handle_acceptance(
     branch_name = f"paper/{paper_id}"
 
     # Idempotent retries (e.g. cron re-runs after a publish failure): if the article
-    # file is already on main, do not re-upload or double-count contributors.
+    # is already on main (new SEO path or legacy flat path), skip duplicate publish.
     if gh.path_exists(f"papers/{paper_id}/article.md", "main"):
+        return None
+    _paths_probe = _resolve_publication_paths(gh, parsed_submission, paper_id)
+    if gh.path_exists(_paths_probe["article_index_path"], "main"):
         return None
 
     # Contributor stats must be reflected in contributors.json before upload.
@@ -569,7 +626,8 @@ def _build_article_md(
     review: dict,
     repo_data: dict,
     paper_id: str,
-    now: datetime
+    now: datetime,
+    legacy_aliases: Optional[list] = None,
 ) -> str:
     """
     Build the published article Markdown file with Hugo-compatible frontmatter.
@@ -599,6 +657,8 @@ def _build_article_md(
         repo_data: Repository analysis from Stage 3 (badge_type, etc.)
         paper_id: The paper ID (e.g., "2026-042")
         now: Publication timestamp
+        legacy_aliases: Optional list of paths (e.g. "/2026-042/article/") for Hugo
+            redirects after migrating from the old papers/{paper_id}/article.md layout.
     """
     frontmatter = {
         "title": parsed.get("title", "Untitled"),
@@ -633,6 +693,10 @@ def _build_article_md(
             content += f"{key}: {value}\n"
         else:
             content += f"{key}: {json.dumps(value)}\n"
+    if legacy_aliases:
+        content += "aliases:\n"
+        for alias in legacy_aliases:
+            content += f"  - {json.dumps(alias)}\n"
     content += "---\n\n"
     content += parsed.get("body", "")
 
@@ -679,8 +743,13 @@ def _build_manifest(
 
 
 def _build_index_entry(
-    parsed: dict, review: dict, repo_data: dict,
-    paper_id: str, now: datetime
+    parsed: dict,
+    review: dict,
+    repo_data: dict,
+    paper_id: str,
+    now: datetime,
+    article_index_path: str,
+    reader_url: str,
 ) -> dict:
     """Build an entry for agent-index.json."""
     entry = {
@@ -693,7 +762,8 @@ def _build_index_entry(
         "review_score": review.get("score"),
         "badge": repo_data.get("badge_type", "text_only"),
         "status": "current",
-        "article_path": f"papers/{paper_id}/article.md",
+        "article_path": article_index_path,
+        "reader_url": reader_url,
         "review_path": f"reviews/{paper_id}/review.json",
         "supporting_repo": parsed.get("supporting_repo"),
     }

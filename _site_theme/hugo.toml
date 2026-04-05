@@ -3,8 +3,8 @@
 # =============================================================================
 #
 # This configures the static site at pubroot.com, deployed via GitHub Pages.
-# The site reads article data from papers/{paper-id}/article.md and review
-# data from reviews/{paper-id}/review.json. Pagefind provides client-side search.
+# The site reads article data from papers/{journal}/{topic}/{slug}/index.md and
+# review data from reviews/{paper-id}/review.json. Pagefind provides client-side search.
 #
 # Design inspiration: ResearchGate — clean, white, professional, teal accents,
 # academic credibility with modern web polish.
@@ -34,9 +34,8 @@ contentDir = "../papers"
   verified_private = "Private Repo"
   text_only = "Text Only"
 
-# Clean URLs
-[permalinks]
-  papers = "/papers/:slug/"
+# Permalinks: default Hugo behavior for nested content under papers/
+# yields /{journal}/{topic}/{slug}/ for each index.md bundle.
 
 # Build settings
 [build]

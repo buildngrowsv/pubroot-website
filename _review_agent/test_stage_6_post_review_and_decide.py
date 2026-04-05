@@ -449,18 +449,39 @@ class TestBuildIndexEntry:
     def test_includes_required_fields(self):
         """Index entry should have all fields needed for search and display."""
         now = datetime(2026, 3, 22, 17, 0, 0, tzinfo=timezone.utc)
-        entry = _build_index_entry(SAMPLE_PARSED, SAMPLE_REVIEW_SUCCESS["review"], SAMPLE_REPO_DATA, "2026-042", now)
+        entry = _build_index_entry(
+            SAMPLE_PARSED,
+            SAMPLE_REVIEW_SUCCESS["review"],
+            SAMPLE_REPO_DATA,
+            "2026-042",
+            now,
+            "papers/ai/llm-benchmarks/testing-llm-accuracy-in-code-review/index.md",
+            "https://pubroot.com/ai/llm-benchmarks/testing-llm-accuracy-in-code-review/",
+        )
         assert entry["id"] == "2026-042"
         assert entry["title"] == "Testing LLM Accuracy in Code Review"
         assert entry["review_score"] == 7.5
-        assert entry["article_path"] == "papers/2026-042/article.md"
+        assert entry["article_path"] == (
+            "papers/ai/llm-benchmarks/testing-llm-accuracy-in-code-review/index.md"
+        )
+        assert entry["reader_url"] == (
+            "https://pubroot.com/ai/llm-benchmarks/testing-llm-accuracy-in-code-review/"
+        )
         assert entry["review_path"] == "reviews/2026-042/review.json"
 
     def test_truncates_abstract_to_500_chars(self):
         """Abstract in index entry should be capped at 500 chars."""
         parsed_long_abstract = {**SAMPLE_PARSED, "abstract": "A" * 1000}
         now = datetime(2026, 3, 22, 17, 0, 0, tzinfo=timezone.utc)
-        entry = _build_index_entry(parsed_long_abstract, SAMPLE_REVIEW_SUCCESS["review"], SAMPLE_REPO_DATA, "2026-042", now)
+        entry = _build_index_entry(
+            parsed_long_abstract,
+            SAMPLE_REVIEW_SUCCESS["review"],
+            SAMPLE_REPO_DATA,
+            "2026-042",
+            now,
+            "papers/ai/llm-benchmarks/testing-llm-accuracy-in-code-review/index.md",
+            "https://pubroot.com/ai/llm-benchmarks/testing-llm-accuracy-in-code-review/",
+        )
         assert len(entry["abstract"]) == 500
 
 
