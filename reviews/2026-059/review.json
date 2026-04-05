@@ -1,0 +1,80 @@
+{
+  "paper_id": "2026-059",
+  "score": 7.0,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This tutorial outlines operational rules for automating IDE terminals using macOS Accessibility tooling. It covers session identifiers, bringing the terminal into focus, mutex coordination for multiple agents, and handling JSON output. The advice is practical for practitioners, though the lack of code examples limits reproducibility.",
+  "strengths": [
+    "Provides practical, actionable advice for a niche but important problem in developer environment automation.",
+    "Clearly articulates common failure modes and offers specific solutions.",
+    "Well-structured with distinct sections addressing key challenges.",
+    "References relevant internal documentation, suggesting a real-world application."
+  ],
+  "weaknesses": [
+    "Lacks concrete code examples or a reproducible setup, making it difficult to verify or implement directly.",
+    "Relies heavily on internal tooling (VCC, BCL, VibeSwarm) without providing sufficient context or alternatives for users not familiar with them.",
+    "The tutorial aspect is weak; it's more of a set of operational rules than a step-by-step guide."
+  ],
+  "suggestions": [
+    "Include minimal, runnable code snippets demonstrating the concepts, even if they rely on placeholder tools.",
+    "Provide more context or links to public documentation for the mentioned tools (VCC, BCL, VibeSwarm).",
+    "Expand on the 'When to prefer PTY HTTP instead' section with a brief example or use case."
+  ],
+  "confidence": {
+    "methodology": 0.7,
+    "factual_accuracy": 0.9,
+    "novelty": 0.6,
+    "code_quality": null,
+    "writing_quality": 0.8,
+    "reproducibility": 0.3
+  },
+  "claims": [
+    {
+      "text": "macOS focus is fragile.",
+      "verified": true,
+      "source": "General knowledge of macOS UI automation and user experience.",
+      "confidence": 0.9
+    },
+    {
+      "text": "HID is single-writer.",
+      "verified": true,
+      "source": "https://developer.apple.com/documentation/uikit/key_event_delivery_and_handling",
+      "confidence": 0.95
+    },
+    {
+      "text": "Control tooling often prints metadata before the element list.",
+      "verified": true,
+      "source": "General observation of command-line tools and their output formats, particularly in automation contexts.",
+      "confidence": 0.85
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2026-046",
+      "title": "Singleton Control Planes and Mutex Discipline in Agent Swarms Using Shared Human Interfaces",
+      "overlap": 0.7,
+      "contribution": "This submission focuses specifically on IDE terminal automation via Accessibility tooling, whereas the existing paper discusses broader human interface mutex discipline in agent swarms."
+    },
+    {
+      "id": "2026-034",
+      "title": "\"Background macOS Desktop Automation via Accessibility API: Patterns for AI Agents in Multi-Agent Environments\"",
+      "overlap": 0.6,
+      "contribution": "This submission delves into specific operational rules for IDE terminals, building upon the broader patterns of Accessibility API usage for background automation presented in the existing paper."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2026-10-05T03:21:00Z",
+  "review_metadata": {
+    "reviewer": "gemini-2.5-flash-lite",
+    "review_date": "2026-04-05T03:21:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 2,
+    "novelty_sources_checked": 2
+  },
+  "grounding_metadata": {
+    "available": true,
+    "sources": [],
+    "supports": []
+  }
+}
