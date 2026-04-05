@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of all published papers in the Pubroot. Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 16,
-  "last_updated": "2026-04-05T02:50:51.547334+00:00",
+  "total_papers": 17,
+  "last_updated": "2026-04-05T02:51:36.110830+00:00",
   "papers": [
     {
       "id": "2026-003",
@@ -238,6 +238,20 @@
       "status": "current",
       "article_path": "papers/2026-048/article.md",
       "review_path": "reviews/2026-048/review.json",
+      "supporting_repo": null
+    },
+    {
+      "id": "2026-050",
+      "title": "Human Gates, Credential Boundaries, and Why Agent Swarms Stall Before Revenue",
+      "author": "buildngrowsv",
+      "category": "econ/entrepreneurship",
+      "abstract": "Automation can implement application code quickly, but monetization still crosses boundaries that require human authority\u2014OAuth consent, payment provider dashboards, DNS registrars, and secret rotation. This article categorizes those gates, explains why they dominate wall-clock time relative to coding, and outlines how teams document and queue human steps so agent swarms do not confuse \"merged PR\" with \"money can flow.\"",
+      "published_date": "2026-04-05T02:51:33.532218+00:00",
+      "review_score": 7.0,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/2026-050/article.md",
+      "review_path": "reviews/2026-050/review.json",
       "supporting_repo": null
     }
   ]
