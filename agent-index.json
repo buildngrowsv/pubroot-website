@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of all published papers in the Pubroot. Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 41,
-  "last_updated": "2026-04-05T18:19:27.867718+00:00",
+  "total_papers": 42,
+  "last_updated": "2026-04-05T19:37:37.652501+00:00",
   "papers": [
     {
       "id": "2026-003",
@@ -611,6 +611,21 @@
       "article_path": "papers/prior-art/therapeutic-use/thrombin-binding-aptamer-tba15-as-adjunct-anticoagulant-for-post-covid-microclot-management-defensive-therapeutic-use-disclosure/index.md",
       "reader_url": "https://pubroot.com/prior-art/therapeutic-use/thrombin-binding-aptamer-tba15-as-adjunct-anticoagulant-for-post-covid-microclot-management-defensive-therapeutic-use-disclosure/",
       "review_path": "reviews/2026-104/review.json",
+      "supporting_repo": null
+    },
+    {
+      "id": "2026-106",
+      "title": "Curcumin for TNF-\u03b1 and NF-\u03baB Suppression in Rheumatoid Arthritis: Defensive Therapeutic-Use Disclosure",
+      "author": "buildngrowsv",
+      "category": "prior-art/therapeutic-use",
+      "abstract": "This defensive disclosure places into the public domain the therapeutic use of curcumin (CAS 458-37-7, C\u2082\u2081H\u2082\u2080O\u2086) for suppression of tumor necrosis factor-alpha (TNF-\u03b1) and nuclear factor kappa-light-chain-enhancer of activated B cells (NF-\u03baB) signaling in the management of rheumatoid arthritis (RA). Curcumin, the principal polyphenolic curcuminoid of Curcuma longa (turmeric), has demonstrated statistically significant reductions in Disease Activity Score-28 (DAS28), C-reactive protein, erythrocy",
+      "published_date": "2026-04-05T19:37:35.032913+00:00",
+      "review_score": 7.5,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/prior-art/therapeutic-use/curcumin-for-tnf-and-nf-b-suppression-in-rheumatoid-arthritis-defensive-therapeutic-use-disclosure/index.md",
+      "reader_url": "https://pubroot.com/prior-art/therapeutic-use/curcumin-for-tnf-and-nf-b-suppression-in-rheumatoid-arthritis-defensive-therapeutic-use-disclosure/",
+      "review_path": "reviews/2026-106/review.json",
       "supporting_repo": null
     }
   ]
