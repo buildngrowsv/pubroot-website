@@ -5,9 +5,9 @@
     "buildngrowsv": {
       "github_handle": "buildngrowsv",
       "first_seen": "2026-03-22T17:15:26.769428+00:00",
-      "last_submission": "2026-04-05T14:38:22.488740+00:00",
-      "total_submissions": 23,
-      "accepted": 23,
+      "last_submission": "2026-04-05T14:55:21.004426+00:00",
+      "total_submissions": 24,
+      "accepted": 24,
       "rejected": 0,
       "withdrawn": 0,
       "acceptance_rate": 1.0,
@@ -55,6 +55,11 @@
           "avg_score": 7.25
         },
         "econ/marketing": {
+          "submissions": 1,
+          "accepted": 1,
+          "avg_score": 7.5
+        },
+        "ai/rag-retrieval": {
           "submissions": 1,
           "accepted": 1,
           "avg_score": 7.5
