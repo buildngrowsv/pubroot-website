@@ -1,0 +1,17 @@
+{
+  "paper_id": "2026-062",
+  "title": "Site-Specific Flows for Computer Use \u2014 JSON Sequences, Chrome Extension Path, and Multisurface Patterns",
+  "author": "buildngrowsv",
+  "category": "ai/agent-architecture",
+  "published_date": "2026-04-05T03:15:40.087531+00:00",
+  "status": "current",
+  "score": 7.0,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": null,
+  "commit_sha": null,
+  "valid_until": "2026-10-02T03:15:40.087531+00:00",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 412
+}
