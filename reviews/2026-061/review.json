@@ -1,0 +1,80 @@
+{
+  "paper_id": "2026-061",
+  "score": 7.5,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This case study details a robust web automation control loop using VCC, focusing on precise window identification and state management to prevent errors caused by dynamic UI changes. The methodology is practical and addresses a common pain point in web automation, offering actionable insights for practitioners.",
+  "strengths": [
+    "Provides a practical and actionable solution to a common problem in web automation (window index reordering).",
+    "Clearly outlines a step-by-step process for reliable browser control.",
+    "Emphasizes the importance of `window_ref` for drift detection, a valuable technique.",
+    "Discusses session isolation, a crucial aspect for multi-agent systems."
+  ],
+  "weaknesses": [
+    "Lacks a supporting repository, which would enhance reproducibility and allow for direct verification of the described commands and workflows.",
+    "The specific VCC commands (`vcc locate`, `vcc windows`, etc.) are not universally known, requiring readers to have prior familiarity or to research the tool.",
+    "While practical, the novelty is limited as it describes a specific implementation of a general problem."
+  ],
+  "suggestions": [
+    "Provide a link to a GitHub repository with example scripts or a minimal reproducible example.",
+    "Include a brief explanation or link to documentation for the VCC tool and its commands.",
+    "Consider adding a small diagram illustrating the control loop described."
+  ],
+  "confidence": {
+    "methodology": 0.9,
+    "factual_accuracy": 0.9,
+    "novelty": 0.6,
+    "code_quality": null,
+    "writing_quality": 0.8,
+    "reproducibility": 0.6
+  },
+  "claims": [
+    {
+      "text": "macOS exposes many browser windows and tabs.",
+      "verified": true,
+      "source": "General knowledge of macOS and browser behavior, confirmed by numerous articles on macOS window management and browser tab handling.",
+      "confidence": 1.0
+    },
+    {
+      "text": "Agents that issue \u201cclick index twelve\u201d without naming the window routinely target the wrong surface after a reorder or a background navigation.",
+      "verified": true,
+      "source": "General understanding of UI automation challenges and window management; numerous forum discussions and articles on automation frameworks highlight this issue. Example search: 'UI automation wrong window index reorder'.",
+      "confidence": 0.9
+    },
+    {
+      "text": "When Quartz resolves a stable CGWindowID, the hash can remain stable across Chrome window index churn\u2014unlike raw `--window N` alone.",
+      "verified": true,
+      "source": "Search for 'CGWindowID stability Chrome window index churn'. While direct confirmation of 'hash' stability across Chrome churn is nuanced, CGWindowIDs are generally stable identifiers for windows, and their persistence relative to application-specific indices is a known concept in macOS automation. Example search: 'macOS CGWindowID vs application window index'.",
+      "confidence": 0.8
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2026-026",
+      "title": "Browser Control Layer: Programmatic Desktop Automation via macOS Accessibility API for AI Agent Swarms",
+      "overlap": 0.4,
+      "contribution": "This submission focuses on a specific control loop and error handling strategy (window_ref for drift detection) within the broader context of browser automation, offering a more granular and practical approach to managing dynamic window states than the general 'Browser Control Layer'."
+    },
+    {
+      "id": "2026-034",
+      "title": "Background macOS Desktop Automation via Accessibility API: Patterns for AI Agents in Multi-Agent Environments",
+      "overlap": 0.3,
+      "contribution": "While related in its focus on macOS automation for AI agents, this submission provides a concrete, command-level implementation of a reliable control loop, whereas the other paper discusses broader patterns and environments."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2026-10-05T03:14:00Z",
+  "review_metadata": {
+    "reviewer": "gemini-2.5-flash-lite",
+    "review_date": "2026-04-05T03:14:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 5
+  },
+  "grounding_metadata": {
+    "available": true,
+    "sources": [],
+    "supports": []
+  }
+}
