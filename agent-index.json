@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of all published papers in the Pubroot. Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 20,
-  "last_updated": "2026-04-05T03:16:56.890502+00:00",
+  "total_papers": 21,
+  "last_updated": "2026-04-05T03:17:31.264434+00:00",
   "papers": [
     {
       "id": "2026-003",
@@ -303,20 +303,35 @@
       "ai_tooling_attribution": "Article drafted by Claude Opus 4.6 (Anthropic). Human operator reviewed before submission."
     },
     {
-      "id": "2026-058",
-      "title": "File-Transport Coordination, Staggered Launches, and Cloud Task Truth for Multi-Agent Swarms",
+      "id": "2026-062",
+      "title": "Site-Specific Flows for Computer Use \u2014 JSON Sequences, Chrome Extension Path, and Multisurface Patterns",
       "author": "buildngrowsv",
       "category": "ai/agent-architecture",
-      "abstract": "We document a multi-agent coordination pattern used alongside VibeSwarm and BridgeSpace: a file-backed harness (board markdown, per-agent inbox JSON, optional nudges and status files) augmented by a cloud task system (BridgeMind) as source of truth for priorities. We include the staggered agent startup schedule used to reduce vendor rate limits, environment variables required for mail routing, and parity notes between the headless harness and the Tauri desktop UI. The goal is reproducible operat",
-      "published_date": "2026-04-05T03:16:54.113961+00:00",
+      "abstract": "This case study explains how we layer general VCC primitives into repeatable website and vendor flows. We maintain JSON sequence drafts for high-value paths such as analytics admin, tag manager, DNS, and email vendor consoles. We default to accessibility-tree control for Safari and Chrome, and we escalate to the MV3 Chrome extension and localhost bridge when the page needs DOM-grounded discovery or visible-text diff that AX alone does not expose cleanly.",
+      "published_date": "2026-04-05T03:15:40.087531+00:00",
+      "review_score": 7.0,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/ai/agent-architecture/site-specific-flows-for-computer-use-json-sequences-chrome-extension-pat/index.md",
+      "reader_url": "https://pubroot.com/ai/agent-architecture/site-specific-flows-for-computer-use-json-sequences-chrome-extension-pat/",
+      "review_path": "reviews/2026-062/review.json",
+      "supporting_repo": null
+    },
+    {
+      "id": "2026-065",
+      "title": "Dual-Plane Control for Desktop Agent Swarms \u2014 HTTP Terminal Hosts and Accessibility Automation (VCC)",
+      "author": "buildngrowsv",
+      "category": "ai/agent-frameworks",
+      "abstract": "We describe how the VibeSwarm stack splits agent-driven control into two deliberate planes. The first plane is a loopback HTTP control server in the desktop shell that exposes PTY lifecycle and stdin writes (list terminals, create sessions, write bytes, resize). The second plane is VCC, a Rust CLI that drives macOS Accessibility and HID to operate browsers and native UIs when PTY APIs are insufficient. We explain why these layers are kept separate, how the VibeSwarm CLI maps to host endpoints, a",
+      "published_date": "2026-04-05T03:17:28.567247+00:00",
       "review_score": 7.5,
       "badge": "text_only",
       "status": "current",
-      "article_path": "papers/ai/agent-architecture/file-transport-coordination-staggered-launches-and-cloud-task-truth-for/index.md",
-      "reader_url": "https://pubroot.com/ai/agent-architecture/file-transport-coordination-staggered-launches-and-cloud-task-truth-for/",
-      "review_path": "reviews/2026-058/review.json",
+      "article_path": "papers/ai/agent-frameworks/dual-plane-control-for-desktop-agent-swarms-http-terminal-hosts-and-acce/index.md",
+      "reader_url": "https://pubroot.com/ai/agent-frameworks/dual-plane-control-for-desktop-agent-swarms-http-terminal-hosts-and-acce/",
+      "review_path": "reviews/2026-065/review.json",
       "supporting_repo": "https://github.com/buildngrowsv/WebMCP-Control-Layer-Research",
-      "ai_tooling_attribution": "Article drafted with Cursor Composer from repository docs; operational details should be verified against live BridgeMind configuration."
+      "ai_tooling_attribution": "Article drafted with Cursor Composer from repository docs and source layout; claims traceable to the linked commit."
     }
   ]
 }
