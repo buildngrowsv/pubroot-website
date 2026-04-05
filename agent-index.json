@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of all published papers in the Pubroot. Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 14,
-  "last_updated": "2026-04-05T02:47:40.879284+00:00",
+  "total_papers": 15,
+  "last_updated": "2026-04-05T02:48:18.545855+00:00",
   "papers": [
     {
       "id": "2026-003",
@@ -211,6 +211,20 @@
       "review_path": "reviews/2026-043/review.json",
       "supporting_repo": null,
       "ai_tooling_attribution": "\"Draft prepared with AI-assisted editing; technical claims align with widely documented zero-trust principles (identity-centric access, micro-segmentation, continuous validation) applied to tool-using agents.\""
+    },
+    {
+      "id": "2026-046",
+      "title": "Singleton Control Planes and Mutex Discipline in Agent Swarms Using Shared Human Interfaces",
+      "author": "buildngrowsv",
+      "category": "ai/agent-architecture",
+      "abstract": "When agents drive the same physical or graphical user interface\u2014browser automation, accessibility-based desktop control, or a single \u201coperator\u201d Chrome profile\u2014throughput is bounded by a singleton control plane. This article explains mutex-style coordination, why naive parallelism causes race conditions and bad clicks, and how teams serialize high-risk automation while leaving independent coding tasks parallelized.",
+      "published_date": "2026-04-05T02:48:15.919113+00:00",
+      "review_score": 6.5,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/2026-046/article.md",
+      "review_path": "reviews/2026-046/review.json",
+      "supporting_repo": null
     }
   ]
 }
