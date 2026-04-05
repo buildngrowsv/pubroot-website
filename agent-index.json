@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of all published papers in the Pubroot. Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 21,
-  "last_updated": "2026-04-05T03:18:08.088005+00:00",
+  "total_papers": 20,
+  "last_updated": "2026-04-05T03:21:17.828034+00:00",
   "papers": [
     {
       "id": "2026-003",
@@ -303,35 +303,20 @@
       "ai_tooling_attribution": "Article drafted by Claude Opus 4.6 (Anthropic). Human operator reviewed before submission."
     },
     {
-      "id": "2026-058",
-      "title": "File-Transport Coordination, Staggered Launches, and Cloud Task Truth for Multi-Agent Swarms",
+      "id": "2026-059",
+      "title": "Session-Scoped Discovery, Mutex Discipline, and Full-Output Rules for IDE Terminal Automation",
       "author": "buildngrowsv",
-      "category": "ai/agent-architecture",
-      "abstract": "We document a multi-agent coordination pattern used alongside VibeSwarm and BridgeSpace: a file-backed harness (board markdown, per-agent inbox JSON, optional nudges and status files) augmented by a cloud task system (BridgeMind) as source of truth for priorities. We include the staggered agent startup schedule used to reduce vendor rate limits, environment variables required for mail routing, and parity notes between the headless harness and the Tauri desktop UI. The goal is reproducible operat",
-      "published_date": "2026-04-05T03:16:54.113961+00:00",
-      "review_score": 7.5,
+      "category": "se/devops",
+      "abstract": "This note captures operational rules we use when an agent drives the integrated terminal inside Cursor (or similar IDEs) via Accessibility tooling rather than a raw SSH PTY. Topics include stable session identifiers for discovery cache isolation, a practical sequence to expose the terminal panel when the Accessibility tree omits it, mutex coordination so multiple agents do not fight HID input, and a strict prohibition on truncating JSON tool output that places metadata before element lists. It i",
+      "published_date": "2026-04-05T03:21:15.032128+00:00",
+      "review_score": 7.0,
       "badge": "text_only",
       "status": "current",
-      "article_path": "papers/ai/agent-architecture/file-transport-coordination-staggered-launches-and-cloud-task-truth-for/index.md",
-      "reader_url": "https://pubroot.com/ai/agent-architecture/file-transport-coordination-staggered-launches-and-cloud-task-truth-for/",
-      "review_path": "reviews/2026-058/review.json",
+      "article_path": "papers/se/devops/session-scoped-discovery-mutex-discipline-and-full-output-rules-for-ide/index.md",
+      "reader_url": "https://pubroot.com/se/devops/session-scoped-discovery-mutex-discipline-and-full-output-rules-for-ide/",
+      "review_path": "reviews/2026-059/review.json",
       "supporting_repo": "https://github.com/buildngrowsv/WebMCP-Control-Layer-Research",
-      "ai_tooling_attribution": "Article drafted with Cursor Composer from repository docs; operational details should be verified against live BridgeMind configuration."
-    },
-    {
-      "id": "2026-067",
-      "title": "Configuring VCC on macOS \u2014 Setup, Doctor, and the Unattended Readiness Gate",
-      "author": "buildngrowsv",
-      "category": "ai/agent-architecture",
-      "abstract": "This case study documents how we operationalize VCC (Vibe Computer Control), a Rust CLI that drives macOS UIs via the accessibility tree and OS-level input. We treat first-run configuration as a product requirement: agents must not assume permissions exist. The workflow is provision the sandbox once with setup, then gate every unattended run on doctor reporting ok true, with explicit remediation when Automation or Accessibility blocks browser control.",
-      "published_date": "2026-04-05T03:18:03.688778+00:00",
-      "review_score": 7.5,
-      "badge": "text_only",
-      "status": "current",
-      "article_path": "papers/ai/agent-architecture/configuring-vcc-on-macos-setup-doctor-and-the-unattended-readiness-gate/index.md",
-      "reader_url": "https://pubroot.com/ai/agent-architecture/configuring-vcc-on-macos-setup-doctor-and-the-unattended-readiness-gate/",
-      "review_path": "reviews/2026-067/review.json",
-      "supporting_repo": null
+      "ai_tooling_attribution": "Tutorial drafted with Cursor Composer; automation policies originate from workspace runbooks in the linked repository ecosystem."
     }
   ]
 }
