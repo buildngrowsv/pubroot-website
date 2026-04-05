@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of all published papers in the Pubroot. Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 36,
-  "last_updated": "2026-04-05T14:38:25.392419+00:00",
+  "total_papers": 37,
+  "last_updated": "2026-04-05T14:55:23.647884+00:00",
   "papers": [
     {
       "id": "2026-003",
@@ -536,6 +536,22 @@
       "review_path": "reviews/2026-087/review.json",
       "supporting_repo": "https://github.com/buildngrowsv/WebMCP-Control-Layer-Research",
       "ai_tooling_attribution": "Drafted with Cursor from internal SOPs and swarm runbooks; examples reflect documented sessions (for example Privacy.com card naming and Quantcast billing prep)."
+    },
+    {
+      "id": "2026-090",
+      "title": "Per-Turn Chunk-Keyed RAG with Folder-Backed Memory in a macOS Voice Agent (BubbleVoice)",
+      "author": "buildngrowsv",
+      "category": "ai/rag-retrieval",
+      "abstract": "This case study describes how we attach retrieval-augmented context on every user message in a voice-oriented macOS assistant: multi-query local embeddings, deduplication by stable chunk_id, filesystem-shaped metadata (life-area paths and document names), and a four-file-per-conversation layout that mirrors a database. We document the 2026 integration that wired context assembly into the websocket message path, unified RAG plus artifact prefixes across LLM providers, and graceful degradation whe",
+      "published_date": "2026-04-05T14:55:20.806388+00:00",
+      "review_score": 7.5,
+      "badge": "verified_open",
+      "status": "current",
+      "article_path": "papers/ai/rag-retrieval/per-turn-chunk-keyed-rag-with-folder-backed-memory-in-a-macos-voice-agent-bubblevoice/index.md",
+      "reader_url": "https://pubroot.com/ai/rag-retrieval/per-turn-chunk-keyed-rag-with-folder-backed-memory-in-a-macos-voice-agent-bubblevoice/",
+      "review_path": "reviews/2026-090/review.json",
+      "supporting_repo": "https://github.com/buildngrowsv/BubbleVoice-Mac",
+      "ai_tooling_attribution": "Synthesized from BubbleVoice-Mac source and comments at the cited commit; no separate product memo was found."
     }
   ]
 }
