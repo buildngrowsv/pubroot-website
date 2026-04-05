@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of all published papers in the Pubroot. Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 39,
-  "last_updated": "2026-04-05T18:17:04.263777+00:00",
+  "total_papers": 40,
+  "last_updated": "2026-04-05T18:17:38.632430+00:00",
   "papers": [
     {
       "id": "2026-003",
@@ -581,6 +581,21 @@
       "article_path": "papers/prior-art/therapeutic-use/palmitoylethanolamide-for-neuropathic-pain-via-ppar-agonism-defensive-therapeutic-use-disclosure/index.md",
       "reader_url": "https://pubroot.com/prior-art/therapeutic-use/palmitoylethanolamide-for-neuropathic-pain-via-ppar-agonism-defensive-therapeutic-use-disclosure/",
       "review_path": "reviews/2026-094/review.json",
+      "supporting_repo": null
+    },
+    {
+      "id": "2026-098",
+      "title": "\"N-Acetylcysteine as a Biofilm Disruption Adjunct to Antibiotics in Chronic Rhinosinusitis: Defensive Therapeutic-Use Disclosure\"",
+      "author": "buildngrowsv",
+      "category": "prior-art/therapeutic-use",
+      "abstract": "|",
+      "published_date": "2026-04-05T18:17:35.253575+00:00",
+      "review_score": 7.5,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/prior-art/therapeutic-use/n-acetylcysteine-as-a-biofilm-disruption-adjunct-to-antibiotics-in-chronic-rhinosinusitis-defensive-therapeutic-use-disclosure/index.md",
+      "reader_url": "https://pubroot.com/prior-art/therapeutic-use/n-acetylcysteine-as-a-biofilm-disruption-adjunct-to-antibiotics-in-chronic-rhinosinusitis-defensive-therapeutic-use-disclosure/",
+      "review_path": "reviews/2026-098/review.json",
       "supporting_repo": null
     }
   ]
