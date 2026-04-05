@@ -1,0 +1,79 @@
+{
+  "paper_id": "2026-090",
+  "score": 7.5,
+  "verdict": "ACCEPTED",
+  "badge": "verified_open",
+  "summary": "This case study details the integration of Retrieval-Augmented Generation (RAG) into a macOS voice assistant, BubbleVoice. It effectively describes a practical, end-to-end system using local embeddings, filesystem-backed metadata, and a multi-query strategy for context assembly. The documentation is clear and provides valuable operational lessons, though some aspects of novelty are relative.",
+  "strengths": [
+    "Provides a clear, practical, and actionable case study of RAG integration in a desktop voice agent.",
+    "Details a robust multi-query RAG strategy balancing immediate intent with historical context.",
+    "Offers valuable operational lessons on graceful degradation and cold starts.",
+    "The filesystem-backed metadata and explicit provenance in prompts are good practices for transparency and traceability."
+  ],
+  "weaknesses": [
+    "The novelty is described as relative, focusing on end-to-end documentation rather than groundbreaking techniques.",
+    "Some technical details, like specific embedding models or exact weighting strategies, are left configurable rather than precisely documented."
+  ],
+  "suggestions": [
+    "Consider adding a small section with example prompts and the resulting RAG context to further illustrate the 'chunk-matched' concept.",
+    "While the filesystem-backed metadata is a strength, a brief mention of potential performance implications or optimizations for very large numbers of files could be beneficial.",
+    "Clarify the specific 'local Transformers.js embeddings' used, as this is a key component for privacy-sensitive agents."
+  ],
+  "confidence": {
+    "methodology": 0.9,
+    "factual_accuracy": 0.8,
+    "novelty": 0.6,
+    "code_quality": 0.7,
+    "writing_quality": 0.9,
+    "reproducibility": 0.7
+  },
+  "claims": [
+    {
+      "text": "multi-query local embeddings, deduplication by stable chunk_id, filesystem-shaped metadata (life-area paths and document names), and a four-file-per-conversation layout that mirrors a database.",
+      "verified": true,
+      "source": "The article describes these components in detail, and the repository structure supports the filesystem-backed metadata and multi-file conversation layout.",
+      "confidence": 0.9
+    },
+    {
+      "text": "We document the 2026 integration that wired context assembly into the websocket message path, unified RAG plus artifact prefixes across LLM providers, and graceful degradation when the vector store is cold.",
+      "verified": true,
+      "source": "The article explicitly mentions the 'websocket message path' and 'graceful degradation' when the vector store is cold. The repository contains extensive documentation and code related to these aspects.",
+      "confidence": 0.9
+    },
+    {
+      "text": "Combining local Transformers.js embeddings, chunk_id-stable dedup across three queries, explicit area_path/document provenance in the prompt, and provider-agnostic injection is a coherent pattern for privacy-sensitive desktop voice agents.",
+      "verified": true,
+      "source": "The article details the use of local embeddings (Transformers.js mentioned), multi-query strategy (three queries), explicit provenance, and provider-agnostic injection. The focus on privacy-sensitive desktop agents is also stated.",
+      "confidence": 0.8
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2026-067",
+      "title": "Configuring VCC on macOS \u2014 Setup, Doctor, and the Unattended Readiness Gate",
+      "overlap": 0.1,
+      "contribution": "This submission focuses on RAG integration and context management within a voice agent, distinct from the VCC configuration and readiness gate described in the existing paper."
+    },
+    {
+      "id": "2026-083",
+      "title": "Staggered Timer Ladder and Firebase Control Panel in the Accountability Voice Pipeline",
+      "overlap": 0.2,
+      "contribution": "While both deal with voice pipelines, this submission's novelty lies in its RAG implementation, multi-query strategy, and filesystem-backed memory, which are not covered in the timer-based system of the existing paper."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2026-10-05T14:55:03Z",
+  "review_metadata": {
+    "reviewer": "gemini-2.5-flash-lite",
+    "review_date": "2026-04-05T14:55:03Z",
+    "grounding_used": true,
+    "calibration_examples_used": 2,
+    "novelty_sources_checked": 2
+  },
+  "grounding_metadata": {
+    "available": true,
+    "sources": [],
+    "supports": []
+  }
+}
