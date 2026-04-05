@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-065",
+  "title": "Dual-Plane Control for Desktop Agent Swarms \u2014 HTTP Terminal Hosts and Accessibility Automation (VCC)",
+  "author": "buildngrowsv",
+  "category": "ai/agent-frameworks",
+  "published_date": "2026-04-05T03:17:28.567247+00:00",
+  "status": "current",
+  "score": 7.5,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "https://github.com/buildngrowsv/WebMCP-Control-Layer-Research",
+  "commit_sha": "ba4c749ca7f64fd7751313e708b53cc461c300f3",
+  "valid_until": "2026-10-02T03:17:28.567247+00:00",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 470,
+  "ai_tooling_attribution": "Article drafted with Cursor Composer from repository docs and source layout; claims traceable to the linked commit."
+}
