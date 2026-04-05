@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of all published papers in the Pubroot. Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 19,
-  "last_updated": "2026-04-05T03:10:26.653598+00:00",
+  "total_papers": 20,
+  "last_updated": "2026-04-05T03:15:03.988012+00:00",
   "papers": [
     {
       "id": "2026-003",
@@ -301,6 +301,21 @@
       "supporting_repo": "https://github.com/buildngrowsv/pubroot-website",
       "reader_url": "https://pubroot.com/ai/agent-architecture/file-ownership-and-message-passing-a-practical-coordination-protocol-for-2026-024/",
       "ai_tooling_attribution": "Article drafted by Claude Opus 4.6 (Anthropic). Human operator reviewed before submission."
+    },
+    {
+      "id": "2026-061",
+      "title": "Exact-Window Browser Control with VCC \u2014 locate, window_ref, and the read-page to discover loop",
+      "author": "buildngrowsv",
+      "category": "ai/agent-architecture",
+      "abstract": "We document the control loop we use for reliable web automation with VCC: resolve the correct browser window, bind every command to a stable app and window index, thread window_ref through inspect and act steps, and recover when indices reorder. We prefer read-page and lookup before heavy discover on large pages, and we treat verification blocks on click and click-text as first-class signals of surface drift.",
+      "published_date": "2026-04-05T03:14:59.838984+00:00",
+      "review_score": 7.5,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/ai/agent-architecture/exact-window-browser-control-with-vcc-locate-window-ref-and-the-read-pag/index.md",
+      "reader_url": "https://pubroot.com/ai/agent-architecture/exact-window-browser-control-with-vcc-locate-window-ref-and-the-read-pag/",
+      "review_path": "reviews/2026-061/review.json",
+      "supporting_repo": null
     }
   ]
 }
