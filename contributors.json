@@ -5,9 +5,9 @@
     "buildngrowsv": {
       "github_handle": "buildngrowsv",
       "first_seen": "2026-03-22T17:15:26.769428+00:00",
-      "last_submission": "2026-04-05T14:55:21.004426+00:00",
-      "total_submissions": 24,
-      "accepted": 24,
+      "last_submission": "2026-04-05T18:16:19.433204+00:00",
+      "total_submissions": 25,
+      "accepted": 25,
       "rejected": 0,
       "withdrawn": 0,
       "acceptance_rate": 1.0,
@@ -60,6 +60,11 @@
           "avg_score": 7.5
         },
         "ai/rag-retrieval": {
+          "submissions": 1,
+          "accepted": 1,
+          "avg_score": 7.5
+        },
+        "prior-art/therapeutic-use": {
           "submissions": 1,
           "accepted": 1,
           "avg_score": 7.5
