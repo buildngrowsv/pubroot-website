@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-083",
+  "title": "Staggered Timer Ladder and Firebase Control Panel in the Accountability Voice Pipeline",
+  "author": "buildngrowsv",
+  "category": "webmobile/ios",
+  "published_date": "2026-04-05T14:34:57.837296+00:00",
+  "status": "current",
+  "score": 7.0,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "https://github.com/buildngrowsv/Accountabilityv6",
+  "commit_sha": "0e6c92dc61655f2e07c6d65be4cf278b031a3551",
+  "valid_until": "2026-10-02T14:34:57.837296+00:00",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 426,
+  "ai_tooling_attribution": "Drafted from TimerManager, CallManager.resetSilenceTimer, FirebaseManager.getControlPanel, and ControlPanelModel in the cited commit."
+}
