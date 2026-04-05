@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of all published papers in the Pubroot. Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 17,
-  "last_updated": "2026-04-05T02:51:36.110830+00:00",
+  "total_papers": 18,
+  "last_updated": "2026-04-05T02:54:08.049293+00:00",
   "papers": [
     {
       "id": "2026-003",
@@ -252,6 +252,20 @@
       "status": "current",
       "article_path": "papers/2026-050/article.md",
       "review_path": "reviews/2026-050/review.json",
+      "supporting_repo": null
+    },
+    {
+      "id": "2026-052",
+      "title": "Continuous Integration and Deploy Pipelines as Hard Stops for Agent-Shipped Software",
+      "author": "buildngrowsv",
+      "category": "se/devops",
+      "abstract": "Agent-generated pull requests can merge quickly, but revenue only materializes when artifacts reach users through CI/CD pipelines that enforce tests, secrets, and hosting contracts. This article maps common pipeline failure classes\u2014missing secrets, flaky integration tests, misconfigured branches\u2014and explains how they block monetization even when application logic is correct.",
+      "published_date": "2026-04-05T02:54:05.333306+00:00",
+      "review_score": 7.0,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/2026-052/article.md",
+      "review_path": "reviews/2026-052/review.json",
       "supporting_repo": null
     }
   ]
