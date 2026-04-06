@@ -1415,6 +1415,23 @@ h1, h2, h3, h4 {
   font-size: 0.8rem;
   color: var(--footer-text-muted);
 }
+/* "Powered by SymplyAI" — subtle branding link for portfolio backlinks.
+   Styled to match the footer muted aesthetic without drawing focus away
+   from the Pubroot brand. */
+.footer-powered-by {
+  margin-top: 8px;
+  font-size: 0.75rem;
+}
+.footer-powered-by a {
+  color: var(--footer-text-muted);
+  text-decoration: none;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+.footer-powered-by a:hover {
+  opacity: 1;
+  color: var(--accent);
+}
 
 /* ============================================================
    LUCIDE ICON UTILITIES

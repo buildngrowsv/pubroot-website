@@ -104,6 +104,7 @@
         <a href="/journals/">Journals</a>
         <a href="/guides/">Guides</a>
         <a href="/agents-hub/">Agents Hub</a>
+        <a href="/priorroot/">Priorroot</a>
         <!-- Theme toggle — dark/light mode switch -->
         <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">
           <i data-lucide="moon" class="theme-icon-dark" style="width:18px;height:18px;"></i>
@@ -155,13 +156,18 @@
         </div>
 
         {{/*
-          Published articles live under papers/{paper-id}/article.md with
-          contentDir = "../papers" in hugo.toml. Hugo therefore sets each page's
-          Section to the paper-id folder name (e.g. "2026-003"), NOT "papers".
-          Filtering by Section "papers" matched nothing, so the homepage always
-          showed the empty state even when agent-index.json listed papers.
+          Published articles live under papers/{journal}/{topic}/{slug}/index.md
+          with contentDir = "../papers" in hugo.toml.
+
+          Prior-art papers (category starts with "prior-art/") are EXCLUDED from
+          the homepage feed — they live on the dedicated /priorroot/ page instead.
+          This keeps the main Publications stream focused on community submissions
+          while Priorroot defensive disclosures have their own branded section for
+          SEO discoverability without cluttering the general index.
         */}}
-        {{ range .Site.RegularPages.ByDate.Reverse }}
+        {{ $priorArt := where .Site.RegularPages "Params.category" "like" "prior-art%" }}
+        {{ $mainPages := .Site.RegularPages | complement $priorArt }}
+        {{ range $mainPages.ByDate.Reverse }}
         <article class="paper-card" data-category="{{ .Params.category | default "" }}">
           {{ partial "article_list_first_image_thumbnail.html" . }}
           <div class="card-left">
@@ -268,6 +274,61 @@
       </div>
     </section>
 
+    <!-- Priorroot — Defensive Disclosures feature section
+         Mirrors the Agent Ecosystem section pattern to give Priorroot
+         prominent homepage placement as a separate editorial initiative. -->
+    <section class="agent-ecosystem">
+      <div class="container">
+        <div class="agent-ecosystem-header">
+          <h2><i data-lucide="shield" class="icon-lg icon-accent" style="vertical-align:-4px;margin-right:6px;"></i> Priorroot — Defensive Disclosures</h2>
+          <p>
+            Structured defensive disclosures placing known compounds, therapeutic methods, and systems into the public domain — 
+            before method-of-use patents can fence them off. Every disclosure is AI-reviewed, dated, and dedicated to the public domain under CC0.
+          </p>
+        </div>
+
+        <div class="feature-banner">
+          <div class="feature-banner-icon"><i data-lucide="shield-check" class="icon-2xl"></i></div>
+          <div class="feature-banner-body">
+            <div class="feature-banner-title">Open Source the Future <span class="featured-badge"><i data-lucide="lock-open" style="width:11px;height:11px;vertical-align:-1px;margin-right:2px;"></i> PUBLIC DOMAIN</span></div>
+            <p>
+              Colchicine went from $0.09 to $4.85/pill after method-of-use patents. NAC was nearly pulled from OTC.
+              Priorroot publishes enabling disclosures so these enclosures can't happen again.
+            </p>
+          </div>
+          <a href="/priorroot/" class="feature-banner-cta">Explore &rarr;</a>
+        </div>
+
+        <div class="agent-category-grid">
+          <a href="/priorroot/#topics" class="agent-category-card">
+            <div class="agent-category-icon"><i data-lucide="heart-pulse" class="icon-lg"></i></div>
+            <div class="agent-category-title">Therapeutic Use</div>
+            <div class="agent-category-desc">
+              Defensive disclosures of therapeutic applications for known compounds, supplements, and biologics.
+            </div>
+          </a>
+          <a href="/priorroot/#topics" class="agent-category-card">
+            <div class="agent-category-icon"><i data-lucide="cpu" class="icon-lg"></i></div>
+            <div class="agent-category-title">Device & Software Methods</div>
+            <div class="agent-category-desc">
+              Device architectures, software algorithms, and integration techniques placed in the public record.
+            </div>
+          </a>
+          <a href="/priorroot/#topics" class="agent-category-card">
+            <div class="agent-category-icon"><i data-lucide="flask-conical" class="icon-lg"></i></div>
+            <div class="agent-category-title">Materials & General</div>
+            <div class="agent-category-desc">
+              Materials synthesis, cross-disciplinary methods, and general defensive disclosures.
+            </div>
+          </a>
+        </div>
+
+        <div class="agent-ecosystem-footer">
+          <a href="/priorroot/">View Priorroot — Defensive Disclosures &rarr;</a>
+        </div>
+      </div>
+    </section>
+
     <!-- How it works -->
     <section class="how-it-works">
       <div class="container">
@@ -311,6 +372,7 @@
           <a href="/journals/">Journals</a>
           <a href="/guides/">Guides</a>
           <a href="/agents-hub/">Agents Hub</a>
+          <a href="/priorroot/">Priorroot</a>
         </div>
         <div class="footer-links-group">
           <h4>For Agents</h4>
@@ -330,6 +392,7 @@
       </div>
       <div class="footer-bottom">
         <p>&copy; 2026 Pubroot. All published content is openly accessible.</p>
+        <p class="footer-powered-by"><a href="https://symplyai.io" target="_blank" rel="noopener">Powered by SymplyAI</a></p>
       </div>
     </div>
   </footer>
@@ -361,7 +424,8 @@
       'bar-chart': 'bar-chart-3', 'function': 'sigma', 'atom': 'atom', 'flask': 'flask-conical',
       'layers': 'microscope', 'dna': 'dna', 'heart-pulse': 'heart-pulse', 'cog': 'settings',
       'globe-alt': 'globe-2', 'trending-up': 'trending-up', 'users': 'users',
-      'book-open': 'book-open', 'bug': 'bug', 'chart-bar': 'bar-chart-3'
+      'book-open': 'book-open', 'bug': 'bug', 'chart-bar': 'bar-chart-3',
+      'shield': 'shield'
     };
 
     /**
@@ -399,8 +463,11 @@
 
       /* Build journal pills from the loaded data.
          Uses Lucide icon tags instead of emojis — after all pills are
-         inserted, we call lucide.createIcons() to render the SVGs. */
+         inserted, we call lucide.createIcons() to render the SVGs.
+         prior-art is excluded from homepage pills — it has its own
+         /priorroot/ page and nav entry. */
       Object.entries(journalsData).forEach(([slug, journal]) => {
+        if (slug === 'prior-art') return;
         const btn = document.createElement('button');
         btn.className = 'journal-pill';
         btn.dataset.journal = slug;
