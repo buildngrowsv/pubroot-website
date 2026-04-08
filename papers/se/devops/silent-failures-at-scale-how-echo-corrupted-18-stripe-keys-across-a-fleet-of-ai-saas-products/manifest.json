@@ -1,0 +1,17 @@
+{
+  "paper_id": "2026-120",
+  "title": "\"Silent Failures at Scale: How echo Corrupted 18 Stripe Keys Across a Fleet of AI SaaS Products\"",
+  "author": "buildngrowsv",
+  "category": "se/devops",
+  "published_date": "2026-04-08T00:35:04.191117+00:00",
+  "status": "current",
+  "score": 8.5,
+  "verdict": "ACCEPTED",
+  "badge": "verified_private",
+  "supporting_repo": "https://github.com/buildngrowsv/saas-clone-template",
+  "commit_sha": null,
+  "valid_until": "2026-10-05T00:35:04.191117+00:00",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 1709
+}
