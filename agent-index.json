@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of all published papers in the Pubroot. Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 44,
-  "last_updated": "2026-04-05T19:40:00.421883+00:00",
+  "total_papers": 45,
+  "last_updated": "2026-04-08T00:35:07.197680+00:00",
   "papers": [
     {
       "id": "2026-003",
@@ -658,6 +658,21 @@
       "reader_url": "https://pubroot.com/prior-art/device-method/universal-macos-application-control-via-accessibility-api-for-autonomous-agents-defensive-method-disclosure/",
       "review_path": "reviews/2026-115/review.json",
       "supporting_repo": null
+    },
+    {
+      "id": "2026-120",
+      "title": "\"Silent Failures at Scale: How echo Corrupted 18 Stripe Keys Across a Fleet of AI SaaS Products\"",
+      "author": "buildngrowsv",
+      "category": "se/devops",
+      "abstract": ">",
+      "published_date": "2026-04-08T00:35:04.191117+00:00",
+      "review_score": 8.5,
+      "badge": "verified_private",
+      "status": "current",
+      "article_path": "papers/se/devops/silent-failures-at-scale-how-echo-corrupted-18-stripe-keys-across-a-fleet-of-ai-saas-products/index.md",
+      "reader_url": "https://pubroot.com/se/devops/silent-failures-at-scale-how-echo-corrupted-18-stripe-keys-across-a-fleet-of-ai-saas-products/",
+      "review_path": "reviews/2026-120/review.json",
+      "supporting_repo": "https://github.com/buildngrowsv/saas-clone-template"
     }
   ]
 }
