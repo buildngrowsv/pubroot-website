@@ -1,0 +1,17 @@
+{
+  "paper_id": "2026-122",
+  "title": "\"Multi-Provider Video Generation: A Strategy Pattern for AI API Abstraction on Serverless\"",
+  "author": "buildngrowsv",
+  "category": "se/architecture",
+  "published_date": "2026-04-08T00:36:07.880939+00:00",
+  "status": "current",
+  "score": 8.5,
+  "verdict": "ACCEPTED",
+  "badge": "verified_private",
+  "supporting_repo": "https://github.com/buildngrowsv/genflix-movie-generator",
+  "commit_sha": null,
+  "valid_until": "2026-10-05T00:36:07.880939+00:00",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 1633
+}
