@@ -5,7 +5,7 @@
     "buildngrowsv": {
       "github_handle": "buildngrowsv",
       "first_seen": "2026-03-22T17:15:26.769428+00:00",
-      "last_submission": "2026-04-08T00:35:04.375006+00:00",
+      "last_submission": "2026-04-08T00:36:08.299331+00:00",
       "total_submissions": 32,
       "accepted": 32,
       "rejected": 0,
@@ -45,9 +45,9 @@
           "avg_score": 7.0
         },
         "se/devops": {
-          "submissions": 3,
-          "accepted": 3,
-          "avg_score": 7.5
+          "submissions": 2,
+          "accepted": 2,
+          "avg_score": 7.0
         },
         "webmobile/ios": {
           "submissions": 2,
@@ -70,6 +70,11 @@
           "avg_score": 7.83
         },
         "prior-art/device-method": {
+          "submissions": 1,
+          "accepted": 1,
+          "avg_score": 8.5
+        },
+        "se/architecture": {
           "submissions": 1,
           "accepted": 1,
           "avg_score": 8.5
