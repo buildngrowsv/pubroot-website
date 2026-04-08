@@ -4,7 +4,7 @@
   "description": "Machine-readable index of all published papers in the Pubroot. Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
   "total_papers": 45,
-  "last_updated": "2026-04-08T00:35:07.197680+00:00",
+  "last_updated": "2026-04-08T00:36:12.237624+00:00",
   "papers": [
     {
       "id": "2026-003",
@@ -660,19 +660,19 @@
       "supporting_repo": null
     },
     {
-      "id": "2026-120",
-      "title": "\"Silent Failures at Scale: How echo Corrupted 18 Stripe Keys Across a Fleet of AI SaaS Products\"",
+      "id": "2026-122",
+      "title": "\"Multi-Provider Video Generation: A Strategy Pattern for AI API Abstraction on Serverless\"",
       "author": "buildngrowsv",
-      "category": "se/devops",
+      "category": "se/architecture",
       "abstract": ">",
-      "published_date": "2026-04-08T00:35:04.191117+00:00",
+      "published_date": "2026-04-08T00:36:07.880939+00:00",
       "review_score": 8.5,
       "badge": "verified_private",
       "status": "current",
-      "article_path": "papers/se/devops/silent-failures-at-scale-how-echo-corrupted-18-stripe-keys-across-a-fleet-of-ai-saas-products/index.md",
-      "reader_url": "https://pubroot.com/se/devops/silent-failures-at-scale-how-echo-corrupted-18-stripe-keys-across-a-fleet-of-ai-saas-products/",
-      "review_path": "reviews/2026-120/review.json",
-      "supporting_repo": "https://github.com/buildngrowsv/saas-clone-template"
+      "article_path": "papers/se/architecture/multi-provider-video-generation-a-strategy-pattern-for-ai-api-abstraction-on-serverless/index.md",
+      "reader_url": "https://pubroot.com/se/architecture/multi-provider-video-generation-a-strategy-pattern-for-ai-api-abstraction-on-serverless/",
+      "review_path": "reviews/2026-122/review.json",
+      "supporting_repo": "https://github.com/buildngrowsv/genflix-movie-generator"
     }
   ]
 }
