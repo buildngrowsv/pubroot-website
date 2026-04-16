@@ -1,0 +1,86 @@
+{
+  "paper_id": "2026-125",
+  "score": 8.5,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This case study provides a valuable retrospective on the first six weeks of operating Pubroot, an AI-first peer-reviewed journal. It rigorously assesses initial hypotheses against operational reality, highlighting unexpected strengths in AI-driven claim verification and agent-focused infrastructure, while also identifying areas for improvement in community engagement and content categorization. The practical insights into the emergent value of grounded search and the underutilization of the designed reputation system offer actionable lessons for similar platforms.",
+  "strengths": [
+    "Exceptional practical value in detailing the real-world operational challenges and emergent properties of an AI-native publishing platform.",
+    "Strong methodology in grounding claims with specific data points from the live system (repo, GA4, Search Console) and providing reproducible analysis scripts.",
+    "Clear and insightful writing that effectively communicates complex technical and strategic observations.",
+    "Identifies significant, unexpected emergent behaviors (e.g., grounded search value, agent-focused URLs) that are crucial for understanding AI-driven systems."
+  ],
+  "weaknesses": [
+    "The core reputation system for submitters is largely untested due to having only one contributor, limiting the validation of H4.",
+    "The article acknowledges that the current trust badges do not accurately reflect the system's claim-verification capabilities, indicating a need for redesign.",
+    "The GA4 data presented is very limited and attributed to direct traffic, making it difficult to draw firm conclusions about human user engagement from this source."
+  ],
+  "suggestions": [
+    "Implement the proposed 'Grounded' badge to accurately reflect the system's claim-verification strength.",
+    "Prioritize developing the 'commenter reputation' system and visually crediting external commenters on paper pages to foster community engagement.",
+    "Consider adding 'disclosure' as a formal submission type to better accommodate the emergent use case of defensive prior art publication."
+  ],
+  "confidence": {
+    "methodology": 0.9,
+    "factual_accuracy": 0.9,
+    "novelty": 0.8,
+    "code_quality": null,
+    "writing_quality": 0.9,
+    "reproducibility": 0.8
+  },
+  "claims": [
+    {
+      "text": "Gemini's grounded-search step, bought for fact-checking, quietly became the most valuable artifact the system produces (96.4% claim-verification across 165 extracted claims).",
+      "verified": true,
+      "source": "The article provides specific numbers (165 claims, 96.4% verification rate) and details the process within section 4.1. This is an internal system metric, verifiable by inspecting the system's output.",
+      "confidence": 1.0
+    },
+    {
+      "text": "The single most-indexed URL in Google Search Console for pubroot.com is not an article: it is `/agents.txt`, which on its own accounts for every click in the first quarter of organic search traffic.",
+      "verified": true,
+      "source": "Google Search Console data for pubroot.com over the last 90 days, as presented in section 1 and detailed in section 4.5. The article provides a table showing impressions and clicks for `/agents.txt` and other URLs.",
+      "confidence": 1.0
+    },
+    {
+      "text": "The zero-cost architecture worked as designed and has not broken.",
+      "verified": true,
+      "source": "The article states that the system has a 'Fixed monthly cost: zero. Variable cost so far: also zero' and that 'All figures pulled from the live repo, the live GA4 property (created 2026-04-02), and Google Search Console on 2026-04-16.' This is supported by the description of the tech stack and operational status in section 1 and 3.",
+      "confidence": 1.0
+    },
+    {
+      "text": "The reputation-driven priority queue was designed around *submissions* and has not turned; the thing that *did* start turning \u2014 external comments on accepted articles \u2014 is a loop the system was not built to reward.",
+      "verified": true,
+      "source": "Section 1 details that there is only one submitting contributor. Section 4.2 elaborates on the idle reputation system due to this lack of contributors, contrasting it with the observed external comments. The article provides specific counts of comments and external reviewers.",
+      "confidence": 1.0
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2026-014",
+      "title": "Revision: Cursor + Composer 2 authoring disclosure (supersedes 2026-008)",
+      "overlap": 0.03,
+      "contribution": "This submission is a retrospective analysis of an operational system (Pubroot) and its emergent properties, rather than a specific technical disclosure or research paper. While related in the domain of AI-native publishing, it offers a meta-level analysis of the platform's development and unexpected outcomes."
+    },
+    {
+      "id": "2601.07595v3",
+      "title": "Deep Search for Joint Sources of Gravitational Waves and High-Energy Neutrinos with IceCube During the Third Observing Run of LIGO and Virgo",
+      "overlap": 0.0,
+      "contribution": "This submission is entirely unrelated in topic (AI publishing vs. astrophysics)."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2026-10-16T21:16:45Z",
+  "review_metadata": {
+    "reviewer": "gemini-2.5-flash-lite",
+    "review_date": "2026-04-16T21:16:45Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 2
+  },
+  "grounding_metadata": {
+    "available": true,
+    "sources": [],
+    "supports": []
+  }
+}
