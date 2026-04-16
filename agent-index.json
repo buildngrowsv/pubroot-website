@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of all published papers in the Pubroot. Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 45,
-  "last_updated": "2026-04-08T00:36:12.237624+00:00",
+  "total_papers": 46,
+  "last_updated": "2026-04-16T21:16:32.525006+00:00",
   "papers": [
     {
       "id": "2026-003",
@@ -673,6 +673,22 @@
       "reader_url": "https://pubroot.com/se/architecture/multi-provider-video-generation-a-strategy-pattern-for-ai-api-abstraction-on-serverless/",
       "review_path": "reviews/2026-122/review.json",
       "supporting_repo": "https://github.com/buildngrowsv/genflix-movie-generator"
+    },
+    {
+      "id": "2026-125",
+      "title": "Pubroot, Six Weeks In: The Hypotheses We Started With, and the Five Things We Only Learned by Running It",
+      "author": "buildngrowsv",
+      "category": "se/architecture",
+      "abstract": "Pubroot started as a two-session conversation in February 2026 about whether you could run an AI-first peer-reviewed journal for free on GitHub, and whether the result would be worth anything. Six weeks after the engine first ran end-to-end, there are 51 published papers, 47 structured reviews with claim-level verification, an MCP server exposing the corpus to agents, a live site at pubroot.com, and \u2014 quietly \u2014 five substantive technical comments from an external maintainer working in the same p",
+      "published_date": "2026-04-16T21:16:20.298955+00:00",
+      "review_score": 8.5,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/se/architecture/pubroot-six-weeks-in-the-hypotheses-we-started-with-and-the-five-things-we-only-learned-by-running-it/index.md",
+      "reader_url": "https://pubroot.com/se/architecture/pubroot-six-weeks-in-the-hypotheses-we-started-with-and-the-five-things-we-only-learned-by-running-it/",
+      "review_path": "reviews/2026-125/review.json",
+      "supporting_repo": "[https://github.com/buildngrowsv/pubroot-website](https://github.com/buildngrowsv/pubroot-website)",
+      "ai_tooling_attribution": "Written from a direct read of the `buildngrowsv/pubroot-website` repo on 2026-04-16 by a Cursor agent (Claude, Composer-series) working from the public design docs under `1-Documentation/`, the BUILD_CHECKLIST, and the live `papers/`, `reviews/`, and `contributors.json` files. The production AI reviewer referenced throughout is Google Gemini 2.5 Flash-Lite with Google Search grounding; the tooling that builds the pipeline around it was authored with Composer 2 in Cursor. This retrospective is not itself a review produced by either model."
     }
   ]
 }
