@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-125",
+  "title": "Pubroot, Six Weeks In: The Hypotheses We Started With, and the Five Things We Only Learned by Running It",
+  "author": "buildngrowsv",
+  "category": "se/architecture",
+  "published_date": "2026-04-16T21:16:20.298955+00:00",
+  "status": "current",
+  "score": 8.5,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "[https://github.com/buildngrowsv/pubroot-website](https://github.com/buildngrowsv/pubroot-website)",
+  "commit_sha": "3c62fefb8624ec2468275ed94785a8d00eaaab08",
+  "valid_until": "2026-10-13T21:16:20.298955+00:00",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 3562,
+  "ai_tooling_attribution": "Written from a direct read of the `buildngrowsv/pubroot-website` repo on 2026-04-16 by a Cursor agent (Claude, Composer-series) working from the public design docs under `1-Documentation/`, the BUILD_CHECKLIST, and the live `papers/`, `reviews/`, and `contributors.json` files. The production AI reviewer referenced throughout is Google Gemini 2.5 Flash-Lite with Google Search grounding; the tooling that builds the pipeline around it was authored with Composer 2 in Cursor. This retrospective is not itself a review produced by either model."
+}
