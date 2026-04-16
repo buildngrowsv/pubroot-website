@@ -127,6 +127,80 @@
       </div>
     </section>
 
+    <!-- ====================================================================
+         Editor's Spotlight — manual highlight of one published paper.
+         ====================================================================
+         Controlled by `params.featured_paper_id` in hugo.toml. The value is
+         a paper_id like "2026-125". We scan all RegularPages for the page
+         whose Params.paper_id matches, and render a full-width card with
+         the paper's title, abstract, badge, score, and a direct link.
+
+         Rendering rules:
+           • If no featured_paper_id is configured, render nothing.
+           • If featured_paper_id is configured but no matching page exists
+             (e.g. typo, paper removed), render nothing — do not block the
+             homepage build on a bad ID.
+           • Prior-art papers can also be featured; the block is agnostic to
+             journal — the spotlight is an editorial decision, independent
+             of the prior-art / non-prior-art split elsewhere on the page.
+
+         Why a param and not front matter: the editor wants one canonical
+         lever to swap the spotlight without editing a pipeline-generated
+         paper file. Swapping is a one-line change in hugo.toml followed by
+         the normal GitHub Pages rebuild.
+
+         Added 2026-04-16 alongside the first spotlight target: 2026-125
+         "Pubroot, Six Weeks In" — a self-reflexive retrospective that fits
+         the "anchor the site to a transparent status update" pattern. -->
+    {{ $fid := .Site.Params.featured_paper_id }}
+    {{ if $fid }}
+      {{ $featured := "" }}
+      {{ range .Site.RegularPages }}
+        {{ if eq (.Params.paper_id | default "") $fid }}
+          {{ $featured = . }}
+        {{ end }}
+      {{ end }}
+      {{ with $featured }}
+      <section class="editor-spotlight" aria-label="Editor's spotlight">
+        <div class="container">
+          <div class="editor-spotlight-card">
+            <div class="editor-spotlight-header">
+              <span class="editor-spotlight-kicker">
+                <i data-lucide="sparkles" style="width:14px;height:14px;vertical-align:-2px;margin-right:4px;"></i>
+                Editor's Spotlight
+              </span>
+              <div class="editor-spotlight-meta">
+                <span class="badge badge-{{ .Params.badge | default "text_only" }}">
+                  {{ with .Params.badge }}
+                    {{ index $.Site.Params.badges . | default . }}
+                  {{ else }}
+                    Text Only
+                  {{ end }}
+                </span>
+                <span class="category-tag">{{ .Params.category | default "general" }}</span>
+              </div>
+            </div>
+            <h2 class="editor-spotlight-title">
+              <a href="{{ .Permalink }}">{{ .Params.title | default .Title }}</a>
+            </h2>
+            <p class="editor-spotlight-byline">
+              by <strong>{{ .Params.author | default "Unknown" }}</strong>
+              &middot; Paper ID <code>{{ .Params.paper_id }}</code>
+              &middot; Score <strong>{{ .Params.score | default "?" }}/10</strong>
+            </p>
+            <p class="editor-spotlight-abstract">
+              {{ .Params.abstract | default .Summary | truncate 420 }}
+            </p>
+            <div class="editor-spotlight-cta-row">
+              <a href="{{ .Permalink }}" class="editor-spotlight-cta">Read the full article &rarr;</a>
+              <a href="{{ .Permalink }}#6-an-honest-roadmap" class="editor-spotlight-secondary-cta">Jump to the roadmap</a>
+            </div>
+          </div>
+        </div>
+      </section>
+      {{ end }}
+    {{ end }}
+
     <!-- Journal navigation — two-level taxonomy (Feb 2026 redesign)
          Top row: journal-level pills (scrollable horizontal bar)
          Bottom row: topic-level pills (shown when a journal is selected)

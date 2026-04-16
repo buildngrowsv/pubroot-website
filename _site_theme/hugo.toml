@@ -28,6 +28,17 @@ contentDir = "../papers"
   # Injected by layouts/partials/ga4-measurement-head.html → baseof.html.
   # Sitewide gtag events: partial ga4-site-events.html (submit CTA, PDF, GitHub outbound) — Coordinator 1, Operator pick-one-project, 2026-03-31.
   ga4_measurement_id = "G-KJ4QTQ2S7C"
+  # --- Editor's Spotlight (homepage highlighted article) --------------------
+  # Pubroot manually highlights one published paper on the homepage at a time.
+  # Set this to the paper_id (matches the `paper_id` front-matter key on each
+  # paper's index.md — format: "YYYY-NNN"). The homepage (layouts/index.html)
+  # looks up the matching page and renders a full-width spotlight card above
+  # the standard article feed. Leave empty to disable the section entirely;
+  # missing IDs are silently ignored so this field never blocks a rebuild.
+  # Seed value 2026-125 is the Pubroot Six-Weeks-In retrospective — a
+  # self-reflexive case study it makes sense to anchor the site to while we
+  # iterate on the grounding-tier badge and commenter-reputation redesigns.
+  featured_paper_id = "2026-125"
 
 [params.badges]
   verified_open = "Code Verified"
