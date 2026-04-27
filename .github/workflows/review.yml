@@ -1,4 +1,23 @@
 # =============================================================================
+# CARVE-OUT — pubroot stays on GitHub Pages + GitHub Actions
+# Operator decision 2026-04-19. See:
+#   UserRoot/.claude/rules/pubroot-stays-on-github-pages-and-actions.md
+#   UserRoot/.cursor/rules/pubroot-stays-on-github-pages-and-actions.mdc
+# Companion deny-list (which this workflow is carved OUT from):
+#   UserRoot/.claude/rules/no-github-actions-build-discipline.md
+#     §"Long-term carve-outs (operator decisions)"
+# Operator-decision evidence:
+#   UserRoot/.bridgespace/swarms/pane1776/SCOUT1-GH-ACTIONS-AUDIT-2026-04-19.md
+#     §3 class (c) — Actions IS the product; T1776-25 closed Option B
+#     (--skip-repo buildngrowsv/pubroot-website) on 2026-04-19.
+# Do NOT replace this file with a deprecation stub, do NOT migrate the
+# pipeline to Cloudflare Workers + Queues + Cron, and do NOT remove the
+# GEMINI_API_KEY / S2_API_KEY repo secrets without an explicit Operator
+# instruction that names the carve-out rule by filename and overrides it.
+# Bulk-decommission scripts in symplyai-platform/scripts/ already pass
+# --skip-repo buildngrowsv/pubroot-website per the carve-out; reviewer
+# agents must refuse to APPROVE any plan that touches this file.
+# =============================================================================
 # review.yml — AI Peer Review Pipeline GitHub Action
 # =============================================================================
 #
