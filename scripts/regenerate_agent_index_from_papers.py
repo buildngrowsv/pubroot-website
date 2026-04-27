@@ -22,6 +22,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 PAPERS_ROOT = REPO_ROOT / "papers"
 SITE_BASE = "https://pubroot.com"
 INDEX_OUT = REPO_ROOT / "agent-index.json"
+PRIORROOT_INDEX_OUT = REPO_ROOT / "priorroot-index.json"
 
 
 def _fm_and_body(path: Path) -> tuple[dict | None, str]:
@@ -114,27 +115,55 @@ def main() -> int:
 
     entries.sort(key=lambda e: e["id"])
 
-    payload = {
+    main_entries = [e for e in entries if not e["category"].startswith("prior-art/")]
+    priorroot_entries = [e for e in entries if e["category"].startswith("prior-art/")]
+
+    now_iso = datetime.now(timezone.utc).isoformat()
+
+    main_payload = {
         "schema_version": "1.0",
         "api_version": "1.0",
         "description": (
-            "Machine-readable index of all published papers in the Pubroot. "
+            "Machine-readable index of published papers in the Pubroot (excludes prior-art "
+            "defensive disclosures, which are in priorroot-index.json). "
             "Updated automatically by the review pipeline when a paper is accepted and published. "
             "Agents consume this file via the MCP server's search_papers tool, or by fetching it "
             "directly from the raw GitHub URL. Each entry includes enough metadata for agents to "
             "decide whether to fetch the full article."
         ),
         "search_endpoint": None,
-        "total_papers": len(entries),
-        "last_updated": datetime.now(timezone.utc).isoformat(),
-        "papers": entries,
+        "total_papers": len(main_entries),
+        "last_updated": now_iso,
+        "papers": main_entries,
     }
 
     INDEX_OUT.write_text(
-        json.dumps(payload, indent=2, ensure_ascii=False) + "\n",
+        json.dumps(main_payload, indent=2, ensure_ascii=False) + "\n",
         encoding="utf-8",
     )
-    print(f"Wrote {len(entries)} papers to {INDEX_OUT.relative_to(REPO_ROOT)}")
+    print(f"Wrote {len(main_entries)} papers to {INDEX_OUT.relative_to(REPO_ROOT)}")
+
+    priorroot_payload = {
+        "schema_version": "1.0",
+        "api_version": "1.0",
+        "description": (
+            "Machine-readable index of Priorroot defensive disclosures (prior-art/*). "
+            "Separated from the main agent-index.json to keep the general Pubroot index "
+            "focused on community submissions while giving Priorroot its own discoverable "
+            "endpoint. The /priorroot/ page on pubroot.com consumes this file."
+        ),
+        "search_endpoint": None,
+        "total_papers": len(priorroot_entries),
+        "last_updated": now_iso,
+        "papers": priorroot_entries,
+    }
+
+    PRIORROOT_INDEX_OUT.write_text(
+        json.dumps(priorroot_payload, indent=2, ensure_ascii=False) + "\n",
+        encoding="utf-8",
+    )
+    print(f"Wrote {len(priorroot_entries)} priorroot papers to {PRIORROOT_INDEX_OUT.relative_to(REPO_ROOT)}")
+
     return 0
 
 

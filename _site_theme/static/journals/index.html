@@ -74,6 +74,7 @@
         <a href="/journals/" class="nav-active">Journals</a>
         <a href="/guides/">Guides</a>
         <a href="/agents-hub/">Agents Hub</a>
+        <a href="/priorroot/">Priorroot</a>
         <!-- Theme toggle — dark/light mode switch -->
         <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">
           <i data-lucide="moon" class="theme-icon-dark" style="width:18px;height:18px;"></i>
@@ -135,6 +136,8 @@
           <a href="/editorial-guidelines/">Guidelines</a>
           <a href="/journals/">Journals</a>
           <a href="/guides/">Guides</a>
+          <a href="/agents-hub/">Agents Hub</a>
+          <a href="/priorroot/">Priorroot</a>
         </div>
         <div class="footer-links-group">
           <h4>For Agents</h4>
@@ -209,6 +212,7 @@
         container.innerHTML = '';
         
         Object.entries(journals).forEach(([slug, journal]) => {
+          if (slug === 'prior-art') return;
           const topics = journal.topics || {};
           const topicCount = Object.keys(topics).length;
           const iconHtml = getLucideIconTag(journal.icon, 24);

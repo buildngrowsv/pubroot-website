@@ -1,0 +1,53 @@
+{
+  "schema_version": "1.0",
+  "api_version": "1.0",
+  "description": "Machine-readable index of Priorroot defensive disclosures (prior-art/*). Separated from the main agent-index.json to keep the general Pubroot index focused on community submissions while giving Priorroot its own discoverable endpoint. The /priorroot/ page on pubroot.com consumes this file.",
+  "search_endpoint": null,
+  "total_papers": 3,
+  "last_updated": "2026-04-06T17:01:13.314184+00:00",
+  "papers": [
+    {
+      "id": "2026-003",
+      "title": "Preemptive Prior Art Publication as a Defense Against Method-of-Use Patents on Known Compounds and Methods",
+      "author": "buildngrowsv",
+      "category": "prior-art/general-disclosure",
+      "abstract": "Method-of-use patents allow companies to claim exclusive rights over new therapeutic, industrial, or technological applications of compounds and methods already in the public domain. Under 35 U.S.C. § 102, a patent claim is anticipated — and therefore unpatentable — if every element of the claim is described in a single prior art reference that predates the filing. This article proposes a systematic framework for preemptive defensive disclosure: publishing structured, enabling descriptions of kn",
+      "published_date": "2026-03-22T17:15:26+00:00",
+      "review_score": 8.5,
+      "badge": "verified_open",
+      "status": "current",
+      "article_path": "papers/prior-art/general-disclosure/preemptive-prior-art-publication-as-a-defense-against-method-of-use-patents-on-known-compounds-and-methods/index.md",
+      "review_path": "reviews/2026-003/review.json",
+      "reader_url": "https://pubroot.com/prior-art/general-disclosure/preemptive-prior-art-publication-as-a-defense-against-method-of-use-patents-on-known-compounds-and-methods/"
+    },
+    {
+      "id": "2026-005",
+      "title": "The DSHEA-Patent Squeeze: How Method-of-Use Patents Amplify Regulatory Barriers to Public-Domain Compounds",
+      "author": "buildngrowsv",
+      "category": "prior-art/general-disclosure",
+      "abstract": "When a pharmaceutical company files a method-of-use patent on a new therapeutic application of a compound already sold over-the-counter as a dietary supplement, the patent interacts with the DSHEA drug preclusion clause (FD&C Act § 201(ff)(3)(B)) and FDA exclusivity grants to create a compounding restriction on public access. This essay analyzes the specific mechanism by which method-of-use patents transform temporary FDA regulatory exclusivity (3–7 years) into long-term monopoly control (up to ",
+      "published_date": "2026-03-22T17:17:11+00:00",
+      "review_score": 7.5,
+      "badge": "verified_open",
+      "status": "current",
+      "article_path": "papers/prior-art/general-disclosure/the-dshea-patent-squeeze-how-method-of-use-patents-amplify-regulatory-ba/index.md",
+      "review_path": "reviews/2026-005/review.json",
+      "reader_url": "https://pubroot.com/prior-art/general-disclosure/the-dshea-patent-squeeze-how-method-of-use-patents-amplify-regulatory-ba/"
+    },
+    {
+      "id": "2026-016",
+      "title": "The DSHEA-Patent Squeeze: Method-of-Use Patents and Regulatory Barriers (automated near-duplicate probe)",
+      "author": "buildngrowsv",
+      "category": "prior-art/general-disclosure",
+      "abstract": "When a pharmaceutical company files a method-of-use patent on a new therapeutic application of a compound already sold over-the-counter as a dietary supplement, the patent interacts with the DSHEA drug preclusion clause FD&C Act 201(ff)(3)(B) and FDA exclusivity grants to create access friction. This essay intentionally shortens existing Pubroot coverage by removing tables and several case-study paragraphs while recycling the same statutory hooks and examples (colchicine, N-acetylcysteine). No n",
+      "published_date": "2026-03-23T02:17:02Z",
+      "review_score": 6.5,
+      "badge": "verified_open",
+      "status": "current",
+      "article_path": "papers/prior-art/general-disclosure/the-dshea-patent-squeeze-method-of-use-patents-and-regulatory-barriers-a/index.md",
+      "review_path": "reviews/2026-016/review.json",
+      "reader_url": "https://pubroot.com/prior-art/general-disclosure/the-dshea-patent-squeeze-method-of-use-patents-and-regulatory-barriers-a/",
+      "ai_tooling_attribution": "This issue was opened by an automated repository pressure test to exercise the GitHub Actions review pipeline (Stages 1–6) with a deliberate near-duplicate of existing Pubroot essay 2026-005. Safe to close and not merge if the maintainer prefers; the article text below states the same intent."
+    }
+  ]
+}
