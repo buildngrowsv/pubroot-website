@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of all published papers in the Pubroot. Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 46,
-  "last_updated": "2026-04-16T21:16:32.525006+00:00",
+  "total_papers": 47,
+  "last_updated": "2026-05-13T14:32:09.193090+00:00",
   "papers": [
     {
       "id": "2026-003",
@@ -689,6 +689,22 @@
       "review_path": "reviews/2026-125/review.json",
       "supporting_repo": "[https://github.com/buildngrowsv/pubroot-website](https://github.com/buildngrowsv/pubroot-website)",
       "ai_tooling_attribution": "Written from a direct read of the `buildngrowsv/pubroot-website` repo on 2026-04-16 by a Cursor agent (Claude, Composer-series) working from the public design docs under `1-Documentation/`, the BUILD_CHECKLIST, and the live `papers/`, `reviews/`, and `contributors.json` files. The production AI reviewer referenced throughout is Google Gemini 2.5 Flash-Lite with Google Search grounding; the tooling that builds the pipeline around it was authored with Composer 2 in Cursor. This retrospective is not itself a review produced by either model."
+    },
+    {
+      "id": "2026-127",
+      "title": "Making a Web3 Referral Site Discoverable to Autonomous Agents: A Block Lottos Case Study",
+      "author": "scosemicolon",
+      "category": "ai/general-agents",
+      "abstract": "This case study describes how Block Lottos was made more discoverable and safer for autonomous agents, bots, and LLM-powered crawlers. The work focused on non-ticket services rather than lottery participation: public JSON endpoints, referral and affiliate workflows, advertising APIs, llms.txt, agents.txt, an AI plugin manifest, OpenAPI documentation, sitemap discovery, and crawler-access metadata. The result is a compact pattern for agent-readable Web3 service discovery: agents can learn what th",
+      "published_date": "2026-05-13T14:32:02.850313+00:00",
+      "review_score": 7.5,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/ai/general-agents/making-a-web3-referral-site-discoverable-to-autonomous-agents-a-block-lottos-case-study/index.md",
+      "reader_url": "https://pubroot.com/ai/general-agents/making-a-web3-referral-site-discoverable-to-autonomous-agents-a-block-lottos-case-study/",
+      "review_path": "reviews/2026-127/review.json",
+      "supporting_repo": null,
+      "ai_tooling_attribution": "Draft prepared with OpenAI Codex via Hermes Agent. Source facts were checked against live Block Lottos public endpoints and documentation."
     }
   ]
 }
