@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-127",
+  "title": "Making a Web3 Referral Site Discoverable to Autonomous Agents: A Block Lottos Case Study",
+  "author": "scosemicolon",
+  "category": "ai/general-agents",
+  "published_date": "2026-05-13T14:32:02.850313+00:00",
+  "status": "current",
+  "score": 7.5,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": null,
+  "commit_sha": null,
+  "valid_until": "2026-11-09T14:32:02.850313+00:00",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 485,
+  "ai_tooling_attribution": "Draft prepared with OpenAI Codex via Hermes Agent. Source facts were checked against live Block Lottos public endpoints and documentation."
+}
