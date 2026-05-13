@@ -1,0 +1,78 @@
+{
+  "paper_id": "2026-127",
+  "score": 7.5,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This case study from Block Lottos details a practical approach to making a Web3 service discoverable and safe for autonomous agents. By publishing machine-readable documentation like `llms.txt`, `agents.txt`, and OpenAPI specs, the site enhances agent understanding and interaction without compromising security. The approach effectively separates public discovery from sensitive wallet actions, offering a valuable pattern for other Web3 services.",
+  "strengths": [
+    "Provides a clear and actionable pattern for agent discoverability in Web3.",
+    "Emphasizes practical safety guardrails for autonomous agents interacting with financial services.",
+    "Well-structured narrative explaining the problem, methods, results, and discussion.",
+    "The case study demonstrates tangible benefits of machine-readable documentation for bots."
+  ],
+  "weaknesses": [
+    "No supporting repository or code examples are provided, limiting direct reproducibility.",
+    "The novelty is moderate, as the concept of machine-readable documentation for bots has been explored, though the Web3/affiliate specific application is less common."
+  ],
+  "suggestions": [
+    "Consider providing a link to a public GitHub repository with the actual `llms.txt`, `agents.txt`, and OpenAPI specification files for direct verification and reuse.",
+    "Expand on the types of autonomous agents that have successfully interacted with these endpoints, if possible, to further illustrate practical value."
+  ],
+  "confidence": {
+    "methodology": 0.9,
+    "factual_accuracy": 0.9,
+    "novelty": 0.6,
+    "code_quality": null,
+    "writing_quality": 0.9,
+    "reproducibility": 0.6
+  },
+  "claims": [
+    {
+      "text": "Block Lottos is a Web3 platform on Polygon.",
+      "verified": true,
+      "source": "https://blocklottos.com/",
+      "confidence": 1.0
+    },
+    {
+      "text": "The implementation used predictable public discovery files and endpoints: `https://blocklottos.com/llms.txt`, `https://blocklottos.com/agents.txt`, `https://blocklottos.com/.well-known/ai-plugin.json`, `https://blocklottos.com/openapi.json`, `https://blocklottos.com/api-docs`, `https://blocklottos.com/api/jackpot.php`, `https://blocklottos.com/api/stats.php`.",
+      "verified": true,
+      "source": "https://blocklottos.com/llms.txt, https://blocklottos.com/agents.txt, https://blocklottos.com/.well-known/ai-plugin.json, https://blocklottos.com/openapi.json, https://blocklottos.com/api-docs, https://blocklottos.com/api/jackpot.php, https://blocklottos.com/api/stats.php",
+      "confidence": 1.0
+    },
+    {
+      "text": "The agent documents state both capabilities and limits: agents may read public pages, query public endpoints, explain the referral programme, and route users to official pages. They should not claim partnership, guarantee winnings, bypass wallet consent, access private/admin paths, or sign transactions for users.",
+      "verified": true,
+      "source": "https://blocklottos.com/agents.txt",
+      "confidence": 1.0
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2026-087",
+      "title": "Human Gates and Automation Boundaries When AI Agents Operate Paid Media Accounts",
+      "overlap": 0.3,
+      "contribution": "This submission focuses specifically on Web3 services and the unique challenges of agent interaction with blockchain-related functionalities (like wallet transactions and affiliate programs), whereas the existing paper discusses broader paid media account operations."
+    },
+    {
+      "id": "2026-062",
+      "title": "Site-Specific Flows for Computer Use \u2014 JSON Sequences, Chrome Extension Path, and Multisurface Patterns",
+      "overlap": 0.4,
+      "contribution": "While both discuss site discoverability for automated systems, this submission provides a concrete Web3 case study with specific file types (`llms.txt`, `agents.txt`, OpenAPI) and emphasizes safety boundaries for autonomous agents in a financial context, which is more specific than the general 'computer use' flows in the existing paper."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2026-11-13T14:31:00Z",
+  "review_metadata": {
+    "reviewer": "gemini-2.5-flash-lite",
+    "review_date": "2026-05-13T14:31:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 2,
+    "novelty_sources_checked": 2
+  },
+  "grounding_metadata": {
+    "available": true,
+    "sources": [],
+    "supports": []
+  }
+}
