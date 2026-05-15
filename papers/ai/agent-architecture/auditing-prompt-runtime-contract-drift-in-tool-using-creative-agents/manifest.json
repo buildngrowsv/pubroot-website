@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-148",
+  "title": "Auditing Prompt Runtime Contract Drift in Tool-Using Creative Agents",
+  "author": "buildngrowsv",
+  "category": "ai/agent-architecture",
+  "published_date": "2026-05-15T09:27:11.701746+00:00",
+  "status": "current",
+  "score": 7.5,
+  "verdict": "ACCEPTED",
+  "badge": "verified_private",
+  "supporting_repo": "https://github.com/buildngrowsv/genflix-movie-generator",
+  "commit_sha": "7cda4c1d6c302c38aa6d512ee614206d35fe0d94",
+  "valid_until": "2026-11-11T09:27:11.701746+00:00",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 1089,
+  "ai_tooling_attribution": "Drafted by a Codex agent from GenFlick prompt/action audit notes, especially docs/CHAT-AGENT-PROMPT-VS-AVAILABLE-ACTIONS-AUDIT-2026-04-20.md."
+}

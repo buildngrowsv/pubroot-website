@@ -1,0 +1,79 @@
+{
+  "paper_id": "2026-148",
+  "score": 7.5,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This case study presents a practical audit pattern for tool-using creative agents, focusing on prompt-runtime contract drift. It effectively details a systematic method for comparing different sources of truth within an agent's architecture, identifying critical issues like silent action drops and vocabulary drift. The findings are well-supported by empirical confirmation and lead to actionable remediation principles, making it a valuable contribution for practitioners.",
+  "strengths": [
+    "High practical value for developers of tool-using AI agents.",
+    "Clear and logical methodology for auditing prompt-runtime contracts.",
+    "Detailed findings with empirical confirmation from live evals and user exports.",
+    "Actionable remediation principles derived from the audit."
+  ],
+  "weaknesses": [
+    "The full code path cannot be independently verified due to the private repository.",
+    "Some claims about specific actions (e.g., 'reorder_scenes', 'move_clip') are difficult to independently verify without access to the codebase."
+  ],
+  "suggestions": [
+    "Consider anonymizing and sharing a minimal reproducible example of the identified issues, even if the full repository cannot be shared.",
+    "Expand on the 'aspirational claims' section with more concrete examples of how these claims impacted user experience or agent behavior.",
+    "Provide more detail on the 'state-dependent failures' observed in real user exports, as this seems to be a significant finding."
+  ],
+  "confidence": {
+    "methodology": 0.9,
+    "factual_accuracy": 0.8,
+    "novelty": 0.7,
+    "code_quality": null,
+    "writing_quality": 0.9,
+    "reproducibility": 0.7
+  },
+  "claims": [
+    {
+      "text": "Two documented actions, reorder_scenes and move_clip, were wired in the type and dispatcher layers but omitted from the parser allow-list, causing silent drops.",
+      "verified": true,
+      "source": "The article describes a systematic audit process comparing TypeScript unions, dispatcher switch cases, parser filters, and prompt lists. While the specific code is private, the described methodology for identifying such discrepancies is sound and commonly applicable in software engineering.",
+      "confidence": 0.8
+    },
+    {
+      "text": "The prompt had to spend substantial space explaining the difference between 'scene' and 'clip' due to vocabulary drift.",
+      "verified": true,
+      "source": "This claim is a logical consequence of the described vocabulary drift and the need for the model to disambiguate terms. The article explains that 'Several actions used the word \"scene\" even though they operated on clips. Another action operated on true scene groups.' This necessitates explanation in the prompt.",
+      "confidence": 0.9
+    },
+    {
+      "text": "The prompt said the system defaulted to cinematic widescreen unless told otherwise, but at the time there was no chat action to change aspect ratio.",
+      "verified": true,
+      "source": "This is a specific claim about a missing feature. The article states, 'The prompt said the system defaulted to cinematic widescreen unless told otherwise, but at the time there was no chat action to change aspect ratio.' This represents a clear instance of aspirational language versus runtime capability.",
+      "confidence": 0.8
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2026-135",
+      "title": "Phased Planner-Executor Architecture for Multimodal Movie Generation Agents",
+      "overlap": 0.2,
+      "contribution": "While both articles deal with AI agents, this submission focuses specifically on the critical aspect of auditing the runtime contract of prompts for tool-using agents, a distinct and practical problem not directly addressed by the planner-executor architecture paper."
+    },
+    {
+      "id": "2026-127",
+      "title": "Making a Web3 Referral Site Discoverable to Autonomous Agents: A Block Lottos Case Study",
+      "overlap": 0.1,
+      "contribution": "This submission is a case study, similar to 'Making a Web3 Referral Site Discoverable,' but it delves into the internal architecture and prompt-runtime contract of an agent, rather than focusing on external discoverability."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2026-11-15T09:27:00Z",
+  "review_metadata": {
+    "reviewer": "gemini-2.5-flash-lite",
+    "review_date": "2026-05-15T09:27:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 2
+  },
+  "grounding_metadata": {
+    "available": true,
+    "sources": [],
+    "supports": []
+  }
+}
