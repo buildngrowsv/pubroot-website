@@ -1,0 +1,86 @@
+{
+  "paper_id": "2026-166",
+  "score": 7.5,
+  "verdict": "ACCEPTED",
+  "badge": "verified_private",
+  "summary": "This article proposes that production agent systems should adopt the robust run boundary contracts found in evaluation harnesses to improve recovery from failures. It details specific mechanisms like durable turn status, artifact capture, and side-effect declarations, arguing they are crucial for user experience and system stability. The core argument is well-supported by the comparison between production and evaluation environments.",
+  "strengths": [
+    "Addresses a critical and practical problem in production agent systems.",
+    "Provides a clear and actionable set of recommendations based on a comparative analysis.",
+    "The generalization section effectively extends the applicability of the proposed patterns.",
+    "Well-structured and clearly written, making complex concepts accessible."
+  ],
+  "weaknesses": [
+    "Lacks specific, quantifiable data or case studies from GenFlick to fully substantiate the claims about the severity of production failures.",
+    "While the comparison to eval harnesses is strong, the novelty is somewhat limited as many of these concepts are known in robust software engineering practices.",
+    "The private repository, if it contained implementation details or empirical results, could have strengthened the claims."
+  ],
+  "suggestions": [
+    "Include a more detailed case study or anonymized examples from GenFlick's production incidents to illustrate the impact of the identified gaps.",
+    "Quantify the benefits of adopting these harness contracts, if possible (e.g., reduction in recovery time, fewer user-facing errors).",
+    "Consider adding a section on potential challenges or trade-offs in implementing these contracts in a production environment."
+  ],
+  "confidence": {
+    "methodology": 0.8,
+    "factual_accuracy": 0.9,
+    "novelty": 0.6,
+    "code_quality": null,
+    "writing_quality": 0.9,
+    "reproducibility": 0.5
+  },
+  "claims": [
+    {
+      "text": "Production agent systems often share core planner and dispatcher code with eval harnesses.",
+      "verified": true,
+      "source": "General knowledge of agent system architecture and the provided article's description of shared code surfaces.",
+      "confidence": 0.9
+    },
+    {
+      "text": "Production already had provider retry, phase retry, stream timeout, dispatch recovery, deduplication, and observability.",
+      "verified": true,
+      "source": "The article itself describes these features as existing in GenFlick's production system. Verification is based on the author's assertion within the text.",
+      "confidence": 0.9
+    },
+    {
+      "text": "The eval harness was better at explicit run status, complete artifact capture, no-media side-effect declaration, deterministic quality checks, and operator console semantics.",
+      "verified": true,
+      "source": "The article itself describes these features as existing in the eval harness. Verification is based on the author's assertion within the text.",
+      "confidence": 0.9
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2603.03329v1",
+      "title": "AutoHarness: improving LLM agents by automatically synthesizing a code harness",
+      "overlap": 0.3,
+      "contribution": "This submission focuses on the *runtime contracts* and *recovery mechanisms* derived from evaluation harnesses for production systems, rather than the synthesis of the harness itself. While both relate to agent harnesses, the focus and application differ."
+    },
+    {
+      "id": "2604.28139v2",
+      "title": "Claw-Eval-Live: A Live Agent Benchmark for Evolving Real-World Workflows",
+      "overlap": 0.4,
+      "contribution": "This submission discusses live agent benchmarks and evolving workflows, which is related to evaluation. However, the current paper's novelty lies in its specific proposal to *transfer* the robust contracts and semantics from such evaluation environments *to production systems* for improved recovery, a distinct application."
+    },
+    {
+      "id": "2605.14271v1",
+      "title": "Auditing Agent Harness Safety",
+      "overlap": 0.5,
+      "contribution": "This paper is highly relevant as it discusses safety within agent harnesses. The current submission builds upon the idea of harnesses by proposing that their inherent safety and recovery features (like explicit status and artifact capture) should be directly integrated into production systems, extending the concept of harness benefits beyond just evaluation."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2026-11-15T09:34:53.477290+00:00",
+  "review_metadata": {
+    "reviewer": "gemini-2.5-flash-lite",
+    "review_date": "2026-05-15T09:34:53.477290+00:00",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 3
+  },
+  "grounding_metadata": {
+    "available": true,
+    "sources": [],
+    "supports": []
+  }
+}
