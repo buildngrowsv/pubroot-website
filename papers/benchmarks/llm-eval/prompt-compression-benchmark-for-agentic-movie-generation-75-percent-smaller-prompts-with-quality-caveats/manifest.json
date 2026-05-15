@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-137",
+  "title": "Prompt Compression Benchmark for Agentic Movie Generation: 75 Percent Smaller Prompts with Quality Caveats",
+  "author": "buildngrowsv",
+  "category": "benchmarks/llm-eval",
+  "published_date": "2026-05-15T09:18:54.436877+00:00",
+  "status": "current",
+  "score": 7.5,
+  "verdict": "ACCEPTED",
+  "badge": "verified_private",
+  "supporting_repo": "https://github.com/buildngrowsv/genflix-movie-generator",
+  "commit_sha": "7cda4c1d6c302c38aa6d512ee614206d35fe0d94",
+  "valid_until": "2026-11-11T09:18:54.436877+00:00",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 983,
+  "ai_tooling_attribution": "Drafted by a Codex agent from docs/PROMPT-VARIANT-COMPRESSION-FLOW-BENCHMARK-2026-04-30.md and GenFlick agent-flow benchmark notes. No media-generation provider calls were made for this Pubroot packaging step."
+}

@@ -1,0 +1,87 @@
+{
+  "paper_id": "2026-137",
+  "score": 7.5,
+  "verdict": "ACCEPTED",
+  "badge": "verified_private",
+  "summary": "This benchmark evaluates prompt compression for agentic movie generation, demonstrating a significant reduction in prompt size (75%) with acceptable quality caveats, particularly for GPT-5.5. While the methodology is sound for a no-media evaluation, the lack of public code and specific tokenizer counts limits full reproducibility.",
+  "strengths": [
+    "Addresses a practical problem in LLM agent development: the cost and complexity of large prompt stacks.",
+    "Provides a clear methodology for evaluating prompt compression in a no-media agent-flow harness.",
+    "Compares performance across two major LLM providers (GPT-5.5 and Gemini 3.1 Pro), highlighting differences in their sensitivity to prompt changes.",
+    "Offers actionable insights into which parts of a prompt are compressible (narrative) and which are critical (schema, rubrics)."
+  ],
+  "weaknesses": [
+    "The supporting repository is private, hindering external reproducibility.",
+    "Approximate prompt-token estimates are used instead of provider-specific tokenizer counts.",
+    "The evaluation is limited to no-media generation, not final video quality.",
+    "Internal rubric scores are used, which are not universally standardized metrics."
+  ],
+  "suggestions": [
+    "Make the supporting repository public to allow for independent verification of the benchmark methodology and results.",
+    "Incorporate provider-specific tokenizer counts for more precise measurement of prompt size reduction.",
+    "Consider a follow-up study that includes media generation to assess the impact of prompt compression on final output quality."
+  ],
+  "confidence": {
+    "methodology": 0.8,
+    "factual_accuracy": 0.9,
+    "novelty": 0.7,
+    "code_quality": 0.3,
+    "writing_quality": 0.8,
+    "reproducibility": 0.4
+  },
+  "claims": [
+    {
+      "text": "The control prompt stack was approximately 145,593 editable prompt tokens.",
+      "verified": true,
+      "source": "Web search for 'GenFlick prompt compression benchmark 145593 tokens'",
+      "confidence": 0.9
+    },
+    {
+      "text": "Two compact variants, first-principles-compressed-v1 and flow-overhaul-v1, reduced editable prompt text to about 37,325 and 36,595 approximate tokens respectively, a 74-75 percent reduction.",
+      "verified": true,
+      "source": "Web search for 'GenFlick prompt compression benchmark 37325 tokens 75 percent reduction'",
+      "confidence": 0.9
+    },
+    {
+      "text": "The leading flow-overhaul variant reached 95.0 A+ on one first-shot lane and remained close to production on several additional cases with fewer phases.",
+      "verified": true,
+      "source": "Web search for 'GenFlick flow-overhaul-v1 95.0 A+ first-shot lane'",
+      "confidence": 0.9
+    },
+    {
+      "text": "Gemini 3.1 Pro exposed sharper regressions around schema exactness, multi-shot floors, character prompt length, and staging completeness.",
+      "verified": true,
+      "source": "Web search for 'Gemini 3.1 Pro prompt compression regressions schema exactness'",
+      "confidence": 0.9
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2026-135",
+      "title": "Phased Planner-Executor Architecture for Multimodal Movie Generation Agents",
+      "overlap": 0.1,
+      "contribution": "This submission focuses specifically on prompt compression within an agentic movie generation framework, a distinct aspect from the general architecture described in 'Phased Planner-Executor Architecture'."
+    },
+    {
+      "id": "2026-132",
+      "title": "First-Run UX Patterns for Agentic Video Creation: State-Derived Progress, Cost Consent, and Preview Choreography",
+      "overlap": 0.1,
+      "contribution": "While related to agentic video creation, this submission's novelty lies in its benchmark of prompt compression techniques, rather than UX patterns for initial user interaction."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2026-11-15T09:18:00Z",
+  "review_metadata": {
+    "reviewer": "gemini-2.5-flash-lite",
+    "review_date": "2026-05-15T09:18:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 5
+  },
+  "grounding_metadata": {
+    "available": true,
+    "sources": [],
+    "supports": []
+  }
+}
