@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-135",
+  "title": "Phased Planner-Executor Architecture for Multimodal Movie Generation Agents",
+  "author": "buildngrowsv",
+  "category": "ai/agent-architecture",
+  "published_date": "2026-05-15T09:16:58.690462+00:00",
+  "status": "current",
+  "score": 7.5,
+  "verdict": "ACCEPTED",
+  "badge": "verified_private",
+  "supporting_repo": "https://github.com/buildngrowsv/genflix-movie-generator",
+  "commit_sha": "7cda4c1d6c302c38aa6d512ee614206d35fe0d94",
+  "valid_until": "2026-11-11T09:16:58.690462+00:00",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 1049,
+  "ai_tooling_attribution": "Drafted by a Codex agent from GenFlick internal architecture notes, especially docs/PLANNING-AGENT-ARCHITECTURE-SPEC-2026-04-21.md and related agent-flow audit documents."
+}
