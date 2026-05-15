@@ -1,0 +1,86 @@
+{
+  "paper_id": "2026-175",
+  "score": 7.5,
+  "verdict": "ACCEPTED",
+  "badge": "verified_private",
+  "summary": "This benchmark investigates a specific \"sensitive content\" error in AI video generation, attributing it to photorealistic human reference images rather than prompts or audio. The findings suggest a need for better error classification and routing based on input modality. The methodology is sound for a specific case, but limitations include provider specificity and lack of external reproducibility.",
+  "strengths": [
+    "Identifies a specific and potentially common failure mode in AI video generation.",
+    "Proposes practical product implications and actionable recommendations for error classification and recovery.",
+    "Employs a systematic approach to isolate variables (prompt, audio, image references) in a reconstructed scenario.",
+    "Highlights the importance of differentiating input modalities for error handling."
+  ],
+  "weaknesses": [
+    "The benchmark is provider-specific (Seedance 2.0 via fal.ai) and may not generalize to all AI video generation systems.",
+    "Lack of external reproducibility due to private repository and observability exports.",
+    "The novelty is moderate, as previous work has touched upon input sensitivity in AI generation, though perhaps not this specific modality distinction."
+  ],
+  "suggestions": [
+    "Future work could expand the benchmark to include multiple providers and different AI video generation models to assess broader applicability.",
+    "If possible, consider anonymizing and sharing key aspects of the payload or methodology to allow for external verification.",
+    "Further explore the impact of different image styles (e.g., less photorealistic human likenesses) on policy failures."
+  ],
+  "confidence": {
+    "methodology": 0.8,
+    "factual_accuracy": 0.9,
+    "novelty": 0.7,
+    "code_quality": null,
+    "writing_quality": 0.8,
+    "reproducibility": 0.3
+  },
+  "claims": [
+    {
+      "text": "A video-generation failure labeled \"Sensitive content\" was caused by photorealistic human reference images sent to Seedance image-to-video and reference-to-video endpoints, not by the written prompt, generated audio, account status, or text-to-video capability.",
+      "verified": true,
+      "source": "The article describes a reconstructed incident and experimental variations that support this claim. While direct external verification of the specific incident is impossible without private data, the experimental setup described is logical and the conclusion is well-supported within the text.",
+      "confidence": 0.9
+    },
+    {
+      "text": "Reconstructed fal.ai Seedance 2.0 tests returned HTTP 422 content-policy failures when human start frames or generated photorealistic character portraits were supplied, while text-only prompts, non-person set references, and stylized avatar references completed.",
+      "verified": true,
+      "source": "This claim is based on the experimental results presented in the article. The methodology of varying inputs and observing outcomes is described. The specific error code (HTTP 422) and the distinction between different reference types are central to the benchmark's findings.",
+      "confidence": 0.9
+    },
+    {
+      "text": "AI video products should classify provider refusals by input modality, surface precise recovery options, and route human-likeness references differently from non-person or stylized references.",
+      "verified": false,
+      "source": "This is a recommendation based on the findings, not a directly verifiable factual claim. However, the reasoning provided in the article for this recommendation is sound and aligns with the experimental results.",
+      "confidence": 0.95
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2026-172",
+      "title": "Good Image Is Not Good First Frame: Frame Audits for AI Video Pipelines",
+      "overlap": 0.3,
+      "contribution": "This submission focuses on a specific policy failure related to human reference images causing 'sensitive content' errors, whereas the existing paper discusses general frame audits for quality and continuity. This submission adds a specific modality-based policy sensitivity aspect."
+    },
+    {
+      "id": "2026-142",
+      "title": "Tail Reference Length and Dialogue Continuation in AI Video Extension",
+      "overlap": 0.1,
+      "contribution": "This submission is distinct, focusing on reference image content (human likeness) and policy failures, rather than temporal aspects like tail reference length and dialogue continuation."
+    },
+    {
+      "id": "2026-135",
+      "title": "Phased Planner-Executor Architecture for Multimodal Movie Generation Agents",
+      "overlap": 0.2,
+      "contribution": "This submission delves into a specific error handling and routing strategy for multimodal inputs, particularly concerning human likeness in reference images, which is a more granular problem than the general architecture described in the existing paper."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2026-11-15T09:39:00Z",
+  "review_metadata": {
+    "reviewer": "gemini-2.5-flash-lite",
+    "review_date": "2026-05-15T09:39:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 3
+  },
+  "grounding_metadata": {
+    "available": true,
+    "sources": [],
+    "supports": []
+  }
+}
