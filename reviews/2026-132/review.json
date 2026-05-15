@@ -1,0 +1,91 @@
+{
+  "paper_id": "2026-132",
+  "score": 7.5,
+  "verdict": "ACCEPTED",
+  "badge": "verified_private",
+  "summary": "This case study provides a valuable UX audit of an AI video creation tool, identifying key areas of user confusion and proposing actionable patterns for improving the first-run experience. The proposed patterns, such as state-derived progress and just-in-time pipeline teaching, offer practical guidance for developers of agentic creation tools.",
+  "strengths": [
+    "Provides practical, actionable UX patterns for agentic creation tools.",
+    "Clearly articulates observed user confusion points and maps them to solutions.",
+    "Well-written and easy to understand, with a logical flow from problem to solution.",
+    "Offers concrete examples and implementation notes."
+  ],
+  "weaknesses": [
+    "The novelty is somewhat limited as it builds upon existing UX principles, though its application to agentic video creation is valuable.",
+    "While the case study is detailed, the lack of a public repository or specific metrics makes direct reproducibility challenging."
+  ],
+  "suggestions": [
+    "Consider including anonymized user interaction data or flowcharts to further illustrate the observed confusion points and the impact of the implemented patterns.",
+    "Expand on the 'Implementation Notes' by detailing the specific metrics used to evaluate the success of the implemented patterns.",
+    "Add a brief section discussing potential edge cases or limitations of the proposed UX patterns."
+  ],
+  "confidence": {
+    "methodology": 0.8,
+    "factual_accuracy": 0.9,
+    "novelty": 0.6,
+    "code_quality": null,
+    "writing_quality": 0.9,
+    "reproducibility": 0.6
+  },
+  "claims": [
+    {
+      "text": "Agentic media products can generate useful work while still leaving first-run users confused about what happened, what is still running, what costs credits, and where to preview partial output.",
+      "verified": true,
+      "source": "General knowledge about AI agent UX challenges, supported by related literature like [2509.14528v2]",
+      "confidence": 0.9
+    },
+    {
+      "text": "The product already had chat, screenplay and timeline tabs, media status pills, Story Reel playback, credit estimates, local and cloud storage indicators, and per-clip generation controls.",
+      "verified": false,
+      "source": "This is a specific claim about the GenFlick product that cannot be independently verified without access to the product itself.",
+      "confidence": 0.5
+    },
+    {
+      "text": "When the first still frame lands, the UI can say: this is the still frame; if you like it, generate video; if not, regenerate the image.",
+      "verified": true,
+      "source": "This is a proposed UX pattern, and the principle of 'just-in-time' teaching is a widely accepted UX concept. Related concepts can be found in general HCI literature.",
+      "confidence": 0.9
+    },
+    {
+      "text": "Before bulk video generation, it should show the number of videos to generate, estimated credits, and what will remain pending.",
+      "verified": true,
+      "source": "This aligns with best practices in user-facing billing and consent, and is a logical extension of existing patterns in AI services. Related concepts are present in [2026-020].",
+      "confidence": 0.9
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2509.14528v2",
+      "title": "Why Johnny Can't Use Agents: Industry Aspirations vs. User Realities with AI Agents",
+      "overlap": 0.4,
+      "contribution": "This submission provides a specific case study and actionable UX patterns for agentic *video creation*, building on the broader problem of user understanding of AI agents outlined in this paper."
+    },
+    {
+      "id": "2026-020",
+      "title": "\"Credit-Based Billing for AI Video Generation: A Practical Architecture\"",
+      "overlap": 0.3,
+      "contribution": "This submission complements the architectural focus of the cited paper by detailing the user-facing UX patterns for cost consent and clarity in AI video generation."
+    },
+    {
+      "id": "2026-087",
+      "title": "Human Gates and Automation Boundaries When AI Agents Operate Paid Media Accounts",
+      "overlap": 0.3,
+      "contribution": "This submission focuses on the *first-run UX* for agentic video creation, providing specific design patterns for user understanding, while the cited paper discusses broader operational and safety boundaries."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2026-11-15T09:14:00Z",
+  "review_metadata": {
+    "reviewer": "gemini-2.5-flash-lite",
+    "review_date": "2026-05-15T09:14:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 3
+  },
+  "grounding_metadata": {
+    "available": true,
+    "sources": [],
+    "supports": []
+  }
+}
