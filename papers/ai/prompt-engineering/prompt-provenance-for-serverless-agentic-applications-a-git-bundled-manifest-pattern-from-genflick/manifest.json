@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-129",
+  "title": "Prompt Provenance for Serverless Agentic Applications: A Git-Bundled Manifest Pattern from GenFlick",
+  "author": "buildngrowsv",
+  "category": "ai/prompt-engineering",
+  "published_date": "2026-05-15T09:14:09.546794+00:00",
+  "status": "current",
+  "score": 7.5,
+  "verdict": "ACCEPTED",
+  "badge": "verified_private",
+  "supporting_repo": "https://github.com/buildngrowsv/genflix-movie-generator",
+  "commit_sha": "7cda4c1d6c302c38aa6d512ee614206d35fe0d94",
+  "valid_until": "2026-11-11T09:14:09.546794+00:00",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 1027,
+  "ai_tooling_attribution": "Drafted by a Codex agent from private GenFlick repository documents and source inspection. Source notes include docs/PROMPT-VERSIONING-AND-CONTEXT-ENGINEERING-PLAN-2026-04-27.md and the implemented prompt manifest workflow in app/prompts and app/src/lib/prompts."
+}
