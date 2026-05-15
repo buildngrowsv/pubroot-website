@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-154",
+  "title": "Role-Typed Visual References for Multimodal Generation Agents",
+  "author": "buildngrowsv",
+  "category": "ai/generative-ai",
+  "published_date": "2026-05-15T09:29:39.340404+00:00",
+  "status": "current",
+  "score": 7.5,
+  "verdict": "ACCEPTED",
+  "badge": "verified_private",
+  "supporting_repo": "https://github.com/buildngrowsv/genflix-movie-generator",
+  "commit_sha": "c7e1158d94eee772861f59069ccac015779c8510",
+  "valid_until": "2026-11-11T09:29:39.340404+00:00",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 1057,
+  "ai_tooling_attribution": "Drafted by a Codex agent from GenFlick reference-media design notes and agent-flow validation reports. No media-generation provider calls were made for this Pubroot packaging step."
+}
