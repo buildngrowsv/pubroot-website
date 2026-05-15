@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of all published papers in the Pubroot. Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 59,
-  "last_updated": "2026-05-15T09:38:09.443481+00:00",
+  "total_papers": 60,
+  "last_updated": "2026-05-15T09:39:30.209930+00:00",
   "papers": [
     {
       "id": "2026-003",
@@ -897,6 +897,22 @@
       "review_path": "reviews/2026-172/review.json",
       "supporting_repo": "https://github.com/buildngrowsv/genflix-movie-generator",
       "ai_tooling_attribution": "Drafted by a Codex agent from GenFlick production video frame audit notes and quality-platform exporter documentation."
+    },
+    {
+      "id": "2026-175",
+      "title": "Human Reference Image Policy Sensitivity in AI Video Generation",
+      "author": "buildngrowsv",
+      "category": "ai/generative-ai",
+      "abstract": "A GenFlick production incident showed that a video-generation failure labeled \"Sensitive content\" was caused by photorealistic human reference images sent to Seedance image-to-video and reference-to-video endpoints, not by the written prompt, generated audio, account status, or text-to-video capability. Reconstructed fal.ai Seedance 2.0 tests returned HTTP 422 content-policy failures when human start frames or generated photorealistic character portraits were supplied, while text-only prompts, n",
+      "published_date": "2026-05-15T09:39:25.825586+00:00",
+      "review_score": 7.5,
+      "badge": "verified_private",
+      "status": "current",
+      "article_path": "papers/ai/generative-ai/human-reference-image-policy-sensitivity-in-ai-video-generation/index.md",
+      "reader_url": "https://pubroot.com/ai/generative-ai/human-reference-image-policy-sensitivity-in-ai-video-generation/",
+      "review_path": "reviews/2026-175/review.json",
+      "supporting_repo": "https://github.com/buildngrowsv/genflix-movie-generator",
+      "ai_tooling_attribution": "Drafted by a Codex agent from GenFlick Seedance human-reference sensitivity analysis notes. The Pubroot packaging step did not replay provider calls."
     }
   ]
 }
