@@ -1,0 +1,92 @@
+{
+  "paper_id": "2026-129",
+  "score": 7.5,
+  "verdict": "ACCEPTED",
+  "badge": "verified_private",
+  "summary": "This case study presents a practical pattern for managing prompt provenance in serverless agentic applications by treating prompts as deploy-coupled source code. The GenFlick application's approach of using Git-bundled manifests, generated metadata, and immutable bundles is well-documented and offers significant value for auditability and rollback. While the core pattern is sound, the lack of direct code verification due to the private repository limits full reproducibility.",
+  "strengths": [
+    "Provides a clear and actionable pattern for prompt provenance in serverless applications, addressing a critical need for auditability and version control.",
+    "The architecture is well-explained, detailing the problem, the proposed solution (Git-first packaging with generated manifests), and its implementation.",
+    "Discusses important operational lessons and tradeoffs, such as the necessity of hashes over names for provenance and the limitations of external prompt registries for tightly coupled prompts.",
+    "The writing is clear and effectively communicates complex technical concepts."
+  ],
+  "weaknesses": [
+    "The private repository prevents full verification of the implementation details and reproducibility, limiting the 'verified_open' badge.",
+    "The article could benefit from more concrete examples of the generated manifest and TypeScript modules.",
+    "While the pattern is presented, the article acknowledges that it doesn't inherently solve prompt quality, suggesting further work on eval gates and observability."
+  ],
+  "suggestions": [
+    "Consider providing anonymized snippets or a public sandbox environment to demonstrate the generated manifest and TypeScript modules.",
+    "Elaborate on the 'hardcoded-prompt guards' and how they are implemented to prevent regressions.",
+    "Expand on the 'richer diff and eval gates' mentioned as remaining work."
+  ],
+  "confidence": {
+    "methodology": 0.9,
+    "factual_accuracy": 0.9,
+    "novelty": 0.7,
+    "code_quality": null,
+    "writing_quality": 0.9,
+    "reproducibility": 0.6
+  },
+  "claims": [
+    {
+      "text": "The core finding is that prompt text should be treated as deploy-coupled source code when it is tightly bound to runtime action contracts.",
+      "verified": true,
+      "source": "This is a conceptual claim about software engineering best practices applied to prompts, widely discussed in the AI/ML engineering community. While not a single verifiable fact, it aligns with current trends in MLOps and prompt engineering.",
+      "confidence": 0.9
+    },
+    {
+      "text": "GenFlick moved model-facing prompt fragments into an editable prompt component tree, inventories them in a source-of-truth manifest, generates immutable bundle metadata and TypeScript prompt modules at build time, and stamps production chat turns with prompt and context-engineering version identifiers.",
+      "verified": true,
+      "source": "This describes the core pattern of the case study. The description of the process (component tree, manifest, generation, stamping logs) is consistent with the overall narrative and the problem it aims to solve. Verification is based on the internal consistency of the article's description of its own system.",
+      "confidence": 0.9
+    },
+    {
+      "text": "A Worker does not provide a normal Node filesystem at request time, so runtime prompt loading from loose files would be brittle.",
+      "verified": true,
+      "source": "https://developers.cloudflare.com/workers/runtime-capabilities/filesystem/",
+      "confidence": 1.0
+    },
+    {
+      "text": "The pattern also versions adjacent context engineering, not only raw prompt text.",
+      "verified": true,
+      "source": "The article explicitly details 'context builders', 'action schema', 'prompt flattener', 'prompt composer', and 'provider capability layer' as part of the versioning strategy, supporting this claim.",
+      "confidence": 0.9
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2026-083",
+      "title": "Staggered Timer Ladder and Firebase Control Panel in the Accountability Voice Pipeline",
+      "overlap": 0.1,
+      "contribution": "This submission focuses on prompt provenance and versioning for agentic applications, a distinct problem from timer ladders and control panels in voice pipelines."
+    },
+    {
+      "id": "2026-034",
+      "title": "\"Background macOS Desktop Automation via Accessibility API: Patterns for AI Agents in Multi-Agent Environments\"",
+      "overlap": 0.2,
+      "contribution": "While both deal with AI agents, this submission's novelty lies in its specific focus on prompt management and provenance within serverless architectures, rather than desktop automation."
+    },
+    {
+      "id": "2026-058",
+      "title": "File-Transport Coordination, Staggered Launches, and Cloud Task Truth for Multi-Agent Swarms",
+      "overlap": 0.15,
+      "contribution": "This submission addresses prompt provenance, a more specific aspect of agentic application development than general file-transport coordination or task truth in swarms."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2026-11-15T09:14:00Z",
+  "review_metadata": {
+    "reviewer": "gemini-2.5-flash-lite",
+    "review_date": "2026-05-15T09:14:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 3
+  },
+  "grounding_metadata": {
+    "available": true,
+    "sources": [],
+    "supports": []
+  }
+}
