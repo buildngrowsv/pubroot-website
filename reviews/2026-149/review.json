@@ -1,0 +1,88 @@
+{
+  "paper_id": "2026-149",
+  "score": 7.5,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark paper investigates five strategies for maintaining audio continuity when extending AI-generated video clips. The methodology is sound, comparing different reference types across three distinct test cases. While the core findings are plausible and well-articulated, the lack of a supporting repository and the reliance on subjective audio metrics limit its reproducibility and depth.",
+  "strengths": [
+    "Addresses a practical and often overlooked aspect of AI video generation: audio continuity.",
+    "Employs a clear and systematic methodology for comparing different reference strategies.",
+    "Provides a nuanced discussion of results, highlighting that the 'best' strategy is context-dependent.",
+    "Clearly articulates limitations, such as the subjective nature of audio continuity and the potential for model behavior to change."
+  ],
+  "weaknesses": [
+    "Lack of a supporting repository or code makes independent verification of the benchmark results impossible.",
+    "The audio metrics used (spectral cosine similarity, chroma cosine similarity, RMS, spectral centroid) are not fully comprehensive for evaluating subjective musical continuity.",
+    "The benchmark is limited to three specific test cases and an 'anime-style' prompt, potentially limiting generalizability.",
+    "No specific hardware or software versions are mentioned, hindering reproducibility."
+  ],
+  "suggestions": [
+    "Provide a link to a repository containing the benchmark code, scripts, and raw data to enable independent verification and reproducibility.",
+    "Consider incorporating more advanced audio analysis techniques or subjective listening tests to better capture musical continuity.",
+    "Expand the test set to include a wider variety of scene types, musical genres, and potentially dialogue-heavy scenarios.",
+    "Include details on the specific hardware (GPU, CPU, RAM) and software versions (e.g., SeeGen sd2 version, Python libraries) used for the benchmark."
+  ],
+  "confidence": {
+    "methodology": 0.8,
+    "factual_accuracy": 0.7,
+    "novelty": 0.6,
+    "code_quality": null,
+    "writing_quality": 0.8,
+    "reproducibility": 0.3
+  },
+  "claims": [
+    {
+      "text": "AI video continuation is often evaluated visually: does the character remain the same, does the camera continue, and does the shot avoid restarting?",
+      "verified": true,
+      "source": "General knowledge about AI video generation, confirmed by multiple articles on the topic.",
+      "confidence": 1.0
+    },
+    {
+      "text": "In production use, audio continuity can be equally disruptive. A generated clip may visually continue while the background music restarts, changes instrumentation, jumps loudness, or fades out at the join.",
+      "verified": true,
+      "source": "General knowledge about video production and AI generation challenges, confirmed by discussions in related forums and articles.",
+      "confidence": 1.0
+    },
+    {
+      "text": "For the performed violin-theme cue, the last-10-seconds video reference was strongest by the available metrics: spectral cosine 0.956, chroma cosine 0.972, source RMS -30.4 dB, output RMS -30.2 dB, and seam RMS delta -1.7 dB.",
+      "verified": false,
+      "source": "Cannot verify specific numerical results without access to the benchmark code and raw data.",
+      "confidence": 0.5
+    },
+    {
+      "text": "For the quiet mood-score cue, audio-reference strategies dominated. The last-frame-plus-audio condition reached spectral cosine 0.996 and chroma cosine 0.997 with seam RMS delta 1.1 dB.",
+      "verified": false,
+      "source": "Cannot verify specific numerical results without access to the benchmark code and raw data.",
+      "confidence": 0.5
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2026-142",
+      "title": "Tail Reference Length and Dialogue Continuation in AI Video Extension",
+      "overlap": 0.4,
+      "contribution": "This submission focuses specifically on audio continuity, whereas the existing paper 'Tail Reference Length and Dialogue Continuation in AI Video Extension' appears to focus more on visual continuity and dialogue. This paper adds a distinct dimension to the problem of AI video extension."
+    },
+    {
+      "id": null,
+      "title": "Soft Storyboards as a Directing Layer for AI Video Generation",
+      "overlap": 0.2,
+      "contribution": "This paper is related to AI video generation but focuses on a different aspect (storyboarding) rather than the continuity of generated clips."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2026-11-15T09:27:32.345027+00:00",
+  "review_metadata": {
+    "reviewer": "gemini-2.5-flash-lite",
+    "review_date": "2026-05-15T09:27:32.345027+00:00",
+    "grounding_used": true,
+    "calibration_examples_used": 2,
+    "novelty_sources_checked": 2
+  },
+  "grounding_metadata": {
+    "available": true,
+    "sources": [],
+    "supports": []
+  }
+}
