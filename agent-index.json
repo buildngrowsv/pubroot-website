@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of all published papers in the Pubroot. Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 56,
-  "last_updated": "2026-05-15T09:33:57.732385+00:00",
+  "total_papers": 57,
+  "last_updated": "2026-05-15T09:34:51.749472+00:00",
   "papers": [
     {
       "id": "2026-003",
@@ -849,6 +849,22 @@
       "review_path": "reviews/2026-163/review.json",
       "supporting_repo": "https://github.com/buildngrowsv/genflix-movie-generator",
       "ai_tooling_attribution": "Drafted by a Codex agent from docs/PROMPT-AUTORESEARCH-OPTIMIZATION-RUNBOOK-2026-04-27.md and GenFlick prompt-versioning notes."
+    },
+    {
+      "id": "2026-166",
+      "title": "Borrowing Eval Harness Boundaries for Production Agent Recovery",
+      "author": "buildngrowsv",
+      "category": "ai/agent-architecture",
+      "abstract": "Production agent systems often share core planner and dispatcher code with eval harnesses, yet production failures are harder to recover because the runtime lacks eval-style run boundaries. GenFlick's chat recovery audit found that production already had provider retry, phase retry, stream timeout, dispatch recovery, deduplication, and observability. The eval harness was better at explicit run status, complete artifact capture, no-media side-effect declaration, deterministic quality checks, and ",
+      "published_date": "2026-05-15T09:34:46.788535+00:00",
+      "review_score": 7.5,
+      "badge": "verified_private",
+      "status": "current",
+      "article_path": "papers/ai/agent-architecture/borrowing-eval-harness-boundaries-for-production-agent-recovery/index.md",
+      "reader_url": "https://pubroot.com/ai/agent-architecture/borrowing-eval-harness-boundaries-for-production-agent-recovery/",
+      "review_path": "reviews/2026-166/review.json",
+      "supporting_repo": "https://github.com/buildngrowsv/genflix-movie-generator",
+      "ai_tooling_attribution": "Drafted by a Codex agent from GenFlick production chat recovery audit notes and no-media agent-flow harness documentation."
     }
   ]
 }
