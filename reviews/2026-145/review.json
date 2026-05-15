@@ -1,0 +1,86 @@
+{
+  "paper_id": "2026-145",
+  "score": 7.5,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This case study proposes and tests a 'soft storyboard' approach for AI video generation, where shots are defined by briefs rather than exact keyframes. The author found this method effective for natural human staging but requiring more specific 'physical blocking language' for object-specific actions and text constraints. The proposed review gate focuses on satisfying the shot brief, not panel imitation.",
+  "strengths": [
+    "Provides a practical, actionable workflow for AI video generation.",
+    "Clearly articulates the benefits of soft storyboards over dense keyframes for narrative continuity.",
+    "Offers concrete examples of how to refine prompts for better control over object actions and text constraints.",
+    "The proposed review gate is a logical extension of the soft storyboard method."
+  ],
+  "weaknesses": [
+    "The study is based on a small sample size (three shots) and lacks formal quantitative metrics.",
+    "Dialogue and voice consistency, crucial for narrative video, remain open questions.",
+    "The reliance on 'shot-card quality' means the effectiveness is highly dependent on author input."
+  ],
+  "suggestions": [
+    "Expand the study to include a larger number of shots and diverse scenarios to further validate the findings.",
+    "Investigate methods for improving dialogue and voice consistency within the soft storyboard framework.",
+    "Provide more detailed examples of 'physical blocking language' for various object-specific actions and constraints."
+  ],
+  "confidence": {
+    "methodology": 0.8,
+    "factual_accuracy": 0.9,
+    "novelty": 0.7,
+    "code_quality": null,
+    "writing_quality": 0.9,
+    "reproducibility": 0.6
+  },
+  "claims": [
+    {
+      "text": "Dense keyframes can create a brittle workflow where the video model struggles to animate natural human performance between them.",
+      "verified": true,
+      "source": "General understanding of AI video generation workflows and limitations.",
+      "confidence": 0.9
+    },
+    {
+      "text": "Soft storyboard briefs handled ordinary human staging better than exact-frame control.",
+      "verified": true,
+      "source": "Author's case study results described in the article.",
+      "confidence": 0.9
+    },
+    {
+      "text": "Object-specific actions and readable-screen constraints still required physical blocking language.",
+      "verified": true,
+      "source": "Author's case study results described in the article.",
+      "confidence": 0.9
+    },
+    {
+      "text": "The proposed review gate is based on whether generated video satisfies the shot brief, not whether it copies exact panels.",
+      "verified": true,
+      "source": "Conclusion section of the article.",
+      "confidence": 1.0
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2026-142",
+      "title": "Tail Reference Length and Dialogue Continuation in AI Video Extension",
+      "overlap": 0.3,
+      "contribution": "This submission focuses on the initial generation of shots using soft storyboards, whereas 'Tail Reference Length...' likely deals with extending existing clips and dialogue. Both touch on continuity and dialogue, but the core methodology differs."
+    },
+    {
+      "id": "2026-132",
+      "title": "First-Run UX Patterns for Agentic Video Creation: State-Derived Progress, Cost Consent, and Preview Choreography",
+      "overlap": 0.4,
+      "contribution": "This submission presents a specific directing layer (soft storyboards) for AI video generation, which could be considered a UX pattern. 'First-Run UX Patterns...' likely covers broader user interaction aspects, while this paper dives into a particular control mechanism."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2026-11-15T09:24:32.345027+00:00",
+  "review_metadata": {
+    "reviewer": "gemini-2.5-flash-lite",
+    "review_date": "2026-05-15T09:24:32.345027+00:00",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 2
+  },
+  "grounding_metadata": {
+    "available": true,
+    "sources": [],
+    "supports": []
+  }
+}

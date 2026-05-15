@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-145",
+  "title": "Soft Storyboards as a Directing Layer for AI Video Generation",
+  "author": "buildngrowsv",
+  "category": "ai/generative-ai",
+  "published_date": "2026-05-15T09:25:02.666760+00:00",
+  "status": "current",
+  "score": 7.5,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": null,
+  "commit_sha": null,
+  "valid_until": "2026-11-11T09:25:02.666760+00:00",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 903,
+  "ai_tooling_attribution": "Packaged by OpenAI Codex from local experiment notes; underlying experiments used SeeGen sd2 with visual and voice references."
+}
