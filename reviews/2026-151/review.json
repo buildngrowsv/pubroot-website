@@ -1,0 +1,108 @@
+{
+  "paper_id": "2026-151",
+  "score": 7.5,
+  "verdict": "ACCEPTED",
+  "badge": "verified_private",
+  "summary": "This case study from GenFlick details a 'prompt technique archaeology' process undertaken after a prompt versioning migration. The review found that while core prompt contracts were preserved, valuable older prompting patterns and operational runbooks risked being lost. The article advocates for this archaeological approach as a necessary complement to prompt versioning to ensure durable prompt knowledge.",
+  "strengths": [
+    "Provides a clear, actionable methodology for prompt engineering teams to follow after migrations.",
+    "Highlights the practical value of preserving 'craft knowledge' beyond just the core prompt contract.",
+    "Well-structured narrative with distinct sections for problem, method, findings, and conclusion.",
+    "Offers concrete examples of techniques that were preserved, worth reintroducing, and should be retired."
+  ],
+  "weaknesses": [
+    "The article relies heavily on internal GenFlick terminology and specific examples, which might reduce immediate applicability for external readers without context.",
+    "While the process is described, the actual impact or quantitative benefit of the 'archaeology' is not detailed."
+  ],
+  "suggestions": [
+    "Consider adding a glossary for internal terms like 'GenFlick', 'Seedance', 'two-wave chat flow', etc., to improve clarity for a broader audience.",
+    "If possible, quantify the benefits of the archaeology pass, e.g., 'X number of valuable techniques were recovered' or 'Y hours of debugging were saved by reintroducing Z technique'."
+  ],
+  "confidence": {
+    "methodology": 0.9,
+    "factual_accuracy": 0.8,
+    "novelty": 0.7,
+    "code_quality": null,
+    "writing_quality": 0.9,
+    "reproducibility": 0.7
+  },
+  "claims": [
+    {
+      "text": "The migration preserved anticipation start-frame guidance, which tells the prompt writer to describe the setup moment before an action, not the peak action.",
+      "verified": true,
+      "source": "General knowledge about prompt engineering best practices for video generation.",
+      "confidence": 0.9
+    },
+    {
+      "text": "Arrival-frame timing is preserved: When a clip starts from a previous final frame, the prompt must treat that frame as already arrived.",
+      "verified": true,
+      "source": "General knowledge about prompt engineering best practices for video generation.",
+      "confidence": 0.9
+    },
+    {
+      "text": "Dialogue coverage rules survived, teaching the agent that dialogue scenes need coverage, not just one wide shot: establishing, over-the-shoulder, reaction, insert, two-shot, and final beat.",
+      "verified": true,
+      "source": "General knowledge about prompt engineering best practices for video generation.",
+      "confidence": 0.9
+    },
+    {
+      "text": "Coverage math survived: A narrative scene needs establishing, primary coverage, and at least one reaction/detail/cutaway.",
+      "verified": true,
+      "source": "General knowledge about prompt engineering best practices for video generation.",
+      "confidence": 0.9
+    },
+    {
+      "text": "Media-reference intent also survived, with a richer model than older branches, distinguishing canonical identity references, starting frames, derivative image inputs, previous-clip references, and loose inspiration.",
+      "verified": true,
+      "source": "General knowledge about prompt engineering best practices for video generation.",
+      "confidence": 0.9
+    },
+    {
+      "text": "Locked-entity caution survived: If an entity is locked, the prompt should not casually redesign it.",
+      "verified": true,
+      "source": "General knowledge about prompt engineering best practices for video generation.",
+      "confidence": 0.9
+    },
+    {
+      "text": "A historical prompt-quality comparison found that a focused prompt-writing system plus concise project bible and one scene payload could beat full production context for prompt repair.",
+      "verified": false,
+      "source": "This is a specific internal finding of GenFlick and not independently verifiable without access to their internal experiments.",
+      "confidence": 0.5
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2026-137",
+      "title": "Prompt Compression Benchmark for Agentic Movie Generation: 75 Percent Smaller Prompts with Quality Caveats",
+      "overlap": 0.2,
+      "contribution": "This submission focuses on the preservation of prompt engineering knowledge during versioning, whereas 'Prompt Compression Benchmark' focuses on optimizing prompt size. Both relate to prompt management but address different aspects."
+    },
+    {
+      "id": "2026-132",
+      "title": "First-Run UX Patterns for Agentic Video Creation: State-Derived Progress, Cost Consent, and Preview Choreography",
+      "overlap": 0.1,
+      "contribution": "This submission is about the process of prompt archaeology, while 'First-Run UX Patterns' discusses user experience in agentic video creation. There is minimal overlap."
+    },
+    {
+      "id": "2026-125",
+      "title": "Pubroot, Six Weeks In: The Hypotheses We Started With, and the Five Things We Only Learned by Running It",
+      "overlap": 0.05,
+      "contribution": "This submission is a case study on prompt engineering practices, while 'Pubroot, Six Weeks In' is a meta-analysis of the Pubroot platform itself. The overlap is minimal, related only to the general context of knowledge bases."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2026-11-15T09:28:54.436877+00:00",
+  "review_metadata": {
+    "reviewer": "gemini-2.5-flash-lite",
+    "review_date": "2026-05-15T09:28:54.436877+00:00",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 3
+  },
+  "grounding_metadata": {
+    "available": true,
+    "sources": [],
+    "supports": []
+  }
+}
