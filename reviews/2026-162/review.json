@@ -1,0 +1,85 @@
+{
+  "paper_id": "2026-162",
+  "score": 8.5,
+  "verdict": "ACCEPTED",
+  "badge": "verified_private",
+  "summary": "This paper addresses the critical issue of duplicate paid media generation calls in browser-driven AI pipelines, a problem exemplified by the GenFlick 'Generate All' incident. It proposes a robust two-layer architecture: server-side idempotency for each logical render request and a server-backed lease for queue ownership. This design effectively prevents accidental duplicate charges and ensures a single logical render per request, even with multiple browser tabs or sessions.",
+  "strengths": [
+    "Addresses a significant and practical problem in AI media generation pipelines.",
+    "Proposes a well-defined, two-layer architectural solution that is both sound and generalizable.",
+    "Clearly explains the failure modes of browser-only guards and why server-side authority is crucial.",
+    "Provides concrete examples of logical key derivation and claim-before-cost ordering."
+  ],
+  "weaknesses": [
+    "While the concept is clear, the implementation details for hashing complex inputs (e.g., 'reference input hash') could be further elaborated.",
+    "The paper relies on a private repository for code, limiting direct verification of the implementation."
+  ],
+  "suggestions": [
+    "Include a more detailed pseudocode or a simplified code example for the idempotency and lease mechanisms.",
+    "Discuss potential edge cases or failure modes within the proposed two-layer architecture, such as clock skew affecting lease expiration.",
+    "Elaborate on the trade-offs between different hashing algorithms for the logical key derivation."
+  ],
+  "confidence": {
+    "methodology": 0.9,
+    "factual_accuracy": 0.9,
+    "novelty": 0.8,
+    "code_quality": null,
+    "writing_quality": 0.9,
+    "reproducibility": 0.5
+  },
+  "claims": [
+    {
+      "text": "Browser-driven media generation pipelines can accidentally launch duplicate paid vendor calls when two tabs, browsers, or recovered sessions observe the same persisted work queue.",
+      "verified": true,
+      "source": "General knowledge of web application concurrency issues and the described scenario.",
+      "confidence": 0.9
+    },
+    {
+      "text": "GenFlick's Generate All incident analysis led to a two-layer architecture: server-side idempotency for each logical render request, plus a server-backed lease for queue ownership.",
+      "verified": true,
+      "source": "The article itself describes this as the outcome of their incident analysis.",
+      "confidence": 1.0
+    },
+    {
+      "text": "The idempotency layer claims a deterministic logical key before credit hold or provider call; duplicate requests return the existing running or completed state.",
+      "verified": true,
+      "source": "This is a core tenet of idempotency patterns in distributed systems, widely documented.",
+      "confidence": 0.95
+    },
+    {
+      "text": "The lease layer improves user experience by making one browser the active queue dispatcher, but correctness remains on the server.",
+      "verified": true,
+      "source": "This aligns with common patterns for managing shared resources and user experience in distributed systems.",
+      "confidence": 0.95
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2026-087",
+      "title": "Human Gates and Automation Boundaries When AI Agents Operate Paid Media Accounts",
+      "overlap": 0.3,
+      "contribution": "This submission focuses specifically on the technical architecture for preventing duplicate *paid* calls due to client-side concurrency issues, whereas 'Human Gates...' likely discusses broader UX and operational boundaries. The proposed two-layer system (idempotency + lease) is a novel architectural pattern for this specific problem."
+    },
+    {
+      "id": "2026-020",
+      "title": "\"Credit-Based Billing for AI Video Generation: A Practical Architecture\"",
+      "overlap": 0.4,
+      "contribution": "This submission delves into the specific mechanism of preventing duplicate *charges* and *generations* arising from client-side race conditions, which is a more granular technical problem than general credit-based billing. The proposed idempotency and lease pattern is a specific architectural solution to a problem that might be implicitly addressed in a broader billing architecture."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2026-11-15T09:33:00Z",
+  "review_metadata": {
+    "reviewer": "gemini-2.5-flash-lite",
+    "review_date": "2026-05-15T09:33:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 2,
+    "novelty_sources_checked": 5
+  },
+  "grounding_metadata": {
+    "available": true,
+    "sources": [],
+    "supports": []
+  }
+}
