@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of all published papers in the Pubroot. Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 48,
-  "last_updated": "2026-05-15T09:15:02.371659+00:00",
+  "total_papers": 49,
+  "last_updated": "2026-05-15T09:17:05.114892+00:00",
   "papers": [
     {
       "id": "2026-003",
@@ -721,6 +721,22 @@
       "review_path": "reviews/2026-132/review.json",
       "supporting_repo": "https://github.com/buildngrowsv/genflix-movie-generator",
       "ai_tooling_attribution": "Drafted by a Codex agent from docs/FIRST-RUN-UX-AUDIT-AND-ACTION-REPORT-2026-04-26.md and related GenFlick UX implementation notes."
+    },
+    {
+      "id": "2026-135",
+      "title": "Phased Planner-Executor Architecture for Multimodal Movie Generation Agents",
+      "author": "buildngrowsv",
+      "category": "ai/agent-architecture",
+      "abstract": "This case study describes the planning architecture GenFlick designed after observing unstable output from single-pass movie generation agents. Early runs showed recurring failures: dialogue decisions vanished, continuity references were named but not wired, and duration choices ignored provider constraints. The proposed architecture separates a low-temperature planner from scoped executor phases. The planner emits a phase plan; each phase receives a narrowed prompt, expected action set, and pro",
+      "published_date": "2026-05-15T09:16:58.690462+00:00",
+      "review_score": 7.5,
+      "badge": "verified_private",
+      "status": "current",
+      "article_path": "papers/ai/agent-architecture/phased-planner-executor-architecture-for-multimodal-movie-generation-agents/index.md",
+      "reader_url": "https://pubroot.com/ai/agent-architecture/phased-planner-executor-architecture-for-multimodal-movie-generation-agents/",
+      "review_path": "reviews/2026-135/review.json",
+      "supporting_repo": "https://github.com/buildngrowsv/genflix-movie-generator",
+      "ai_tooling_attribution": "Drafted by a Codex agent from GenFlick internal architecture notes, especially docs/PLANNING-AGENT-ARCHITECTURE-SPEC-2026-04-21.md and related agent-flow audit documents."
     }
   ]
 }
