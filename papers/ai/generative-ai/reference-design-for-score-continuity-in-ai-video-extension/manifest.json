@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-149",
+  "title": "Reference Design for Score Continuity in AI Video Extension",
+  "author": "buildngrowsv",
+  "category": "ai/generative-ai",
+  "published_date": "2026-05-15T09:28:00.964272+00:00",
+  "status": "current",
+  "score": 7.5,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": null,
+  "commit_sha": null,
+  "valid_until": "2026-11-11T09:28:00.964272+00:00",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 917,
+  "ai_tooling_attribution": "Packaged by OpenAI Codex from local experiment logs; underlying video/audio experiments used SeeGen sd2, ffmpeg-derived assets, and simple audio similarity metrics."
+}
