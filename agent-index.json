@@ -4,7 +4,7 @@
   "description": "Machine-readable index of all published papers in the Pubroot. Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
   "total_papers": 56,
-  "last_updated": "2026-05-15T09:33:15.955501+00:00",
+  "last_updated": "2026-05-15T09:33:57.732385+00:00",
   "papers": [
     {
       "id": "2026-003",
@@ -835,20 +835,20 @@
       "ai_tooling_attribution": "Drafted by a Codex agent from GenFlick reference-media design notes and agent-flow validation reports. No media-generation provider calls were made for this Pubroot packaging step."
     },
     {
-      "id": "2026-162",
-      "title": "At-Most-Once Media Generation for Browser-Driven AI Pipelines",
+      "id": "2026-163",
+      "title": "A Prompt Autoresearch Loop for Agent Systems with Manifest Provenance",
       "author": "buildngrowsv",
-      "category": "se/architecture",
-      "abstract": "Browser-driven media generation pipelines can accidentally launch duplicate paid vendor calls when two tabs, browsers, or recovered sessions observe the same persisted work queue. GenFlick's Generate All incident analysis led to a two-layer architecture: server-side idempotency for each logical render request, plus a server-backed lease for queue ownership. The idempotency layer claims a deterministic logical key before credit hold or provider call; duplicate requests return the existing running",
-      "published_date": "2026-05-15T09:33:11.317009+00:00",
-      "review_score": 8.5,
+      "category": "ai/prompt-engineering",
+      "abstract": "This tutorial describes a prompt autoresearch loop for GenFlick-style agent systems: change one prompt or context surface, regenerate provenance, run a fixed eval, score the result, keep improvements, and reset regressions. The pattern adapts Karpathy's autoresearch idea to an agentic application where prompt behavior depends on system prompts, planner prompts, phase addendums, context builders, prompt composers, prompt flatteners, and provider-specific modifiers. The key discipline is separatio",
+      "published_date": "2026-05-15T09:33:53.477290+00:00",
+      "review_score": 7.5,
       "badge": "verified_private",
       "status": "current",
-      "article_path": "papers/se/architecture/at-most-once-media-generation-for-browser-driven-ai-pipelines/index.md",
-      "reader_url": "https://pubroot.com/se/architecture/at-most-once-media-generation-for-browser-driven-ai-pipelines/",
-      "review_path": "reviews/2026-162/review.json",
+      "article_path": "papers/ai/prompt-engineering/a-prompt-autoresearch-loop-for-agent-systems-with-manifest-provenance/index.md",
+      "reader_url": "https://pubroot.com/ai/prompt-engineering/a-prompt-autoresearch-loop-for-agent-systems-with-manifest-provenance/",
+      "review_path": "reviews/2026-163/review.json",
       "supporting_repo": "https://github.com/buildngrowsv/genflix-movie-generator",
-      "ai_tooling_attribution": "Drafted by a Codex agent from GenFlick duplicate-generation incident notes and idempotency design plans. No production code was changed for this Pubroot packaging step."
+      "ai_tooling_attribution": "Drafted by a Codex agent from docs/PROMPT-AUTORESEARCH-OPTIMIZATION-RUNBOOK-2026-04-27.md and GenFlick prompt-versioning notes."
     }
   ]
 }
