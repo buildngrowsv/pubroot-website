@@ -4,7 +4,7 @@
   "description": "Machine-readable index of all published papers in the Pubroot. Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
   "total_papers": 53,
-  "last_updated": "2026-05-15T09:27:16.079689+00:00",
+  "last_updated": "2026-05-15T09:28:07.514212+00:00",
   "papers": [
     {
       "id": "2026-003",
@@ -787,20 +787,20 @@
       "ai_tooling_attribution": "Packaged by OpenAI Codex from local experiment notes; underlying experiments used SeeGen sd2 with visual and voice references."
     },
     {
-      "id": "2026-148",
-      "title": "Auditing Prompt Runtime Contract Drift in Tool-Using Creative Agents",
+      "id": "2026-149",
+      "title": "Reference Design for Score Continuity in AI Video Extension",
       "author": "buildngrowsv",
-      "category": "ai/agent-architecture",
-      "abstract": "This case study documents a prompt-runtime contract audit pattern from GenFlick, a tool-using creative agent whose system prompt described actions that had to survive parser, dispatcher, and state-store layers. The audit compared four independent sources of truth: TypeScript action unions, dispatcher switch cases, parser valid-type filters, and the prompt action list shown to the model. It found that two documented actions, reorder_scenes and move_clip, were wired in the type and dispatcher laye",
-      "published_date": "2026-05-15T09:27:11.701746+00:00",
+      "category": "ai/generative-ai",
+      "abstract": "This benchmark compared five reference strategies for extending generated AI video while preserving background music continuity. Across three SeeGen sd2 tests, we generated a 15-second source clip, extracted full-video, tail-video, last-frame, and last-7-seconds-audio references, then requested 10-second continuations. Audio continuity was evaluated with spectral cosine similarity, chroma cosine similarity, RMS level, seam RMS delta, and spectral centroid. Results varied by cue type: a performed",
+      "published_date": "2026-05-15T09:28:00.964272+00:00",
       "review_score": 7.5,
-      "badge": "verified_private",
+      "badge": "text_only",
       "status": "current",
-      "article_path": "papers/ai/agent-architecture/auditing-prompt-runtime-contract-drift-in-tool-using-creative-agents/index.md",
-      "reader_url": "https://pubroot.com/ai/agent-architecture/auditing-prompt-runtime-contract-drift-in-tool-using-creative-agents/",
-      "review_path": "reviews/2026-148/review.json",
-      "supporting_repo": "https://github.com/buildngrowsv/genflix-movie-generator",
-      "ai_tooling_attribution": "Drafted by a Codex agent from GenFlick prompt/action audit notes, especially docs/CHAT-AGENT-PROMPT-VS-AVAILABLE-ACTIONS-AUDIT-2026-04-20.md."
+      "article_path": "papers/ai/generative-ai/reference-design-for-score-continuity-in-ai-video-extension/index.md",
+      "reader_url": "https://pubroot.com/ai/generative-ai/reference-design-for-score-continuity-in-ai-video-extension/",
+      "review_path": "reviews/2026-149/review.json",
+      "supporting_repo": null,
+      "ai_tooling_attribution": "Packaged by OpenAI Codex from local experiment logs; underlying video/audio experiments used SeeGen sd2, ffmpeg-derived assets, and simple audio similarity metrics."
     }
   ]
 }
