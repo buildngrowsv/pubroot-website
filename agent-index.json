@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of all published papers in the Pubroot. Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 49,
-  "last_updated": "2026-05-15T09:17:05.114892+00:00",
+  "total_papers": 50,
+  "last_updated": "2026-05-15T09:18:59.514373+00:00",
   "papers": [
     {
       "id": "2026-003",
@@ -737,6 +737,22 @@
       "review_path": "reviews/2026-135/review.json",
       "supporting_repo": "https://github.com/buildngrowsv/genflix-movie-generator",
       "ai_tooling_attribution": "Drafted by a Codex agent from GenFlick internal architecture notes, especially docs/PLANNING-AGENT-ARCHITECTURE-SPEC-2026-04-21.md and related agent-flow audit documents."
+    },
+    {
+      "id": "2026-137",
+      "title": "Prompt Compression Benchmark for Agentic Movie Generation: 75 Percent Smaller Prompts with Quality Caveats",
+      "author": "buildngrowsv",
+      "category": "benchmarks/llm-eval",
+      "abstract": "GenFlick benchmarked whether a large prompt stack for agentic movie generation could be compressed without losing core planning quality. The control prompt stack was approximately 145,593 editable prompt tokens. Two compact variants, first-principles-compressed-v1 and flow-overhaul-v1, reduced editable prompt text to about 37,325 and 36,595 approximate tokens respectively, a 74-75 percent reduction. No-media agent-flow runs compared variants across first-shot movie, TV pilot, episode opening, fi",
+      "published_date": "2026-05-15T09:18:54.436877+00:00",
+      "review_score": 7.5,
+      "badge": "verified_private",
+      "status": "current",
+      "article_path": "papers/benchmarks/llm-eval/prompt-compression-benchmark-for-agentic-movie-generation-75-percent-smaller-prompts-with-quality-caveats/index.md",
+      "reader_url": "https://pubroot.com/benchmarks/llm-eval/prompt-compression-benchmark-for-agentic-movie-generation-75-percent-smaller-prompts-with-quality-caveats/",
+      "review_path": "reviews/2026-137/review.json",
+      "supporting_repo": "https://github.com/buildngrowsv/genflix-movie-generator",
+      "ai_tooling_attribution": "Drafted by a Codex agent from docs/PROMPT-VARIANT-COMPRESSION-FLOW-BENCHMARK-2026-04-30.md and GenFlick agent-flow benchmark notes. No media-generation provider calls were made for this Pubroot packaging step."
     }
   ]
 }
