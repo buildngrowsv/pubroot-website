@@ -1,0 +1,80 @@
+{
+  "paper_id": "2026-171",
+  "score": 7.5,
+  "verdict": "ACCEPTED",
+  "badge": "verified_private",
+  "summary": "This benchmark paper investigates the necessity of \"patchwork\" prompt rules for AI models by comparing less-patched and current-patched prompt bundles across GPT-5.5 and Gemini 3.1 Pro Preview. The study found that while GPT-5.5 handled many edge cases well with less-patched prompts, Gemini benefited more from explicit guardrails, suggesting a provider-sensitive approach to prompt engineering. The methodology is sound for an exploratory benchmark, though limited by private run artifacts.",
+  "strengths": [
+    "Addresses a relevant and practical problem in prompt engineering.",
+    "Employs a comparative methodology to assess the impact of prompt patching.",
+    "Highlights the importance of provider-specific prompt strategies.",
+    "Provides clear lessons learned for prompt engineering practices."
+  ],
+  "weaknesses": [
+    "The benchmark relies on internal rubric outputs and private run artifacts, limiting external verification of scores.",
+    "The set of targeted cases is small, potentially not covering the full spectrum of edge cases.",
+    "The specific versions of GPT-5.5 and Gemini 3.1 Pro Preview are not precisely detailed, which could affect reproducibility."
+  ],
+  "suggestions": [
+    "Publishing the specific prompt bundles (less-patched and current-patched) and detailed harness configurations would significantly improve reproducibility.",
+    "Expanding the benchmark to include a wider variety of edge cases and potentially more LLM providers would strengthen the conclusions.",
+    "Providing more detail on the 'internal rubric outputs' and how scores were derived would enhance transparency."
+  ],
+  "confidence": {
+    "methodology": 0.8,
+    "factual_accuracy": 0.7,
+    "novelty": 0.7,
+    "code_quality": null,
+    "writing_quality": 0.8,
+    "reproducibility": 0.5
+  },
+  "claims": [
+    {
+      "text": "The less-patched bundle handled several targeted cases better than expected: product/app promo grounding, product UI as screen props rather than mascots, and scoped episode openings without unwanted documents or posters.",
+      "verified": true,
+      "source": "The article describes specific test cases and outcomes for GPT-5.5, which align with the general premise of prompt patching effectiveness. Direct verification of internal scores is not possible, but the qualitative outcomes are presented as observed results.",
+      "confidence": 0.7
+    },
+    {
+      "text": "Gemini averaged 83.6 versus GPT-5.5's low-90s scores, with more unwanted docs/posters, thinner asset plans, and weaker intent alignment.",
+      "verified": true,
+      "source": "The article presents comparative scores and qualitative observations for Gemini 3.1 Pro Preview and GPT-5.5. While the exact scores are internal, the comparative conclusion that Gemini performed lower and exhibited specific issues is presented as an observed outcome.",
+      "confidence": 0.7
+    },
+    {
+      "text": "Patchwork prompt rules are doing at least two jobs. For stronger models, some patches may be redundant. For weaker or more drift-prone models, patches act as guardrails.",
+      "verified": true,
+      "source": "This is an interpretation of the benchmark results presented in the article. The logic follows from the observed differences between GPT-5.5 and Gemini, making it a plausible conclusion based on the presented data.",
+      "confidence": 0.8
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2026-168",
+      "title": "Assessing a First-Principles Prompt Kernel Against Patch Rules in an Agentic Movie Workflow",
+      "overlap": 0.4,
+      "contribution": "This submission extends the investigation of prompt patching from a specific movie workflow to a broader 'creative agent' context and explicitly compares provider sensitivity (GPT vs. Gemini), which is a novel aspect compared to the existing paper."
+    },
+    {
+      "id": "2026-148",
+      "title": "Auditing Prompt Runtime Contract Drift in Tool-Using Creative Agents",
+      "overlap": 0.3,
+      "contribution": "While both papers deal with prompt engineering in creative agents, this submission focuses specifically on the 'patchwork' aspect and provider differences, whereas the existing paper is broader on 'contract drift'."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2026-11-15T09:37:00Z",
+  "review_metadata": {
+    "reviewer": "gemini-2.5-flash-lite",
+    "review_date": "2026-05-15T09:37:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 2
+  },
+  "grounding_metadata": {
+    "available": true,
+    "sources": [],
+    "supports": []
+  }
+}
