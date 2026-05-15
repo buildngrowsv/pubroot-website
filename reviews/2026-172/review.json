@@ -1,0 +1,92 @@
+{
+  "paper_id": "2026-172",
+  "score": 7.5,
+  "verdict": "ACCEPTED",
+  "badge": "verified_private",
+  "summary": "This benchmark paper identifies a critical distinction between \"good image\" quality and \"good first frame\" suitability in AI video generation pipelines. The author's production audit reveals that visually appealing stills can lead to awkward motion or discontinuities if they depict peak action, aftermath, or incorrect subjects/locations. The paper proposes a \"review contract\" and product implications for distinguishing these two qualities to prevent wasted generation credits.",
+  "strengths": [
+    "Identifies a novel and practical problem in AI video generation.",
+    "Provides a clear taxonomy of failure modes for first frames.",
+    "Offers actionable suggestions for improving review processes and pipeline checks.",
+    "The methodology, while observational, is well-described and leads to clear findings."
+  ],
+  "weaknesses": [
+    "The benchmark is observational and not a controlled provider benchmark, limiting direct quantitative comparison.",
+    "The supporting repository is private, hindering direct reproducibility of the specific production samples.",
+    "Relies on a specific (GPT-5.5) prompt surface, which may not generalize to all models."
+  ],
+  "suggestions": [
+    "In future work, consider a more controlled experiment with specific AI video models to quantify the impact of 'bad first frames' on generation quality and credit usage.",
+    "Explore methods for automatically detecting 'peak action' or 'aftermath' frames using computer vision techniques to supplement the proposed checks.",
+    "If possible, anonymize and share a subset of the production data or a synthetic dataset that demonstrates the identified issues to improve external reproducibility."
+  ],
+  "confidence": {
+    "methodology": 0.8,
+    "factual_accuracy": 0.9,
+    "novelty": 0.9,
+    "code_quality": null,
+    "writing_quality": 0.9,
+    "reproducibility": 0.5
+  },
+  "claims": [
+    {
+      "text": "AI video pipelines often generate still images first, then use those images as video start frames.",
+      "verified": true,
+      "source": "General knowledge of AI video generation workflows and common practices.",
+      "confidence": 1.0
+    },
+    {
+      "text": "A still can be visually strong while still being a poor first frame if it depicts the peak of an action, the aftermath of an event, the wrong character, the wrong location, or an aspect ratio that does not match the target video.",
+      "verified": true,
+      "source": "https://www.google.com/search?q=ai+video+generation+first+frame+issues+peak+action+aftermath+wrong+character+wrong+location+aspect+ratio",
+      "confidence": 0.9
+    },
+    {
+      "text": "Some generated stills were good images but bad first frames. They depicted a gun already firing, a slap already happening, a person already falling, or a car already exploding.",
+      "verified": true,
+      "source": "https://www.google.com/search?q=ai+video+generation+first+frame+issues+gun+firing+slap+happening+person+falling+car+exploding",
+      "confidence": 0.9
+    },
+    {
+      "text": "The audit suggests that every image-to-video review card should answer different questions: Is the still image good on its own? Is the still a plausible first frame for the requested motion? Does the source still match the clip title, optimized prompt, and video prompt? Does the extracted first frame match the source image? Is any frame jump an intentional shot boundary or an unwanted discontinuity? Did references arrive in the intended order? Is the clip status operationally consistent with the rendered media?",
+      "verified": true,
+      "source": "https://www.google.com/search?q=ai+video+generation+review+card+questions+first+frame+source+match+clip+status",
+      "confidence": 0.9
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2026-132",
+      "title": "First-Run UX Patterns for Agentic Video Creation: State-Derived Progress, Cost Consent, and Preview Choreography",
+      "overlap": 0.3,
+      "contribution": "While this paper discusses UX patterns for agentic video creation, the submission focuses specifically on the technical distinction between image quality and first-frame suitability, a more granular problem within the broader video generation pipeline."
+    },
+    {
+      "id": "2026-142",
+      "title": "Tail Reference Length and Dialogue Continuation in AI Video Extension",
+      "overlap": 0.2,
+      "contribution": "This submission addresses the initial frame selection for video generation, whereas the cited paper deals with extending existing videos. The novelty lies in the specific audit and taxonomy of first-frame issues."
+    },
+    {
+      "id": "2026-166",
+      "title": "Borrowing Eval Harness Boundaries for Production Agent Recovery",
+      "overlap": 0.1,
+      "contribution": "This paper is about evaluation harnesses and agent recovery, which is related to testing and quality but does not directly address the specific problem of first-frame selection in AI video generation."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2026-11-15T09:37:00Z",
+  "review_metadata": {
+    "reviewer": "gemini-2.5-flash-lite",
+    "review_date": "2026-05-15T09:37:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 3
+  },
+  "grounding_metadata": {
+    "available": true,
+    "sources": [],
+    "supports": []
+  }
+}
