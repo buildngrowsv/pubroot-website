@@ -4,7 +4,7 @@
   "description": "Machine-readable index of all published papers in the Pubroot. Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
   "total_papers": 48,
-  "last_updated": "2026-05-15T09:14:14.684155+00:00",
+  "last_updated": "2026-05-15T09:15:02.371659+00:00",
   "papers": [
     {
       "id": "2026-003",
@@ -707,20 +707,20 @@
       "ai_tooling_attribution": "Draft prepared with OpenAI Codex via Hermes Agent. Source facts were checked against live Block Lottos public endpoints and documentation."
     },
     {
-      "id": "2026-129",
-      "title": "Prompt Provenance for Serverless Agentic Applications: A Git-Bundled Manifest Pattern from GenFlick",
+      "id": "2026-132",
+      "title": "First-Run UX Patterns for Agentic Video Creation: State-Derived Progress, Cost Consent, and Preview Choreography",
       "author": "buildngrowsv",
-      "category": "ai/prompt-engineering",
-      "abstract": "This case study documents a prompt provenance pattern used in GenFlick, a serverless agentic video application whose production behavior depends on large system prompts, planner prompts, phase addendums, context builders, action schemas, and provider adapters. The core finding is that prompt text should be treated as deploy-coupled source code when it is tightly bound to runtime action contracts. GenFlick moved model-facing prompt fragments into an editable prompt component tree, inventories the",
-      "published_date": "2026-05-15T09:14:09.546794+00:00",
+      "category": "cs/hci",
+      "abstract": "Agentic media products can generate useful work while still leaving first-run users confused about what happened, what is still running, what costs credits, and where to preview partial output. This case study reports a GenFlick UX audit after observing a first-time user struggle with an AI movie-generation flow despite the app having the necessary raw features. The product already had chat, screenplay and timeline tabs, media status pills, Story Reel playback, credit estimates, local and cloud ",
+      "published_date": "2026-05-15T09:14:56.736361+00:00",
       "review_score": 7.5,
       "badge": "verified_private",
       "status": "current",
-      "article_path": "papers/ai/prompt-engineering/prompt-provenance-for-serverless-agentic-applications-a-git-bundled-manifest-pattern-from-genflick/index.md",
-      "reader_url": "https://pubroot.com/ai/prompt-engineering/prompt-provenance-for-serverless-agentic-applications-a-git-bundled-manifest-pattern-from-genflick/",
-      "review_path": "reviews/2026-129/review.json",
+      "article_path": "papers/cs/hci/first-run-ux-patterns-for-agentic-video-creation-state-derived-progress-cost-consent-and-preview-choreography/index.md",
+      "reader_url": "https://pubroot.com/cs/hci/first-run-ux-patterns-for-agentic-video-creation-state-derived-progress-cost-consent-and-preview-choreography/",
+      "review_path": "reviews/2026-132/review.json",
       "supporting_repo": "https://github.com/buildngrowsv/genflix-movie-generator",
-      "ai_tooling_attribution": "Drafted by a Codex agent from private GenFlick repository documents and source inspection. Source notes include docs/PROMPT-VERSIONING-AND-CONTEXT-ENGINEERING-PLAN-2026-04-27.md and the implemented prompt manifest workflow in app/prompts and app/src/lib/prompts."
+      "ai_tooling_attribution": "Drafted by a Codex agent from docs/FIRST-RUN-UX-AUDIT-AND-ACTION-REPORT-2026-04-26.md and related GenFlick UX implementation notes."
     }
   ]
 }
