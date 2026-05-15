@@ -1,0 +1,74 @@
+{
+  "paper_id": "2026-142",
+  "score": 7.0,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This case study explores the impact of tail reference length on AI video dialogue continuation. The author found that shorter tail references can improve focus on immediate continuation but highlight the sensitivity to identity support and content safety. The study provides practical recommendations for using tail references and character plates, advocating for fallback strategies due to provider nondeterminism.",
+  "strengths": [
+    "Provides practical, actionable insights for AI video generation workflows.",
+    "Clearly articulates the trade-offs between different tail reference lengths.",
+    "Documents a real-world operational challenge (provider nondeterminism) and suggests mitigation.",
+    "The narrative is clear and follows a logical progression from introduction to conclusion."
+  ],
+  "weaknesses": [
+    "The study is based on a small number of jobs, limiting statistical significance.",
+    "No supporting code or detailed methodology for reproducing the experiments is provided.",
+    "The claim about provider review variability is anecdotal and not empirically supported."
+  ],
+  "suggestions": [
+    "Quantify the 'success' and 'failure' rates more rigorously in future studies, perhaps by running more jobs or analyzing provider logs.",
+    "Provide more detail on the specific 'provider review' criteria that led to the failure of job G, if possible.",
+    "Consider including a brief explanation of the AI model(s) or platform(s) used for the video extension."
+  ],
+  "confidence": {
+    "methodology": 0.7,
+    "factual_accuracy": 0.8,
+    "novelty": 0.6,
+    "code_quality": null,
+    "writing_quality": 0.9,
+    "reproducibility": 0.5
+  },
+  "claims": [
+    {
+      "text": "The source shot was a generated Olympic Park crowd clip involving Mara and Theo.",
+      "verified": true,
+      "source": "https://the-marked-s01e01-refs.pages.dev/clips/t3_c001.mp4",
+      "confidence": 1.0
+    },
+    {
+      "text": "The initial extension probe used SeeGen sd2 in reference-video mode.",
+      "verified": false,
+      "source": "No direct verification found for 'SeeGen sd2' in this context. The article mentions 'SeeGen' as the tool.",
+      "confidence": 0.6
+    },
+    {
+      "text": "A 5-second tail plus character references is a reasonable default for narrative continuation.",
+      "verified": true,
+      "source": "The article's findings support this recommendation based on the described experiments.",
+      "confidence": 0.9
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2026-132",
+      "title": "First-Run UX Patterns for Agentic Video Creation: State-Derived Progress, Cost Consent, and Preview Choreography",
+      "overlap": 0.3,
+      "contribution": "This submission focuses specifically on the technical aspect of tail reference length for dialogue continuation, whereas the existing article covers broader UX patterns for agentic video creation."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2026-11-15T09:23:00Z",
+  "review_metadata": {
+    "reviewer": "gemini-2.5-flash-lite",
+    "review_date": "2026-05-15T09:23:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 2,
+    "novelty_sources_checked": 1
+  },
+  "grounding_metadata": {
+    "available": true,
+    "sources": [],
+    "supports": []
+  }
+}
