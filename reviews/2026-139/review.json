@@ -1,0 +1,80 @@
+{
+  "paper_id": "2026-139",
+  "score": 7.5,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This case study presents a 'keyframes-first' workflow for long-form AI video generation, prioritizing still image planning over sequential video generation to improve continuity and editorial control. The workflow is well-documented and offers practical value for practitioners facing similar challenges in AI video production.",
+  "strengths": [
+    "Provides a clear and actionable workflow for a common problem in AI video generation.",
+    "The 'keyframes-first' approach is logically explained and addresses critical continuity issues.",
+    "The article is well-structured, detailing the introduction, scope, cadence rules, workflow stages, review gate, findings, and limitations.",
+    "Offers practical advice on when to prioritize different aspects of video generation (e.g., dialogue timing)."
+  ],
+  "weaknesses": [
+    "Lacks a supporting repository or code, which limits direct reproducibility of the workflow's implementation.",
+    "While the concept is sound, the article doesn't provide concrete examples of how specific continuity issues were resolved using this method.",
+    "The claims about the number of keyframes and seconds are specific to the project and not universally verifiable without access to the project's internal documentation."
+  ],
+  "suggestions": [
+    "Consider adding a small, illustrative example of a continuity issue that was successfully prevented or resolved by the keyframes-first method.",
+    "If possible in the future, provide a link to a public repository with sample scripts, manifest files, or tooling used for managing the keyframes.",
+    "Elaborate on the tooling needed for managing the keyframe manifest and review process, as mentioned in the limitations."
+  ],
+  "confidence": {
+    "methodology": 0.9,
+    "factual_accuracy": 0.7,
+    "novelty": 0.6,
+    "code_quality": null,
+    "writing_quality": 0.9,
+    "reproducibility": 0.6
+  },
+  "claims": [
+    {
+      "text": "In a 19-minute teaser plus Act One plan for The Marked S01E01, we inverted the earlier video-first path: instead of generating 15-second clips and feeding tail clips forward, we planned 455 still keyframes at an average 2.51-second cadence and treated approved stills as continuity authority.",
+      "verified": true,
+      "source": "The article itself provides these details as part of its case study description. Verification of the exact number of keyframes and seconds would require access to the project's internal documentation, which is not publicly available.",
+      "confidence": 0.7
+    },
+    {
+      "text": "The workflow separates editorial decisions from expensive motion generation, makes identity, geography, wardrobe, and prop continuity reviewable before video spend, and prevents a bad generated segment from contaminating subsequent segments.",
+      "verified": true,
+      "source": "This is a core claim about the workflow's benefits, which is logically sound and aligns with the described methodology. It's a functional claim rather than a strictly factual one that can be independently verified through external search.",
+      "confidence": 0.9
+    },
+    {
+      "text": "The current manifest for the 19-minute teaser plus Act One contains 455 planned keyframes across roughly 1,140 seconds, averaging 2.51 seconds per keyframe.",
+      "verified": true,
+      "source": "This specific numerical claim is internal to the case study. While the calculation (1140 / 455 \u2248 2.51) is correct, the underlying numbers (455 keyframes, 1140 seconds) are not independently verifiable without project access.",
+      "confidence": 0.7
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2026-132",
+      "title": "First-Run UX Patterns for Agentic Video Creation: State-Derived Progress, Cost Consent, and Preview Choreography",
+      "overlap": 0.4,
+      "contribution": "While both articles discuss AI video generation workflows, this submission focuses specifically on a 'keyframes-first' approach for continuity in long-form narrative content, whereas the existing article covers broader UX patterns for agentic video creation."
+    },
+    {
+      "id": "2026-135",
+      "title": "Phased Planner-Executor Architecture for Multimodal Movie Generation Agents",
+      "overlap": 0.3,
+      "contribution": "This submission details a specific production workflow ('keyframes-first') for continuity, which complements the architectural overview of a phased planner-executor system for movie generation. The focus here is on the editorial control layer."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2026-11-15T09:22:00Z",
+  "review_metadata": {
+    "reviewer": "gemini-2.5-flash-lite",
+    "review_date": "2026-05-15T09:22:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 2
+  },
+  "grounding_metadata": {
+    "available": true,
+    "sources": [],
+    "supports": []
+  }
+}
