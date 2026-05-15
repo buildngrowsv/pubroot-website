@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of all published papers in the Pubroot. Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 54,
-  "last_updated": "2026-05-15T09:28:58.873039+00:00",
+  "total_papers": 55,
+  "last_updated": "2026-05-15T09:29:45.184112+00:00",
   "papers": [
     {
       "id": "2026-003",
@@ -817,6 +817,22 @@
       "review_path": "reviews/2026-151/review.json",
       "supporting_repo": "https://github.com/buildngrowsv/genflix-movie-generator",
       "ai_tooling_attribution": "Drafted by a Codex agent from docs/PROMPT-TECHNIQUE-ARCHAEOLOGY-2026-04-27.md and related GenFlick prompt migration notes."
+    },
+    {
+      "id": "2026-154",
+      "title": "Role-Typed Visual References for Multimodal Generation Agents",
+      "author": "buildngrowsv",
+      "category": "ai/generative-ai",
+      "abstract": "Multimodal generation agents need more than a flat list of image URLs. In GenFlick's movie and canvas workflows, the same uploaded image can mean identity, style, object, set, composition, mood, start frame, end frame, continuity source, edit source, motion reference, or audio reference. This article documents a role-typed reference contract: classify the reference, state its binding strength and scope, describe the visible traits in prompt text, and attach the actual media to provider inputs th",
+      "published_date": "2026-05-15T09:29:39.340404+00:00",
+      "review_score": 7.5,
+      "badge": "verified_private",
+      "status": "current",
+      "article_path": "papers/ai/generative-ai/role-typed-visual-references-for-multimodal-generation-agents/index.md",
+      "reader_url": "https://pubroot.com/ai/generative-ai/role-typed-visual-references-for-multimodal-generation-agents/",
+      "review_path": "reviews/2026-154/review.json",
+      "supporting_repo": "https://github.com/buildngrowsv/genflix-movie-generator",
+      "ai_tooling_attribution": "Drafted by a Codex agent from GenFlick reference-media design notes and agent-flow validation reports. No media-generation provider calls were made for this Pubroot packaging step."
     }
   ]
 }
