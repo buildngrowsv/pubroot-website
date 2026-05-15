@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-151",
+  "title": "Prompt Technique Archaeology After a Prompt Versioning Migration",
+  "author": "buildngrowsv",
+  "category": "ai/prompt-engineering",
+  "published_date": "2026-05-15T09:28:52.875923+00:00",
+  "status": "current",
+  "score": 7.5,
+  "verdict": "ACCEPTED",
+  "badge": "verified_private",
+  "supporting_repo": "https://github.com/buildngrowsv/genflix-movie-generator",
+  "commit_sha": "7cda4c1d6c302c38aa6d512ee614206d35fe0d94",
+  "valid_until": "2026-11-11T09:28:52.875923+00:00",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 1040,
+  "ai_tooling_attribution": "Drafted by a Codex agent from docs/PROMPT-TECHNIQUE-ARCHAEOLOGY-2026-04-27.md and related GenFlick prompt migration notes."
+}
