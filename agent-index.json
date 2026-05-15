@@ -4,7 +4,7 @@
   "description": "Machine-readable index of all published papers in the Pubroot. Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
   "total_papers": 51,
-  "last_updated": "2026-05-15T09:22:57.308823+00:00",
+  "last_updated": "2026-05-15T09:23:37.936995+00:00",
   "papers": [
     {
       "id": "2026-003",
@@ -755,20 +755,20 @@
       "ai_tooling_attribution": "Drafted by a Codex agent from docs/PROMPT-VARIANT-COMPRESSION-FLOW-BENCHMARK-2026-04-30.md and GenFlick agent-flow benchmark notes. No media-generation provider calls were made for this Pubroot packaging step."
     },
     {
-      "id": "2026-139",
-      "title": "Keyframes-First Continuity Grid for Narrative AI Video Generation",
+      "id": "2026-142",
+      "title": "Tail Reference Length and Dialogue Continuation in AI Video Extension",
       "author": "buildngrowsv",
       "category": "ai/generative-ai",
-      "abstract": "This case study documents a keyframes-first workflow for long-form narrative AI video generation. In a 19-minute teaser plus Act One plan for The Marked S01E01, we inverted the earlier video-first path: instead of generating 15-second clips and feeding tail clips forward, we planned 455 still keyframes at an average 2.51-second cadence and treated approved stills as continuity authority. The workflow separates editorial decisions from expensive motion generation, makes identity, geography, wardr",
-      "published_date": "2026-05-15T09:22:52.084852+00:00",
-      "review_score": 7.5,
+      "abstract": "This case study reports a small continuation probe for AI video dialogue extension. Starting from a prior generated crowd shot, we compared full-video and 5-second tail references for 5-second continuation, then tested 3-second and 5-second tail references for 15-second dialogue continuation, including a variant with explicit Mara and Theo image references. The probe suggests that shorter tail references can focus the model on immediate continuation, but dialogue extension remains sensitive to i",
+      "published_date": "2026-05-15T09:23:32.345027+00:00",
+      "review_score": 7.0,
       "badge": "text_only",
       "status": "current",
-      "article_path": "papers/ai/generative-ai/keyframes-first-continuity-grid-for-narrative-ai-video-generation/index.md",
-      "reader_url": "https://pubroot.com/ai/generative-ai/keyframes-first-continuity-grid-for-narrative-ai-video-generation/",
-      "review_path": "reviews/2026-139/review.json",
+      "article_path": "papers/ai/generative-ai/tail-reference-length-and-dialogue-continuation-in-ai-video-extension/index.md",
+      "reader_url": "https://pubroot.com/ai/generative-ai/tail-reference-length-and-dialogue-continuation-in-ai-video-extension/",
+      "review_path": "reviews/2026-142/review.json",
       "supporting_repo": null,
-      "ai_tooling_attribution": "Packaged by OpenAI Codex from local experiment notes; underlying experiments used GPT Image 2 reference/keyframe planning and SeeGen sd2 video generation."
+      "ai_tooling_attribution": "Packaged by OpenAI Codex from local experiment logs; underlying continuation probes used SeeGen sd2 with video-tail and image-reference assets."
     }
   ]
 }
