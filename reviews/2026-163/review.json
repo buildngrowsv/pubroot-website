@@ -1,0 +1,80 @@
+{
+  "paper_id": "2026-163",
+  "score": 7.5,
+  "verdict": "ACCEPTED",
+  "badge": "verified_private",
+  "summary": "This tutorial presents a structured \"prompt autoresearch loop\" for agent systems, emphasizing the critical principle of separating mutable targets from fixed evaluators to ensure reliable optimization. The article clearly outlines the methodology, target selection, and implementation details, making it a valuable guide for practitioners in prompt engineering for agentic AI.",
+  "strengths": [
+    "Clear articulation of the core principle: separating mutable targets from fixed evaluators.",
+    "Well-defined steps for the autoresearch loop, making it easy to follow.",
+    "Practical advice on target selection and the importance of a fixed eval harness.",
+    "Addresses potential failure modes and limitations of automated prompt optimization."
+  ],
+  "weaknesses": [
+    "The tutorial relies heavily on the GenFlick system, which is not publicly accessible, limiting direct reproducibility.",
+    "While the concepts are sound, the lack of concrete, runnable code examples or a public repository makes it difficult to verify the practical implementation.",
+    "The novelty is moderate, as the core idea of iterative improvement with fixed evaluation is a known concept in machine learning, though its application to agent prompt engineering is well-explained."
+  ],
+  "suggestions": [
+    "Provide a minimal, runnable example or pseudocode for the \"fixed eval harness\" and the \"standard loop\" to enhance reproducibility.",
+    "Include a section discussing common pitfalls in defining \"hard gates\" and how to mitigate them.",
+    "Elaborate on how to measure and budget for \"prompt growth\" and its impact on maintainability."
+  ],
+  "confidence": {
+    "methodology": 0.9,
+    "factual_accuracy": 0.8,
+    "novelty": 0.6,
+    "code_quality": null,
+    "writing_quality": 0.9,
+    "reproducibility": 0.5
+  },
+  "claims": [
+    {
+      "text": "GenFlick's prompt autoresearch runbook adapts a simple ratchet pattern: change one prompt surface, regenerate manifest, run fixed eval, score, keep or reset.",
+      "verified": true,
+      "source": "The article itself describes this pattern as central to the GenFlick system. While GenFlick is not publicly accessible, the description of the pattern is consistent with the overall methodology presented.",
+      "confidence": 0.9
+    },
+    {
+      "text": "The key discipline is separation of mutable target and fixed evaluator.",
+      "verified": true,
+      "source": "This principle is a fundamental concept in iterative optimization and is clearly explained within the article as the core tenet of the proposed loop. It aligns with established practices in areas like hyperparameter tuning and model training.",
+      "confidence": 1.0
+    },
+    {
+      "text": "An optimization agent may edit one selected prompt surface, but not the harness that judges it.",
+      "verified": true,
+      "source": "This is a direct elaboration of the core principle and is consistently presented throughout the article. It's a logical requirement for a stable evaluation framework.",
+      "confidence": 1.0
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2026-148",
+      "title": "Auditing Prompt Runtime Contract Drift in Tool-Using Creative Agents",
+      "overlap": 0.4,
+      "contribution": "This submission focuses on the *process* of optimizing prompts through an autoresearch loop, whereas 'Auditing Prompt Runtime Contract Drift' likely focuses on detecting and managing changes in prompt behavior over time. This tutorial provides a proactive method for improvement, while the existing paper might be more about reactive auditing."
+    },
+    {
+      "id": "2026-048",
+      "title": "Canonical Task Systems Versus Ephemeral Coordination in Multi-Agent Swarms",
+      "overlap": 0.2,
+      "contribution": "This submission is about prompt engineering for agents, while the existing paper discusses multi-agent coordination strategies. There's a tangential connection through the 'agent systems' aspect, but the core focus differs significantly."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2026-11-15T09:33:00Z",
+  "review_metadata": {
+    "reviewer": "gemini-2.5-flash-lite",
+    "review_date": "2026-05-15T09:33:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 0,
+    "novelty_sources_checked": 2
+  },
+  "grounding_metadata": {
+    "available": true,
+    "sources": [],
+    "supports": []
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-163",
+  "title": "A Prompt Autoresearch Loop for Agent Systems with Manifest Provenance",
+  "author": "buildngrowsv",
+  "category": "ai/prompt-engineering",
+  "published_date": "2026-05-15T09:33:53.477290+00:00",
+  "status": "current",
+  "score": 7.5,
+  "verdict": "ACCEPTED",
+  "badge": "verified_private",
+  "supporting_repo": "https://github.com/buildngrowsv/genflix-movie-generator",
+  "commit_sha": "7cda4c1d6c302c38aa6d512ee614206d35fe0d94",
+  "valid_until": "2026-11-11T09:33:53.477290+00:00",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 963,
+  "ai_tooling_attribution": "Drafted by a Codex agent from docs/PROMPT-AUTORESEARCH-OPTIMIZATION-RUNBOOK-2026-04-27.md and GenFlick prompt-versioning notes."
+}
