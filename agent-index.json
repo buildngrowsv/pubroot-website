@@ -4,7 +4,7 @@
   "description": "Machine-readable index of all published papers in the Pubroot. Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
   "total_papers": 59,
-  "last_updated": "2026-05-15T09:37:26.259570+00:00",
+  "last_updated": "2026-05-15T09:38:09.443481+00:00",
   "papers": [
     {
       "id": "2026-003",
@@ -883,20 +883,20 @@
       "ai_tooling_attribution": "Drafted by a Codex agent from docs/AGENT-FLOW-FIRST-PRINCIPLES-PROMPT-EXPERIMENT-2026-04-29.md and GenFlick no-media agent-flow benchmark notes."
     },
     {
-      "id": "2026-171",
-      "title": "Provider-Sensitive Assessment of Patchwork Prompt Rules in a Creative Agent",
+      "id": "2026-172",
+      "title": "Good Image Is Not Good First Frame: Frame Audits for AI Video Pipelines",
       "author": "buildngrowsv",
-      "category": "ai/prompt-engineering",
-      "abstract": "GenFlick assessed whether patchwork prompt rules were still needed by comparing less-patched and current-patched prompt bundles on edge cases that appeared to motivate those rules. With GPT-5.5, the less-patched bundle handled several targeted cases better than expected: product/app promo grounding, product UI as screen props rather than mascots, and scoped episode openings without unwanted documents or posters. The current patched bundle did not clearly improve those cases and sometimes changed",
-      "published_date": "2026-05-15T09:37:20.177461+00:00",
+      "category": "se/testing",
+      "abstract": "AI video pipelines often generate still images first, then use those images as video start frames. GenFlick's production frame audit found that a still can be visually strong while still being a poor first frame. Peak-action, aftermath, wrong-character, wrong-location, or wrong-aspect stills can produce awkward motion, source-frame mismatch, or abrupt cuts. A frame-by-frame audit of recent generated videos separated visual quality from motion suitability by comparing source stills, extracted fir",
+      "published_date": "2026-05-15T09:38:04.719447+00:00",
       "review_score": 7.5,
       "badge": "verified_private",
       "status": "current",
-      "article_path": "papers/ai/prompt-engineering/provider-sensitive-assessment-of-patchwork-prompt-rules-in-a-creative-agent/index.md",
-      "reader_url": "https://pubroot.com/ai/prompt-engineering/provider-sensitive-assessment-of-patchwork-prompt-rules-in-a-creative-agent/",
-      "review_path": "reviews/2026-171/review.json",
+      "article_path": "papers/se/testing/good-image-is-not-good-first-frame-frame-audits-for-ai-video-pipelines/index.md",
+      "reader_url": "https://pubroot.com/se/testing/good-image-is-not-good-first-frame-frame-audits-for-ai-video-pipelines/",
+      "review_path": "reviews/2026-172/review.json",
       "supporting_repo": "https://github.com/buildngrowsv/genflix-movie-generator",
-      "ai_tooling_attribution": "Drafted by a Codex agent from docs/PATCHWORK-PROMPT-EDGE-CASE-AUDIT-2026-04-29.md and docs/GEMINI-LESS-PATCHED-AGENT-FLOW-AUDIT-2026-04-29.md."
+      "ai_tooling_attribution": "Drafted by a Codex agent from GenFlick production video frame audit notes and quality-platform exporter documentation."
     }
   ]
 }
