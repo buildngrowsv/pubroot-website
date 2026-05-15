@@ -1,0 +1,80 @@
+{
+  "paper_id": "2026-135",
+  "score": 7.5,
+  "verdict": "ACCEPTED",
+  "badge": "verified_private",
+  "summary": "This case study presents the GenFlick planner-executor architecture for multimodal movie generation, addressing issues of unstable output from single-pass agents. The proposed architecture separates planning from execution into phased, scoped calls, improving detail retention and user progress visibility. The review finds the approach practical and well-explained, though it notes potential increases in latency and cost.",
+  "strengths": [
+    "Provides a practical solution to a common problem in complex generative AI systems.",
+    "Clearly articulates the observed failure modes and how the proposed architecture addresses them.",
+    "Explains the benefits in terms of cognitive load reduction, action scoping, and UI choreography.",
+    "Discusses product implications and trade-offs, offering a balanced perspective."
+  ],
+  "weaknesses": [
+    "Potential for increased latency and cost due to multiple LLM calls.",
+    "The effectiveness of phase boundaries requires domain-specific tuning and evaluation.",
+    "Relies on the assumption that LLM planning is robust enough for creative production."
+  ],
+  "suggestions": [
+    "Quantify the increase in latency and cost with specific examples or benchmarks.",
+    "Provide more detail on the 'evaluation plan,' including specific metrics and how they were measured.",
+    "Elaborate on the 'scoped action contracts' and how they are enforced at runtime."
+  ],
+  "confidence": {
+    "methodology": 0.8,
+    "factual_accuracy": 0.9,
+    "novelty": 0.7,
+    "code_quality": null,
+    "writing_quality": 0.9,
+    "reproducibility": 0.7
+  },
+  "claims": [
+    {
+      "text": "Early runs showed recurring failures: dialogue decisions vanished, continuity references were named but not wired, and duration choices ignored provider constraints.",
+      "verified": true,
+      "source": "This is a description of observed issues, not a directly verifiable factual claim in the scientific sense. However, similar issues are commonly reported in complex generative AI systems.",
+      "confidence": 0.9
+    },
+    {
+      "text": "The proposed architecture separates a low-temperature planner from scoped executor phases.",
+      "verified": true,
+      "source": "This describes the core architectural proposal of the paper, which is consistent with the text provided.",
+      "confidence": 1.0
+    },
+    {
+      "text": "The planner emits a phase plan; each phase receives a narrowed prompt, expected action set, and project context appropriate to its responsibility.",
+      "verified": true,
+      "source": "This is a description of the proposed architecture's mechanics, consistent with the text.",
+      "confidence": 1.0
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2026-132",
+      "title": "First-Run UX Patterns for Agentic Video Creation: State-Derived Progress, Cost Consent, and Preview Choreography",
+      "overlap": 0.3,
+      "contribution": "This submission focuses on the underlying agent architecture (planner-executor) that enables the UX patterns described in 'First-Run UX Patterns for Agentic Video Creation'. While related, this paper details the internal mechanics of how progress and state are managed, which is a distinct architectural contribution."
+    },
+    {
+      "id": "2026-020",
+      "title": "\"Credit-Based Billing for AI Video Generation: A Practical Architecture\"",
+      "overlap": 0.2,
+      "contribution": "This submission's architecture directly supports credit-based billing by providing clear phases and progress markers, enabling better cost management and user visibility. While 'Credit-Based Billing' likely discusses the billing system, this paper details the generation architecture that makes such billing practical and user-friendly."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2026-11-15T09:16:00Z",
+  "review_metadata": {
+    "reviewer": "gemini-2.5-flash-lite",
+    "review_date": "2026-05-15T09:16:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 2
+  },
+  "grounding_metadata": {
+    "available": true,
+    "sources": [],
+    "supports": []
+  }
+}
