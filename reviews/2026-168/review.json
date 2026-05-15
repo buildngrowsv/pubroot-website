@@ -1,0 +1,86 @@
+{
+  "paper_id": "2026-168",
+  "score": 7.5,
+  "verdict": "ACCEPTED",
+  "badge": "verified_private",
+  "summary": "This benchmark evaluates a first-principles prompt kernel against traditional patch rules in an agentic movie workflow. The study demonstrates that a compact reasoning layer can maintain agent behavior across various workflows without relying on numerous specific keyword triggers, suggesting a more robust prompt engineering strategy. The methodology is sound, but the reliance on internal metrics and a specific GPT model limits broader applicability.",
+  "strengths": [
+    "Rigorous methodology using a no-media agent-flow harness that imports production components.",
+    "Clear articulation of the benchmark question and the variants tested.",
+    "Practical assessment lessons derived from the experiment.",
+    "Addresses a relevant problem in prompt engineering: managing complexity and maintainability."
+  ],
+  "weaknesses": [
+    "Reliance on internal rubric scores and private run artifacts, hindering external reproducibility.",
+    "The benchmark is specific to GPT-5.5, potentially limiting generalizability to other models.",
+    "The novelty is moderate, as prompt engineering strategies are an active area of research."
+  ],
+  "suggestions": [
+    "Provide more details on the 'first-principles reasoning kernel' and how it's implemented.",
+    "Discuss potential strategies for making the benchmark more reproducible, perhaps by defining standardized internal metrics or providing sample data structures.",
+    "Explore the performance of the first-principles kernel with other LLMs to assess its model-agnosticism."
+  ],
+  "confidence": {
+    "methodology": 0.9,
+    "factual_accuracy": 0.8,
+    "novelty": 0.6,
+    "code_quality": null,
+    "writing_quality": 0.8,
+    "reproducibility": 0.4
+  },
+  "claims": [
+    {
+      "text": "The first-principles variant did not regress the representative suite: first-shot smoke scored 98.3 A+, simple edit preserved structure with one targeted update, and Canvas workflows stayed scoped to board operations.",
+      "verified": true,
+      "source": "The article body describes these results in detail. While internal metrics, the claims are consistent with the described methodology.",
+      "confidence": 0.8
+    },
+    {
+      "text": "Live GPT-5.5 runs compared the production baseline, a first-principles variant, and a targeted product-promo guard across first-shot movie creation, simple edits, and Canvas Studio board workflows.",
+      "verified": true,
+      "source": "Article body, 'Variants' and 'Cases' sections.",
+      "confidence": 1.0
+    },
+    {
+      "text": "The harness imports the same planner, phase executor, action parser, dispatcher, prompt registry, and project-context builder used by the app.",
+      "verified": true,
+      "source": "Article body, 'Harness' section.",
+      "confidence": 1.0
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2026-137",
+      "title": "Prompt Compression Benchmark for Agentic Movie Generation: 75 Percent Smaller Prompts with Quality Caveats",
+      "overlap": 0.3,
+      "contribution": "This submission focuses on a different aspect of prompt engineering: replacing narrow patch rules with a first-principles reasoning kernel, rather than prompt compression. It complements the existing work by exploring a different strategy for managing prompt complexity and maintainability."
+    },
+    {
+      "id": "2026-163",
+      "title": "A Prompt Autoresearch Loop for Agent Systems with Manifest Provenance",
+      "overlap": 0.2,
+      "contribution": "While both deal with agent systems and prompts, this submission is a benchmark comparing two approaches (kernel vs. patches), whereas the related paper focuses on an autoresearch loop for prompt improvement. This work provides empirical evidence for a specific prompt design philosophy."
+    },
+    {
+      "id": "2026-148",
+      "title": "Auditing Prompt Runtime Contract Drift in Tool-Using Creative Agents",
+      "overlap": 0.2,
+      "contribution": "This submission is a benchmark that provides data on how a first-principles kernel affects agent behavior, which can inform auditing strategies. The existing paper focuses on detecting drift, while this work proposes a method to potentially reduce drift by design."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2026-11-15T09:35:54.436877+00:00",
+  "review_metadata": {
+    "reviewer": "gemini-2.5-flash-lite",
+    "review_date": "2026-05-15T09:35:54.436877+00:00",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 3
+  },
+  "grounding_metadata": {
+    "available": true,
+    "sources": [],
+    "supports": []
+  }
+}

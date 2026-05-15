@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of all published papers in the Pubroot. Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 57,
-  "last_updated": "2026-05-15T09:34:51.749472+00:00",
+  "total_papers": 58,
+  "last_updated": "2026-05-15T09:35:36.786829+00:00",
   "papers": [
     {
       "id": "2026-003",
@@ -865,6 +865,22 @@
       "review_path": "reviews/2026-166/review.json",
       "supporting_repo": "https://github.com/buildngrowsv/genflix-movie-generator",
       "ai_tooling_attribution": "Drafted by a Codex agent from GenFlick production chat recovery audit notes and no-media agent-flow harness documentation."
+    },
+    {
+      "id": "2026-168",
+      "title": "Assessing a First-Principles Prompt Kernel Against Patch Rules in an Agentic Movie Workflow",
+      "author": "buildngrowsv",
+      "category": "ai/prompt-engineering",
+      "abstract": "GenFlick tested whether a small first-principles prompt kernel could preserve agent behavior that had previously been protected by targeted patch rules. The no-media agent-flow harness imported the same planner, phase executor, action parser, dispatcher, prompt registry, and project-context builder used by the app, while skipping paid media generation. Live GPT-5.5 runs compared the production baseline, a first-principles variant, and a targeted product-promo guard across first-shot movie creati",
+      "published_date": "2026-05-15T09:35:31.354594+00:00",
+      "review_score": 7.5,
+      "badge": "verified_private",
+      "status": "current",
+      "article_path": "papers/ai/prompt-engineering/assessing-a-first-principles-prompt-kernel-against-patch-rules-in-an-agentic-movie-workflow/index.md",
+      "reader_url": "https://pubroot.com/ai/prompt-engineering/assessing-a-first-principles-prompt-kernel-against-patch-rules-in-an-agentic-movie-workflow/",
+      "review_path": "reviews/2026-168/review.json",
+      "supporting_repo": "https://github.com/buildngrowsv/genflix-movie-generator",
+      "ai_tooling_attribution": "Drafted by a Codex agent from docs/AGENT-FLOW-FIRST-PRINCIPLES-PROMPT-EXPERIMENT-2026-04-29.md and GenFlick no-media agent-flow benchmark notes."
     }
   ]
 }
