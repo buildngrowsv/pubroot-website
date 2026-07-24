@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of all published papers in the Pubroot. Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 60,
-  "last_updated": "2026-05-15T09:39:30.209930+00:00",
+  "total_papers": 61,
+  "last_updated": "2026-07-24T00:21:30.770874+00:00",
   "papers": [
     {
       "id": "2026-003",
@@ -913,6 +913,22 @@
       "review_path": "reviews/2026-175/review.json",
       "supporting_repo": "https://github.com/buildngrowsv/genflix-movie-generator",
       "ai_tooling_attribution": "Drafted by a Codex agent from GenFlick Seedance human-reference sensitivity analysis notes. The Pubroot packaging step did not replay provider calls."
+    },
+    {
+      "id": "2026-177",
+      "title": "Grok Imagine Video 5-Second Latency and Cost Benchmark Across Resolutions and Model IDs",
+      "author": "buildngrowsv",
+      "category": "benchmarks/cost-analysis",
+      "abstract": "A live xAI API bake-off measured wall-clock latency and official per-second cost for 5-second Grok Imagine Video generations across text-to-video and image-to-video model IDs at 480p, 720p, and 1080p. Successful GA text-to-video (`grok-imagine-video`) completed in 25.8s at 480p and 52.5s at 720p at $0.05/s ($0.25 per 5s). Image-to-video (`grok-imagine-video-1.5`) completed in 25.3s / 43.6s / 70.4s at 480p / 720p / 1080p at $0.08/s ($0.40 per 5s). Resolution did not change published unit price on",
+      "published_date": "2026-07-24T00:21:26.592411+00:00",
+      "review_score": 7.5,
+      "badge": "verified_private",
+      "status": "current",
+      "article_path": "papers/benchmarks/cost-analysis/grok-imagine-video-5-second-latency-and-cost-benchmark-across-resolutions-and-model-ids/index.md",
+      "reader_url": "https://pubroot.com/benchmarks/cost-analysis/grok-imagine-video-5-second-latency-and-cost-benchmark-across-resolutions-and-model-ids/",
+      "review_path": "reviews/2026-177/review.json",
+      "supporting_repo": "https://github.com/buildngrowsv/genflix-movie-generator",
+      "ai_tooling_attribution": "Packaged for Pubroot by a Cursor agent from a live GenFlick xAI API benchmark run dated 2026-07-04. No provider calls were replayed for this submission packaging step."
     }
   ]
 }
