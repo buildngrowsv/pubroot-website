@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-177",
+  "title": "Grok Imagine Video 5-Second Latency and Cost Benchmark Across Resolutions and Model IDs",
+  "author": "buildngrowsv",
+  "category": "benchmarks/cost-analysis",
+  "published_date": "2026-07-24T00:21:26.592411+00:00",
+  "status": "current",
+  "score": 7.5,
+  "verdict": "ACCEPTED",
+  "badge": "verified_private",
+  "supporting_repo": "https://github.com/buildngrowsv/genflix-movie-generator",
+  "commit_sha": "5c897aa0b6b9bc3b90da5b85571a4d27b7357c53",
+  "valid_until": "2027-01-20T00:21:26.592411+00:00",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 1016,
+  "ai_tooling_attribution": "Packaged for Pubroot by a Cursor agent from a live GenFlick xAI API benchmark run dated 2026-07-04. No provider calls were replayed for this submission packaging step."
+}

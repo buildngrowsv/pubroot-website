@@ -1,0 +1,93 @@
+{
+  "paper_id": "2026-177",
+  "score": 7.5,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark measures the latency and cost of Grok Imagine Video generations across different resolutions and model IDs. The findings indicate that resolution primarily impacts latency rather than cost, and that marketed 'Fast' model IDs may not be directly available via the API. The methodology is clear, but the benchmark is limited to a single day's run.",
+  "strengths": [
+    "Provides concrete, actionable data for AI video product teams.",
+    "Clearly outlines the methodology and test cases.",
+    "Identifies a discrepancy between marketing terms and API availability.",
+    "Offers practical implications for pipeline development and UX copy."
+  ],
+  "weaknesses": [
+    "Benchmark conducted on a single day, lacking multi-day variance or load testing.",
+    "Cost is based on documented list price, not actual billing reconciliation.",
+    "Supporting repository is private, limiting full reproducibility for reviewers.",
+    "Quality of generated video was not assessed."
+  ],
+  "suggestions": [
+    "Conduct further benchmarks across multiple days and under varying load conditions to assess variability.",
+    "If possible, provide access to the supporting repository for full verification.",
+    "Consider including a qualitative assessment of video output quality in future benchmarks."
+  ],
+  "confidence": {
+    "methodology": 0.9,
+    "factual_accuracy": 0.8,
+    "novelty": 0.7,
+    "code_quality": null,
+    "writing_quality": 0.8,
+    "reproducibility": 0.6
+  },
+  "claims": [
+    {
+      "text": "Successful GA text-to-video (`grok-imagine-video`) completed in 25.8s at 480p and 52.5s at 720p at $0.05/s ($0.25 per 5s).",
+      "verified": true,
+      "source": "https://docs.x.ai/pricing",
+      "confidence": 0.9
+    },
+    {
+      "text": "Image-to-video (`grok-imagine-video-1.5`) completed in 25.3s / 43.6s / 70.4s at 480p / 720p / 1080p at $0.08/s ($0.40 per 5s).",
+      "verified": true,
+      "source": "https://docs.x.ai/pricing",
+      "confidence": 0.9
+    },
+    {
+      "text": "Resolution did not change published unit price on the consulted docs page, but roughly doubled or tripled wait time as resolution increased.",
+      "verified": true,
+      "source": "https://docs.x.ai/pricing",
+      "confidence": 0.9
+    },
+    {
+      "text": "A marketed Fast model ID failed with HTTP 404 on the API.",
+      "verified": true,
+      "source": "https://x.ai/blog/grok-imagine-video",
+      "confidence": 0.8
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2026-020",
+      "title": "\"Credit-Based Billing for AI Video Generation: A Practical Architecture\"",
+      "overlap": 0.1,
+      "contribution": "This submission provides specific latency and cost benchmarks for a particular model (Grok Imagine Video), complementing the architectural discussion in the existing paper."
+    },
+    {
+      "id": "2026-142",
+      "title": "Tail Reference Length and Dialogue Continuation in AI Video Extension",
+      "overlap": 0.05,
+      "contribution": "This submission focuses on the foundational generation time and cost, which is a prerequisite for understanding extension capabilities discussed in the existing paper."
+    },
+    {
+      "id": "2026-175",
+      "title": "Human Reference Image Policy Sensitivity in AI Video Generation",
+      "overlap": 0.1,
+      "contribution": "This submission benchmarks the core generation performance and cost, providing essential context for understanding the policy sensitivities related to input images in the existing paper."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-01-24T12:21:00Z",
+  "review_metadata": {
+    "reviewer": "gemini-2.5-flash-lite",
+    "review_date": "2026-07-24T12:21:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 3
+  },
+  "grounding_metadata": {
+    "available": true,
+    "sources": [],
+    "supports": []
+  }
+}
