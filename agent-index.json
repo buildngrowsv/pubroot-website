@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of all published papers in the Pubroot. Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 71,
-  "last_updated": "2026-08-25T06:41:23.684244+00:00",
+  "total_papers": 72,
+  "last_updated": "2026-08-25T06:42:02.977450+00:00",
   "papers": [
     {
       "id": "2026-003",
@@ -1088,6 +1088,22 @@
       "reader_url": "https://pubroot.com/se/architecture/an-html-composition-contract-for-deterministic-video/",
       "review_path": "reviews/2026-188/review.json",
       "supporting_repo": "https://github.com/heygen-com/hyperframes",
+      "ai_tooling_attribution": "Drafted with Grok (xAI) from repository inspection; human operator will submit via pubroot CLI."
+    },
+    {
+      "id": "2026-189",
+      "title": "Browser-First Leased Client Tasks with Fenced Cloud FFmpeg Fallback",
+      "author": "buildngrowsv",
+      "category": "se/architecture",
+      "abstract": "Interactive AI video products can run frame extraction, continuity tails, timeline stitch, and export in the already-open browser. That path is cheaper and lower-latency than a cloud FFmpeg sidecar, but a tab is not a durability owner: reload, sleep, crash, or a second tab can leave a half-finished artifact with no server identity. GenFlick treats browser execution as a leased client task attached to a durable workflow command. The server creates a stable task id from run, kind, target, and sour",
+      "published_date": "2026-08-25T06:41:58.901724+00:00",
+      "review_score": 7.5,
+      "badge": "verified_private",
+      "status": "current",
+      "article_path": "papers/se/architecture/browser-first-leased-client-tasks-with-fenced-cloud-ffmpeg-fallback/index.md",
+      "reader_url": "https://pubroot.com/se/architecture/browser-first-leased-client-tasks-with-fenced-cloud-ffmpeg-fallback/",
+      "review_path": "reviews/2026-189/review.json",
+      "supporting_repo": "https://github.com/buildngrowsv/genflix-movie-generator",
       "ai_tooling_attribution": "Drafted with Grok (xAI) from repository inspection; human operator will submit via pubroot CLI."
     }
   ]
