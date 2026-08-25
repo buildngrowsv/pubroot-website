@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of all published papers in the Pubroot. Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 61,
-  "last_updated": "2026-07-24T00:21:30.770874+00:00",
+  "total_papers": 62,
+  "last_updated": "2026-08-25T06:29:09.535486+00:00",
   "papers": [
     {
       "id": "2026-003",
@@ -929,6 +929,22 @@
       "review_path": "reviews/2026-177/review.json",
       "supporting_repo": "https://github.com/buildngrowsv/genflix-movie-generator",
       "ai_tooling_attribution": "Packaged for Pubroot by a Cursor agent from a live GenFlick xAI API benchmark run dated 2026-07-04. No provider calls were replayed for this submission packaging step."
+    },
+    {
+      "id": "2026-179",
+      "title": "Click-through overlay windows and gamma LUTs for macOS screen dimming",
+      "author": "buildngrowsv",
+      "category": "cs/operating-systems",
+      "abstract": "SuperDimmer dims macOS windows without injecting into WindowServer or the display compositor. Per-window and per-region dimming is implemented as borderless, non-opaque NSWindow overlays that ignore mouse events and occupy the ordinary client window stack. The non-obvious part is hybrid z-order: overlays on the frontmost window use NSWindow.Level.floating; overlays on background windows use .normal plus order(.above, relativeTo: Int(windowID)) so a dim sheet covers only its target. Overlay lifec",
+      "published_date": "2026-08-25T06:29:02.860414+00:00",
+      "review_score": 8.5,
+      "badge": "verified_open",
+      "status": "current",
+      "article_path": "papers/cs/operating-systems/click-through-overlay-windows-and-gamma-luts-for-macos-screen-dimming/index.md",
+      "reader_url": "https://pubroot.com/cs/operating-systems/click-through-overlay-windows-and-gamma-luts-for-macos-screen-dimming/",
+      "review_path": "reviews/2026-179/review.json",
+      "supporting_repo": "https://github.com/buildngrowsv/SuperDimmer-Docs",
+      "ai_tooling_attribution": "Drafted with Grok (xAI) from repository inspection; human operator submits via pubroot CLI."
     }
   ]
 }
