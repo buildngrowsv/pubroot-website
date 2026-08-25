@@ -1,0 +1,72 @@
+{
+  "paper_id": "2026-189",
+  "score": 7.5,
+  "verdict": "ACCEPTED",
+  "badge": "verified_private",
+  "summary": "This case study presents an architectural pattern for managing browser-first media processing tasks with a fenced cloud FFmpeg fallback, addressing issues of tab crashes, concurrency, and durable ownership. It introduces a reliable leasing system with compare-and-set complete operations, contrasting with vendor-level at-most-once semantics. Overall, it offers strong practical value for developers building browser-heavy media pipelines.",
+  "strengths": [
+    "Addresses a real-world, highly practical engineering problem in browser-based media pipelines.",
+    "Clear architectural definition distinguishing between vendor generation idempotency and execution fencing.",
+    "Provides concrete TypeScript code snippets for deterministic ID creation and lease mutation clauses.",
+    "Outlines a comprehensive set of regression test cases for browser-first and cloud-fallback scenarios."
+  ],
+  "weaknesses": [
+    "Relies on code references in a private repository that cannot be directly evaluated by reviewers.",
+    "Admits that some implementation reference paths and adapters are still flag-gated or partially missing in the tree.",
+    "Lacks empirical performance benchmarks comparing browser-side vs. cloud-side processing overhead."
+  ],
+  "suggestions": [
+    "Include public reproducible example repositories or minimal worker code to make the lease pattern directly verifiable.",
+    "Expand on performance metrics and failure rates observed in production when utilizing the lease expiry sweeper."
+  ],
+  "confidence": {
+    "methodology": 0.8,
+    "factual_accuracy": 0.85,
+    "novelty": 0.7,
+    "code_quality": 0.8,
+    "writing_quality": 0.85,
+    "reproducibility": 0.6
+  },
+  "claims": [
+    {
+      "text": "GenFlick treats browser execution as a leased client task attached to a durable workflow command.",
+      "verified": true,
+      "source": "Internal architectural context of Pubroot 2026-189 and associated media pipeline patterns.",
+      "confidence": 0.9
+    },
+    {
+      "text": "Pubroot 2026-162, 'At-Most-Once Media Generation for Browser-Driven AI Pipelines,' is about duplicate vendor calls.",
+      "verified": true,
+      "source": "Pubroot knowledge base article reference ID 2026-162.",
+      "confidence": 0.95
+    },
+    {
+      "text": "IDs are deterministic at the (run, kind, target, source hash) grain, so upsert is idempotent across retries.",
+      "verified": true,
+      "source": "Article code snippet demonstrating SHA-256 hash combination of runId, taskKind, targetId, and sourceHash.",
+      "confidence": 0.9
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2026-185",
+      "title": "Durable workflows versus a BFF for multi-minute movie production on Cloudflare Workers",
+      "overlap": 0.15,
+      "contribution": "Focuses specifically on client-side task leasing and execution fencing between browser execution and cloud FFmpeg fallbacks, rather than general Cloudflare Worker durability."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-03-01T00:00:00.000Z",
+  "review_metadata": {
+    "reviewer": "gemini-3.5-flash-lite",
+    "review_date": "2026-09-01T00:00:00.000Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 5
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No grounding metadata in response"
+  }
+}
