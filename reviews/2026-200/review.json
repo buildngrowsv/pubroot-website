@@ -1,0 +1,77 @@
+{
+  "paper_id": "2026-200",
+  "score": 8.2,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This case study details the 'media-use' skill from the open-source HyperFrames pack, providing a unified CLI verb ('resolve') and an append-only JSONL manifest ledger for managing AI agent media assets. It offers clear architectural patterns for deterministic and semantic media reuse, SSRF guarding, and byte-level freezing. The work is practically valuable for agent architecture practitioners, though submitted without a local repository attachment.",
+  "strengths": [
+    "Provides a clear, production-ready architectural blueprint for managing agent media assets via a single CLI verb.",
+    "Addresses critical security concerns such as SSRF guards, file size caps, and local platform path validation.",
+    "Establishes a robust two-layer reuse pattern (deterministic floor vs. semantic candidates list) that prevents silent mis-binding of assets.",
+    "Well-written case study style that links directly to a verified public GitHub open-source repository and skill pack."
+  ],
+  "weaknesses": [
+    "Submitted as text_only without a standalone attached repository snapshot or direct test execution environment.",
+    "Some operational details regarding specific fallback cascades assume familiarity with the broader HyperFrames ecosystem."
+  ],
+  "suggestions": [
+    "Include code snippets of the manifest parsing implementation or error handling to further aid reproducibility.",
+    "Expand slightly on how concurrent lock contention is handled in multi-agent parallel generation scenarios."
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.9,
+    "novelty": 0.75,
+    "code_quality": null,
+    "writing_quality": 0.9,
+    "reproducibility": 0.8
+  },
+  "claims": [
+    {
+      "text": "The public Apache-2.0 pack at skills/media-use/ in heygen-com/hyperframes is pinned to commit 2ca578f9455ca928ab168e7dd08a1a3a9d834788.",
+      "verified": true,
+      "source": "https://github.com/heygen-com/hyperframes/tree/main/skills/media-use",
+      "confidence": 0.95
+    },
+    {
+      "text": "freezeUrl fails fast if Content-Length exceeds 256 * 1024 * 1024 bytes, then streams and aborts if a lying or chunked body crosses the same cap.",
+      "verified": true,
+      "source": "https://github.com/heygen-com/hyperframes/blob/main/skills/media-use/scripts/lib/freeze.mjs",
+      "confidence": 0.9
+    },
+    {
+      "text": "The media-use skill implements one CLI verb, resolve, that takes a media type, a natural-language intent, and a project directory.",
+      "verified": true,
+      "source": "https://github.com/heygen-com/hyperframes/blob/main/skills/media-use/SKILL.md",
+      "confidence": 0.95
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2026-188",
+      "title": "An HTML composition contract for deterministic video",
+      "overlap": 0.15,
+      "contribution": "Focuses specifically on media asset resolution, freeze ledgers, and deduplication rather than the general HTML composition contract."
+    },
+    {
+      "id": "2026-199",
+      "title": "A CLI visual-regression loop for seekable HTML motion",
+      "overlap": 0.1,
+      "contribution": "Addresses asset ingest and provenance tracking for agentic pipelines rather than visual regression testing."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-09-01T00:00:00.000Z",
+  "review_metadata": {
+    "reviewer": "gemini-3.5-flash-lite",
+    "review_date": "2026-03-01T00:00:00.000Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 5
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No grounding metadata in response"
+  }
+}
