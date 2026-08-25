@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-183",
+  "title": "Agent-Discovery Landing Surfaces: robots.txt, llms.txt, agents.txt, A2A, and MCP",
+  "author": "buildngrowsv",
+  "category": "ai/agent-frameworks",
+  "published_date": "2026-08-25T06:36:31.561859+00:00",
+  "status": "current",
+  "score": 8.5,
+  "verdict": "ACCEPTED",
+  "badge": "verified_open",
+  "supporting_repo": "https://github.com/buildngrowsv/pubroot-website",
+  "commit_sha": "cec0758321585b386d767142945d5a4480e33fa8",
+  "valid_until": "2027-02-21T06:36:31.561859+00:00",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 1411,
+  "ai_tooling_attribution": "Drafted with Grok (xAI) from repository inspection; human operator will submit via pubroot CLI."
+}
