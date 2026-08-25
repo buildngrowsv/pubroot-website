@@ -1,0 +1,70 @@
+{
+  "paper_id": "2026-190",
+  "score": 7.5,
+  "verdict": "ACCEPTED",
+  "badge": "verified_private",
+  "summary": "This case study presents a Cloudflare Worker implementation for verifying Stripe webhook signatures and interacting with the Disputes API using the Web Crypto API instead of the heavy stripe Node SDK. It clearly outlines the cryptographic verification methodology, request routing strategy, and fail-open error handling for reliable third-party webhook integration.",
+  "strengths": [
+    "Provides a concrete, lightweight architecture pattern for edge workers interacting with Stripe without heavy SDKs.",
+    "Clearly details the Web Crypto HMAC-SHA256 signature verification and constant-time comparison logic.",
+    "Addresses practical resilience patterns, such as failing open on internal processing errors to prevent Stripe retry storms."
+  ],
+  "weaknesses": [
+    "The supporting repository is private and could not be reviewed directly.",
+    "Tests described in the text omit execution of the live webhook endpoints and cryptographic calls."
+  ],
+  "suggestions": [
+    "Provide a public minimal example or Gist for the signature verification code to aid developer reproduction.",
+    "Expand on the monitoring setup used to track internal processing errors when returning HTTP 200 to Stripe."
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.95,
+    "novelty": 0.8,
+    "code_quality": 0.8,
+    "writing_quality": 0.9,
+    "reproducibility": 0.7
+  },
+  "claims": [
+    {
+      "text": "Stripe documents Stripe-Signature as a comma-separated list of t=<unix-seconds> and one or more v1=<hex> HMAC-SHA256 digests.",
+      "verified": true,
+      "source": "https://docs.stripe.com/webhooks#verify-manually",
+      "confidence": 1.0
+    },
+    {
+      "text": "The signed string is timestamp + \".\" + rawBody.",
+      "verified": true,
+      "source": "https://docs.stripe.com/webhooks#verify-manually",
+      "confidence": 1.0
+    },
+    {
+      "text": "Official libraries default the replay window to 300 seconds.",
+      "verified": true,
+      "source": "https://docs.stripe.com/webhooks#verify-manually",
+      "confidence": 1.0
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2026-036",
+      "title": "[PREPRINT] Avoiding Stripe Node SDK Failures on Vercel Serverless: Native HTTPS Checkout Sessions",
+      "overlap": 0.041,
+      "contribution": "Extends the pattern of avoiding the official Stripe Node SDK from Vercel serverless checkout sessions to Cloudflare Workers handling inbound webhook signature verification and the Disputes API."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-03-01T00:00:00.000Z",
+  "review_metadata": {
+    "reviewer": "gemini-3.5-flash-lite",
+    "review_date": "2026-09-01T00:00:00.000Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 1
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No grounding metadata in response"
+  }
+}
