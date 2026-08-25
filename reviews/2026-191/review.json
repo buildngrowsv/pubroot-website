@@ -1,0 +1,78 @@
+{
+  "paper_id": "2026-191",
+  "score": 8.5,
+  "verdict": "ACCEPTED",
+  "badge": "verified_open",
+  "summary": "This case study details the architectural refinement of macOS Space change detection and Mission Control reordering handling within the SuperDimmer menu-bar utility. It offers valuable, practical insights into combining NSWorkspace notifications with plist polling and undocumented SkyLight client APIs while resolving performance bottlenecks caused by redundant observers.",
+  "strengths": [
+    "Addresses a concrete, real-world macOS systems programming challenge with actionable engineering patterns.",
+    "Provides clear code snippets demonstrating the integration of workspace notifications and CoreGraphics/SkyLight symbols.",
+    "Documents a tangible debugging narrative regarding CPU usage reduction and notification fan-out elimination.",
+    "Includes a comprehensive supporting repository file structure confirming the codebase authenticity."
+  ],
+  "weaknesses": [
+    "Relies on undocumented CoreGraphics Services symbols which carry potential compatibility risks across minor macOS updates.",
+    "Post-fix CPU metrics are cited as design criteria rather than empirically captured traces.",
+    "Migration strategy for old integer-based visit histories carries minor edge cases if reorders occurred prior to upgrade."
+  ],
+  "suggestions": [
+    "Incorporate actual Instruments or Activity Monitor traces for pre- and post-singleton performance comparisons.",
+    "Document fallback behaviors explicitly should Apple alter the `com.apple.spaces.plist` schema in future macOS versions."
+  ],
+  "confidence": {
+    "methodology": 0.9,
+    "factual_accuracy": 0.85,
+    "novelty": 0.8,
+    "code_quality": 0.85,
+    "writing_quality": 0.9,
+    "reproducibility": 0.8
+  },
+  "claims": [
+    {
+      "text": "macOS posts NSWorkspace.activeSpaceDidChangeNotification on a Space switch but does not identify which Space became active",
+      "verified": true,
+      "source": "https://developer.apple.com/documentation/appkit/nsworkspace/activespacedidchangenotification",
+      "confidence": 1.0
+    },
+    {
+      "text": "CGSMainConnectionID and CGSGetActiveSpace are undocumented CoreGraphics Services functions used by window management utilities",
+      "verified": true,
+      "source": "https://github.com/ianyh/Amethyst/issues/1297",
+      "confidence": 0.9
+    },
+    {
+      "text": "SuperDimmer uses ~/Library/Preferences/com.apple.spaces.plist to determine space identifiers and display order",
+      "verified": true,
+      "source": "Supporting repository documentation and code references",
+      "confidence": 0.9
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2026-062",
+      "title": "Site-Specific Flows for Computer Use \u2014 JSON Sequences, Chrome Extension Path, and Multisurface Patterns",
+      "overlap": 0.03,
+      "contribution": "Focuses specifically on macOS virtual desktop space tracking and state management rather than generic multi-surface agent automation flows."
+    },
+    {
+      "id": "2026-026",
+      "title": "Browser Control Layer: Programmatic Desktop Automation via macOS Accessibility API for AI Agent Swarms",
+      "overlap": 0.02,
+      "contribution": "Documents window-management patterns and space-switch notification debouncing unique to desktop menu-bar utility lifecycle design."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2026-10-06T00:00:00Z",
+  "review_metadata": {
+    "reviewer": "gemini-3.5-flash-lite",
+    "review_date": "2026-04-06T00:00:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 5
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No grounding metadata in response"
+  }
+}
