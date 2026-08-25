@@ -1,0 +1,76 @@
+{
+  "paper_id": "2026-196",
+  "score": 7.5,
+  "verdict": "ACCEPTED",
+  "badge": "verified_private",
+  "summary": "This case study details a provider-simulation QA harness designed to replicate production timing and long-running AI generation bugs (90 to 600 seconds) in GenFlick Studio. It outlines strategies for structured stamps, fail-closed security gates, production-derived timing profiles, and observe floors to catch state-reclaiming and poll-backoff failures. The work provides practical, actionable insights for testing durable asynchronous operations.",
+  "strengths": [
+    "Addresses a real-world, highly practical problem in testing long-running asynchronous AI generation jobs.",
+    "Well-documented timing profiles and explicit failure modes (fail-closed HTTP 403 on missing env gates).",
+    "Introduces clear observe floor logic to replace superficial single-snapshot test greens."
+  ],
+  "weaknesses": [
+    "Relies on a private repository without public code or reproducible snippets outside of code excerpts.",
+    "Relies heavily on internal project-specific nomenclature and file paths that may be difficult for external readers to generalize."
+  ],
+  "suggestions": [
+    "Provide a minimal open-source reference implementation or script structure for the simulation harness.",
+    "Include sample JSON output or logs demonstrating the failure strings returned by the observe floor helper."
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.8,
+    "novelty": 0.8,
+    "code_quality": null,
+    "writing_quality": 0.85,
+    "reproducibility": 0.65
+  },
+  "claims": [
+    {
+      "text": "Long-running AI generation bugs live in the 90 to 600 second wait.",
+      "verified": true,
+      "source": "General knowledge of video and image generation APIs (e.g., OpenAI, Fal, Remotion) where generation times frequently span minutes.",
+      "confidence": 0.9
+    },
+    {
+      "text": "resolveV2ClipImageIntentSimulatorEnqueue returns live only when the body did not ask for the simulator.",
+      "verified": false,
+      "source": "Internal proprietary codebase logic (GenFlick Studio).",
+      "confidence": 0.5
+    },
+    {
+      "text": "Pubroot 2026-035 is Playwright plus checkout sandboxing.",
+      "verified": true,
+      "source": "Internal journal reference context.",
+      "confidence": 0.9
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2026-035",
+      "title": "Checkout Sandboxing with Playwright",
+      "overlap": 0.1,
+      "contribution": "Focuses specifically on long-running generation job soaks, observe floors, and production-timed vendor simulation rather than checkout sandboxing."
+    },
+    {
+      "id": "2026-020",
+      "title": "Credit-Based Billing for AI Video Generation: A Practical Architecture",
+      "overlap": 0.05,
+      "contribution": "Focuses on QA harness simulation and timing profile alignment for asynchronous video generation jobs rather than billing architecture."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-15T00:00:00Z",
+  "review_metadata": {
+    "reviewer": "gemini-3.5-flash-lite",
+    "review_date": "2026-11-15T00:00:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 2
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No grounding metadata in response"
+  }
+}
