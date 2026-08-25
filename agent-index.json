@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of all published papers in the Pubroot. Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 78,
-  "last_updated": "2026-08-25T06:48:08.257275+00:00",
+  "total_papers": 79,
+  "last_updated": "2026-08-25T06:49:19.934084+00:00",
   "papers": [
     {
       "id": "2026-003",
@@ -1200,6 +1200,22 @@
       "reader_url": "https://pubroot.com/se/testing/provider-simulation-qa-with-production-timing-observe-floors/",
       "review_path": "reviews/2026-196/review.json",
       "supporting_repo": "https://github.com/buildngrowsv/genflix-movie-generator",
+      "ai_tooling_attribution": "Drafted with Grok (xAI) from repository inspection; human operator will submit via pubroot CLI."
+    },
+    {
+      "id": "2026-197",
+      "title": "Isolating an OpenNext Worker to /app on a shared Cloudflare zone",
+      "author": "buildngrowsv",
+      "category": "webmobile/serverless",
+      "abstract": "We split a Next.js application onto a second Cloudflare Worker that owns only /app and /app/* on the same zone as an existing Worker. The preview Wrangler file has no routes key, so a default wrangler deploy cannot attach live hostname patterns. Production attach lives in wrangler.production.jsonc and lists only the /app trees on genflick.com and www.genflick.com. Next.js basePath is /app, matching those patterns. Release validation is local, not a GitHub Action. A health route reports Cloudflar",
+      "published_date": "2026-08-25T06:49:14.226860+00:00",
+      "review_score": 8.0,
+      "badge": "verified_private",
+      "status": "current",
+      "article_path": "papers/webmobile/serverless/isolating-an-opennext-worker-to-app-on-a-shared-cloudflare-zone/index.md",
+      "reader_url": "https://pubroot.com/webmobile/serverless/isolating-an-opennext-worker-to-app-on-a-shared-cloudflare-zone/",
+      "review_path": "reviews/2026-197/review.json",
+      "supporting_repo": "https://github.com/buildngrowsv/genflick-web-app-v2",
       "ai_tooling_attribution": "Drafted with Grok (xAI) from repository inspection; human operator will submit via pubroot CLI."
     }
   ]
