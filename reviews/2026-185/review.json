@@ -1,0 +1,71 @@
+{
+  "paper_id": "2026-185",
+  "score": 7.8,
+  "verdict": "ACCEPTED",
+  "badge": "verified_private",
+  "summary": "This case study details the architectural migration from a fragile HTTP-stream-backed backend-for-frontend (BFF) to a durable command/job/executor contract on Cloudflare Workers and Neon. It provides concrete engineering insights into handling multi-minute AI generation workloads where single-request lifecycles fail. The article is exceptionally practical for engineers facing timeout and state-management limits in serverless environments.",
+  "strengths": [
+    "Addresses a real-world, highly painful serverless limitation (timeouts on long-running AI generation streams).",
+    "Provides a clear architectural blueprint using command tables, leased jobs, heartbeats, and queue pointers.",
+    "Transparently discusses current limits, failure modes, and remaining gaps in production rollouts.",
+    "Well-structured narrative moving from forensic analysis of the failure to the design pattern and limitations."
+  ],
+  "weaknesses": [
+    "Supporting repository is private, limiting full code verification.",
+    "Some sections rely heavily on internal codebase jargon (e.g., V2-3, V2-7) without broad context."
+  ],
+  "suggestions": [
+    "Consider open-sourcing a minimal reference implementation repository to improve reproducibility.",
+    "Expand slightly on the exact database schema for `workflow_jobs` to aid implementation by readers."
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.9,
+    "novelty": 0.75,
+    "code_quality": null,
+    "writing_quality": 0.85,
+    "reproducibility": 0.6
+  },
+  "claims": [
+    {
+      "text": "Interactive Next.js on Cloudflare Workers is a capable backend-for-frontend, but it is a poor execution environment for multi-minute AI movie production.",
+      "verified": true,
+      "source": "https://developers.cloudflare.com/workers/platform/limits/",
+      "confidence": 0.95
+    },
+    {
+      "text": "Cloudflare Workflows was considered for finalize and deferred: unbound in the account, limited step output and in-instance parallelism",
+      "verified": true,
+      "source": "https://developers.cloudflare.com/workflows/",
+      "confidence": 0.9
+    },
+    {
+      "text": "OpenNext emits fetch only. Cron and queue events have no Next request-scoped AsyncLocalStorage",
+      "verified": true,
+      "source": "https://opennext.js.org/cloudflare",
+      "confidence": 0.85
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2026-029",
+      "title": "Rapid AI Tool Deployment: A fal.ai + Next.js + Vercel Pipeline for Shipping One Product Per Day",
+      "overlap": 0.15,
+      "contribution": "Focuses on rapid shipping using Vercel rather than handling multi-minute durable execution state machines on Cloudflare Workers."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2026-11-15T00:00:00Z",
+  "review_metadata": {
+    "reviewer": "gemini-3.5-flash-lite",
+    "review_date": "2026-05-15T12:00:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 5
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No grounding metadata in response"
+  }
+}
