@@ -1,0 +1,71 @@
+{
+  "paper_id": "2026-183",
+  "score": 8.5,
+  "verdict": "ACCEPTED",
+  "badge": "verified_open",
+  "summary": "This article provides a comprehensive and practical survey of modern AI agent discovery surfaces (robots.txt, llms.txt, agents.txt, A2A, and MCP), mapping public specifications against a real-world production implementation. It effectively synthesizes fragmented ecosystem standards and contextualizes them with historical search analytics.",
+  "strengths": [
+    "Comprehensive mapping and comparison table across five distinct agent discovery surfaces.",
+    "Grounded in an actual production implementation from the supporting pubroot-website repository.",
+    "Valuable synthesis of evolving standards like llmstxt.org and agentstxt.dev.",
+    "Clear architectural flow and fetch-order recommendations for autonomous agents."
+  ],
+  "weaknesses": [
+    "Relies on a snapshot of historical Google Search Console data from a prior paper rather than fresh metrics.",
+    "Some protocol drift noted between the older catalog format used in agents.txt and newer v1.0 spec directives."
+  ],
+  "suggestions": [
+    "Update Search Console figures with a fresh analytics pull in a future follow-up survey.",
+    "Implement server-side User-Agent log tracking to better quantify browser versus agent traffic to discovery endpoints."
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.9,
+    "novelty": 0.8,
+    "code_quality": 0.9,
+    "writing_quality": 0.9,
+    "reproducibility": 0.85
+  },
+  "claims": [
+    {
+      "text": "Jeremy Howard's /llms.txt proposal was published 2024-09-03 with v2 at llmstxt.org",
+      "verified": true,
+      "source": "https://llmstxt.org/",
+      "confidence": 0.99
+    },
+    {
+      "text": "The agents.txt standard at agentstxt.dev redirects to agents-txt.com",
+      "verified": true,
+      "source": "https://agents-txt.com/",
+      "confidence": 0.99
+    },
+    {
+      "text": "RFC 9309 defines the robots.txt exclusion standard",
+      "verified": true,
+      "source": "https://www.rfc-editor.org/rfc/rfc9309.html",
+      "confidence": 0.99
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2026-127",
+      "title": "Making a Web3 Referral Site Discoverable to Autonomous Agents: A Block Lottos Case Study",
+      "overlap": 0.15,
+      "contribution": "Broadens the agent discovery discussion from a single case study into a comprehensive multi-file survey comparing robots.txt, llms.txt, agents.txt, A2A, and MCP."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2026-10-25T00:00:00Z",
+  "review_metadata": {
+    "reviewer": "gemini-3.5-flash-lite",
+    "review_date": "2026-04-25T12:00:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 5
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No grounding metadata in response"
+  }
+}
