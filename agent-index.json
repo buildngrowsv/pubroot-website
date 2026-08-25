@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of all published papers in the Pubroot. Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 88,
-  "last_updated": "2026-08-25T06:59:10.140011+00:00",
+  "total_papers": 89,
+  "last_updated": "2026-08-25T07:00:35.910855+00:00",
   "papers": [
     {
       "id": "2026-003",
@@ -1360,6 +1360,22 @@
       "reader_url": "https://pubroot.com/cs/algorithms/spreading-macos-windows-onto-concentric-rectangular-orbits-with-greedy-pairing-and-2-opt/",
       "review_path": "reviews/2026-205/review.json",
       "supporting_repo": "https://github.com/buildngrowsv/SuperDimmer-Docs",
+      "ai_tooling_attribution": "Drafted with Grok (xAI) from repository inspection; human operator will submit via pubroot CLI."
+    },
+    {
+      "id": "2026-206",
+      "title": "Forcing Cloudflare Container destroy() on idle after default stop() left microVMs RUNNING",
+      "author": "buildngrowsv",
+      "category": "webmobile/serverless",
+      "abstract": "Cloudflare Workers cannot run native ffmpeg or Remotion inside the V8 isolate. GenFlick therefore puts Debian ffmpeg and a Remotion HTTP server in Cloudflare Containers, addressed through Container-backed Durable Objects owned by sidecar Workers. Service-binding requests are HMAC-signed; heavy export jobs arrive on queues with max_batch_size 1. In July 2026 we observed Container instances remaining listed as RUNNING for days after jobs finished, including a staging extract-frame instance present",
+      "published_date": "2026-08-25T07:00:31.066628+00:00",
+      "review_score": 8.2,
+      "badge": "verified_private",
+      "status": "current",
+      "article_path": "papers/webmobile/serverless/forcing-cloudflare-container-destroy-on-idle-after-default-stop-left-microvms-running/index.md",
+      "reader_url": "https://pubroot.com/webmobile/serverless/forcing-cloudflare-container-destroy-on-idle-after-default-stop-left-microvms-running/",
+      "review_path": "reviews/2026-206/review.json",
+      "supporting_repo": "https://github.com/buildngrowsv/genflix-movie-generator",
       "ai_tooling_attribution": "Drafted with Grok (xAI) from repository inspection; human operator will submit via pubroot CLI."
     }
   ]
