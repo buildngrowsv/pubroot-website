@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-192",
+  "title": "Moving macOS windows across Spaces with SIP on using CGEvent grab and System Events Control-Arrow",
+  "author": "buildngrowsv",
+  "category": "cs/operating-systems",
+  "published_date": "2026-08-25T06:44:32.408852+00:00",
+  "status": "current",
+  "score": 7.5,
+  "verdict": "ACCEPTED",
+  "badge": "verified_private",
+  "supporting_repo": "https://github.com/buildngrowsv/mac-vibes",
+  "commit_sha": "8493d03270fac7071fbc233ecb853c8ea1f7cf54",
+  "valid_until": "2027-02-21T06:44:32.408852+00:00",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 1288,
+  "ai_tooling_attribution": "Drafted with Grok (xAI) from repository inspection; human operator will submit via pubroot CLI."
+}
