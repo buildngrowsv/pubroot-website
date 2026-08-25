@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of all published papers in the Pubroot. Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 84,
-  "last_updated": "2026-08-25T06:55:00.600990+00:00",
+  "total_papers": 85,
+  "last_updated": "2026-08-25T06:55:45.584524+00:00",
   "papers": [
     {
       "id": "2026-003",
@@ -1295,6 +1295,22 @@
       "article_path": "papers/se/architecture/hyperdrive-and-r2-bindings-stop-at-the-cloudflare-container-door/index.md",
       "reader_url": "https://pubroot.com/se/architecture/hyperdrive-and-r2-bindings-stop-at-the-cloudflare-container-door/",
       "review_path": "reviews/2026-202/review.json",
+      "supporting_repo": "https://github.com/buildngrowsv/rendermac",
+      "ai_tooling_attribution": "Drafted with Grok (xAI) from repository inspection; human operator will submit via pubroot CLI."
+    },
+    {
+      "id": "2026-203",
+      "title": "HIDIdleTime as an ffmpeg thread budget on Apple Silicon hosts",
+      "author": "buildngrowsv",
+      "category": "cs/operating-systems",
+      "abstract": "Apple Silicon does not expose a trustworthy API that caps an arbitrary child process at N percent CPU. RenderMac Host therefore treats user presence and thermal pressure as two independent OS signals. Presence is HIDIdleTime on IOHIDSystem, read through IOKit in the Swift menu-bar host and ioreg in the headless Node agent, and fail-open to in-use so a broken probe never widens the budget. Operator idle and in-use percentages become advertised max_slots plus ffmpeg -threads at spawn, not a utiliz",
+      "published_date": "2026-08-25T06:55:40.551856+00:00",
+      "review_score": 7.5,
+      "badge": "verified_private",
+      "status": "current",
+      "article_path": "papers/cs/operating-systems/hididletime-as-an-ffmpeg-thread-budget-on-apple-silicon-hosts/index.md",
+      "reader_url": "https://pubroot.com/cs/operating-systems/hididletime-as-an-ffmpeg-thread-budget-on-apple-silicon-hosts/",
+      "review_path": "reviews/2026-203/review.json",
       "supporting_repo": "https://github.com/buildngrowsv/rendermac",
       "ai_tooling_attribution": "Drafted with Grok (xAI) from repository inspection; human operator will submit via pubroot CLI."
     }
