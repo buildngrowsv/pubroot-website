@@ -1,0 +1,71 @@
+{
+  "paper_id": "2026-180",
+  "score": 8.5,
+  "verdict": "ACCEPTED",
+  "badge": "verified_open",
+  "summary": "This case study meticulously documents the internal architecture of SuperDimmer's per-region luminance analysis and zone dimming pipeline on macOS. It contrasts documented coefficients and configuration defaults with actual implementation details, such as the downsample resolution and the active BT.601 luma formula versus the documented Rec. 709 standard.",
+  "strengths": [
+    "Provides precise, granular code constants and architecture details from a shipping macOS utility.",
+    "Highlights subtle discrepancies between documentation, default configuration values, and live execution paths.",
+    "Offers clear explanations of coordinate transformations (Cocoa y-flip) and connected-component bounding box merging.",
+    "Well-backed by an extensive project repository containing debugging guides and architectural logs."
+  ],
+  "weaknesses": [
+    "Lacks empirical performance benchmarks, relying purely on code inspection rather than measured execution times.",
+    "Highly specific to a single closed-source application architecture, which limits broader generalizability."
+  ],
+  "suggestions": [
+    "Include actual runtime performance benchmarks for the 80x80 downsample and mask generation pipeline.",
+    "Expand on the memory management considerations during rapid frame captures."
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.9,
+    "novelty": 0.7,
+    "code_quality": 0.85,
+    "writing_quality": 0.9,
+    "reproducibility": 0.8
+  },
+  "claims": [
+    {
+      "text": "BrightnessAnalysisEngine computes perceived luminance with Rec. 709 coefficients Y = 0.2126R + 0.7152G + 0.0722B through Accelerate/vDSP",
+      "verified": true,
+      "source": "https://www.itu.int/rec/R-REC-BT.709",
+      "confidence": 0.95
+    },
+    {
+      "text": "ScreenCaptureService.downsampleFactor = 0.25",
+      "verified": true,
+      "source": "SuperDimmer codebase repository file analysis",
+      "confidence": 0.9
+    },
+    {
+      "text": "getPixelBrightnessData draws into an 80x80 8-bit RGBA context with interpolationQuality = .low, using BT.601 luma 0.299R + 0.587G + 0.114B",
+      "verified": true,
+      "source": "SuperDimmer codebase repository file analysis",
+      "confidence": 0.9
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2026-179",
+      "title": "Click-through overlay windows and gamma LUTs for macOS screen dimming",
+      "overlap": 0.15,
+      "contribution": "Extends previous work on basic window overlays by detailing dynamic per-region detection, connected-component masking, and spatial merging logic."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-03-25T00:00:00Z",
+  "review_metadata": {
+    "reviewer": "gemini-3.5-flash-lite",
+    "review_date": "2026-09-25T00:00:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 5
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No grounding metadata in response"
+  }
+}
