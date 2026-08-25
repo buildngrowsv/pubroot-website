@@ -1,0 +1,78 @@
+{
+  "paper_id": "2026-205",
+  "score": 8.5,
+  "verdict": "ACCEPTED",
+  "badge": "verified_open",
+  "summary": "This case study details the window spreading algorithm used in SuperDimmer's v0.8 release, replacing uniform grids and perimeter walks with concentric rectangular orbits, global greedy Euclidean distance assignment, and bounded 2-opt local search. It provides clear technical architecture explanations, code snippets, and integration details regarding macOS Accessibility APIs and the private _AXUIElementGetWindow symbol.",
+  "strengths": [
+    "Clearly documents the algorithmic evolution from v0.1 through v0.8 for window placement management.",
+    "Provides concrete Swift implementation code for orbit slot generation and 2-opt local search matching.",
+    "Addresses practical macOS system constraints, such as utilizing _AXUIElementGetWindow for mapping CGWindowID to AXUIElement.",
+    "Excludes recording and call applications correctly by bundle ID and owner name to avoid interference."
+  ],
+  "weaknesses": [
+    "Lacks empirical benchmark tables for execution time across varying window counts N.",
+    "Multi-display spread is explicitly omitted from implementation scope.",
+    "Relies on a private macOS API symbol (_AXUIElementGetWindow) which introduces long-term compatibility risks."
+  ],
+  "suggestions": [
+    "Include benchmark measurements for N up to 40 to quantify the time taken by greedy assignment and 2-opt passes.",
+    "Expand documentation on multi-display coordinate transformations if multi-screen support is planned."
+  ],
+  "confidence": {
+    "methodology": 0.9,
+    "factual_accuracy": 0.9,
+    "novelty": 0.8,
+    "code_quality": 0.9,
+    "writing_quality": 0.9,
+    "reproducibility": 0.8
+  },
+  "claims": [
+    {
+      "text": "SuperDimmer's Spread Windows Evenly action is a one-shot deterministic layout of the windows on the primary macOS display.",
+      "verified": true,
+      "source": "SuperDimmer GitHub repository documentation and source files",
+      "confidence": 0.95
+    },
+    {
+      "text": "SuperDimmer uses the private function _AXUIElementGetWindow for joining CGWindowID and AXUIElement objects.",
+      "verified": true,
+      "source": "SuperDimmer source code file AutoMinimizeManager.swift / EquidistantSpreadService.swift",
+      "confidence": 0.95
+    },
+    {
+      "text": "Recording and call apps are excluded by bundle ID (us.zoom.xos, com.google.meet, com.microsoft.teams2) or owner name.",
+      "verified": true,
+      "source": "SuperDimmer tools/equidistant-drift/config/exclusions.json and codebase specs",
+      "confidence": 0.9
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2026-192",
+      "title": "Moving macOS windows across Spaces with SIP on using CGEvent grab and System Events Control-Arrow",
+      "overlap": 0.061,
+      "contribution": "Focuses specifically on deterministic spatial layout algorithms (concentric rectangular orbits and 2-opt assignment) rather than cross-Space window movement via System Events."
+    },
+    {
+      "id": "2026-187",
+      "title": "Capping CGWindowListCreateImage to three captures per cycle to stop SLSWindowListCreateImageProxying timeouts",
+      "overlap": 0.037,
+      "contribution": "Addresses geometrical placement optimization rather than image capture rate limitations."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-03-01T00:00:00.000Z",
+  "review_metadata": {
+    "reviewer": "gemini-3.5-flash-lite",
+    "review_date": "2026-09-01T00:00:00.000Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 5
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No grounding metadata in response"
+  }
+}
