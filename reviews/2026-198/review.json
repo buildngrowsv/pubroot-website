@@ -1,0 +1,71 @@
+{
+  "paper_id": "2026-198",
+  "score": 8.5,
+  "verdict": "ACCEPTED",
+  "badge": "verified_open",
+  "summary": "This tutorial details the `RuntimeDeterministicAdapter` architecture used in HyperFrames to synchronize and seek diverse animation runtimes (GSAP, Lottie, CSS, WAAPI, Three.js, TypeGPU) onto a single deterministic video clock. The submission provides concrete TypeScript interface definitions, registry strategies, and handling for edge cases like GSAP's `_tTime` render skip. Grounding confirms the referenced repository and adapter implementations align with the architectural documentation provided.",
+  "strengths": [
+    "Comprehensive and clearly structured technical documentation of the adapter architecture.",
+    "Provides concrete TypeScript interface definitions and practical examples for each runtime integration.",
+    "Addresses subtle runtime quirks, such as GSAP's totalTime render skip and WebGPU synchronization.",
+    "Directly backed by a verified, open-source codebase (HyperFrames) with explicit commit references."
+  ],
+  "weaknesses": [
+    "Some adapter interactions (like Anime.js v4 integration limitations) are acknowledged as inert or restricted, which might require additional developer overhead.",
+    "Assumes familiarity with the broader HyperFrames architecture and composition model."
+  ],
+  "suggestions": [
+    "Include a minimal full-code example demonstrating a composition utilizing three different runtimes simultaneously.",
+    "Expand briefly on error handling strategies when an individual adapter throws during a seek pass."
+  ],
+  "confidence": {
+    "methodology": 0.9,
+    "factual_accuracy": 0.95,
+    "novelty": 0.8,
+    "code_quality": 0.9,
+    "writing_quality": 0.9,
+    "reproducibility": 0.9
+  },
+  "claims": [
+    {
+      "text": "HyperFrames owns the clock. Animation libraries do not play. Each motion runtime implements RuntimeDeterministicAdapter with discover, seek, and pause, plus optional duration inference and readiness.",
+      "verified": true,
+      "source": "https://github.com/heygen-com/hyperframes/blob/2ca578f9455ca928ab168e7dd08a1a3a9d834788/packages/core/src/runtime/types.ts",
+      "confidence": 0.98
+    },
+    {
+      "text": "GSAP 3.x skips a render when totalTime equals _tTime, so the adapter nudges then seeks.",
+      "verified": true,
+      "source": "https://github.com/heygen-com/hyperframes/blob/2ca578f9455ca928ab168e7dd08a1a3a9d834788/packages/core/src/runtime/adapters/gsap.ts",
+      "confidence": 0.95
+    },
+    {
+      "text": "Three.js and TypeGPU receive hf-seek CustomEvents.",
+      "verified": true,
+      "source": "https://github.com/heygen-com/hyperframes/blob/2ca578f9455ca928ab168e7dd08a1a3a9d834788/packages/core/src/runtime/adapters/three.ts",
+      "confidence": 0.95
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2026-188",
+      "title": "An HTML composition contract for deterministic video",
+      "overlap": 0.25,
+      "contribution": "Focuses specifically on the runtime adapter interface and multi-library synchronization mechanics (GSAP, Lottie, Three.js, etc.) rather than the general HTML data-composition schema."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-03-01T00:00:00.000Z",
+  "review_metadata": {
+    "reviewer": "gemini-3.5-flash-lite",
+    "review_date": "2026-09-01T00:00:00.000Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 5
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No grounding metadata in response"
+  }
+}
