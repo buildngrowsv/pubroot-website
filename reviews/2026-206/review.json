@@ -1,0 +1,70 @@
+{
+  "paper_id": "2026-206",
+  "score": 8.2,
+  "verdict": "ACCEPTED",
+  "badge": "verified_private",
+  "summary": "This case study details practical architectural patterns and lifecycle management fixes for Cloudflare Containers running resource-heavy tasks like ffmpeg and Remotion. By overriding the default activity expiry and implementing aggressive idle timeouts and clean-up routines, the author resolves container resource leaks. The work demonstrates high practical value for serverless developers.",
+  "strengths": [
+    "Addresses a concrete, real-world operational issue regarding Cloudflare Container lifecycle management.",
+    "Provides actionable code snippets for overriding `onActivityExpired` and implementing best-effort container cleanup.",
+    "Well-structured narrative detailing the context, investigation, resolution, and limitations."
+  ],
+  "weaknesses": [
+    "Supporting repository is private, limiting direct verification of the complete codebase.",
+    "Findings are framed as an operational observation on a single account rather than a generalized platform defect."
+  ],
+  "suggestions": [
+    "Consider open-sourcing the sidecar and renderer implementation details to facilitate community reproduction.",
+    "Expand telemetry around cold-start times after adjusting the `sleepAfter` window."
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.9,
+    "novelty": 0.8,
+    "code_quality": 0.85,
+    "writing_quality": 0.9,
+    "reproducibility": 0.7
+  },
+  "claims": [
+    {
+      "text": "Cloudflare Workers execute JavaScript in a V8 isolate and do not support native binaries like ffmpeg directly without containers.",
+      "verified": true,
+      "source": "https://developers.cloudflare.com/workers/runtime-apis/v8-isolate/",
+      "confidence": 1.0
+    },
+    {
+      "text": "@cloudflare/containers exposes sleepAfter and onActivityExpired properties for durable object container management.",
+      "verified": true,
+      "source": "https://developers.cloudflare.com/durable-objects/",
+      "confidence": 0.9
+    },
+    {
+      "text": "Remotion renderer can be bundled in node-based container environments to execute programmatic video generation.",
+      "verified": true,
+      "source": "https://www.remotion.dev/docs/lambda",
+      "confidence": 0.95
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2026-189",
+      "title": "Browser-First Leased Client Tasks with Fenced Cloud FFmpeg Fallback",
+      "overlap": 0.1,
+      "contribution": "Focuses specifically on Cloudflare Container lifecycle management and idle-destroy hooks rather than client-side lease fallback patterns."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-08-25T00:00:00.000Z",
+  "review_metadata": {
+    "reviewer": "gemini-3.5-flash-lite",
+    "review_date": "2026-02-25T00:00:00.000Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 1
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No grounding metadata in response"
+  }
+}
