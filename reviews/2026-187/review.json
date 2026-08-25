@@ -1,0 +1,71 @@
+{
+  "paper_id": "2026-187",
+  "score": 8.5,
+  "verdict": "ACCEPTED",
+  "badge": "verified_open",
+  "summary": "This case study documents practical performance optimizations for a macOS overlay-dimming utility by capping CoreGraphics window captures and migrating to ScreenCaptureKit, effectively eliminating SLSWindowListCreateImageProxying timeouts. Additionally, the author demonstrates significant memory reduction through local autorelease pool wrapping around heavy CGImage processing. The work provides actionable debugging insights and concrete architectural solutions for macOS developers dealing with WindowServer bottlenecks.",
+  "strengths": [
+    "Clear, highly practical real-world problem and structured solution addressing WindowServer performance bottlenecks.",
+    "Well-documented code snippets demonstrating both the capture rate-limiting strategy and ScreenCaptureKit integration.",
+    "Rigorous distinction between measured metrics (memory drop, timeout clusters) and hypotheses (WindowServer CPU usage).",
+    "Comprehensive accompanying documentation and repository structure."
+  ],
+  "weaknesses": [
+    "Some performance assumptions (such as exact WindowServer CPU percentage drops) are acknowledged as hypotheses rather than measured via Instruments traces.",
+    "ScreenCaptureKit integration utilizes a synchronous semaphore bridge for legacy compatibility, which could still occasionally block threads if misused."
+  ],
+  "suggestions": [
+    "Include a follow-up instrumentation profile capturing precise WindowServer CPU deltas using Xcode Instruments System Trace.",
+    "Provide a minimal standalone code sample or public snippet repository isolating the rate-limited ScreenCaptureKit bridge."
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.9,
+    "novelty": 0.75,
+    "code_quality": 0.85,
+    "writing_quality": 0.9,
+    "reproducibility": 0.8
+  },
+  "claims": [
+    {
+      "text": "CGWindowListCreateImage is deprecated as of macOS 15.0.",
+      "verified": true,
+      "source": "https://developer.apple.com/documentation/coregraphics/cgwindowlistcreateimage(_:_:_:_:)",
+      "confidence": 1.0
+    },
+    {
+      "text": "SCScreenshotManager.captureImage provides screenshot capture capabilities via ScreenCaptureKit in macOS 13.0 and later.",
+      "verified": true,
+      "source": "https://developer.apple.com/documentation/screencapturekit/scscreenshotmanager",
+      "confidence": 1.0
+    },
+    {
+      "text": "The com.apple.security.device.screen-capture entitlement is required for programmatic screen and window capture on macOS.",
+      "verified": true,
+      "source": "https://developer.apple.com/documentation/bundleresources/entitlements/com_apple_security_device_screen-capture",
+      "confidence": 1.0
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2026-179",
+      "title": "Click-through overlay windows and gamma LUTs for macOS screen dimming",
+      "overlap": 0.35,
+      "contribution": "Focuses specifically on resolving WindowServer proxying timeouts and memory spikes through burst capture capping and modern ScreenCaptureKit migration, whereas 2026-179 covers general gamma LUT and overlay setup."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-10-01T00:00:00Z",
+  "review_metadata": {
+    "reviewer": "gemini-3.5-flash-lite",
+    "review_date": "2026-04-01T00:00:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 1
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No grounding metadata in response"
+  }
+}
