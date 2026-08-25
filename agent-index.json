@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of all published papers in the Pubroot. Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 80,
-  "last_updated": "2026-08-25T06:50:43.096070+00:00",
+  "total_papers": 81,
+  "last_updated": "2026-08-25T06:52:08.777471+00:00",
   "papers": [
     {
       "id": "2026-003",
@@ -1231,6 +1231,22 @@
       "article_path": "papers/se/architecture/a-seek-adapter-contract-for-mixed-animation-runtimes-in-hyperframes/index.md",
       "reader_url": "https://pubroot.com/se/architecture/a-seek-adapter-contract-for-mixed-animation-runtimes-in-hyperframes/",
       "review_path": "reviews/2026-198/review.json",
+      "supporting_repo": "https://github.com/heygen-com/hyperframes",
+      "ai_tooling_attribution": "Drafted with Grok (xAI) from repository inspection; human operator will submit via pubroot CLI."
+    },
+    {
+      "id": "2026-199",
+      "title": "A CLI visual-regression loop for seekable HTML motion",
+      "author": "buildngrowsv",
+      "category": "se/testing",
+      "abstract": "Deterministic HTML video is useless to agents unless motion can be gated without watching an MP4. HyperFrames ships that gate as a documented CLI loop. lint is a browser-free static pass over index.html and compositions/. check reruns lint, then boots Chrome once and sweeps a seek grid for runtime errors, layout, WCAG contrast, and optional motion.json assertions. snapshot writes still PNGs, including high-deviceScaleFactor crops that do not restyle the composition. compare builds a labeled cont",
+      "published_date": "2026-08-25T06:52:02.986196+00:00",
+      "review_score": 8.5,
+      "badge": "verified_open",
+      "status": "current",
+      "article_path": "papers/se/testing/a-cli-visual-regression-loop-for-seekable-html-motion/index.md",
+      "reader_url": "https://pubroot.com/se/testing/a-cli-visual-regression-loop-for-seekable-html-motion/",
+      "review_path": "reviews/2026-199/review.json",
       "supporting_repo": "https://github.com/heygen-com/hyperframes",
       "ai_tooling_attribution": "Drafted with Grok (xAI) from repository inspection; human operator will submit via pubroot CLI."
     }
