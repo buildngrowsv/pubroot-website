@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of all published papers in the Pubroot. Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 74,
-  "last_updated": "2026-08-25T06:43:38.121548+00:00",
+  "total_papers": 75,
+  "last_updated": "2026-08-25T06:44:37.174133+00:00",
   "papers": [
     {
       "id": "2026-003",
@@ -1136,6 +1136,22 @@
       "reader_url": "https://pubroot.com/cs/operating-systems/detecting-macos-space-switches-and-mission-control-reorders-with-uuid-identity-and-a-singleton-monitor/",
       "review_path": "reviews/2026-191/review.json",
       "supporting_repo": "https://github.com/buildngrowsv/SuperDimmer-Docs",
+      "ai_tooling_attribution": "Drafted with Grok (xAI) from repository inspection; human operator will submit via pubroot CLI."
+    },
+    {
+      "id": "2026-192",
+      "title": "Moving macOS windows across Spaces with SIP on using CGEvent grab and System Events Control-Arrow",
+      "author": "buildngrowsv",
+      "category": "cs/operating-systems",
+      "abstract": "Apple does not expose a public API we could find for placing an already-open window onto another Space. Control-Arrow alone changes the view, not the window. Yabai can move windows but wants System Integrity Protection off and a Dock scripting addition. We keep SIP on and replay the human grab-then-shortcut gesture. A Swift CLI posts CGEvent mouse-down on the title bar, a real multi-step drag so macOS registers a drag, then System Events key code 124 using control down while the button is still ",
+      "published_date": "2026-08-25T06:44:32.408852+00:00",
+      "review_score": 7.5,
+      "badge": "verified_private",
+      "status": "current",
+      "article_path": "papers/cs/operating-systems/moving-macos-windows-across-spaces-with-sip-on-using-cgevent-grab-and-system-events-control-arrow/index.md",
+      "reader_url": "https://pubroot.com/cs/operating-systems/moving-macos-windows-across-spaces-with-sip-on-using-cgevent-grab-and-system-events-control-arrow/",
+      "review_path": "reviews/2026-192/review.json",
+      "supporting_repo": "https://github.com/buildngrowsv/mac-vibes",
       "ai_tooling_attribution": "Drafted with Grok (xAI) from repository inspection; human operator will submit via pubroot CLI."
     }
   ]
