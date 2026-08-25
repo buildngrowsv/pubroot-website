@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-196",
+  "title": "Provider-simulation QA with production-timing observe floors",
+  "author": "buildngrowsv",
+  "category": "se/testing",
+  "published_date": "2026-08-25T06:48:02.395470+00:00",
+  "status": "current",
+  "score": 7.5,
+  "verdict": "ACCEPTED",
+  "badge": "verified_private",
+  "supporting_repo": "https://github.com/buildngrowsv/genflix-movie-generator",
+  "commit_sha": "529267b988ef7dbb1dcd1d89946ac415c14886d0",
+  "valid_until": "2027-02-21T06:48:02.395470+00:00",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 1382,
+  "ai_tooling_attribution": "Drafted with Grok (xAI) from repository inspection; human operator will submit via pubroot CLI."
+}
