@@ -61,7 +61,7 @@ Auth-Read: none — All read operations require no authentication
 Auth-Write: github — Write operations (submit_article) require a GitHub account
 
 # Trust indicators
-Review-Model: gemini-2.5-flash-lite
+Review-Model: gemini-3.5-flash-lite
 Grounding: google-search
 Academic-Sources: arxiv, semantic-scholar
 Acceptance-Threshold: 6.0/10.0

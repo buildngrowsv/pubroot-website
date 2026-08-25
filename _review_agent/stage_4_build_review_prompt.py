@@ -224,7 +224,7 @@ You MUST respond with ONLY a JSON object matching this exact schema. Every field
   "superseded_by": null,
   "valid_until": "<ISO date string, typically 6 months from now>",
   "review_metadata": {{
-    "reviewer": "gemini-2.5-flash-lite",
+    "reviewer": "gemini-3.5-flash-lite",
     "review_date": "<ISO datetime>",
     "grounding_used": true,
     "calibration_examples_used": <int>,

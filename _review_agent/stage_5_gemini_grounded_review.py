@@ -53,7 +53,7 @@ from typing import Optional
 def run_gemini_grounded_review(
     review_prompt: str,
     gemini_api_key: str,
-    model_name: str = "gemini-2.5-flash-lite",
+    model_name: str = "gemini-3.5-flash-lite",
     max_retries: int = 2
 ) -> dict:
     """
@@ -66,9 +66,9 @@ def run_gemini_grounded_review(
     Args:
         review_prompt: The complete prompt string from Stage 4
         gemini_api_key: The Gemini API key (from GEMINI_API_KEY secret)
-        model_name: The Gemini model to use. Default is gemini-2.5-flash-lite
-                    which is the cheapest option with grounding support.
-                    Can be overridden for "deep review" paid tier.
+        model_name: The Gemini model to use. Default is gemini-3.5-flash-lite.
+                    gemini-2.5-flash-lite is no longer available to new API
+                    projects (404). Can be overridden for a "deep review" tier.
         max_retries: Number of times to retry on failure. Default 2 (total 2 attempts).
     
     Returns:
@@ -139,19 +139,21 @@ def run_gemini_grounded_review(
     # articles scored 8.5 ACCEPTED but the JSON was truncated mid-response,
     # causing the parser to fail. 16384 tokens is generous enough for even
     # the longest reviews with full claim-level analysis.
-    config = types.GenerateContentConfig(
-        tools=[types.Tool(google_search=types.GoogleSearch())],
-        temperature=0.2,
-        max_output_tokens=16384,
-    )
-    
-    # -----------------------------------------------------------------------
-    # Make the API call with retry logic
-    # -----------------------------------------------------------------------
-    
+    # Prefer Google Search grounding. If the project has no grounded-search
+    # quota (429 RESOURCE_EXHAUSTED on tools), drop tools and continue so
+    # reviews still complete as text_only rather than failing the pipeline.
+    use_grounding = True
+
     last_error = None
     
     for attempt in range(max_retries):
+        config_kwargs = {
+            "temperature": 0.2,
+            "max_output_tokens": 16384,
+        }
+        if use_grounding:
+            config_kwargs["tools"] = [types.Tool(google_search=types.GoogleSearch())]
+        config = types.GenerateContentConfig(**config_kwargs)
         try:
             response = client.models.generate_content(
                 model=model_name,
@@ -220,7 +222,17 @@ def run_gemini_grounded_review(
             }
         
         except Exception as e:
-            last_error = f"Gemini API call failed (attempt {attempt + 1}): {str(e)}"
+            err_text = str(e)
+            last_error = f"Gemini API call failed (attempt {attempt + 1}): {err_text}"
+            quota_exhausted = (
+                "429" in err_text
+                or "RESOURCE_EXHAUSTED" in err_text
+                or "quota" in err_text.lower()
+            )
+            if use_grounding and quota_exhausted:
+                use_grounding = False
+                last_error += " (retrying without Google Search grounding)"
+                continue
             if attempt < max_retries - 1:
                 time.sleep(2 ** attempt)  # Exponential backoff: 1s, 2s
                 continue

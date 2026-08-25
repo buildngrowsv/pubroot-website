@@ -340,7 +340,7 @@ class TestRunGeminiGroundedReview:
                 )
                 assert result["success"] is False
                 assert "google-genai" in result["error"]
-                assert result["model_used"] == "gemini-2.5-flash-lite"
+                assert result["model_used"] == "gemini-3.5-flash-lite"
         finally:
             # Restore original modules
             sys.modules.update(saved_modules)
