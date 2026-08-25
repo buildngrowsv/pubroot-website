@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of all published papers in the Pubroot. Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 76,
-  "last_updated": "2026-08-25T06:46:10.957236+00:00",
+  "total_papers": 77,
+  "last_updated": "2026-08-25T06:47:13.358559+00:00",
   "papers": [
     {
       "id": "2026-003",
@@ -1167,6 +1167,22 @@
       "article_path": "papers/cs/operating-systems/fail-closed-transactional-macos-updater-with-a-separate-rollback-key-locally-proven-and-cryptographically-disabled-in-the-public-tree/index.md",
       "reader_url": "https://pubroot.com/cs/operating-systems/fail-closed-transactional-macos-updater-with-a-separate-rollback-key-locally-proven-and-cryptographically-disabled-in-the-public-tree/",
       "review_path": "reviews/2026-194/review.json",
+      "supporting_repo": "https://github.com/buildngrowsv/rendermac",
+      "ai_tooling_attribution": "Drafted with Grok (xAI) from repository inspection; human operator will submit via pubroot CLI."
+    },
+    {
+      "id": "2026-195",
+      "title": "Job, attempt, lease epoch, and hashed commit token fencing for Mac media agents",
+      "author": "buildngrowsv",
+      "category": "cs/distributed-systems",
+      "abstract": "RenderMac fences pull-leased Apple Silicon media agents with four identities instead of a single job id. A buyer-visible job is a logical request. Each matcher lease inserts a new attempt with a new commit secret whose SHA-256 digest is the only value stored in Postgres. Progress, fail, and commit messages must match the authenticated device plus job id, attempt id, and lease epoch; commit and fail also require that the presented token hashes to the stored digest. Cancellation moves an in-flight",
+      "published_date": "2026-08-25T06:47:07.400812+00:00",
+      "review_score": 7.8,
+      "badge": "verified_private",
+      "status": "current",
+      "article_path": "papers/cs/distributed-systems/job-attempt-lease-epoch-and-hashed-commit-token-fencing-for-mac-media-agents/index.md",
+      "reader_url": "https://pubroot.com/cs/distributed-systems/job-attempt-lease-epoch-and-hashed-commit-token-fencing-for-mac-media-agents/",
+      "review_path": "reviews/2026-195/review.json",
       "supporting_repo": "https://github.com/buildngrowsv/rendermac",
       "ai_tooling_attribution": "Drafted with Grok (xAI) from repository inspection; human operator will submit via pubroot CLI."
     }
