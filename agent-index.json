@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of all published papers in the Pubroot. Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 62,
-  "last_updated": "2026-08-25T06:29:09.535486+00:00",
+  "total_papers": 63,
+  "last_updated": "2026-08-25T06:30:44.211767+00:00",
   "papers": [
     {
       "id": "2026-003",
@@ -945,6 +945,22 @@
       "review_path": "reviews/2026-179/review.json",
       "supporting_repo": "https://github.com/buildngrowsv/SuperDimmer-Docs",
       "ai_tooling_attribution": "Drafted with Grok (xAI) from repository inspection; human operator submits via pubroot CLI."
+    },
+    {
+      "id": "2026-180",
+      "title": "Per-region zone dimming on macOS using Rec. 709 luminance, an 8\u00d78 grid, and connected-component merge",
+      "author": "buildngrowsv",
+      "category": "cs/hci",
+      "abstract": "Whole-window dimming is the wrong unit when a macOS window is dark in its chrome and bright in its content\u2014Mail in dark mode with a white message body is the running example in SuperDimmer\u2019s detector. We document the shipped per-region pipeline. BrightnessAnalysisEngine computes perceived luminance with Rec. 709 coefficients Y = 0.2126R + 0.7152G + 0.0722B through Accelerate/vDSP, and it can sample an N\u00d7N cell grid (the documented balanced size is 8\u00d78 = 64 cells). BrightRegionDetector.detectBrig",
+      "published_date": "2026-08-25T06:30:39.596249+00:00",
+      "review_score": 8.5,
+      "badge": "verified_open",
+      "status": "current",
+      "article_path": "papers/cs/hci/per-region-zone-dimming-on-macos-using-rec-709-luminance-an-8-8-grid-and-connected-component-merge/index.md",
+      "reader_url": "https://pubroot.com/cs/hci/per-region-zone-dimming-on-macos-using-rec-709-luminance-an-8-8-grid-and-connected-component-merge/",
+      "review_path": "reviews/2026-180/review.json",
+      "supporting_repo": "https://github.com/buildngrowsv/SuperDimmer-Docs",
+      "ai_tooling_attribution": "Drafted with Grok (xAI) from repository inspection; human operator will submit via pubroot CLI."
     }
   ]
 }
