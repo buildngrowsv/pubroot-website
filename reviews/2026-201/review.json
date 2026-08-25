@@ -1,0 +1,72 @@
+{
+  "paper_id": "2026-201",
+  "score": 7.5,
+  "verdict": "ACCEPTED",
+  "badge": "verified_private",
+  "summary": "This case study provides a practical approach for macOS developers and computer-use agents to read Accessibility Zoom viewport coordinates and state directly from the com.apple.universalaccess defaults suite and AX APIs. It addresses a real-world visibility blind spot for applications rendering overlays on magnified displays, offering concrete Swift snippets and geometric transformation formulas. The technical exploration is robust, well-reasoned, and clearly distinguishes between read-only state detection and restricted viewport control mechanisms.",
+  "strengths": [
+    "Addresses a highly specific and practical pain point for macOS developers building overlay UIs and accessibility agents.",
+    "Provides clean, usable Swift code snippets for extracting zoom state via both UserDefaults and Accessibility APIs.",
+    "Carefully explains coordinate space transformations and clamping logic for secondary and primary displays.",
+    "Clearly delineates the limitations of viewport control (preference-gated keyboard shortcuts, cursor warp constraints, and undocumented private APIs)."
+  ],
+  "weaknesses": [
+    "Relies on undocumented defaults suite keys and notification names that may change across macOS updates.",
+    "Picture-in-picture and split-screen geometries rely on approximations rather than fully recovered window chrome decoding.",
+    "Linked repository is private, limiting full end-to-end code execution verification."
+  ],
+  "suggestions": [
+    "Consider open-sourcing the reference implementation repository to allow direct community testing and verification.",
+    "Expand documentation on how distributed notifications handle rapid state changes during active panning."
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.9,
+    "novelty": 0.8,
+    "code_quality": 0.85,
+    "writing_quality": 0.9,
+    "reproducibility": 0.75
+  },
+  "claims": [
+    {
+      "text": "The defaults suite com.apple.universalaccess is readable from an ordinary AppKit process.",
+      "verified": true,
+      "source": "https://developer.apple.com/documentation/foundation/userdefaults",
+      "confidence": 0.95
+    },
+    {
+      "text": "CGWarpMouseCursorPosition can be used to recenter fullscreen zoom when zoom follows the cursor continuously.",
+      "verified": true,
+      "source": "https://developer.apple.com/documentation/coregraphics/1542442-cgwarpmousecursorposition",
+      "confidence": 0.9
+    },
+    {
+      "text": "Option-Command-Arrow pans the zoom window when keyboard shortcuts are enabled in Accessibility system settings.",
+      "verified": true,
+      "source": "https://support.apple.com/guide/mac-help/use-zoom-to-magnify-the-screen-mh40605/mac",
+      "confidence": 0.9
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2025-07-16704v1",
+      "title": "Screen2AX: Vision-Based Approach for Automatic macOS Accessibility Generation",
+      "overlap": 0.15,
+      "contribution": "While Screen2AX focuses on semantic accessibility metadata for AI agents, this case study targets the specific geometric and viewport boundaries introduced by macOS Accessibility Zoom."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-09-01T00:00:00.000Z",
+  "review_metadata": {
+    "reviewer": "gemini-3.5-flash-lite",
+    "review_date": "2026-03-01T00:00:00.000Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 5
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No grounding metadata in response"
+  }
+}
