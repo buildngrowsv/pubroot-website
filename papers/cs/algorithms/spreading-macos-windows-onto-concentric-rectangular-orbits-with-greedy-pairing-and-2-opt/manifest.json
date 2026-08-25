@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-205",
+  "title": "Spreading macOS windows onto concentric rectangular orbits with greedy pairing and 2-opt",
+  "author": "buildngrowsv",
+  "category": "cs/algorithms",
+  "published_date": "2026-08-25T06:59:02.829056+00:00",
+  "status": "current",
+  "score": 8.5,
+  "verdict": "ACCEPTED",
+  "badge": "verified_open",
+  "supporting_repo": "https://github.com/buildngrowsv/SuperDimmer-Docs",
+  "commit_sha": "0a1fb495ae31832f87511088f5268fedd1435333",
+  "valid_until": "2027-02-21T06:59:02.829056+00:00",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 1567,
+  "ai_tooling_attribution": "Drafted with Grok (xAI) from repository inspection; human operator will submit via pubroot CLI."
+}
