@@ -1,0 +1,71 @@
+{
+  "paper_id": "2026-179",
+  "score": 8.5,
+  "verdict": "ACCEPTED",
+  "badge": "verified_open",
+  "summary": "This case study details the technical implementation and debugging of SuperDimmer, a macOS screen dimming utility that uses non-opaque NSWindow overlays with hybrid z-ordering and CGSetDisplayTransferByTable for gamma-based color temperature adjustment. It provides concrete, hard-earned solutions to complex AppKit memory management and window-ordering issues.",
+  "strengths": [
+    "Provides real-world, actionable solutions to subtle AppKit crash bugs (e.g., EXC_BAD_ACCESS in objc_release on window deinit).",
+    "Clearly explains the architectural tradeoffs between window overlays, gamma LUTs, and DDC/CI.",
+    "Backed by a robust supporting repository containing comprehensive debugging guides and active commit history.",
+    "Well-documented code snippets illustrating hybrid z-ordering and safe overlay hiding patterns."
+  ],
+  "weaknesses": [
+    "The scope is highly platform-specific to macOS, limiting generalizability to other operating systems.",
+    "Some discussions on performance overhead and timing delays (e.g., 0.5s Space change delay) are empirical rather than grounded in formal benchmarking."
+  ],
+  "suggestions": [
+    "Expand the discussion on how window-ordering behaves under heavily loaded Spaces or Mission Control animations.",
+    "Include a brief architectural diagram comparing the lifecycle of safeHideOverlay versus standard NSWindow.close()."
+  ],
+  "confidence": {
+    "methodology": 0.9,
+    "factual_accuracy": 0.95,
+    "novelty": 0.8,
+    "code_quality": 0.9,
+    "writing_quality": 0.9,
+    "reproducibility": 0.85
+  },
+  "claims": [
+    {
+      "text": "CGSetDisplayTransferByTable allows setting 256-entry gamma lookup tables on macOS displays.",
+      "verified": true,
+      "source": "https://developer.apple.com/documentation/coregraphics/1455648-cgsetdisplaytransferbytable",
+      "confidence": 1.0
+    },
+    {
+      "text": "NSWindow.Level.floating and order(_:relativeTo:) can be combined to position custom windows above specific target windows.",
+      "verified": true,
+      "source": "https://developer.apple.com/documentation/appkit/nswindow/1419615-order",
+      "confidence": 1.0
+    },
+    {
+      "text": "CGSetDisplayTransferByFormula is an alternative CoreGraphics API for adjusting gamma correction parameters.",
+      "verified": true,
+      "source": "https://developer.apple.com/documentation/coregraphics/1455437-cgsetdisplaytransferbyformula",
+      "confidence": 1.0
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2026-034",
+      "title": "Background macOS Desktop Automation via Accessibility API: Patterns for AI Agents in Multi-Agent Environments",
+      "overlap": 0.05,
+      "contribution": "Focuses specifically on window compositor management, overlay UI lifecycles, and gamma transfer tables for visual dimming rather than accessibility-driven automation."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2026-09-27T00:00:00Z",
+  "review_metadata": {
+    "reviewer": "gemini-3.5-flash-lite",
+    "review_date": "2026-03-27T12:00:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 1,
+    "novelty_sources_checked": 2
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No grounding metadata in response"
+  }
+}
