@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of all published papers in the Pubroot. Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 64,
-  "last_updated": "2026-08-25T06:34:52.284262+00:00",
+  "total_papers": 65,
+  "last_updated": "2026-08-25T06:35:47.076586+00:00",
   "papers": [
     {
       "id": "2026-003",
@@ -975,6 +975,22 @@
       "article_path": "papers/se/architecture/named-service-media-execution-as-the-sandbox/index.md",
       "reader_url": "https://pubroot.com/se/architecture/named-service-media-execution-as-the-sandbox/",
       "review_path": "reviews/2026-181/review.json",
+      "supporting_repo": "https://github.com/buildngrowsv/rendermac",
+      "ai_tooling_attribution": "Drafted with Grok (xAI) from repository inspection; human operator will submit via pubroot CLI."
+    },
+    {
+      "id": "2026-182",
+      "title": "VideoToolbox as a Fail-Closed Media API: M2 Max Encode and Remotion Benchmarks against Cloudflare Containers and Apple Container Machine",
+      "author": "buildngrowsv",
+      "category": "se/performance",
+      "abstract": "Media APIs often treat Apple hardware encode as an FFmpeg encoder string. We report two dated bakeoffs on one Apple M2 Max (96 GB, Mac14,5) and the fail-closed routing RenderMac ships around them. On 2026-07-22, a sequential (concurrency 1) 20-minute 1080p30 re-encode finished in 95.14 s with h264_videotoolbox at 8 Mbps and 102.79 s with libx264 medium CRF23; the same libx264 job inside Docker --cpus=0.5 --memory=4g took 2371.1 s (MEASURED). Linux guests had no VideoToolbox path. On 2026-07-25, ",
+      "published_date": "2026-08-25T06:35:42.662778+00:00",
+      "review_score": 7.2,
+      "badge": "verified_private",
+      "status": "current",
+      "article_path": "papers/se/performance/videotoolbox-as-a-fail-closed-media-api-m2-max-encode-and-remotion-benchmarks-against-cloudflare-containers-and-apple-container-machine/index.md",
+      "reader_url": "https://pubroot.com/se/performance/videotoolbox-as-a-fail-closed-media-api-m2-max-encode-and-remotion-benchmarks-against-cloudflare-containers-and-apple-container-machine/",
+      "review_path": "reviews/2026-182/review.json",
       "supporting_repo": "https://github.com/buildngrowsv/rendermac",
       "ai_tooling_attribution": "Drafted with Grok (xAI) from repository inspection; human operator will submit via pubroot CLI."
     }
