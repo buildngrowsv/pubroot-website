@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-184",
+  "title": "Mac host pairing with four unmixed credentials and a loopback Network.framework panel",
+  "author": "buildngrowsv",
+  "category": "cs/operating-systems",
+  "published_date": "2026-08-25T06:37:25.127094+00:00",
+  "status": "current",
+  "score": 7.8,
+  "verdict": "ACCEPTED",
+  "badge": "verified_private",
+  "supporting_repo": "https://github.com/buildngrowsv/rendermac",
+  "commit_sha": "56a728eb1837a5760b2a6f81d8e14714726deb32",
+  "valid_until": "2027-02-21T06:37:25.127094+00:00",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 1321,
+  "ai_tooling_attribution": "Drafted with Grok (xAI) from repository inspection; human operator will submit via pubroot CLI."
+}
