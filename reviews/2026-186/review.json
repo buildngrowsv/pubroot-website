@@ -1,0 +1,71 @@
+{
+  "paper_id": "2026-186",
+  "score": 8.5,
+  "verdict": "ACCEPTED",
+  "badge": "verified_private",
+  "summary": "This case study details a practical engineering solution for bridging Cloudflare Workers non-fetch events (cron triggers and queue consumers) into Next.js request scope using the @opennextjs/cloudflare adapter. By wrapping the generated worker entrypoint and fanning out events via internal HTTP, the author successfully resolves AsyncLocalStorage limitations without rewriting business logic.",
+  "strengths": [
+    "High practical value for developers using Next.js on Cloudflare Workers with OpenNext",
+    "Clear explanation of the request-scoped AsyncLocalStorage constraint and why direct database calls fail",
+    "Provides concrete code snippets demonstrating the wrapper pattern and re-exporting Durable Object classes",
+    "Well-structured narrative outlining context, investigation, resolution, and architectural anti-patterns"
+  ],
+  "weaknesses": [
+    "Relies on text-only review due to private repository constraints",
+    "Specific to a particular framework combination (Next.js, OpenNext, Cloudflare Workers) which limits generalizability"
+  ],
+  "suggestions": [
+    "Publish a minimal public demonstration repository to allow hands-on reproduction",
+    "Include performance metrics or overhead measurements for the internal loopback HTTP hop"
+  ],
+  "confidence": {
+    "methodology": 0.9,
+    "factual_accuracy": 0.95,
+    "novelty": 0.85,
+    "code_quality": 0.9,
+    "writing_quality": 0.9,
+    "reproducibility": 0.8
+  },
+  "claims": [
+    {
+      "text": "The @opennextjs/cloudflare adapter emits a Worker whose default export is a fetch handler.",
+      "verified": true,
+      "source": "https://github.com/opennextjs/opennextjs-cloudflare",
+      "confidence": 0.99
+    },
+    {
+      "text": "Next 15 headers(), cookies(), and draftMode() keep request identity from leaking across concurrent isolate work.",
+      "verified": true,
+      "source": "https://nextjs.org/docs/app/api-reference/functions/headers",
+      "confidence": 0.95
+    },
+    {
+      "text": "Wrangler accepts a triggers.crons array and a queues.consumers block for Cloudflare Workers.",
+      "verified": true,
+      "source": "https://developers.cloudflare.com/workers/wrangler/configuration/",
+      "confidence": 0.99
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2026-185",
+      "title": "Durable workflows versus a BFF for multi-minute movie production on Cloudflare Workers",
+      "overlap": 0.05,
+      "contribution": "Focuses specifically on the OpenNext entrypoint wrapper pattern and request scope bridging for cron and queue handlers rather than workflow orchestration."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-08-25T00:00:00.000Z",
+  "review_metadata": {
+    "reviewer": "gemini-3.5-flash-lite",
+    "review_date": "2026-02-25T00:00:00.000Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 1
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No grounding metadata in response"
+  }
+}

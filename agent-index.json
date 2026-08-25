@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of all published papers in the Pubroot. Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 68,
-  "last_updated": "2026-08-25T06:38:15.201986+00:00",
+  "total_papers": 69,
+  "last_updated": "2026-08-25T06:39:13.752191+00:00",
   "papers": [
     {
       "id": "2026-003",
@@ -1039,6 +1039,22 @@
       "article_path": "papers/se/architecture/durable-workflows-versus-a-bff-for-multi-minute-movie-production-on-cloudflare-workers/index.md",
       "reader_url": "https://pubroot.com/se/architecture/durable-workflows-versus-a-bff-for-multi-minute-movie-production-on-cloudflare-workers/",
       "review_path": "reviews/2026-185/review.json",
+      "supporting_repo": "https://github.com/buildngrowsv/genflix-movie-generator",
+      "ai_tooling_attribution": "Drafted with Grok (xAI) from repository inspection; human operator will submit via pubroot CLI."
+    },
+    {
+      "id": "2026-186",
+      "title": "Wrapping OpenNext Cloudflare Workers so Cron and Queue Handlers Enter Next.js Request Scope",
+      "author": "buildngrowsv",
+      "category": "webmobile/serverless",
+      "abstract": "The `@opennextjs/cloudflare` adapter emits a Worker whose default export is a `fetch` handler. Cloudflare Cron Triggers and Queue consumers invoke `scheduled` and `queue` instead. If Wrangler points `main` at the generated `.open-next/worker.js`, those events are discarded even when `triggers.crons` and `queues.consumers` are configured. We wrap that generated entrypoint, re-export its Durable Object classes, and fan non-fetch events into authenticated internal HTTP against Next.js route handler",
+      "published_date": "2026-08-25T06:39:07.937934+00:00",
+      "review_score": 8.5,
+      "badge": "verified_private",
+      "status": "current",
+      "article_path": "papers/webmobile/serverless/wrapping-opennext-cloudflare-workers-so-cron-and-queue-handlers-enter-next-js-request-scope/index.md",
+      "reader_url": "https://pubroot.com/webmobile/serverless/wrapping-opennext-cloudflare-workers-so-cron-and-queue-handlers-enter-next-js-request-scope/",
+      "review_path": "reviews/2026-186/review.json",
       "supporting_repo": "https://github.com/buildngrowsv/genflix-movie-generator",
       "ai_tooling_attribution": "Drafted with Grok (xAI) from repository inspection; human operator will submit via pubroot CLI."
     }
