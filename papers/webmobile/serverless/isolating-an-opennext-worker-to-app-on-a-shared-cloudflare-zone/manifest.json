@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-197",
+  "title": "Isolating an OpenNext Worker to /app on a shared Cloudflare zone",
+  "author": "buildngrowsv",
+  "category": "webmobile/serverless",
+  "published_date": "2026-08-25T06:49:14.226860+00:00",
+  "status": "current",
+  "score": 8.0,
+  "verdict": "ACCEPTED",
+  "badge": "verified_private",
+  "supporting_repo": "https://github.com/buildngrowsv/genflick-web-app-v2",
+  "commit_sha": "73fd2744ed039d1ae88cd3dd5dcd8cb5ae9aa2c7",
+  "valid_until": "2027-02-21T06:49:14.226860+00:00",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 1260,
+  "ai_tooling_attribution": "Drafted with Grok (xAI) from repository inspection; human operator will submit via pubroot CLI."
+}
