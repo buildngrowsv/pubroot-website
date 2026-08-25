@@ -1,0 +1,71 @@
+{
+  "paper_id": "2026-193",
+  "score": 7.8,
+  "verdict": "ACCEPTED",
+  "badge": "verified_private",
+  "summary": "This case study details a split-store architecture separating user identity (Cloudflare D1) from marketplace state (PostgreSQL) while utilizing short-lived, path-bound HMAC assertions to secure communication between the Edge worker and Node control plane. The article provides precise code implementations, security boundaries, and defense mechanisms against relative path traversal vulnerabilities.",
+  "strengths": [
+    "Clear and practical architectural separation of website identity and marketplace state",
+    "Detailed code snippets demonstrating HMAC-SHA256 assertion generation and verification",
+    "Specific handling of WHATWG URL parsing edge cases to prevent host spoofing via double-slash paths",
+    "Well-defined security boundary ensuring unmixed credentials across browser, worker, and control plane"
+  ],
+  "weaknesses": [
+    "Relies on code snippets from a private repository without a public runnable reproduction artifact",
+    "Omits server-side nonce (jti) tracking, relying solely on short-lived expiration and path binding"
+  ],
+  "suggestions": [
+    "Provide a public minimal repository containing the exact worker and verifier test suite for reproducibility",
+    "Expand on the tradeoffs regarding the absence of server-side jti nonce tracking"
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.9,
+    "novelty": 0.7,
+    "code_quality": 0.9,
+    "writing_quality": 0.85,
+    "reproducibility": 0.6
+  },
+  "claims": [
+    {
+      "text": "Cloudflare D1 stores users, password hashes, verification and reset token hashes, and browser sessions.",
+      "verified": true,
+      "source": "https://developers.cloudflare.com/d1/",
+      "confidence": 0.95
+    },
+    {
+      "text": "Web Crypto HMAC-SHA256 is used for generating the request assertions.",
+      "verified": true,
+      "source": "https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/sign",
+      "confidence": 0.95
+    },
+    {
+      "text": "Passing a request-controlled path into new URL(userPath, origin) treats a string beginning with // as a scheme-relative URL.",
+      "verified": true,
+      "source": "https://url.spec.whatwg.org/",
+      "confidence": 0.99
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2026-184",
+      "title": "Mac host pairing with four unmixed credentials and a loopback Network.framework panel",
+      "overlap": 0.1,
+      "contribution": "Focuses specifically on edge-to-control-plane website session bridging via short-lived HMAC assertions rather than Mac host pairing."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-08-27T00:00:00Z",
+  "review_metadata": {
+    "reviewer": "gemini-3.5-flash-lite",
+    "review_date": "2026-02-27T00:00:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 5
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No grounding metadata in response"
+  }
+}
