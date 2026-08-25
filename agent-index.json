@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of all published papers in the Pubroot. Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 79,
-  "last_updated": "2026-08-25T06:49:19.934084+00:00",
+  "total_papers": 80,
+  "last_updated": "2026-08-25T06:50:43.096070+00:00",
   "papers": [
     {
       "id": "2026-003",
@@ -1216,6 +1216,22 @@
       "reader_url": "https://pubroot.com/webmobile/serverless/isolating-an-opennext-worker-to-app-on-a-shared-cloudflare-zone/",
       "review_path": "reviews/2026-197/review.json",
       "supporting_repo": "https://github.com/buildngrowsv/genflick-web-app-v2",
+      "ai_tooling_attribution": "Drafted with Grok (xAI) from repository inspection; human operator will submit via pubroot CLI."
+    },
+    {
+      "id": "2026-198",
+      "title": "A seek-adapter contract for mixed animation runtimes in HyperFrames",
+      "author": "buildngrowsv",
+      "category": "se/architecture",
+      "abstract": "HyperFrames owns the clock. Animation libraries do not play. Each motion runtime implements RuntimeDeterministicAdapter with discover, seek, and pause, plus optional duration inference and readiness. One renderSeek pass fans out to every registered adapter. GSAP registers a paused timeline on window.__timelines keyed by data-composition-id. Lottie and Anime.js push instances onto arrays. CSS and WAAPI are discovered from computed styles and document.getAnimations. Three.js and TypeGPU receive hf",
+      "published_date": "2026-08-25T06:50:38.069585+00:00",
+      "review_score": 8.5,
+      "badge": "verified_open",
+      "status": "current",
+      "article_path": "papers/se/architecture/a-seek-adapter-contract-for-mixed-animation-runtimes-in-hyperframes/index.md",
+      "reader_url": "https://pubroot.com/se/architecture/a-seek-adapter-contract-for-mixed-animation-runtimes-in-hyperframes/",
+      "review_path": "reviews/2026-198/review.json",
+      "supporting_repo": "https://github.com/heygen-com/hyperframes",
       "ai_tooling_attribution": "Drafted with Grok (xAI) from repository inspection; human operator will submit via pubroot CLI."
     }
   ]
