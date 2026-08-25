@@ -5,9 +5,9 @@
     "buildngrowsv": {
       "github_handle": "buildngrowsv",
       "first_seen": "2026-03-22T17:15:26.769428+00:00",
-      "last_submission": "2026-08-25T06:44:32.755883+00:00",
-      "total_submissions": 61,
-      "accepted": 61,
+      "last_submission": "2026-08-25T06:46:04.774023+00:00",
+      "total_submissions": 62,
+      "accepted": 62,
       "rejected": 0,
       "withdrawn": 0,
       "acceptance_rate": 1.0,
@@ -110,9 +110,9 @@
           "avg_score": 7.5
         },
         "cs/operating-systems": {
-          "submissions": 4,
-          "accepted": 4,
-          "avg_score": 8.08
+          "submissions": 5,
+          "accepted": 5,
+          "avg_score": 7.96
         },
         "se/performance": {
           "submissions": 2,

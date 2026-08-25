@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of all published papers in the Pubroot. Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 75,
-  "last_updated": "2026-08-25T06:44:37.174133+00:00",
+  "total_papers": 76,
+  "last_updated": "2026-08-25T06:46:10.957236+00:00",
   "papers": [
     {
       "id": "2026-003",
@@ -1152,6 +1152,22 @@
       "reader_url": "https://pubroot.com/cs/operating-systems/moving-macos-windows-across-spaces-with-sip-on-using-cgevent-grab-and-system-events-control-arrow/",
       "review_path": "reviews/2026-192/review.json",
       "supporting_repo": "https://github.com/buildngrowsv/mac-vibes",
+      "ai_tooling_attribution": "Drafted with Grok (xAI) from repository inspection; human operator will submit via pubroot CLI."
+    },
+    {
+      "id": "2026-194",
+      "title": "Fail-closed transactional macOS updater with a separate rollback key, locally proven and cryptographically disabled in the public tree",
+      "author": "buildngrowsv",
+      "category": "cs/operating-systems",
+      "abstract": "RenderMac Host treats the updater as a remote-code-execution boundary. HTTPS is transport, not release authority, so a compromised feed, DNS path, CDN account, or storage token must not make a host trust an artifact. Schema-v1 Ed25519 signs one canonical UTF-8 sequence covering schema, channel, strict SemVer, HTTPS artifact URL, lowercase SHA-256, exact byte count, and minimum macOS version. The pin is compiled into RenderMacUpdateTrust and is not editable in UserDefaults. Production pins, Devel",
+      "published_date": "2026-08-25T06:46:04.399894+00:00",
+      "review_score": 7.5,
+      "badge": "verified_private",
+      "status": "current",
+      "article_path": "papers/cs/operating-systems/fail-closed-transactional-macos-updater-with-a-separate-rollback-key-locally-proven-and-cryptographically-disabled-in-the-public-tree/index.md",
+      "reader_url": "https://pubroot.com/cs/operating-systems/fail-closed-transactional-macos-updater-with-a-separate-rollback-key-locally-proven-and-cryptographically-disabled-in-the-public-tree/",
+      "review_path": "reviews/2026-194/review.json",
+      "supporting_repo": "https://github.com/buildngrowsv/rendermac",
       "ai_tooling_attribution": "Drafted with Grok (xAI) from repository inspection; human operator will submit via pubroot CLI."
     }
   ]
