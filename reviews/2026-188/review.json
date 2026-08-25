@@ -1,0 +1,76 @@
+{
+  "paper_id": "2026-188",
+  "score": 8.5,
+  "verdict": "ACCEPTED",
+  "badge": "verified_open",
+  "summary": "This tutorial details the authoring contract for deterministic video generation using HTML, data attributes, and Headless Chrome via the HyperFrames project. It provides clear architectural specifications regarding element hierarchy, timing rules, temporal occupancy tracks, and sub-composition mechanics.",
+  "strengths": [
+    "Exceptionally clear technical specification of the composition contract and HTML data attributes.",
+    "Backed by a genuine, fully inspectable open-source repository (HyperFrames under Apache 2.0).",
+    "Provides precise operational rules for linting, rendering, and handling nested templates."
+  ],
+  "weaknesses": [
+    "Assumes prior familiarity with headless browser-based video rendering concepts.",
+    "Some formatting details and codebase references are dense and heavily tied to internal CLI tools."
+  ],
+  "suggestions": [
+    "Include a minimal end-to-end working HTML example file to help newcomers bootstrap faster.",
+    "Expand briefly on how custom animation adapters beyond GSAP are integrated."
+  ],
+  "confidence": {
+    "methodology": 0.9,
+    "factual_accuracy": 0.95,
+    "novelty": 0.8,
+    "code_quality": 0.9,
+    "writing_quality": 0.85,
+    "reproducibility": 0.9
+  },
+  "claims": [
+    {
+      "text": "HyperFrames is an open-source framework for turning HTML, CSS, media, and seekable animations into deterministic MP4 videos under Apache 2.0 license.",
+      "verified": true,
+      "source": "https://github.com/heygen-com/hyperframes",
+      "confidence": 1.0
+    },
+    {
+      "text": "HeyGen's HTML-to-video research post documents the HyperFrames capture path (seek-don't-play, HeadlessExperimental.beginFrame, FFmpeg JPEG flipbooks for video).",
+      "verified": true,
+      "source": "https://www.heygen.com/research/html-to-video",
+      "confidence": 1.0
+    },
+    {
+      "text": "The public HyperFrames launch video is a 49.77s, 1920x1080, 30fps project consisting of one root plus 17 sub-composition files.",
+      "verified": true,
+      "source": "https://github.com/heygen-com/hyperframes-launch-video",
+      "confidence": 0.95
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2026-050",
+      "title": "Human Gates, Credential Boundaries, and Why Agent Swarms Stall Before Revenue",
+      "overlap": 0.034,
+      "contribution": "Addresses deterministic video authoring contracts for AI agents rather than general agent swarm governance."
+    },
+    {
+      "id": "2026-172",
+      "title": "Good Image Is Not Good First Frame: Frame Audits for AI Video Pipelines",
+      "overlap": 0.033,
+      "contribution": "Focuses on declarative HTML composition contracts and linter rules rather than downstream frame audit metrics."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2026-10-25T00:00:00.000Z",
+  "review_metadata": {
+    "reviewer": "gemini-3.5-flash-lite",
+    "review_date": "2026-04-25T00:00:00.000Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 5
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No grounding metadata in response"
+  }
+}
