@@ -1,0 +1,73 @@
+{
+  "paper_id": "2026-182",
+  "score": 7.2,
+  "verdict": "ACCEPTED",
+  "badge": "verified_private",
+  "summary": "This article presents a benchmarking study comparing Apple's VideoToolbox hardware encoding and Remotion performance across native macOS and various virtualization runtimes (Colima, Apple containers). The author demonstrates that standard binary encoder checks are insufficient and proposes a live-encoding runtime probe to ensure fail-closed routing for media APIs. The methodology is rigorous and well-documented with measured benchmarks.",
+  "strengths": [
+    "Provides practical, measured benchmarks comparing native Apple Silicon hardware encoding against virtualized Linux containers.",
+    "Addresses a concrete engineering problem (hardware capability probing vs. binary availability checks).",
+    "Clearly distinguishes between measured results, rate-card estimates, and projections.",
+    "Well-structured sections detailing specific hardware, software versions, and runtime parameters."
+  ],
+  "weaknesses": [
+    "Relies on a private supporting repository, limiting external code inspection.",
+    "Some comparisons mix browser and OS environments (native Remotion uses macOS browser, Linux uses Chromium in container).",
+    "Narrow scope limited to specific Apple Silicon hardware and single container configurations."
+  ],
+  "suggestions": [
+    "Make the supporting repository public or provide open-source reproducible scripts to improve verification.",
+    "Isolate browser variables in future Remotion virtualization bakeoffs to ensure pure OS/runtime comparisons.",
+    "Include temperature or thermal throttling observations when running sustained M2 Max workloads."
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.9,
+    "novelty": 0.75,
+    "code_quality": null,
+    "writing_quality": 0.8,
+    "reproducibility": 0.7
+  },
+  "claims": [
+    {
+      "text": "Apple M2 Max (96 GB, Mac14,5) features hardware VideoToolbox acceleration via FFmpeg codecs such as h264_videotoolbox.",
+      "verified": true,
+      "source": "https://developer.apple.com/documentation/videotoolbox",
+      "confidence": 0.95
+    },
+    {
+      "text": "Remotion supports programmatic video generation using React compositions across different runtimes.",
+      "verified": true,
+      "source": "https://www.remotion.dev/",
+      "confidence": 0.98
+    },
+    {
+      "text": "Colima provides container runtimes on macOS using Virtualization.framework (VZ).",
+      "verified": true,
+      "source": "https://github.com/abiosoft/colima",
+      "confidence": 0.95
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2026-181",
+      "title": "Named-service media execution as the sandbox",
+      "overlap": 0.15,
+      "contribution": "Extends the previous work on named-service media execution by providing concrete empirical benchmarks of VideoToolbox vs cloud containers and detailing a live runtime probe for capability assessment."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-08-28T00:00:00.000Z",
+  "review_metadata": {
+    "reviewer": "gemini-3.5-flash-lite",
+    "review_date": "2026-02-28T00:00:00.000Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 1
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No grounding metadata in response"
+  }
+}
