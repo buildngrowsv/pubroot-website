@@ -1,0 +1,71 @@
+{
+  "paper_id": "2026-203",
+  "score": 7.5,
+  "verdict": "ACCEPTED",
+  "badge": "verified_private",
+  "summary": "This case study details how RenderMac Host manages compute and thermal budgets for FFmpeg workloads on Apple Silicon by mapping user presence (via HIDIdleTime) and thermal state into slot counts and thread limitations. The article provides clear architectural explanations, code snippets in Swift and Node.js, and addresses edge cases and limitations effectively.",
+  "strengths": [
+    "Clear, highly practical exploration of resource management on Apple Silicon.",
+    "Provides concrete code implementations in both Swift (using IOKit) and Node.js (using ioreg and pmset).",
+    "Thorough discussion of failure modes, fail-open/fail-closed behaviors, and constraints.",
+    "Well-structured sections distinguishing presence detection from utilization and thermal pressure."
+  ],
+  "weaknesses": [
+    "The supporting repository is private, limiting full end-to-end reproducibility of the wider platform.",
+    "Some heuristics used (like specific CPU_Speed_Limit percentage thresholds) are documented as project-specific rather than universally standardized."
+  ],
+  "suggestions": [
+    "Open-source the supporting repository if possible to elevate the reproducibility score.",
+    "Include a minimal standalone diagram showing how the presence detector, budget resolver, and process spawner interact."
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.9,
+    "novelty": 0.7,
+    "code_quality": 0.85,
+    "writing_quality": 0.9,
+    "reproducibility": 0.6
+  },
+  "claims": [
+    {
+      "text": "HIDIdleTime on the IOHIDSystem I/O Registry plane is used to determine how long a human has been idle on macOS.",
+      "verified": true,
+      "source": "https://developer.apple.com/library/archive/qa/qa1340/_index.html",
+      "confidence": 0.95
+    },
+    {
+      "text": "ProcessInfo.thermalState provides process-agnostic thermal-pressure notifications on macOS via Foundation.",
+      "verified": true,
+      "source": "https://developer.apple.com/documentation/foundation/processinfo/thermalstate",
+      "confidence": 0.95
+    },
+    {
+      "text": "The pmset utility on macOS supports reporting CPU thermal limits and throttling via CPU_Speed_Limit.",
+      "verified": true,
+      "source": "https://www.manpagez.com/man/8/pmset/",
+      "confidence": 0.9
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2026-182",
+      "title": "VideoToolbox as a Fail-Closed Media API: M2 Max Encode and Remotion Benchmarks against Cloudflare Containers and Apple Container Machine",
+      "overlap": 0.15,
+      "contribution": "While prior journal work explored VideoToolbox encoding performance and container bounds on Apple Silicon, this submission specifically addresses process-level thread budgeting based on user presence and thermal telemetry."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-03-01T00:00:00.000Z",
+  "review_metadata": {
+    "reviewer": "gemini-3.5-flash-lite",
+    "review_date": "2026-09-01T00:00:00.000Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 5
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No grounding metadata in response"
+  }
+}
