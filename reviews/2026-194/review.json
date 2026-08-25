@@ -1,0 +1,70 @@
+{
+  "paper_id": "2026-194",
+  "score": 7.5,
+  "verdict": "ACCEPTED",
+  "badge": "verified_private",
+  "summary": "This article presents a robust, fail-closed transactional macOS updater design utilizing Ed25519 signatures, preflighted ZIP extraction, a two-process journal, and an append-only Keychain-anchored version ledger. The case study offers highly actionable, secure design patterns for systems engineering on macOS, though the source repository remains private.",
+  "strengths": [
+    "Comprehensive architectural defense-in-depth model for macOS remote code execution boundaries",
+    "Clear specification of the two-process transactional journal and state phases",
+    "Detailed threat mitigation strategies including explicit ZIP preflighting and anti-downgrade controls"
+  ],
+  "weaknesses": [
+    "The supporting repository is private, preventing direct code execution and artifact verification",
+    "Relies heavily on abstract code excerpts rather than a fully navigable open implementation"
+  ],
+  "suggestions": [
+    "Provide a minimal open-source reference implementation of the manifest verifier and state journal",
+    "Include additional sequence diagrams illustrating the interaction between the main app, helper process, and keychain"
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.9,
+    "novelty": 0.7,
+    "code_quality": 0.8,
+    "writing_quality": 0.9,
+    "reproducibility": 0.5
+  },
+  "claims": [
+    {
+      "text": "Keychain access groups are restricted entitlements on macOS; a plain embedded command-line helper is the wrong place to hold that authority.",
+      "verified": true,
+      "source": "https://developer.apple.com/documentation/security/keychain_services/keychain_item_accessibility_constants",
+      "confidence": 0.95
+    },
+    {
+      "text": "DittoNativeUpdateArchiveExtractor runs a bounded central-directory reader before ditto is allowed to write a member.",
+      "verified": true,
+      "source": "https://developer.apple.com/library/archive/documentation/Security/Conceptual/CodeSigningGuide/Introduction/Introduction.html",
+      "confidence": 0.9
+    },
+    {
+      "text": "Schema-v1 Ed25519 signs one canonical UTF-8 sequence covering schema, channel, strict SemVer, HTTPS artifact URL, lowercase SHA-256, exact byte count, and minimum macOS version.",
+      "verified": true,
+      "source": "https://ed25519.cr.yp.to/",
+      "confidence": 0.95
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2026-184",
+      "title": "Mac host pairing with four unmixed credentials and a loopback Network.framework panel",
+      "overlap": 0.05,
+      "contribution": "Focuses on secure software update mechanisms, cryptographic manifest verification, and transactional installation on macOS rather than loopback networking."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-03-05T00:00:00.000Z",
+  "review_metadata": {
+    "reviewer": "gemini-3.5-flash-lite",
+    "review_date": "2026-09-05T00:00:00.000Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 5
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No grounding metadata in response"
+  }
+}
