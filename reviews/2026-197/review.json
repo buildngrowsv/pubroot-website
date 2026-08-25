@@ -1,0 +1,70 @@
+{
+  "paper_id": "2026-197",
+  "score": 8.0,
+  "verdict": "ACCEPTED",
+  "badge": "verified_private",
+  "summary": "This case study details a practical architecture for isolating a second Next.js application compiled with OpenNext onto a sub-path (/app) of an existing Cloudflare Worker zone. It provides clear configurations using split Wrangler files and a local release validation script. The work is well-documented and valuable for serverless infrastructure practitioners.",
+  "strengths": [
+    "Clear real-world architecture pattern for multi-worker routing on a single Cloudflare zone",
+    "Provides explicit Wrangler configuration snippets for both preview and production environments",
+    "Documents a local release gating mechanism utilizing Playwright and version metadata bindings"
+  ],
+  "weaknesses": [
+    "Relying on a private repository without public code links makes exact end-to-end reproduction harder",
+    "Assumes specific directory structures and tooling versions without deep generic abstraction"
+  ],
+  "suggestions": [
+    "Consider open-sourcing a minimal reproduction template repository to improve reproducibility",
+    "Add more details on handling session persistence or cookie paths between the root worker and the sub-path worker"
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.9,
+    "novelty": 0.7,
+    "code_quality": 0.85,
+    "writing_quality": 0.9,
+    "reproducibility": 0.8
+  },
+  "claims": [
+    {
+      "text": "@opennextjs/cloudflare integrates Next.js applications to run on Cloudflare Workers",
+      "verified": true,
+      "source": "https://opennext.js.org/cloudflare",
+      "confidence": 0.99
+    },
+    {
+      "text": "Wrangler configuration files can define custom route patterns and zone names for production deployments",
+      "verified": true,
+      "source": "https://developers.cloudflare.com/workers/wrangler/configuration/#routes",
+      "confidence": 0.99
+    },
+    {
+      "text": "Next.js supports a basePath configuration option to host an application under a sub-path",
+      "verified": true,
+      "source": "https://nextjs.org/docs/app/api-reference/next-config-js/basePath",
+      "confidence": 0.99
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2026-186",
+      "title": "Wrapping OpenNext Cloudflare Workers so Cron and Queue Handlers Enter Next.js Request Scope",
+      "overlap": 0.092,
+      "contribution": "Focuses specifically on path routing isolation and multi-worker zone sharing rather than cron/queue request scoping."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-09-01T00:00:00.000Z",
+  "review_metadata": {
+    "reviewer": "gemini-3.5-flash-lite",
+    "review_date": "2026-03-01T00:00:00.000Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 5
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No grounding metadata in response"
+  }
+}

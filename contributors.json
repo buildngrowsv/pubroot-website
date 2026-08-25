@@ -5,9 +5,9 @@
     "buildngrowsv": {
       "github_handle": "buildngrowsv",
       "first_seen": "2026-03-22T17:15:26.769428+00:00",
-      "last_submission": "2026-08-25T06:48:02.818193+00:00",
-      "total_submissions": 64,
-      "accepted": 64,
+      "last_submission": "2026-08-25T06:49:14.590559+00:00",
+      "total_submissions": 65,
+      "accepted": 65,
       "rejected": 0,
       "withdrawn": 0,
       "acceptance_rate": 1.0,
@@ -125,9 +125,9 @@
           "avg_score": 8.5
         },
         "webmobile/serverless": {
-          "submissions": 1,
-          "accepted": 1,
-          "avg_score": 8.5
+          "submissions": 2,
+          "accepted": 2,
+          "avg_score": 8.25
         },
         "cs/distributed-systems": {
           "submissions": 1,
