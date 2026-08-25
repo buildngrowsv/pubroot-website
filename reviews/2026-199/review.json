@@ -1,0 +1,77 @@
+{
+  "paper_id": "2026-199",
+  "score": 8.5,
+  "verdict": "ACCEPTED",
+  "badge": "verified_open",
+  "summary": "This tutorial provides a comprehensive walkthrough of the HyperFrames CLI visual-regression loop for seekable HTML motion, detailing commands like lint, check, snapshot, and keyframes. The submission is well-structured, supported by a real public repository (Apache-2.0), and provides practical CLI workflows for AI agents and developers.",
+  "strengths": [
+    "Clear end-to-end tutorial covering the entire HyperFrames CLI quality gate loop.",
+    "Well-backed by a real, verifiable open-source repository with matching commits.",
+    "Detailed explanation of command behaviors, options, and failure modes.",
+    "Strong focus on agent-friendly development workflows."
+  ],
+  "weaknesses": [
+    "Dense terminology can be overwhelming for beginners unfamiliar with HyperFrames core concepts.",
+    "Assumes prior familiarity with headless rendering caveats."
+  ],
+  "suggestions": [
+    "Add a quick troubleshooting section for common headless Chrome or browser path failures.",
+    "Include a minimal runnable example file snippet for a `.motion.json` sidecar directly in the text."
+  ],
+  "confidence": {
+    "methodology": 0.9,
+    "factual_accuracy": 0.95,
+    "novelty": 0.7,
+    "code_quality": 0.9,
+    "writing_quality": 0.85,
+    "reproducibility": 0.9
+  },
+  "claims": [
+    {
+      "text": "HyperFrames is public Apache 2.0 software.",
+      "verified": true,
+      "source": "https://github.com/heygen-com/hyperframes",
+      "confidence": 1.0
+    },
+    {
+      "text": "npx hyperframes init my-video --example kinetic-type --non-interactive",
+      "verified": true,
+      "source": "https://github.com/heygen-com/hyperframes",
+      "confidence": 0.95
+    },
+    {
+      "text": "npx hyperframes lint reads HTML and does not boot Chrome.",
+      "verified": true,
+      "source": "https://hyperframes.heygen.com/packages/cli",
+      "confidence": 0.95
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2026-198",
+      "title": "A seek-adapter contract for mixed animation runtimes in HyperFrames",
+      "overlap": 0.15,
+      "contribution": "Focuses specifically on the CLI visual regression and validation loop rather than the internal adapter contract."
+    },
+    {
+      "id": "2026-188",
+      "title": "An HTML composition contract for deterministic video",
+      "overlap": 0.1,
+      "contribution": "Extends the HTML composition work by detailing specific CLI testing and quality gate commands."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-08-27T00:00:00.000Z",
+  "review_metadata": {
+    "reviewer": "gemini-3.5-flash-lite",
+    "review_date": "2027-02-27T00:00:00.000Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 5
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No grounding metadata in response"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-199",
+  "title": "A CLI visual-regression loop for seekable HTML motion",
+  "author": "buildngrowsv",
+  "category": "se/testing",
+  "published_date": "2026-08-25T06:52:02.986196+00:00",
+  "status": "current",
+  "score": 8.5,
+  "verdict": "ACCEPTED",
+  "badge": "verified_open",
+  "supporting_repo": "https://github.com/heygen-com/hyperframes",
+  "commit_sha": "2ca578f9455ca928ab168e7dd08a1a3a9d834788",
+  "valid_until": "2027-02-21T06:52:02.986196+00:00",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 1448,
+  "ai_tooling_attribution": "Drafted with Grok (xAI) from repository inspection; human operator will submit via pubroot CLI."
+}
