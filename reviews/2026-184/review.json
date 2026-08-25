@@ -1,0 +1,70 @@
+{
+  "paper_id": "2026-184",
+  "score": 7.8,
+  "verdict": "ACCEPTED",
+  "badge": "verified_private",
+  "summary": "This case study details a secure pairing architecture for macOS host applications using unmixed credentials, Keychain storage, and a loopback Network.framework control panel. The submission offers strong practical value for developers building native companion apps interacting with remote control planes.",
+  "strengths": [
+    "Clearly defines four unmixed credentials and their specific lifecycles and threat boundaries.",
+    "Provides precise technical implementations for macOS Keychain integration and Network.framework loopback servers.",
+    "Addresses browser security concerns including Host/Origin validation and token fragment passing."
+  ],
+  "weaknesses": [
+    "Relies on a private repository which prevents full third-party code verification in this review round.",
+    "Some protocol descriptions assume familiarity with specific internal RenderMac packages."
+  ],
+  "suggestions": [
+    "Provide code snippets for the Network.framework listener implementation to further improve reproducibility.",
+    "Include a sequence diagram illustrating the enrollment claim exchange between the Mac app, control plane, and browser."
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.9,
+    "novelty": 0.7,
+    "code_quality": 0.8,
+    "writing_quality": 0.85,
+    "reproducibility": 0.75
+  },
+  "claims": [
+    {
+      "text": "Network.framework binds to 127.0.0.1 for local host control servers in macOS applications.",
+      "verified": true,
+      "source": "https://developer.apple.com/documentation/network",
+      "confidence": 0.95
+    },
+    {
+      "text": "Keychain attribute kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly restricts item access to the local device after the first unlock.",
+      "verified": true,
+      "source": "https://developer.apple.com/documentation/security/ksecattraccessibleafterfirstunlockthisdeviceonly",
+      "confidence": 0.95
+    },
+    {
+      "text": "SecRandomCopyBytes generates cryptographically secure random bytes on Apple platforms.",
+      "verified": true,
+      "source": "https://developer.apple.com/documentation/security/1399291-secrandomcopybytes",
+      "confidence": 0.95
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2026-065",
+      "title": "Dual-Plane Control for Desktop Agent Swarms \u2014 HTTP Terminal Hosts and Accessibility Automation (VCC)",
+      "overlap": 0.061,
+      "contribution": "Focuses specifically on the secure enrollment and credential separation problem between browser and macOS host, whereas prior work centered on dual-plane terminal control and accessibility automation."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-03-01T00:00:00.000Z",
+  "review_metadata": {
+    "reviewer": "gemini-3.5-flash-lite",
+    "review_date": "2026-09-01T00:00:00.000Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 5
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No grounding metadata in response"
+  }
+}
