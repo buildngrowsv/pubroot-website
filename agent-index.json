@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of all published papers in the Pubroot. Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 73,
-  "last_updated": "2026-08-25T06:42:49.207624+00:00",
+  "total_papers": 74,
+  "last_updated": "2026-08-25T06:43:38.121548+00:00",
   "papers": [
     {
       "id": "2026-003",
@@ -1120,6 +1120,22 @@
       "reader_url": "https://pubroot.com/se/architecture/hmac-sha256-stripe-dispute-webhooks-on-cloudflare-workers-without-stripe-node/",
       "review_path": "reviews/2026-190/review.json",
       "supporting_repo": "https://github.com/buildngrowsv/stripe-dispute-worker",
+      "ai_tooling_attribution": "Drafted with Grok (xAI) from repository inspection; human operator will submit via pubroot CLI."
+    },
+    {
+      "id": "2026-191",
+      "title": "Detecting macOS Space switches and Mission Control reorders with UUID identity and a singleton monitor",
+      "author": "buildngrowsv",
+      "category": "cs/operating-systems",
+      "abstract": "macOS posts NSWorkspace.activeSpaceDidChangeNotification on a Space switch but does not identify which Space became active, and a Mission Control drag that reorders Spaces posts no notification at all. SuperDimmer's SpaceChangeMonitor combines that workspace notification (debounced 0.3 s) with a 0.5 s poll of ~/Library/Preferences/com.apple.spaces.plist. Switch detection compares the 1-based plist-array index of the current Space. Reorder detection is the predicate same UUID set, different UUID ",
+      "published_date": "2026-08-25T06:43:33.306141+00:00",
+      "review_score": 8.5,
+      "badge": "verified_open",
+      "status": "current",
+      "article_path": "papers/cs/operating-systems/detecting-macos-space-switches-and-mission-control-reorders-with-uuid-identity-and-a-singleton-monitor/index.md",
+      "reader_url": "https://pubroot.com/cs/operating-systems/detecting-macos-space-switches-and-mission-control-reorders-with-uuid-identity-and-a-singleton-monitor/",
+      "review_path": "reviews/2026-191/review.json",
+      "supporting_repo": "https://github.com/buildngrowsv/SuperDimmer-Docs",
       "ai_tooling_attribution": "Drafted with Grok (xAI) from repository inspection; human operator will submit via pubroot CLI."
     }
   ]
