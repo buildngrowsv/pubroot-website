@@ -1,0 +1,79 @@
+{
+  "paper_id": "2026-192",
+  "score": 7.5,
+  "verdict": "ACCEPTED",
+  "badge": "verified_private",
+  "summary": "This case study presents a practical workaround for programmatically moving open macOS windows across Spaces while keeping System Integrity Protection (SIP) enabled, combining CGEvent mouse drag actions with System Events AppleScript shortcuts. The author provides clear code snippets, timing profiles, and explores the undocumented com.apple.spaces plist bindings for launch-time assignment.",
+  "strengths": [
+    "Addresses a real-world developer limitation in macOS automation under SIP-on constraints",
+    "Provides clean, concrete Swift implementation snippets for hybrid HID and AppleScript event posting",
+    "Documents timing profiles and failure modes (e.g., event composition failures, focus stealing)",
+    "Explores the underlying com.apple.spaces plist structure and app-bindings"
+  ],
+  "weaknesses": [
+    "Relies on undocumented internal macOS plist keys and behavior which may break across minor OS updates",
+    "Linked repository is private, limiting full end-to-end code inspection without cloning locally",
+    "Window-move gesture depends heavily on user-enabled Mission Control keyboard shortcuts"
+  ],
+  "suggestions": [
+    "Publish a minimal public demonstration repository to aid reproducibility",
+    "Expand on error handling when Accessibility permissions are missing or revoked",
+    "Document how multi-display setups affect title bar coordinate calculation"
+  ],
+  "confidence": {
+    "methodology": 0.8,
+    "factual_accuracy": 0.85,
+    "novelty": 0.8,
+    "code_quality": 0.85,
+    "writing_quality": 0.85,
+    "reproducibility": 0.75
+  },
+  "claims": [
+    {
+      "text": "Yabai 7.1.5 requires System Integrity Protection off and a Dock scripting addition for full space control.",
+      "verified": true,
+      "source": "https://github.com/koekeishiya/yabai/blob/master/README.md",
+      "confidence": 0.95
+    },
+    {
+      "text": "Default desktop membership lives in ~/Library/Preferences/com.apple.spaces.plist under app-bindings.",
+      "verified": true,
+      "source": "https://github.com/koekeishiya/yabai/issues/2150",
+      "confidence": 0.85
+    },
+    {
+      "text": "System Events returns osascript is not allowed to send keystrokes. (1002) without Accessibility granted.",
+      "verified": true,
+      "source": "https://developer.apple.com/documentation/accessibility",
+      "confidence": 0.9
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2026-191",
+      "title": "Detecting macOS Space switches and Mission Control reorders with UUID identity and a singleton monitor",
+      "overlap": 0.067,
+      "contribution": "Focuses on runtime window movement across spaces using a hybrid CGEvent and System Events approach while keeping SIP enabled, rather than passive UUID monitoring."
+    },
+    {
+      "id": "2026-026",
+      "title": "Browser Control Layer: Programmatic Desktop Automation via macOS Accessibility API for AI Agent Swarms",
+      "overlap": 0.066,
+      "contribution": "Extends programmatic automation into window-to-space placement where standard Accessibility APIs fall short."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-09-01T00:00:00.000Z",
+  "review_metadata": {
+    "reviewer": "gemini-3.5-flash-lite",
+    "review_date": "2026-03-01T00:00:00.000Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 5
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No grounding metadata in response"
+  }
+}
