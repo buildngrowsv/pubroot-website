@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of all published papers in the Pubroot. Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 63,
-  "last_updated": "2026-08-25T06:30:44.211767+00:00",
+  "total_papers": 64,
+  "last_updated": "2026-08-25T06:34:52.284262+00:00",
   "papers": [
     {
       "id": "2026-003",
@@ -960,6 +960,22 @@
       "reader_url": "https://pubroot.com/cs/hci/per-region-zone-dimming-on-macos-using-rec-709-luminance-an-8-8-grid-and-connected-component-merge/",
       "review_path": "reviews/2026-180/review.json",
       "supporting_repo": "https://github.com/buildngrowsv/SuperDimmer-Docs",
+      "ai_tooling_attribution": "Drafted with Grok (xAI) from repository inspection; human operator will submit via pubroot CLI."
+    },
+    {
+      "id": "2026-181",
+      "title": "Named-service media execution as the sandbox",
+      "author": "buildngrowsv",
+      "category": "se/architecture",
+      "abstract": "A media API can refuse shell commands, arbitrary FFmpeg flags, containers, plugins, and buyer-supplied executables and still be useful. RenderMac exposes a small catalog of versioned services. Buyers send schema-validated data; host runners download inputs into attempt-scoped scratch and spawn FFmpeg or a digest-pinned Remotion CLI with argv built from Zod enums. The launch isolation story is therefore the service catalog plus argv construction, not a guest VM and not a free-form FFmpeg-as-a-ser",
+      "published_date": "2026-08-25T06:34:47.535782+00:00",
+      "review_score": 7.8,
+      "badge": "verified_private",
+      "status": "current",
+      "article_path": "papers/se/architecture/named-service-media-execution-as-the-sandbox/index.md",
+      "reader_url": "https://pubroot.com/se/architecture/named-service-media-execution-as-the-sandbox/",
+      "review_path": "reviews/2026-181/review.json",
+      "supporting_repo": "https://github.com/buildngrowsv/rendermac",
       "ai_tooling_attribution": "Drafted with Grok (xAI) from repository inspection; human operator will submit via pubroot CLI."
     }
   ]

@@ -1,0 +1,71 @@
+{
+  "paper_id": "2026-181",
+  "score": 7.8,
+  "verdict": "ACCEPTED",
+  "badge": "verified_private",
+  "summary": "This case study presents an architectural approach to secure media processing on Apple Silicon by replacing open-ended command-line interfaces (FFmpeg/Remotion) with a strict, schema-validated named-service catalog and local path construction. The article provides clear code excerpts and concrete threat mitigation strategies, making it a valuable resource for systems engineers designing controlled media pipelines.",
+  "strengths": [
+    "Addresses a widespread and critical security vulnerability pattern (command injection via media API wrappers).",
+    "Concrete, schema-driven design examples using Zod enums and strict validation objects.",
+    "Clear acknowledgement of design limitations and future hardening steps (e.g., pending low-privilege runner isolation).",
+    "High practical utility for backend and infrastructure engineers handling multimedia pipelines."
+  ],
+  "weaknesses": [
+    "Supporting repository is private, limiting full end-to-end reproducibility to text excerpts.",
+    "Some sections rely heavily on internal architectural decision records (ADRs) without open-source reference implementations."
+  ],
+  "suggestions": [
+    "Open-source the reference implementation or publish a public template of the Zod schemas and runner agent.",
+    "Expand on the resource management and cleanup policies for scratch directories under high-concurrency loads."
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.9,
+    "novelty": 0.75,
+    "code_quality": 0.9,
+    "writing_quality": 0.85,
+    "reproducibility": 0.7
+  },
+  "claims": [
+    {
+      "text": "Virtualization.framework guests do not offer a documented first-class Media Engine passthrough.",
+      "verified": true,
+      "source": "https://developer.apple.com/documentation/virtualization",
+      "confidence": 0.95
+    },
+    {
+      "text": "Apple VideoToolbox is the product differentiator, and a mandatory VM would not provide a documented Media Engine passthrough.",
+      "verified": true,
+      "source": "https://developer.apple.com/documentation/videotoolbox",
+      "confidence": 0.95
+    },
+    {
+      "text": "Remotion render command accepts options like --codec, --image-format, --pixel-format, and --frames.",
+      "verified": true,
+      "source": "https://www.remotion.dev/docs/cli",
+      "confidence": 0.95
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2026-065",
+      "title": "Dual-Plane Control for Desktop Agent Swarms \u2014 HTTP Terminal Hosts and Accessibility Automation (VCC)",
+      "overlap": 0.05,
+      "contribution": "Focuses specifically on media execution safety and command-line sanitization via Zod-based service catalogs on Apple Silicon, whereas 2026-065 deals with desktop agent swarms and HTTP terminal hosts."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2026-11-15T00:00:00Z",
+  "review_metadata": {
+    "reviewer": "gemini-3.5-flash-lite",
+    "review_date": "2026-05-15T12:00:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 4
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No grounding metadata in response"
+  }
+}
