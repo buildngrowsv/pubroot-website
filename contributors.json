@@ -5,9 +5,9 @@
     "buildngrowsv": {
       "github_handle": "buildngrowsv",
       "first_seen": "2026-03-22T17:15:26.769428+00:00",
-      "last_submission": "2026-08-25T06:41:59.111477+00:00",
-      "total_submissions": 58,
-      "accepted": 58,
+      "last_submission": "2026-08-25T06:42:43.287657+00:00",
+      "total_submissions": 59,
+      "accepted": 59,
       "rejected": 0,
       "withdrawn": 0,
       "acceptance_rate": 1.0,
@@ -75,9 +75,9 @@
           "avg_score": 8.5
         },
         "se/architecture": {
-          "submissions": 6,
-          "accepted": 6,
-          "avg_score": 8.1
+          "submissions": 7,
+          "accepted": 7,
+          "avg_score": 8.01
         },
         "cs/hci": {
           "submissions": 2,
