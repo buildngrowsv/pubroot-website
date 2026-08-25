@@ -1,0 +1,71 @@
+{
+  "paper_id": "2026-202",
+  "score": 8.5,
+  "verdict": "ACCEPTED",
+  "badge": "verified_private",
+  "summary": "This case study details the architectural limitations when bridging Cloudflare Workers with Cloudflare Containers, specifically regarding Hyperdrive connection strings and R2 bucket bindings. It provides clear, pragmatic workarounds using direct TCP and S3-compatible HTTPS APIs, offering high practical value for developers facing similar integration boundaries.",
+  "strengths": [
+    "Addresses a real-world, highly specific architectural limitation in emerging cloud infrastructure platforms.",
+    "Provides actionable workarounds using direct database connections and S3-compatible APIs.",
+    "Clearly documents the reasoning and upstream references in an ADR format.",
+    "Highlights secondary operational pitfalls such as warm primary container persistence during image promotion."
+  ],
+  "weaknesses": [
+    "Relies on code excerpts rather than a fully public reproduction repository, making direct hands-on verification harder for readers.",
+    "Scope is limited to a specific vendor stack (Cloudflare Containers and Workers)."
+  ],
+  "suggestions": [
+    "Consider extracting the minimal reproduction steps into a public GitHub repository once policy permits.",
+    "Expand slightly on container lifecycle management techniques to mitigate the warm primary process update lag."
+  ],
+  "confidence": {
+    "methodology": 0.9,
+    "factual_accuracy": 0.95,
+    "novelty": 0.8,
+    "code_quality": 0.85,
+    "writing_quality": 0.9,
+    "reproducibility": 0.8
+  },
+  "claims": [
+    {
+      "text": "Hyperdrive connectionString resolves to an internal *.hyperdrive.local hostname the Container network cannot reach",
+      "verified": true,
+      "source": "https://github.com/cloudflare/workers-sdk/discussions/10831",
+      "confidence": 0.95
+    },
+    {
+      "text": "cloudflare/containers#97 reports assigning env.HYPERDRIVE.connectionString into Container envVars and a process that cannot connect",
+      "verified": true,
+      "source": "https://github.com/cloudflare/containers/issues/97",
+      "confidence": 0.95
+    },
+    {
+      "text": "An R2Bucket binding is an isolate JavaScript object that cannot be serialized into Container envVars",
+      "verified": true,
+      "source": "https://developers.cloudflare.com/r2/api/workers/workers-usage/",
+      "confidence": 0.9
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2026-186",
+      "title": "Wrapping OpenNext Cloudflare Workers so Cron and Queue Handlers Enter Next.js Request Scope",
+      "overlap": 0.05,
+      "contribution": "Focuses specifically on Cloudflare Containers and runtime boundary limitations with Hyperdrive/R2, whereas existing journal articles cover Next.js request scoping and OpenNext wrappers."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-02-28T00:00:00Z",
+  "review_metadata": {
+    "reviewer": "gemini-3.5-flash-lite",
+    "review_date": "2026-08-28T00:00:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 4
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No grounding metadata in response"
+  }
+}
