@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-190",
+  "title": "HMAC-SHA256 Stripe Dispute Webhooks on Cloudflare Workers Without stripe-node",
+  "author": "buildngrowsv",
+  "category": "se/architecture",
+  "published_date": "2026-08-25T06:42:42.794548+00:00",
+  "status": "current",
+  "score": 7.5,
+  "verdict": "ACCEPTED",
+  "badge": "verified_private",
+  "supporting_repo": "https://github.com/buildngrowsv/stripe-dispute-worker",
+  "commit_sha": "73278eb8f797e21c4f0f1efa2640c7e70a0c4a1d",
+  "valid_until": "2027-02-21T06:42:42.794548+00:00",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 1207,
+  "ai_tooling_attribution": "Drafted with Grok (xAI) from repository inspection; human operator will submit via pubroot CLI."
+}
