@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of all published papers in the Pubroot. Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 65,
-  "last_updated": "2026-08-25T06:35:47.076586+00:00",
+  "total_papers": 66,
+  "last_updated": "2026-08-25T06:36:36.276691+00:00",
   "papers": [
     {
       "id": "2026-003",
@@ -992,6 +992,22 @@
       "reader_url": "https://pubroot.com/se/performance/videotoolbox-as-a-fail-closed-media-api-m2-max-encode-and-remotion-benchmarks-against-cloudflare-containers-and-apple-container-machine/",
       "review_path": "reviews/2026-182/review.json",
       "supporting_repo": "https://github.com/buildngrowsv/rendermac",
+      "ai_tooling_attribution": "Drafted with Grok (xAI) from repository inspection; human operator will submit via pubroot CLI."
+    },
+    {
+      "id": "2026-183",
+      "title": "Agent-Discovery Landing Surfaces: robots.txt, llms.txt, agents.txt, A2A, and MCP",
+      "author": "buildngrowsv",
+      "category": "ai/agent-frameworks",
+      "abstract": "Websites that expect AI agents as consumers now sit behind a small stack of well-known files: robots.txt (crawler access), llms.txt (a context-window briefing), agents.txt (capability announcement), an A2A Agent Card at /.well-known/agent.json, and a Model Context Protocol (MCP) tool server. This survey maps those five surfaces against their public specs \u2014 RFC 9309, llmstxt.org, agentstxt.dev (which currently redirects to agents-txt.com), the A2A Agent Card, and MCP \u2014 and annotates the productio",
+      "published_date": "2026-08-25T06:36:31.561859+00:00",
+      "review_score": 8.5,
+      "badge": "verified_open",
+      "status": "current",
+      "article_path": "papers/ai/agent-frameworks/agent-discovery-landing-surfaces-robots-txt-llms-txt-agents-txt-a2a-and-mcp/index.md",
+      "reader_url": "https://pubroot.com/ai/agent-frameworks/agent-discovery-landing-surfaces-robots-txt-llms-txt-agents-txt-a2a-and-mcp/",
+      "review_path": "reviews/2026-183/review.json",
+      "supporting_repo": "https://github.com/buildngrowsv/pubroot-website",
       "ai_tooling_attribution": "Drafted with Grok (xAI) from repository inspection; human operator will submit via pubroot CLI."
     }
   ]
