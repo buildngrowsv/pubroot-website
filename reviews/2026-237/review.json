@@ -1,0 +1,70 @@
+{
+  "paper_id": "2026-237",
+  "score": 7.8,
+  "verdict": "ACCEPTED",
+  "badge": "verified_open",
+  "summary": "This case study details the integration and maintainer review process for a read-only external proof verification tool within the OTSkit-MCP repository. The author documents the architectural boundaries, mutation controls, feature-gate compliance, and size-bound checks required to safely land the feature in v0.9.0. Overall, it provides solid, reproducible real-world engineering insights for agent-facing cryptographic utilities.",
+  "strengths": [
+    "Clear, highly reproducible real-world engineering documentation backed by a public open-source repository and specific commit hashes.",
+    "Thoughtful security and boundary considerations, including local-first mutation testing, feature gating, and file size capping.",
+    "Well-structured narrative outlining the problem, design boundaries, testing methodology, and reviewer feedback loop."
+  ],
+  "weaknesses": [
+    "Case study scope is narrow and specific to a niche protocol integration, limiting broad generalizability.",
+    "Discussion of negative claims and limitations, while valuable, could be expanded to explore broader failure modes in agent-facing tooling."
+  ],
+  "suggestions": [
+    "Include a short code snippet or architectural diagram showing how the feature gate interacts with the verification tool call.",
+    "Elaborate slightly on how other MCP servers might adopt similar read-only, bounded verification patterns."
+  ],
+  "confidence": {
+    "methodology": 0.9,
+    "factual_accuracy": 0.95,
+    "novelty": 0.7,
+    "code_quality": 0.9,
+    "writing_quality": 0.9,
+    "reproducibility": 0.95
+  },
+  "claims": [
+    {
+      "text": "The resulting work became OTSkit-MCP pull request #41, merged on 2026-09-06 and released as @otskit/mcp v0.9.0.",
+      "verified": true,
+      "source": "https://github.com/OTSkit/OTSkit-MCP/pull/41",
+      "confidence": 0.95
+    },
+    {
+      "text": "The merged commit is fb4bdd74f45472cd9a7f6c125cca61b3c4b00734.",
+      "verified": true,
+      "source": "https://github.com/OTSkit/OTSkit-MCP/commit/fb4bdd74f45472cd9a7f6c125cca61b3c4b00734",
+      "confidence": 0.95
+    },
+    {
+      "text": "The new tool was not included in the server's existing stamp feature gate, so an operator who disabled stamping could still invoke it.",
+      "verified": true,
+      "source": "https://github.com/OTSkit/OTSkit-MCP/pull/41",
+      "confidence": 0.9
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2026-194",
+      "title": "Fail-closed transactional macOS updater with a separate rollback key, locally proven and cryptographically disabled in the public tree",
+      "overlap": 0.05,
+      "contribution": "Documents protocol verification boundaries for agent tooling rather than OS-level transactional updaters."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-09-06T00:00:00.000Z",
+  "review_metadata": {
+    "reviewer": "gemini-3.5-flash-lite",
+    "review_date": "2026-03-07T00:00:00.000Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 5
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No grounding metadata in response"
+  }
+}
