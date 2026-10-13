@@ -1,0 +1,70 @@
+{
+  "paper_id": "2026-239",
+  "score": 7.2,
+  "verdict": "ACCEPTED",
+  "badge": "verified_open",
+  "summary": "This article presents a precise source review of the Orkas desktop AI framework, examining how workspace state observations and file-operation facts can be decoupled from current file content during multi-agent handoffs. The work is well-grounded in specific repository code and provides a clear conceptual argument regarding agent handoff reliability and file provenance.",
+  "strengths": [
+    "Precise code grounding, referencing exact commit hashes and specific functions in workspace-state.ts",
+    "Addresses a concrete and often overlooked problem in multi-agent workflows (distinguishing historical file operations from current disk state)",
+    "Clean and professional writing style with a logical structure"
+  ],
+  "weaknesses": [
+    "Scope is narrowly bounded to a static source review without runtime execution benchmarking",
+    "The worked example uses hypothetical figures rather than empirically recorded agent execution outputs"
+  ],
+  "suggestions": [
+    "Include empirical benchmarks or logs from actual agent handoff failures involving stale file versions",
+    "Expand the discussion to compare how other open-source agent frameworks handle state provenance"
+  ],
+  "confidence": {
+    "methodology": 0.8,
+    "factual_accuracy": 0.9,
+    "novelty": 0.7,
+    "code_quality": 0.85,
+    "writing_quality": 0.9,
+    "reproducibility": 0.7
+  },
+  "claims": [
+    {
+      "text": "Orkas is an open-source, local-first multi-agent desktop app whose Commander coordinates specialist work around project context.",
+      "verified": true,
+      "source": "https://github.com/Orkas-AI/Orkas/blob/b4a8fc0c1526acb5f6f4aee427a18e9221afe691/README.md",
+      "confidence": 1.0
+    },
+    {
+      "text": "WorkspaceObservationEntry associates observations with a sequence, turn, tool and recording time; it can include reads, changes and command execution.",
+      "verified": true,
+      "source": "https://github.com/Orkas-AI/Orkas/blob/b4a8fc0c1526acb5f6f4aee427a18e9221afe691/src/core-agent/src/agent/workspace-state.ts",
+      "confidence": 1.0
+    },
+    {
+      "text": "reconcileWorkspaceObservations examines a bounded set of previously observed paths against current disk state and records detected changes.",
+      "verified": true,
+      "source": "https://github.com/Orkas-AI/Orkas/blob/b4a8fc0c1526acb5f6f4aee427a18e9221afe691/src/core-agent/src/agent/workspace-state.ts",
+      "confidence": 1.0
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2026-046",
+      "title": "Singleton Control Planes and Mutex Discipline in Agent Swarms Using Shared Human Interfaces",
+      "overlap": 0.05,
+      "contribution": "While prior work focuses on control planes and synchronization locks across agent swarms, this article specifically tackles state provenance and version drift between file-operation facts and current content during agent handoffs."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2026-10-15T00:00:00Z",
+  "review_metadata": {
+    "reviewer": "gemini-3.5-flash-lite",
+    "review_date": "2026-04-15T10:00:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 5
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No grounding metadata in response"
+  }
+}

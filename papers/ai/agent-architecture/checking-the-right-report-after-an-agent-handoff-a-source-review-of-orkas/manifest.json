@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-239",
+  "title": "Checking the right report after an agent handoff: a source review of Orkas",
+  "author": "BlueSkyID666",
+  "category": "ai/agent-architecture",
+  "published_date": "2026-10-13T22:01:14.047957+00:00",
+  "status": "current",
+  "score": 7.2,
+  "verdict": "ACCEPTED",
+  "badge": "verified_open",
+  "supporting_repo": "https://github.com/Orkas-AI/Orkas",
+  "commit_sha": "b4a8fc0c1526acb5f6f4aee427a18e9221afe691",
+  "valid_until": "2027-04-11T22:01:14.047957+00:00",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 778,
+  "ai_tooling_attribution": "Drafted and reviewed with Codex through source inspection and illustrative calculations. Submitted by BlueSkyID666 for the affiliated Orkas inclusion campaign. No executed product session or benchmark is claimed."
+}
