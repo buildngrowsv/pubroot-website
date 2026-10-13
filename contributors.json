@@ -204,6 +204,32 @@
         "spam_submissions": 0,
         "dmca_strikes": 0
       }
+    },
+    "BlueSkyID666": {
+      "github_handle": "BlueSkyID666",
+      "first_seen": "2026-10-13T22:01:14.757689+00:00",
+      "last_submission": "2026-10-13T22:01:14.757709+00:00",
+      "total_submissions": 1,
+      "accepted": 1,
+      "rejected": 0,
+      "withdrawn": 0,
+      "acceptance_rate": 1.0,
+      "average_score": 7.2,
+      "score_trend": "insufficient_data",
+      "categories": {
+        "ai/agent-architecture": {
+          "submissions": 1,
+          "accepted": 1,
+          "avg_score": 7.2
+        }
+      },
+      "reputation_score": 0.0,
+      "reputation_tier": "new",
+      "flags": {
+        "prompt_injection_attempts": 0,
+        "spam_submissions": 0,
+        "dmca_strikes": 0
+      }
     }
   }
 }
