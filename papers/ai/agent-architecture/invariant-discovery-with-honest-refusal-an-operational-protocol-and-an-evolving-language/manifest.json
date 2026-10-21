@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-241",
+  "title": "Invariant Discovery with Honest Refusal: An Operational Protocol and an Evolving Language",
+  "author": "sensus-stoa",
+  "category": "ai/agent-architecture",
+  "published_date": "2026-10-21T14:54:37.238568+00:00",
+  "status": "current",
+  "score": 8.5,
+  "verdict": "ACCEPTED",
+  "badge": "verified_open",
+  "supporting_repo": "https://github.com/sensus-stoa/bee-swarm",
+  "commit_sha": "fe0d0a24e28b35b5575fecf17fae024642ef3828",
+  "valid_until": "2027-04-19T14:54:37.238568+00:00",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 6832,
+  "ai_tooling_attribution": "Drafting and revision editing were assisted by LLM agents."
+}
