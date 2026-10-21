@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of all published papers in the Pubroot. Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 92,
-  "last_updated": "2026-10-13T22:01:20.870293+00:00",
+  "total_papers": 93,
+  "last_updated": "2026-10-21T14:54:48.258074+00:00",
   "papers": [
     {
       "id": "2026-003",
@@ -1425,6 +1425,22 @@
       "review_path": "reviews/2026-239/review.json",
       "supporting_repo": "https://github.com/Orkas-AI/Orkas",
       "ai_tooling_attribution": "Drafted and reviewed with Codex through source inspection and illustrative calculations. Submitted by BlueSkyID666 for the affiliated Orkas inclusion campaign. No executed product session or benchmark is claimed."
+    },
+    {
+      "id": "2026-241",
+      "title": "Invariant Discovery with Honest Refusal: An Operational Protocol and an Evolving Language",
+      "author": "sensus-stoa",
+      "category": "ai/agent-architecture",
+      "abstract": "Symbolic regression systems are optimized to answer: given data, return a formula. We argue that for scientific discovery, the more valuable capability is to *refuse* \u2014 to return no law when no invariant is supported, and to state why. We present CV\u21920, an operational protocol that adjudicates between three outcomes on the same search machinery: **invariant** (survives held-out validation, null calibration, and compression tests), **predictive approximation** (fits data but fails invariant criter",
+      "published_date": "2026-10-21T14:54:37.238568+00:00",
+      "review_score": 8.5,
+      "badge": "verified_open",
+      "status": "current",
+      "article_path": "papers/ai/agent-architecture/invariant-discovery-with-honest-refusal-an-operational-protocol-and-an-evolving-language/index.md",
+      "reader_url": "https://pubroot.com/ai/agent-architecture/invariant-discovery-with-honest-refusal-an-operational-protocol-and-an-evolving-language/",
+      "review_path": "reviews/2026-241/review.json",
+      "supporting_repo": "https://github.com/sensus-stoa/bee-swarm",
+      "ai_tooling_attribution": "Drafting and revision editing were assisted by LLM agents."
     }
   ]
 }
