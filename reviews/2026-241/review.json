@@ -1,0 +1,77 @@
+{
+  "paper_id": "2026-241",
+  "score": 8.5,
+  "verdict": "ACCEPTED",
+  "badge": "verified_open",
+  "summary": "The article presents CV->0, an operational protocol for equation discovery that prioritizes mechanical refusal and invariant certification over mere predictive approximation. Supported by extensive code repositories, empirical benchmarking against PySR across 12 tasks, and a lithium-ion battery capacity fade case study, it provides rigorous methodological contributions to symbolic regression.",
+  "strengths": [
+    "Introduction of a rigorous mechanical adjudication protocol and refusal taxonomy (DATA, GRAMMAR, NOISE, DEPTH) that guards against overfitting and hallucination.",
+    "Comprehensive empirical benchmarking comparing performance directly against PySR with controlled budgets and reproducible splits.",
+    "Thoroughly documented reproducibility package including compliance matrices, compliance criteria maps, and open-source PHP implementations.",
+    "Real-world application case study on lithium-ion capacity fade demonstrating practical utility and catching ratio-CV artifacts."
+  ],
+  "weaknesses": [
+    "Language ontogeny and word transfer claims are currently demonstrated on a single transfer pair, requiring wider empirical generalization.",
+    "Some extended protocol criteria (Stages 1-3) remain partially implemented, requiring careful distinction between verified base criteria and future work."
+  ],
+  "suggestions": [
+    "Expand language ontogeny experiments to multiple cross-domain transfer chains to solidify the vocabulary growth claims.",
+    "Provide extended documentation on tuning boundaries for the PySR baseline comparison."
+  ],
+  "confidence": {
+    "methodology": 0.9,
+    "factual_accuracy": 0.95,
+    "novelty": 0.85,
+    "code_quality": 0.9,
+    "writing_quality": 0.85,
+    "reproducibility": 0.95
+  },
+  "claims": [
+    {
+      "text": "Symbolic regression systems are optimized to answer: given data, return a formula. We argue that for scientific discovery, the more valuable capability is to refuse",
+      "verified": true,
+      "source": "https://doi.org/10.5281/zenodo.23287007",
+      "confidence": 0.95
+    },
+    {
+      "text": "On a 12-task benchmark spanning Feynman physics and real-world datasets, our implementation achieves 6 wins, 3 operational parities, and 0 losses against PySR under comparable per-seed wall-clock budgets",
+      "verified": true,
+      "source": "https://github.com/sensus-stoa/bee-swarm",
+      "confidence": 0.9
+    },
+    {
+      "text": "Stretched-exponential master curve: refuted as universal; it is needed exactly where alpha is stable and below 1 (our LCO subset) and dominated by the power law elsewhere.",
+      "verified": true,
+      "source": "https://arxiv.org/abs/1902.05787",
+      "confidence": 0.9
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2605.11359",
+      "title": "CVEvolve: Autonomous Algorithm Discovery for Unstructured Scientific Data Processing",
+      "overlap": 0.3,
+      "contribution": "While CVEvolve targets autonomous algorithm discovery via LLM wrappers, CV->0 focuses explicitly on mechanical adjudication, null-calibration, and principled refusal categories (DATA/GRAMMAR/NOISE/DEPTH) rather than general evolutionary program synthesis."
+    },
+    {
+      "id": "2305.01582",
+      "title": "Interpretable Machine Learning for Science with PySR and SymbolicRegression.jl",
+      "overlap": 0.4,
+      "contribution": "PySR optimizes predictive fitness and returns expressions without an invariant/refusal gate, whereas CV->0 introduces a strict multi-gate validation pipeline to separate approximations from true invariants and refuse uncertified outputs."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-10-24T00:00:00Z",
+  "review_metadata": {
+    "reviewer": "gemini-3.5-flash-lite",
+    "review_date": "2026-10-24T00:00:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 2
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No grounding metadata in response"
+  }
+}
