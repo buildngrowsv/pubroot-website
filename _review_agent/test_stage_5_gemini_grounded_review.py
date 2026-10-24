@@ -73,7 +73,7 @@ VALID_REVIEW_JSON = {
     "superseded_by": None,
     "valid_until": "2026-09-23T00:00:00Z",
     "review_metadata": {
-        "reviewer": "google/gemini-3.5-flash-lite",
+        "reviewer": "google/gemini-3.8-flash",
         "review_date": "2026-03-23T12:00:00Z",
         "grounding_used": True,
         "calibration_examples_used": 3,
@@ -359,7 +359,7 @@ class TestRunOpenRouterReview:
                 )
                 assert result["success"] is False
                 assert "openai" in result["error"]
-                assert result["model_used"] == "google/gemini-3.5-flash-lite"
+                assert result["model_used"] == "google/gemini-3.8-flash"
         finally:
             # Restore original modules
             sys.modules.update(saved_modules)
@@ -372,7 +372,7 @@ class TestRunOpenRouterReview:
             "review": VALID_REVIEW_JSON,
             "grounding_metadata": {"available": True, "sources": []},
             "raw_response_text": json.dumps(VALID_REVIEW_JSON),
-            "model_used": "google/gemini-3.5-flash-lite",
+            "model_used": "google/gemini-3.8-flash",
             "error": None,
         }
         result = mock_run("test prompt", "fake-key")

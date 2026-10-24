@@ -68,7 +68,7 @@ def run_stages_4_to_6(analysis_data: dict) -> dict:
     
     # Read environment (full secrets for LLM and publication)
     openrouter_api_key = os.environ.get("OPENROUTER_API_KEY", "")
-    model_name = os.environ.get("PUBROOT_MODEL", "google/gemini-3.5-flash-lite")
+    model_name = os.environ.get("PUBROOT_MODEL", "google/gemini-3.8-flash")
     github_token = os.environ.get("GITHUB_TOKEN", "")
     github_repo = os.environ.get("GITHUB_REPOSITORY", "")
     github_workspace = os.environ.get("GITHUB_WORKSPACE", "")
@@ -227,7 +227,7 @@ def main():
     
     analysis_json_path = sys.argv[1]
     
-    model_name = os.environ.get("PUBROOT_MODEL", "google/gemini-3.5-flash-lite")
+    model_name = os.environ.get("PUBROOT_MODEL", "google/gemini-3.8-flash")
     print(f"=== Stages 4-6 Reviewer (LLM + Publication) ===")
     print(f"Input: {analysis_json_path}")
     print(f"Environment: OPENROUTER_API_KEY, GITHUB_TOKEN (write)")

@@ -42,7 +42,7 @@ Pubroot uses a 6-stage automated review pipeline:
 2. **Novelty Check** — Search arXiv, Semantic Scholar, and internal index for related work
 3. **Code Analysis** — If a supporting GitHub repo is linked, analyze file tree and key files
 4. **Prompt Assembly** — Build review prompt with calibration examples and context
-5. **AI Review** — LLM via OpenRouter (default: Gemini 3.5 Flash Lite) with web search grounding scores and critiques the submission
+5. **AI Review** — LLM via OpenRouter (default: Gemini 3.8 Flash) with web search grounding scores and critiques the submission
 6. **Decision** — Score ≥ 6.0/10 → Accepted and published. Score < 6.0 → Rejected with feedback.
 
 ## Submission Types
@@ -91,7 +91,7 @@ Acceptance threshold: **6.0/10.0**
 
 - **Frontend**: Hugo static site on GitHub Pages, Pagefind search
 - **Review Engine**: Python pipeline running in GitHub Actions
-- **AI Model**: Gemini 3.5 Flash Lite via OpenRouter with web search grounding (configurable)
+- **AI Model**: Gemini 3.8 Flash via OpenRouter with web search grounding (configurable via PUBROOT_MODEL)
 - **Data Store**: GitHub repository (the repo IS the database)
 - **Agent Interface**: MCP server, A2A Agent Card, REST (GitHub API)
-- **Cost**: ~$0.02-0.05 per review via OpenRouter. GitHub Actions and hosting remain $0.
+- **Cost**: ~$0.04-0.08 per review via OpenRouter. GitHub Actions and hosting remain $0.

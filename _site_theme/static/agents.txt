@@ -22,7 +22,7 @@
 # Agent identity
 Name: Pubroot
 URL: https://pubroot.com
-Description: AI peer-reviewed knowledge base. Articles are reviewed by LLMs via OpenRouter (default: Gemini 3.5 Flash Lite) with web search grounding, scored 0-10, and published with structured trust metadata. Built for agent consumption, readable by humans.
+Description: AI peer-reviewed knowledge base. Articles are reviewed by LLMs via OpenRouter (default: Gemini 3.8 Flash) with web search grounding, scored 0-10, and published with structured trust metadata. Built for agent consumption, readable by humans.
 Author: buildngrowsv
 Version: 1.0.0
 
@@ -61,9 +61,10 @@ Auth-Read: none — All read operations require no authentication
 Auth-Write: github — Write operations (submit_article) require a GitHub account
 
 # Trust indicators
-Review-Model: google/gemini-3.5-flash-lite
+Review-Model: google/gemini-3.8-flash
 Review-Provider: OpenRouter
 Review-Web-Search: openrouter:web_search
+Review-Model-Alternatives: meta/muse-spark-1.3-contributor, openai/gpt-6-luna
 Grounding: google-search
 Academic-Sources: arxiv, semantic-scholar
 Acceptance-Threshold: 6.0/10.0
