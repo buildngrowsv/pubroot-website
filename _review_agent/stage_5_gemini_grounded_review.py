@@ -347,6 +347,10 @@ def _extract_grounding_metadata(response) -> dict:
     We wrap this in a try/except because grounding metadata structure can vary
     between model versions, and we don't want metadata extraction failures
     to break the pipeline.
+    
+    IMPORTANT (grounding honesty fix, Apr 2026): We return available: True ONLY
+    when the response actually contains substantive grounding data (search queries
+    or source URLs). An empty grounding_metadata object is treated as available: False.
     """
     try:
         candidate = response.candidates[0] if response.candidates else None
@@ -357,11 +361,10 @@ def _extract_grounding_metadata(response) -> dict:
         if not metadata:
             return {"available": False, "error": "No grounding metadata in response"}
         
-        result = {"available": True}
-        
         # Extract search queries
+        queries = []
         if metadata.web_search_queries:
-            result["web_search_queries"] = list(metadata.web_search_queries)
+            queries = list(metadata.web_search_queries)
         
         # Extract grounding chunks (source URLs)
         sources = []
@@ -372,7 +375,6 @@ def _extract_grounding_metadata(response) -> dict:
                         "title": getattr(chunk.web, "title", ""),
                         "uri": getattr(chunk.web, "uri", ""),
                     })
-        result["sources"] = sources
         
         # Extract grounding supports (confidence mappings)
         supports = []
@@ -386,7 +388,24 @@ def _extract_grounding_metadata(response) -> dict:
                 if hasattr(support, "grounding_chunk_indices"):
                     support_data["chunk_indices"] = list(support.grounding_chunk_indices) if support.grounding_chunk_indices else []
                 supports.append(support_data)
-        result["supports"] = supports
+        
+        # Grounding is only "available" if we actually got substantive data:
+        # at least one search query OR at least one source URL.
+        # An empty grounding_metadata object means grounding was not used.
+        has_data = len(queries) > 0 or len(sources) > 0
+        
+        if not has_data:
+            return {
+                "available": False,
+                "error": "Grounding metadata present but empty (no queries or sources)",
+            }
+        
+        result = {
+            "available": True,
+            "web_search_queries": queries,
+            "sources": sources,
+            "supports": supports,
+        }
         
         return result
     

@@ -288,8 +288,65 @@ class TestExtractGroundingMetadata:
         mock_response.candidates = [mock_candidate]
 
         result = _extract_grounding_metadata(mock_response)
+        assert result["available"] is True
         assert len(result["sources"]) == 1
         assert result["sources"][0]["uri"] == "https://arxiv.org/abs/2511.00001"
+    
+    def test_empty_grounding_metadata_returns_unavailable(self):
+        """
+        GROUNDING HONESTY FIX (Apr 2026): When grounding_metadata is present
+        but contains no search queries and no source URLs, available should be False.
+        This was the bug: 32 published papers show grounding_used: true despite
+        having empty grounding metadata (no actual web search was performed).
+        """
+        mock_metadata = MagicMock()
+        mock_metadata.web_search_queries = []  # Empty
+        mock_metadata.grounding_chunks = []    # Empty
+        mock_metadata.grounding_supports = []
+        
+        mock_candidate = MagicMock()
+        mock_candidate.grounding_metadata = mock_metadata
+        mock_response = MagicMock()
+        mock_response.candidates = [mock_candidate]
+        
+        result = _extract_grounding_metadata(mock_response)
+        assert result["available"] is False
+        assert "empty" in result["error"].lower()
+    
+    def test_grounding_with_only_queries_is_available(self):
+        """Grounding metadata with search queries but no chunks is still valid."""
+        mock_metadata = MagicMock()
+        mock_metadata.web_search_queries = ["test query"]
+        mock_metadata.grounding_chunks = []
+        mock_metadata.grounding_supports = []
+        
+        mock_candidate = MagicMock()
+        mock_candidate.grounding_metadata = mock_metadata
+        mock_response = MagicMock()
+        mock_response.candidates = [mock_candidate]
+        
+        result = _extract_grounding_metadata(mock_response)
+        assert result["available"] is True
+    
+    def test_grounding_with_only_sources_is_available(self):
+        """Grounding metadata with source URLs but no queries is still valid."""
+        mock_chunk = MagicMock()
+        mock_chunk.web = MagicMock()
+        mock_chunk.web.title = "Test"
+        mock_chunk.web.uri = "https://example.com"
+        
+        mock_metadata = MagicMock()
+        mock_metadata.web_search_queries = []
+        mock_metadata.grounding_chunks = [mock_chunk]
+        mock_metadata.grounding_supports = []
+        
+        mock_candidate = MagicMock()
+        mock_candidate.grounding_metadata = mock_metadata
+        mock_response = MagicMock()
+        mock_response.candidates = [mock_candidate]
+        
+        result = _extract_grounding_metadata(mock_response)
+        assert result["available"] is True
 
     def test_handles_exception_gracefully(self):
         """
