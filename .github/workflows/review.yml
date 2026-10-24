@@ -178,6 +178,35 @@ jobs:
             fi
 
             if [ -z "$ISSUE" ]; then
+              # FIX FOR BUG B2: Find unreviewed [SUBMISSION] issues idempotently.
+              # These are issues that have the submission label (or [SUBMISSION] title)
+              # but no bot review comment, which happens when a run was cancelled
+              # before stage 0 could assign a priority label. Check first 20 candidates
+              # to find one without a review comment (markers: "# AI Peer Review" or
+              # "Submission Validation Failed"). This prevents double-processing while
+              # catching dropped submissions.
+              CANDIDATES=$(gh issue list \
+                --repo "$GITHUB_REPOSITORY" \
+                --state open \
+                --label "submission" \
+                --json number,labels \
+                --jq 'map(select(.labels | map(.name) | (contains(["accepted"]) or contains(["rejected"]) or contains(["validation-failed"]) or contains(["publish-failed"]) or contains(["review-error"])) | not)) | .[].number' \
+                2>/dev/null || true)
+              
+              for CANDIDATE in $CANDIDATES; do
+                # Check if this issue has a bot review comment
+                HAS_REVIEW=$(gh api repos/"$GITHUB_REPOSITORY"/issues/"$CANDIDATE"/comments \
+                  --jq 'map(select(.user.login == "github-actions[bot]" and (.body | contains("# AI Peer Review") or contains("Submission Validation Failed")))) | length' \
+                  2>/dev/null || echo "0")
+                
+                if [ "$HAS_REVIEW" = "0" ]; then
+                  ISSUE="$CANDIDATE"
+                  break
+                fi
+              done
+            fi
+
+            if [ -z "$ISSUE" ]; then
               ISSUE=$(gh issue list \
                 --repo "$GITHUB_REPOSITORY" \
                 --state open \
