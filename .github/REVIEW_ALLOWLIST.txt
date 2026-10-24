@@ -1,0 +1,16 @@
+# Pubroot Review Allowlist
+#
+# GitHub usernames listed here (one per line) are pre-approved for AI review
+# without requiring the `approved-for-review` label from a maintainer.
+#
+# Use this for trusted contributors who are not repo collaborators but should
+# have their submissions auto-reviewed (e.g., regular contributors, partner orgs).
+#
+# Lines starting with # are comments and are ignored.
+# Blank lines are ignored.
+# Usernames are case-insensitive.
+#
+# Example:
+# buildngrowsv
+# trusted-contributor
+
