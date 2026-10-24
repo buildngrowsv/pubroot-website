@@ -483,6 +483,30 @@ def _extract_form_fields(issue_body: str) -> dict:
         # Remove "_No response_" placeholder that GitHub uses for empty optional fields
         if value == "_No response_":
             value = ""
+        
+        # YAML BLOCK MARKER STRIPPING (Apr 2026): Remove stray YAML block-scalar
+        # markers that leak into form field values. GitHub Issue form submissions
+        # occasionally contain a lone YAML block marker (|, >, |-, >-, |+, >+) on
+        # its own line at the start of a text field. This happens when users copy
+        # content that includes these markers, or when they're added accidentally.
+        # These markers should NEVER appear in the final parsed value — they're
+        # YAML syntax, not content. Strip them if they're the first non-whitespace
+        # line of the value.
+        #
+        # Examples that should be stripped:
+        #   "|"           → "" (marker only, no text)
+        #   ">\n\ntext"   → "text" (marker followed by content)
+        #   "|-\ntext"    → "text" (marker with chomping indicator)
+        #
+        # This bug caused 5 published papers (2026-092, 2026-098, 2026-115,
+        # 2026-120, 2026-122) to have stray markers in their abstract field.
+        if value:
+            lines = value.split('\n')
+            first_line = lines[0].strip()
+            # Check if first line is ONLY a YAML block-scalar marker
+            if first_line in ('|', '>', '|-', '>-', '|+', '>+'):
+                # Remove the first line and rejoin
+                value = '\n'.join(lines[1:]).strip()
 
         fields[label] = value
 
