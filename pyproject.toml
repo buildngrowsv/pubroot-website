@@ -41,13 +41,20 @@ classifiers = [
 # The mcp package 1.0.0+ includes fastmcp as an optional simpler API, but the main server API is in mcp.server.
 # Pin to mcp>=2,<3 because mcp.server.MCPServer is 2.x-only
 # and 1.x installs fail on import (H-2, settles bug B15)
+# uvicorn + starlette for HTTP mode (Streamable HTTP transport)
 dependencies = [
     "mcp>=2,<3",
     "requests>=2.31.0",
+    "uvicorn>=0.30.0",
+    "starlette>=0.37.0",
 ]
 
 [project.optional-dependencies]
 dev = [
+    "pytest>=7.0.0",
+    "pytest-asyncio>=0.21.0",
+]
+test = [
     "pytest>=7.0.0",
     "pytest-asyncio>=0.21.0",
 ]
