@@ -57,6 +57,7 @@ from pubroot_site_paths import (
     reader_url as build_reader_url,
     slugify_title,
 )
+from secret_scrubber import scrub_all
 
 # Canonical site origin for agent-index.json reader_url (override in CI if needed).
 PUBROOT_SITE_BASE = os.environ.get("PUBROOT_SITE_BASE", "https://pubroot.com")
@@ -472,6 +473,12 @@ def _upload_publication_files_to_branch(
         now,
         legacy_aliases=None,
     )
+    
+    # SECURITY (B1 second pass): Scrub the article content before publishing.
+    # The article includes LLM-generated fields (review summary, strengths, weaknesses)
+    # which could theoretically contain secrets if the LLM was compromised.
+    article_content = scrub_all(article_content)
+    
     gh.create_or_update_file(
         path=paths["article_index_path"],
         content=article_content,
@@ -482,17 +489,30 @@ def _upload_publication_files_to_branch(
     manifest = _build_manifest(
         parsed_submission, review, repo_data, paper_id, now, novelty_results
     )
+    
+    # SECURITY (B1 second pass): Scrub the manifest JSON before committing.
+    # The manifest contains LLM-generated review metadata which could contain secrets.
+    manifest_json_str = json.dumps(manifest, indent=2)
+    manifest_json_str = scrub_all(manifest_json_str)
+    
     gh.create_or_update_file(
         path=paths["manifest_path"],
-        content=json.dumps(manifest, indent=2),
+        content=manifest_json_str,
         message=f"Add manifest for {paper_id}",
         branch=branch,
     )
 
     review_with_grounding = {**review, "grounding_metadata": grounding}
+    
+    # SECURITY (B1 second pass): Scrub the review JSON before committing it publicly.
+    # The LLM generates all fields in the review dict, so any of them could contain
+    # secrets if the LLM was tricked via prompt injection. Scrub the entire JSON.
+    review_json_str = json.dumps(review_with_grounding, indent=2)
+    review_json_str = scrub_all(review_json_str)
+    
     gh.create_or_update_file(
         path=f"reviews/{paper_id}/review.json",
-        content=json.dumps(review_with_grounding, indent=2),
+        content=review_json_str,
         message=f"Add review for {paper_id}",
         branch=branch,
     )
@@ -891,6 +911,11 @@ def _format_review_comment(
     This is what the submitter sees. It needs to be clear, actionable, and
     professional. We show the key metrics prominently, then the detailed
     breakdown, then the full claims verification.
+    
+    SECURITY (B1 second pass): The formatted comment is scrubbed for secrets before
+    being returned. Even if the LLM was somehow tricked into echoing a secret that
+    leaked into the prompt, the scrubber will redact it before it reaches the public
+    issue comment.
     """
     # Determine emoji for verdict (using standard Unicode, user didn't say no emojis)
     verdict_icon = "ACCEPTED" if verdict == "ACCEPTED" else "REJECTED"
@@ -977,12 +1002,25 @@ def _format_review_comment(
         "with Google Search grounding.*"
     )
     
-    return "\n".join(lines)
+    comment_text = "\n".join(lines)
+    
+    # SECURITY (B1 second pass): Scrub any secrets that may have leaked into the LLM output.
+    # This is defense-in-depth: even if a malicious submitter exploited a bug and got secrets
+    # into the prompt, and the LLM echoed them in the review, they will be redacted here
+    # before being posted publicly.
+    comment_text = scrub_all(comment_text)
+    
+    return comment_text
 
 
 def _format_error_comment(error_msg: str, paper_id: str) -> str:
-    """Format an error comment when the review pipeline fails."""
-    return (
+    """
+    Format an error comment when the review pipeline fails.
+    
+    SECURITY (B1 second pass): Error messages could potentially contain secrets if
+    they include stack traces, environment details, or API responses. Scrub before posting.
+    """
+    comment = (
         f"# AI Peer Review — Error\n\n"
         f"**Paper ID:** `{paper_id}`\n\n"
         f"The review pipeline encountered an error:\n\n"
@@ -992,6 +1030,7 @@ def _format_error_comment(error_msg: str, paper_id: str) -> str:
         f"---\n"
         f"*This is an automated message from the Pubroot pipeline.*"
     )
+    return scrub_all(comment)
 
 
 def _score_to_bar(score: float) -> str:

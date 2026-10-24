@@ -79,17 +79,39 @@ concurrency:
   group: review-pipeline
   cancel-in-progress: false
 
-# Explicit token scopes so publication (contents + PRs) works even when the
-# repository default is "Read repository contents and packages permissions".
-permissions:
-  contents: write
-  issues: write
-  pull-requests: write
+# SECURITY ARCHITECTURE (B1 second pass, 2026-10-24):
+# The workflow is split into two jobs to enforce secret isolation:
+#   1. analyze-submission: Handles untrusted content (parsing, novelty check,
+#      cloning submitter repos) with NO sensitive secrets and read-only permissions.
+#   2. review-and-publish: Calls the LLM, posts results, commits files. This job
+#      has GEMINI_API_KEY and write permissions, but never touches submitter content.
+# Data flows from job 1 → job 2 via artifacts (JSON files). This architecture ensures
+# that even if a malicious submitter exploits a bug in stages 1-3, they cannot access
+# GEMINI_API_KEY or gain write access to the repository.
+permissions: {}  # Permissions set per-job below
 
 jobs:
-  review:
+  # =============================================================================
+  # JOB 1: ANALYZE SUBMISSION (Stages 1-3)
+  # =============================================================================
+  # This job handles all untrusted content: parsing the issue body, searching
+  # external APIs, and cloning the submitter's repository. It runs with:
+  #   - READ-ONLY permissions (contents: read, issues: read)
+  #   - NO GEMINI_API_KEY (no LLM secrets in scope)
+  #   - NO write-capable GITHUB_TOKEN (cannot modify repo or post comments)
+  # Even if a malicious submitter exploits a vulnerability (e.g., the symlink
+  # attack that B1 fixed), they cannot exfiltrate write tokens or API keys
+  # because those secrets are not present in this job's environment.
+  # =============================================================================
+  analyze-submission:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 10
+    permissions:
+      contents: read    # Read-only access to journals.json, agent-index.json
+      issues: read      # Read issue body and metadata
+    outputs:
+      issue_number: ${{ steps.get-issue.outputs.issue_number }}
+      has_issue: ${{ steps.get-issue.outputs.issue_number != '' }}
 
     steps:
       # ---------------------------------------------------------------
