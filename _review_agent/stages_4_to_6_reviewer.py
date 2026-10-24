@@ -4,19 +4,19 @@ Stages 4-6 Reviewer — Pubroot Security Hardening
 PURPOSE:
     This script runs ONLY stages 4-6 of the review pipeline (prompt building, LLM review,
     and publication) with FULL secrets in scope. It is called by the review-and-publish job
-    in review.yml, which has GEMINI_API_KEY and write permissions.
+    in review.yml, which has OPENROUTER_API_KEY and write permissions.
     
     This script consumes the JSON artifact produced by stages_1_to_3_analyzer.py and
     NEVER checks out, clones, or executes any code from the submitter's repository.
 
 SECURITY ARCHITECTURE:
     - Input: JSON artifact from job 1 (stages 1-3 output)
-    - Environment: GEMINI_API_KEY, GITHUB_TOKEN (write), GITHUB_REPOSITORY
+    - Environment: OPENROUTER_API_KEY, GITHUB_TOKEN (write), GITHUB_REPOSITORY
     - NO ACCESS TO: Submitter's repository (never cloned or checked out)
     - Output: Issue comment, review.json, published paper (all scrubbed by secret_scrubber)
     
     This architecture ensures that even if a malicious submitter corrupted the JSON artifact
-    (via a hypothetical bug in stages 1-3), they still cannot access GEMINI_API_KEY because
+    (via a hypothetical bug in stages 1-3), they still cannot access OPENROUTER_API_KEY because
     it was not in scope when they could execute code. The worst they could do is corrupt the
     structured data, and all outputs are scrubbed by secret_scrubber before posting.
 
@@ -34,7 +34,7 @@ from datetime import datetime, timezone
 
 # Import only the stages we need (4-6)
 from stage_4_build_review_prompt import build_review_prompt
-from stage_5_gemini_grounded_review import run_gemini_grounded_review
+from stage_5_gemini_grounded_review import run_openrouter_review
 from stage_6_post_review_and_decide import post_review_and_decide, GitHubAPI
 from reputation_calculator import update_all_reputations
 
@@ -67,16 +67,17 @@ def run_stages_4_to_6(analysis_data: dict) -> dict:
     """
     
     # Read environment (full secrets for LLM and publication)
-    gemini_api_key = os.environ.get("GEMINI_API_KEY", "")
+    openrouter_api_key = os.environ.get("OPENROUTER_API_KEY", "")
+    model_name = os.environ.get("PUBROOT_MODEL", "google/gemini-3.5-flash-lite")
     github_token = os.environ.get("GITHUB_TOKEN", "")
     github_repo = os.environ.get("GITHUB_REPOSITORY", "")
     github_workspace = os.environ.get("GITHUB_WORKSPACE", "")
     
-    if not gemini_api_key:
+    if not openrouter_api_key:
         return {
             "success": False,
             "action": "error",
-            "errors": ["GEMINI_API_KEY not set"],
+            "errors": ["OPENROUTER_API_KEY not set. Please add this secret to the repository settings."],
         }
     
     if not github_token:
@@ -135,12 +136,12 @@ def run_stages_4_to_6(analysis_data: dict) -> dict:
     
     print(f"[Stage 4] ✓ Prompt built ({len(prompt)} chars)")
     
-    # Stage 5: Gemini grounded review
-    print(f"[Stage 5] Running Gemini grounded review...")
-    review_result = run_gemini_grounded_review(
-        prompt=prompt,
-        api_key=gemini_api_key,
-        submission_type=parsed.get("submission_type", "original-research"),
+    # Stage 5: OpenRouter LLM review with web search
+    print(f"[Stage 5] Running LLM review via OpenRouter (model: {model_name})...")
+    review_result = run_openrouter_review(
+        review_prompt=prompt,
+        openrouter_api_key=openrouter_api_key,
+        model_name=model_name,
     )
     
     if not review_result.get("success", False):
@@ -226,9 +227,11 @@ def main():
     
     analysis_json_path = sys.argv[1]
     
+    model_name = os.environ.get("PUBROOT_MODEL", "google/gemini-3.5-flash-lite")
     print(f"=== Stages 4-6 Reviewer (LLM + Publication) ===")
     print(f"Input: {analysis_json_path}")
-    print(f"Environment: GEMINI_API_KEY, GITHUB_TOKEN (write)")
+    print(f"Environment: OPENROUTER_API_KEY, GITHUB_TOKEN (write)")
+    print(f"Model: {model_name}")
     print(f"SECURITY: This job NEVER touches the submitter's repository.")
     print(f"          All repo data comes from the sanitized JSON artifact.")
     print()

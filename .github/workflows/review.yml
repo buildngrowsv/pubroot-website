@@ -12,7 +12,7 @@
 #     (--skip-repo buildngrowsv/pubroot-website) on 2026-04-19.
 # Do NOT replace this file with a deprecation stub, do NOT migrate the
 # pipeline to Cloudflare Workers + Queues + Cron, and do NOT remove the
-# GEMINI_API_KEY / S2_API_KEY repo secrets without an explicit Operator
+# OPENROUTER_API_KEY / S2_API_KEY repo secrets without an explicit Operator
 # instruction that names the carve-out rule by filename and overrides it.
 # Bulk-decommission scripts in symplyai-platform/scripts/ already pass
 # --skip-repo buildngrowsv/pubroot-website per the carve-out; reviewer
@@ -30,15 +30,16 @@
 # issue queue for unprocessed submissions and processes them in priority order.
 #
 # The workflow uses these secrets:
-#   GEMINI_API_KEY — For the LLM review + Google Search grounding
+#   OPENROUTER_API_KEY — For the LLM review + web search grounding via OpenRouter
 #   GITHUB_TOKEN — Auto-provided by Actions for API access (no setup needed)
 #
 # Optional secrets:
 #   S2_API_KEY — Semantic Scholar API key for higher novelty check rate limits
+#   PUBROOT_MODEL — Model to use via OpenRouter (default: google/gemini-3.5-flash-lite)
 #
 # COST: $0 on GitHub's free tier (2,000 Action minutes/month for public repos).
 # Each review takes ~2-3 minutes of compute time, so the free tier handles
-# ~700-1000 reviews/month.
+# ~700-1000 reviews/month. LLM costs via OpenRouter vary by model choice.
 # =============================================================================
 
 name: AI Peer Review Pipeline
@@ -84,10 +85,10 @@ concurrency:
 #   1. analyze-submission: Handles untrusted content (parsing, novelty check,
 #      cloning submitter repos) with NO sensitive secrets and read-only permissions.
 #   2. review-and-publish: Calls the LLM, posts results, commits files. This job
-#      has GEMINI_API_KEY and write permissions, but never touches submitter content.
+#      has OPENROUTER_API_KEY and write permissions, but never touches submitter content.
 # Data flows from job 1 → job 2 via artifacts (JSON files). This architecture ensures
 # that even if a malicious submitter exploits a bug in stages 1-3, they cannot access
-# GEMINI_API_KEY or gain write access to the repository.
+# OPENROUTER_API_KEY or gain write access to the repository.
 permissions: {}  # Permissions set per-job below
 
 jobs:
@@ -97,7 +98,7 @@ jobs:
   # This job handles all untrusted content: parsing the issue body, searching
   # external APIs, and cloning the submitter's repository. It runs with:
   #   - READ-ONLY permissions (contents: read, issues: read)
-  #   - NO GEMINI_API_KEY (no LLM secrets in scope)
+  #   - NO OPENROUTER_API_KEY (no LLM secrets in scope)
   #   - NO write-capable GITHUB_TOKEN (cannot modify repo or post comments)
   # Even if a malicious submitter exploits a vulnerability (e.g., the symlink
   # attack that B1 fixed), they cannot exfiltrate write tokens or API keys
@@ -224,7 +225,7 @@ jobs:
       # ---------------------------------------------------------------
       # Step 5: Run stages 1-3 (parse, novelty, repo reading)
       # ---------------------------------------------------------------
-      # SECURITY: This step has NO GEMINI_API_KEY. It only has a read-only
+      # SECURITY: This step has NO OPENROUTER_API_KEY. It only has a read-only
       # GITHUB_TOKEN and the optional S2_API_KEY (low-risk, public data).
       # The output is written to stages_1_to_3_output.json and uploaded
       # as an artifact for the second job to consume.
@@ -258,13 +259,13 @@ jobs:
   # JOB 2: REVIEW AND PUBLISH (Stages 4-6)
   # =============================================================================
   # This job runs the LLM review, posts the comment, and publishes accepted papers.
-  # It has full secrets (GEMINI_API_KEY, write-capable GITHUB_TOKEN) but NEVER
+  # It has full secrets (OPENROUTER_API_KEY, write-capable GITHUB_TOKEN) but NEVER
   # checks out or executes any code from the submitter's repository. It only reads
   # the JSON artifact produced by job 1, which contains sanitized, structured data.
   # 
   # SECURITY: Even if a malicious submitter exploited a vulnerability in stages 1-3,
   # the worst they could do is corrupt the JSON artifact. They cannot directly
-  # access GEMINI_API_KEY because it's not in scope during stages 1-3. The JSON
+  # access OPENROUTER_API_KEY because it's not in scope during stages 1-3. The JSON
   # is further scrubbed by secret_scrubber before any output is posted.
   # =============================================================================
   review-and-publish:
@@ -322,13 +323,14 @@ jobs:
       # ---------------------------------------------------------------
       # Step 5: Run stages 4-6 (prompt building, LLM review, publication)
       # ---------------------------------------------------------------
-      # SECURITY: This step has GEMINI_API_KEY and write permissions,
+      # SECURITY: This step has OPENROUTER_API_KEY and write permissions,
       # but it NEVER touches the submitter's repo. It only reads the
       # JSON artifact from job 1.
       # ---------------------------------------------------------------
       - name: Review and publish (stages 4-6)
         env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          PUBROOT_MODEL: ${{ secrets.PUBROOT_MODEL }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           GITHUB_WORKSPACE: ${{ github.workspace }}
