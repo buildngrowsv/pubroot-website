@@ -1,0 +1,119 @@
+# Pruning v1 Report Workflow
+#
+# This workflow generates a REPORT-ONLY pruning analysis for Pubroot papers.
+# It flags candidates for manual review but makes NO changes to papers, issues, or labels.
+#
+# The report identifies:
+# - Near-duplicate papers (high similarity in title/abstract)
+# - Papers with missing review.json files (unreviewed)
+# - Papers past their valid_until date (expired)
+# - Papers with unverifiable badges (verified_private, etc.)
+# - Papers claiming grounding without grounding_metadata
+#
+# Outputs are uploaded as workflow artifacts for manual review by the Pubroot Lead.
+#
+# This workflow is MANUAL-TRIGGER ONLY (workflow_dispatch) and does not run automatically.
+# It is part of the pruning v1 MVP (2026-10-24) and implements the hybrid approach
+# described in pruning.md without any LLM calls or archiving actions.
+
+name: Pruning v1 Report (Report-Only)
+
+on:
+  workflow_dispatch:
+    inputs:
+      use_embeddings:
+        description: 'Use embeddings for duplicate detection (requires sentence-transformers)'
+        required: false
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  generate-pruning-report:
+    name: Generate Pruning Report
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install PyYAML
+          
+          # Install sentence-transformers if embeddings are requested
+          # This is optional - the script falls back to token overlap if not available
+          if [ "${{ github.event.inputs.use_embeddings }}" = "true" ]; then
+            echo "Installing sentence-transformers for embedding-based duplicate detection..."
+            pip install sentence-transformers
+          else
+            echo "Skipping sentence-transformers, will use token overlap fallback"
+          fi
+      
+      - name: Run pruning report script
+        id: pruning
+        run: |
+          echo "Generating pruning report..."
+          python3 scripts/pruning_v1_report.py \
+            --output-json pruning_report.json \
+            --output-md pruning_report.md
+          
+          echo "Report generation complete"
+          
+          # Extract summary statistics for the workflow summary
+          TOTAL_PAPERS=$(python3 -c "import json; print(json.load(open('pruning_report.json'))['report_metadata']['total_papers_scanned'])")
+          TOTAL_FLAGGED=$(python3 -c "import json; print(json.load(open('pruning_report.json'))['report_metadata']['total_flagged'])")
+          
+          echo "total_papers=$TOTAL_PAPERS" >> $GITHUB_OUTPUT
+          echo "total_flagged=$TOTAL_FLAGGED" >> $GITHUB_OUTPUT
+          
+          # Output summary to workflow log
+          echo "📊 Pruning Report Summary"
+          echo "Papers scanned: $TOTAL_PAPERS"
+          echo "Papers flagged: $TOTAL_FLAGGED"
+      
+      - name: Upload JSON report
+        uses: actions/upload-artifact@v4
+        with:
+          name: pruning-report-json
+          path: pruning_report.json
+          retention-days: 90
+      
+      - name: Upload Markdown report
+        uses: actions/upload-artifact@v4
+        with:
+          name: pruning-report-markdown
+          path: pruning_report.md
+          retention-days: 90
+      
+      - name: Display summary
+        run: |
+          echo "## 📊 Pruning v1 Report Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Papers scanned:** ${{ steps.pruning.outputs.total_papers }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Papers flagged:** ${{ steps.pruning.outputs.total_flagged }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📥 Download Reports" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "The pruning reports have been uploaded as workflow artifacts:" >> $GITHUB_STEP_SUMMARY
+          echo "- \`pruning-report-json\` - Structured JSON report for programmatic analysis" >> $GITHUB_STEP_SUMMARY
+          echo "- \`pruning-report-markdown\` - Human-readable Markdown report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### ⚠️ Important Notes" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- This is a **REPORT-ONLY** analysis" >> $GITHUB_STEP_SUMMARY
+          echo "- No papers have been archived, unpublished, or modified" >> $GITHUB_STEP_SUMMARY
+          echo "- No issues have been touched" >> $GITHUB_STEP_SUMMARY
+          echo "- Review the reports and decide on actions manually" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "See \`pruning.md\` for the pruning v1 specification and decision framework." >> $GITHUB_STEP_SUMMARY
