@@ -1,6 +1,9 @@
 ---
 title: "Privacy Policy"
 layout: page
+type: policy
+_build:
+  list: never
 ---
 
 **Effective date:** [date of publication] · **Last updated:** [date]

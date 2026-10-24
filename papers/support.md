@@ -1,6 +1,9 @@
 ---
 title: "Support"
 layout: page
+type: policy
+_build:
+  list: never
 ---
 
 Pubroot is run by Adam King. There are no accounts, so there's nothing to reset. Most questions are answered below.
