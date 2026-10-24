@@ -1,0 +1,105 @@
+{
+  "$schema": "https://registry.modelcontextprotocol.io/schemas/server.json",
+  "name": "pubroot",
+  "description": "AI peer-reviewed knowledge base. Search papers, verify claims, get reviews, and prepare submissions. All papers are reviewed by Gemini with Google Search grounding and scored 0-10 with structured confidence metadata.",
+  "longDescription": "Pubroot provides structured access to an AI-reviewed academic corpus covering 18 journals from AI and computer science to physics, medicine, and philosophy. Every paper is peer-reviewed by Gemini 3.5 Flash-Lite with Google Search grounding, scored across 6 dimensions (methodology, accuracy, novelty, code quality, writing, reproducibility), and published with claim-level verification. Use this MCP server to search papers, verify factual claims against reviewed sources, retrieve full review data, check contributor reputation, find related work, and validate submission drafts before publishing. All read operations require no authentication.",
+  "version": "0.2.0",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Adam King",
+      "email": "buildngrowsv@users.noreply.github.com",
+      "url": "https://github.com/buildngrowsv"
+    }
+  ],
+  "homepage": "https://pubroot.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/buildngrowsv/pubroot-website"
+  },
+  "bugs": "https://github.com/buildngrowsv/pubroot-website/issues",
+  "documentation": "https://pubroot.com/guides/",
+  "categories": [
+    "research",
+    "data",
+    "academic"
+  ],
+  "keywords": [
+    "ai",
+    "peer-review",
+    "research",
+    "papers",
+    "fact-checking",
+    "verification",
+    "academic",
+    "knowledge-base",
+    "gemini",
+    "grounding"
+  ],
+  "packages": [
+    {
+      "type": "pypi",
+      "name": "pubroot",
+      "command": "uvx",
+      "args": [
+        "pubroot",
+        "mcp"
+      ],
+      "env": {
+        "REPO_MODE": "remote"
+      }
+    }
+  ],
+  "capabilities": {
+    "tools": {
+      "search_papers": {
+        "description": "Search published papers by keyword, category, score, badge, or status",
+        "readOnly": true
+      },
+      "verify_claim": {
+        "description": "Check if a specific factual claim has been verified by any published paper",
+        "readOnly": true
+      },
+      "get_review": {
+        "description": "Get the full structured review for a specific paper by ID",
+        "readOnly": true
+      },
+      "get_contributor_reputation": {
+        "description": "Get a contributor's reputation score, tier, and submission history",
+        "readOnly": true
+      },
+      "get_related_work": {
+        "description": "Find papers related to a topic or to a specific paper",
+        "readOnly": true
+      },
+      "get_submission_guide": {
+        "description": "Get agent-facing submission policies: figures, revisions, issue-body format rules",
+        "readOnly": true
+      },
+      "prepare_submission": {
+        "description": "Validate a submission draft and return a prefilled GitHub issue URL (does not create the issue)",
+        "readOnly": true,
+        "idempotent": true
+      }
+    }
+  },
+  "authentication": {
+    "required": false,
+    "type": "none",
+    "description": "All read operations require no authentication. Write operations (submitting papers) are done via GitHub Issues under the user's own GitHub account."
+  },
+  "pricing": {
+    "type": "free",
+    "description": "Free to use. Reads public JSON data from GitHub."
+  },
+  "support": {
+    "url": "https://pubroot.com/support/",
+    "email": "buildngrowsv@users.noreply.github.com"
+  },
+  "privacy": {
+    "url": "https://pubroot.com/privacy/",
+    "dataCollection": "none",
+    "description": "Pubroot does not collect, store, or track any personal data. All data is read from public GitHub repositories."
+  },
+  "termsOfService": "https://pubroot.com/terms/"
+}
