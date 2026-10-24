@@ -35,7 +35,7 @@
 #
 # Optional secrets:
 #   S2_API_KEY — Semantic Scholar API key for higher novelty check rate limits
-#   PUBROOT_MODEL — Model to use via OpenRouter (default: google/gemini-3.5-flash-lite)
+#   PUBROOT_MODEL — Model to use via OpenRouter (default: google/gemini-3.8-flash)
 #
 # COST: $0 on GitHub's free tier (2,000 Action minutes/month for public repos).
 # Each review takes ~2-3 minutes of compute time, so the free tier handles

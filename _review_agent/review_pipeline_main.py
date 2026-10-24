@@ -88,7 +88,7 @@ def run_review_pipeline(issue_number: int) -> dict:
     # -----------------------------------------------------------------------
     
     openrouter_api_key = os.environ.get("OPENROUTER_API_KEY", "")
-    model_name = os.environ.get("PUBROOT_MODEL", "google/gemini-3.5-flash-lite")
+    model_name = os.environ.get("PUBROOT_MODEL", "google/gemini-3.8-flash")
     github_token = os.environ.get("GITHUB_TOKEN", "")
     github_repo = os.environ.get("GITHUB_REPOSITORY", "")  # "owner/repo"
     s2_api_key = os.environ.get("S2_API_KEY", "")

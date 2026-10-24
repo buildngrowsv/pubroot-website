@@ -19,11 +19,11 @@ EXTERNAL APIS USED:
     - API key stored as GitHub Secret: OPENROUTER_API_KEY
     - Web search via openrouter:web_search server tool (default engine: auto)
 
-COST (using default google/gemini-3.5-flash-lite):
-    - Prompt: ~$0.30 per 1M tokens
-    - Completion: ~$2.50 per 1M tokens
+COST (using default google/gemini-3.8-flash):
+    - Prompt: ~$0.825 per 1M tokens
+    - Completion: ~$4.125 per 1M tokens
     - Web search: Additional cost per search (varies by engine, typically $0.005-0.01 per search)
-    - Estimated per review: ~$0.02-0.05 depending on prompt size and web search usage
+    - Estimated per review: ~$0.04-0.08 depending on prompt size and web search usage
 
 DESIGN DECISIONS:
     - We use the OpenAI Python SDK configured for OpenRouter's base URL.
@@ -54,7 +54,7 @@ from typing import Optional
 def run_openrouter_review(
     review_prompt: str,
     openrouter_api_key: str,
-    model_name: str = "google/gemini-3.5-flash-lite",
+    model_name: str = "google/gemini-3.8-flash",
     max_retries: int = 2
 ) -> dict:
     """
@@ -67,8 +67,9 @@ def run_openrouter_review(
     Args:
         review_prompt: The complete prompt string from Stage 4
         openrouter_api_key: The OpenRouter API key (from OPENROUTER_API_KEY secret)
-        model_name: The model to use via OpenRouter. Default is google/gemini-3.5-flash-lite.
+        model_name: The model to use via OpenRouter. Default is google/gemini-3.8-flash.
                     Can be overridden via PUBROOT_MODEL env var or parameter.
+                    Tested alternatives: meta/muse-spark-1.3-contributor, openai/gpt-6-luna
         max_retries: Number of times to retry on failure. Default 2 (total 2 attempts).
     
     Returns:

@@ -73,7 +73,7 @@ Every submission passes through these stages sequentially. Each stage is its own
 
 ### Credits — which AI does what
 
-- **Automated peer review (production):** every scored review is produced by **Gemini 3.5 Flash Lite** via **OpenRouter** with **web search grounding** (see Stage 5 in the table above). That is the model shown in `review.json` and on issue comments. The model is configurable.
+- **Automated peer review (production):** every scored review is produced by **Gemini 3.8 Flash** via **OpenRouter** with **web search grounding** (see Stage 5 in the table above). That is the model shown in `review.json` and on issue comments. The model is configurable via `PUBROOT_MODEL` environment variable. Tested alternatives include `meta/muse-spark-1.3-contributor` and `openai/gpt-6-luna`.
 - **Repository & tooling development:** parts of this codebase—including review automation, GitHub Actions, and site pipeline—were developed with **Composer 2** in the **Cursor** editor (agentic coding). That is **not** the same as the review step; Composer 2 in Cursor helped author and maintain the software that invokes the LLM via OpenRouter.
 
 
@@ -334,24 +334,36 @@ Everything runs on **GitHub's free tier** — zero servers, zero databases, zero
 | **GitHub Actions** | Review pipeline compute + site builds | Free (public repo) |
 | **GitHub Pages** | Static frontend at pubroot.com | Free |
 | **GitHub Repo** | Database (papers, reviews, config, index) | Free |
-| **OpenRouter (Gemini 3.5 Flash Lite)** | LLM review + web search grounding | ~$0.02-0.05 per review (see below) |
+| **OpenRouter (Gemini 3.8 Flash)** | LLM review + web search grounding | ~$0.04-0.08 per review (see below) |
 | **arXiv API** | Academic novelty detection | Free |
 | **Semantic Scholar API** | Citation-aware literature search | Free |
 
 ### Cost Model
 
-Using default model `google/gemini-3.5-flash-lite` via OpenRouter:
-- Prompt tokens: ~$0.30 per 1M tokens
-- Completion tokens: ~$2.50 per 1M tokens  
+Using default model `google/gemini-3.8-flash` via OpenRouter:
+- Prompt tokens: ~$0.825 per 1M tokens
+- Completion tokens: ~$4.125 per 1M tokens  
 - Web search: ~$0.005-0.01 per search
 
 | Volume | LLM + Search | GitHub | Hosting | **Total** |
 |--------|--------------|--------|---------|-----------|
-| 100 reviews/mo | ~$2-5 | $0 | $0 | **~$2-5/mo** |
-| 1,000 reviews/mo | ~$20-50 | $0 | $0 | **~$20-50/mo** |
-| 10,000 reviews/mo | ~$200-500 | $0 | $0 | **~$200-500/mo** |
+| 100 reviews/mo | ~$4-8 | $0 | $0 | **~$4-8/mo** |
+| 1,000 reviews/mo | ~$40-80 | $0 | $0 | **~$40-80/mo** |
+| 10,000 reviews/mo | ~$400-800 | $0 | $0 | **~$400-800/mo** |
 
-Cost per review: ~$0.02-0.05 depending on prompt size, review length, and web search usage.
+Cost per review: ~$0.04-0.08 depending on prompt size, review length, and web search usage.
+
+### Alternative Models
+
+The model can be configured via `PUBROOT_MODEL` environment variable. Tested alternatives:
+
+| Model | Provider | Cost (prompt/completion per 1M) | Notes |
+|-------|----------|--------------------------------|-------|
+| `google/gemini-3.8-flash` | Google | $0.825 / $4.125 | **Default** — Fast, high quality, tool support |
+| `meta/muse-spark-1.3-contributor` | Meta | Varies | Tested alternative, good for creative reviews |
+| `openai/gpt-6-luna` | OpenAI | Varies | Tested alternative, strong reasoning |
+
+All models support the `openrouter:web_search` server tool. The search engine defaults to `auto`, which uses Google Search for Gemini models and Exa for others.
 
 ---
 
@@ -361,7 +373,7 @@ Cost per review: ~$0.02-0.05 depending on prompt size, review length, and web se
 |-------|-----------|-----|
 | **Frontend** | Hugo + GitHub Pages + Pagefind | Zero-cost static site with client-side search |
 | **Review Engine** | Python 3.12 in GitHub Actions | 6 modular stages, each in its own file |
-| **AI Model** | Gemini 3.5 Flash Lite via OpenRouter + web search | Configurable model, web search grounding, low cost |
+| **AI Model** | Gemini 3.8 Flash via OpenRouter + web search | Configurable model (PUBROOT_MODEL), web search grounding |
 | **Data Store** | Git repository | Papers, reviews, config = version-controlled files |
 | **Agent Interface** | MCP server + A2A Agent Card + REST | Model Context Protocol for deep agent integration |
 | **Novelty Check** | arXiv API + Semantic Scholar API | Free academic database search |
