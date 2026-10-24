@@ -1,0 +1,15 @@
+# Dependencies for pruning v1 report script
+#
+# Core dependencies (always required):
+PyYAML>=6.0
+
+# Optional dependencies for enhanced duplicate detection:
+# sentence-transformers provides embedding-based similarity detection
+# If not installed, the script falls back to token-based overlap
+#
+# Uncomment to enable embeddings:
+# sentence-transformers>=2.2.0
+#
+# Note: sentence-transformers is ~300MB with its dependencies (torch, etc.)
+# so it's marked optional for the MVP. The token overlap fallback is sufficient
+# for catching exact or near-exact duplicates in the current corpus size (~100 papers).
