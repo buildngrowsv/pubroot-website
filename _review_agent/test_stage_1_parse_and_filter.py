@@ -693,6 +693,42 @@ In summary, our method outperforms the baseline. We recommend further investigat
 # ---------------------------------------------------------------------------
 
 
+class TestAIToolingAttributionParsing:
+    """Test that both forms of AI tooling attribution header are accepted."""
+
+    def test_ai_tooling_with_optional_in_parens(self, repo_root):
+        """The standard form 'AI / Tooling Attribution (optional)' should be parsed."""
+        issue_body = _build_issue_body(ai_tooling="Claude 4, Cursor")
+        result = parse_and_filter_submission(issue_body, repo_root, "author")
+
+        assert result["valid"] is True
+        assert result["parsed"]["ai_tooling_attribution"] == "Claude 4, Cursor"
+
+    def test_ai_tooling_without_optional_suffix(self, repo_root):
+        """The form 'AI / Tooling Attribution' (without '(optional)') should also be parsed."""
+        # Build an issue body with the header without "(optional)"
+        body_parts = _build_issue_body(ai_tooling="GPT-4, GitHub Copilot").split("\n")
+        # Replace the header line
+        for i, line in enumerate(body_parts):
+            if line == "### AI / Tooling Attribution (optional)":
+                body_parts[i] = "### AI / Tooling Attribution"
+                break
+        issue_body = "\n".join(body_parts)
+        
+        result = parse_and_filter_submission(issue_body, repo_root, "author")
+
+        assert result["valid"] is True
+        assert result["parsed"]["ai_tooling_attribution"] == "GPT-4, GitHub Copilot"
+
+    def test_ai_tooling_empty_both_forms(self, repo_root):
+        """Empty or missing AI tooling attribution should be handled gracefully."""
+        issue_body = _build_issue_body(ai_tooling="")
+        result = parse_and_filter_submission(issue_body, repo_root, "author")
+
+        assert result["valid"] is True
+        assert result["parsed"]["ai_tooling_attribution"] is None
+
+
 class TestFormParserRobustness:
     """Stress-test the form field parser with malformed and adversarial inputs."""
 
