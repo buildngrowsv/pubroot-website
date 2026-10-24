@@ -131,13 +131,21 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh label create "publish-failed" --color "d73a4a" --description "Review passed; git publish step failed — safe to retry" 2>/dev/null || true
+          gh label create "approved-for-review" --color "0e8a16" --description "Maintainer-approved submission ready for AI review" 2>/dev/null || true
+          gh label create "editorial-hold" --color "b60205" --description "Submission on hold pending editorial decision" 2>/dev/null || true
 
       # ---------------------------------------------------------------
-      # Step 4: Determine which issue to process
+      # Step 4: Determine which issue to process (with gating)
       # ---------------------------------------------------------------
       # For issue:opened triggers, use the event payload issue number.
       # For cron triggers, find the highest-priority unprocessed issue.
       # For manual dispatch, use the provided issue number.
+      # 
+      # GATING: Issues are only processed if:
+      # 1. Author is a repo collaborator, OR
+      # 2. Author is on the allowlist (.github/REVIEW_ALLOWLIST.txt), OR
+      # 3. Issue has `approved-for-review` label (applied by maintainer)
+      # Issues with `editorial-hold` label are always skipped.
       # ---------------------------------------------------------------
       - name: Determine issue number
         id: get-issue
@@ -178,6 +186,43 @@ jobs:
             fi
 
             if [ -z "$ISSUE" ]; then
+              # FIX FOR BUG B2: Find unreviewed [SUBMISSION] issues idempotently.
+              # These are issues that have the submission label (or [SUBMISSION] title)
+              # but no bot review comment, which happens when a run was cancelled
+              # before stage 0 could assign a priority label.
+              # 
+              # GATING ADDITION: Also exclude issues with editorial-hold label,
+              # and only process issues that pass the approval gate.
+              CANDIDATES=$(gh issue list \
+                --repo "$GITHUB_REPOSITORY" \
+                --state open \
+                --label "submission" \
+                --json number,labels \
+                --jq 'map(select(.labels | map(.name) | (contains(["accepted"]) or contains(["rejected"]) or contains(["validation-failed"]) or contains(["publish-failed"]) or contains(["review-error"]) or contains(["editorial-hold"])) | not)) | .[].number' \
+                2>/dev/null || true)
+              
+              for CANDIDATE in $CANDIDATES; do
+                # Check gating first (no secrets in scope yet)
+                python _review_agent/author_gating.py check "$CANDIDATE" >/dev/null 2>&1
+                if [ $? -ne 0 ]; then
+                  echo "  Issue #$CANDIDATE gated (needs approval)"
+                  continue
+                fi
+                
+                # Check if this issue has a bot review comment
+                HAS_REVIEW=$(gh api repos/"$GITHUB_REPOSITORY"/issues/"$CANDIDATE"/comments \
+                  --jq 'map(select(.user.login == "github-actions[bot]" and (.body | contains("# AI Peer Review") or contains("Submission Validation Failed")))) | length' \
+                  2>/dev/null || echo "0")
+                
+                if [ "$HAS_REVIEW" = "0" ]; then
+                  ISSUE="$CANDIDATE"
+                  echo "  Found approved unreviewed issue: #$CANDIDATE"
+                  break
+                fi
+              done
+            fi
+
+            if [ -z "$ISSUE" ]; then
               ISSUE=$(gh issue list \
                 --repo "$GITHUB_REPOSITORY" \
                 --state open \
@@ -196,12 +241,57 @@ jobs:
           fi
 
       # ---------------------------------------------------------------
-      # Step 5: Run the review pipeline
+      # Step 5: Check author approval gate
       # ---------------------------------------------------------------
-      # Only runs if we have an issue number to process.
+      # Verifies the issue author is approved before running the review.
+      # This step runs WITHOUT secrets in scope to prevent untrusted code
+      # from accessing GEMINI_API_KEY or S2_API_KEY.
+      # ---------------------------------------------------------------
+      - name: Check author approval
+        if: steps.get-issue.outputs.issue_number != ''
+        id: check-approval
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_WORKSPACE: ${{ github.workspace }}
+        run: |
+          ISSUE_NUM="${{ steps.get-issue.outputs.issue_number }}"
+          echo "Checking approval for issue #$ISSUE_NUM..."
+          
+          python _review_agent/author_gating.py check "$ISSUE_NUM" > /tmp/approval.txt 2>&1
+          EXIT_CODE=$?
+          
+          cat /tmp/approval.txt
+          
+          if [ $EXIT_CODE -eq 0 ]; then
+            echo "approved=true" >> $GITHUB_OUTPUT
+          else
+            echo "approved=false" >> $GITHUB_OUTPUT
+            
+            # Post a comment explaining why the issue is gated
+            REASON=$(grep "Reason:" /tmp/approval.txt | cut -d: -f2- | xargs)
+            AUTHOR=$(grep "Author:" /tmp/approval.txt | cut -d: -f2- | xargs)
+            
+            gh issue comment "$ISSUE_NUM" --body "⏸️ **Review Pending Approval**
+
+This submission from @$AUTHOR requires maintainer approval before AI review can proceed.
+
+**Reason**: $REASON
+
+A maintainer with write access can approve this submission by adding the \`approved-for-review\` label. To prevent spam and abuse, first-time contributors and non-collaborators require manual approval.
+
+If this is a duplicate, spam, or off-topic submission, a maintainer can close it without review." || true
+          fi
+
+      # ---------------------------------------------------------------
+      # Step 6: Run the review pipeline
+      # ---------------------------------------------------------------
+      # Only runs if we have an issue number AND it passed the approval gate.
+      # Secrets (GEMINI_API_KEY, S2_API_KEY) are ONLY in scope for this step,
+      # after the approval check has passed.
       # ---------------------------------------------------------------
       - name: Run review pipeline
-        if: steps.get-issue.outputs.issue_number != ''
+        if: steps.get-issue.outputs.issue_number != '' && steps.check-approval.outputs.approved == 'true'
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
