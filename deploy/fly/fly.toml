@@ -1,0 +1,111 @@
+# Fly.io configuration for Pubroot MCP Server
+#
+# This deploys the MCP server as a hosted HTTP endpoint at mcp.pubroot.com
+#
+# IMPORTANT: Do NOT run `fly deploy` from this file yet. This is prepared
+# for when Adam approves the hosted deployment (after B0 merges).
+#
+# Setup steps (when ready):
+#   1. fly auth login
+#   2. fly apps create pubroot-mcp --org <your-org>
+#   3. Set secrets: none needed (reads public data only)
+#   4. fly deploy --config deploy/fly/fly.toml
+#   5. Add DNS: mcp.pubroot.com CNAME <app>.fly.dev
+#   6. fly certs create mcp.pubroot.com
+#
+# Estimated cost: Free tier (1 shared-cpu-1x, 256MB) or ~$5/month (dedicated-cpu-1x)
+
+app = "pubroot-mcp"  # Change to your Fly app name
+primary_region = "ord"  # Chicago - close to Pubroot operator
+
+# Kill signal and grace period
+kill_signal = "SIGINT"
+kill_timeout = "5s"
+
+[build]
+  dockerfile = "../../Dockerfile"
+
+[env]
+  # Data source configuration
+  REPO_MODE = "remote"
+  PUBROOT_BASE = "https://pubroot.com"
+  GITHUB_REPO = "buildngrowsv/pubroot-website"
+  
+  # Caching configuration
+  CACHE_TTL_SECONDS = "600"  # 10 minutes
+  STALE_IF_ERROR_SECONDS = "86400"  # 24 hours
+  
+  # Rate limiting (per IP, per minute)
+  RATE_LIMIT_GENERAL = "60"
+  RATE_LIMIT_PREPARE = "10"
+  
+  # HTTP server configuration
+  HTTP_MODE = "1"
+  HTTP_HOST = "0.0.0.0"
+  HTTP_PORT = "8080"
+  LOG_LEVEL = "INFO"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = false  # Keep running for availability
+  auto_start_machines = true
+  min_machines_running = 1
+  
+  # Health check configuration
+  [http_service.checks]
+    [http_service.checks.mcp_health]
+      grace_period = "5s"
+      interval = "30s"
+      method = "GET"
+      timeout = "5s"
+      path = "/healthz"
+
+[[services]]
+  protocol = "tcp"
+  internal_port = 8080
+  
+  [[services.ports]]
+    port = 80
+    handlers = ["http"]
+    
+    # Redirect HTTP to HTTPS
+    [services.ports.http_options]
+      response = {status = 301, headers = {Location = "https://$host$request_uri"}}
+  
+  [[services.ports]]
+    port = 443
+    handlers = ["http", "tls"]
+  
+  # TCP health check
+  [[services.tcp_checks]]
+    grace_period = "5s"
+    interval = "30s"
+    restart_limit = 0
+    timeout = "5s"
+  
+  # HTTP health check
+  [[services.http_checks]]
+    interval = "30s"
+    grace_period = "5s"
+    method = "GET"
+    path = "/healthz"
+    protocol = "http"
+    restart_limit = 0
+    timeout = "5s"
+
+# VM resources
+# Start with free tier (shared-cpu-1x, 256MB)
+# Scale up if needed: fly scale vm dedicated-cpu-1x --memory 512
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "256mb"
+
+# No secrets needed - reads public data only
+# If you add secrets later:
+#   fly secrets set SECRET_NAME=value
+
+# Metrics and monitoring
+[metrics]
+  port = 9091
+  path = "/metrics"

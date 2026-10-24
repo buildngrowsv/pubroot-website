@@ -50,6 +50,16 @@
       }
     }
   ],
+  "remotes": [
+    {
+      "url": "https://mcp.pubroot.com/mcp",
+      "transport": "streamable-http",
+      "description": "Hosted Pubroot MCP endpoint (read-only, rate-limited)",
+      "authentication": {
+        "type": "none"
+      }
+    }
+  ],
   "capabilities": {
     "tools": {
       "search_papers": {

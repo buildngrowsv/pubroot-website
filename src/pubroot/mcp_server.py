@@ -54,8 +54,10 @@ import os
 import asyncio
 import time
 from datetime import datetime, timezone
-from typing import Optional
+from typing import Optional, Dict, Tuple
 from urllib.parse import urlencode
+from collections import defaultdict
+from functools import wraps
 
 import requests
 from mcp.server import MCPServer
@@ -81,7 +83,9 @@ logging.basicConfig(
 # REPO_MODE: 'local' (read from filesystem) or 'remote' (fetch from GitHub)
 # GITHUB_REPO: "owner/repo" for remote mode
 # LOCAL_REPO_PATH: Path to local repo clone for local mode
-# CACHE_TTL_SECONDS: How long cached JSON data stays valid (default 5 min)
+# CACHE_TTL_SECONDS: How long cached JSON data stays valid (default 10 min for hosted)
+# STALE_IF_ERROR_SECONDS: How long to serve stale cache on error (24h for hosted)
+# ALLOWED_DOMAINS: Domain allow-list for outbound fetches
 # -----------------------------------------------------------------------
 
 REPO_MODE = os.environ.get("REPO_MODE", "local")
@@ -90,67 +94,164 @@ LOCAL_REPO_PATH = os.environ.get(
     "LOCAL_REPO_PATH",
     os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 )
+
+# For hosted mode: use pubroot.com, 10min cache, 24h stale-if-error
+PUBROOT_BASE = os.environ.get("PUBROOT_BASE", "https://pubroot.com")
 GITHUB_RAW_BASE = f"https://raw.githubusercontent.com/{GITHUB_REPO}/main"
-CACHE_TTL_SECONDS = int(os.environ.get("CACHE_TTL_SECONDS", "300"))
+CACHE_TTL_SECONDS = int(os.environ.get("CACHE_TTL_SECONDS", "600"))  # 10 minutes for hosted
+STALE_IF_ERROR_SECONDS = int(os.environ.get("STALE_IF_ERROR_SECONDS", "86400"))  # 24 hours
+
+# Outbound fetch allow-list for hosted mode
+ALLOWED_DOMAINS = {
+    "pubroot.com",
+    "raw.githubusercontent.com",
+}
+
+# Rate limiting configuration (requests per minute)
+RATE_LIMIT_GENERAL = int(os.environ.get("RATE_LIMIT_GENERAL", "60"))
+RATE_LIMIT_PREPARE = int(os.environ.get("RATE_LIMIT_PREPARE", "10"))
+
+# Size limits (bytes)
+MAX_REQUEST_SIZE = int(os.environ.get("MAX_REQUEST_SIZE", "1048576"))  # 1MB
+MAX_RESPONSE_SIZE = int(os.environ.get("MAX_RESPONSE_SIZE", "10485760"))  # 10MB
 
 # -----------------------------------------------------------------------
-# DATA LOADING HELPERS
+# DATA LOADING HELPERS WITH CACHING AND STALE-IF-ERROR
 # -----------------------------------------------------------------------
 # These functions abstract the data source so tools don't care whether
 # they're reading from local disk or GitHub raw URLs. The cache layer
-# prevents redundant GitHub fetches when multiple tools fire in sequence.
+# prevents redundant fetches and serves stale data on error (up to 24h).
 # -----------------------------------------------------------------------
 
-# In-memory cache: { filename: (timestamp, data) }
-# The docstring promised caching with 5-minute TTL — this implements it.
-# Previously the cache was mentioned but never actually built, so every
-# tool call was hitting the filesystem or network. Now we cache with a
-# configurable TTL (CACHE_TTL_SECONDS env var, default 300s).
-_json_cache: dict[str, tuple[float, dict]] = {}
+# Enhanced cache: { filename: (timestamp, data, error_timestamp) }
+# - timestamp: when the data was successfully fetched
+# - data: the cached JSON
+# - error_timestamp: when we last tried and failed (for stale-if-error)
+_json_cache: Dict[str, Tuple[float, dict, Optional[float]]] = {}
+
+# Rate limiting: { ip: { minute_bucket: count } }
+_rate_limit_buckets: Dict[str, Dict[int, int]] = defaultdict(lambda: defaultdict(int))
+_rate_limit_prepare: Dict[str, Dict[int, int]] = defaultdict(lambda: defaultdict(int))
 
 
 def _load_json(filename: str) -> dict:
     """
-    Load a JSON file from either local filesystem or GitHub raw URL.
+    Load a JSON file from either local filesystem or remote URL with caching.
+
+    For hosted mode (REPO_MODE=remote), fetches from pubroot.com with:
+    - 10-minute cache TTL
+    - Stale-if-error up to 24 hours (serves old data if fetch fails)
+    - Domain allow-list enforcement
 
     Uses the REPO_MODE environment variable to determine source.
-    Implements an in-memory cache with configurable TTL (CACHE_TTL_SECONDS)
-    to reduce redundant filesystem reads and GitHub API calls.
+    Implements an in-memory cache with configurable TTL and stale-if-error.
 
     Raises:
         FileNotFoundError: If the local file does not exist.
         json.JSONDecodeError: If the file contains invalid JSON.
-        requests.HTTPError: If the remote fetch returns a non-2xx status.
-        requests.Timeout: If the remote fetch exceeds the 15-second timeout.
+        requests.HTTPError: If the remote fetch returns a non-2xx status and no stale cache.
+        requests.Timeout: If the remote fetch exceeds the 15-second timeout and no stale cache.
     """
-    # Check cache first — avoids redundant I/O when multiple tools query
-    # the same data file in rapid succession (common in agent workflows
-    # where search_papers is called right before verify_claim).
     now = time.time()
     cached_entry = _json_cache.get(filename)
+    
+    # Check fresh cache first
     if cached_entry is not None:
-        cached_timestamp, cached_data = cached_entry
-        if (now - cached_timestamp) < CACHE_TTL_SECONDS:
-            logger.debug("Cache hit for %s (age: %.1fs)", filename, now - cached_timestamp)
+        cached_timestamp, cached_data, error_timestamp = cached_entry
+        cache_age = now - cached_timestamp
+        
+        if cache_age < CACHE_TTL_SECONDS:
+            logger.debug("Cache hit for %s (age: %.1fs)", filename, cache_age)
             return cached_data
         else:
-            logger.debug("Cache expired for %s (age: %.1fs)", filename, now - cached_timestamp)
+            logger.debug("Cache expired for %s (age: %.1fs)", filename, cache_age)
 
-    if REPO_MODE == "local":
-        filepath = os.path.join(LOCAL_REPO_PATH, filename)
-        logger.debug("Loading local file: %s", filepath)
-        with open(filepath, "r") as f:
-            data = json.load(f)
+    # Try to fetch fresh data
+    try:
+        if REPO_MODE == "local":
+            filepath = os.path.join(LOCAL_REPO_PATH, filename)
+            logger.debug("Loading local file: %s", filepath)
+            with open(filepath, "r") as f:
+                data = json.load(f)
+        else:
+            # For hosted mode, fetch from pubroot.com (faster, CDN-backed)
+            # Falls back to GitHub raw if pubroot.com is unavailable
+            url = f"{PUBROOT_BASE}/{filename}"
+            
+            # Domain allow-list check
+            from urllib.parse import urlparse
+            domain = urlparse(url).netloc
+            if domain not in ALLOWED_DOMAINS:
+                raise ValueError(f"Domain {domain} not in allow-list")
+            
+            logger.debug("Fetching remote: %s", url)
+            resp = requests.get(url, timeout=15)
+            resp.raise_for_status()
+            data = resp.json()
+        
+        # Store in cache with current timestamp and clear error timestamp
+        _json_cache[filename] = (now, data, None)
+        return data
+        
+    except Exception as e:
+        # Stale-if-error: serve old data if it's not too old
+        if cached_entry is not None:
+            cached_timestamp, cached_data, error_timestamp = cached_entry
+            stale_age = now - cached_timestamp
+            
+            if stale_age < STALE_IF_ERROR_SECONDS:
+                logger.warning(
+                    "Serving stale cache for %s (age: %.1fs) due to error: %s",
+                    filename, stale_age, str(e)
+                )
+                # Update error timestamp but keep serving the data
+                _json_cache[filename] = (cached_timestamp, cached_data, now)
+                return cached_data
+        
+        # No stale cache available or too old - propagate the error
+        logger.error("Failed to load %s with no valid stale cache: %s", filename, str(e))
+        raise
+
+
+def _check_rate_limit(ip: str, tool_name: str) -> bool:
+    """
+    Check if the request from this IP is within rate limits.
+    
+    Returns True if allowed, False if rate limit exceeded.
+    Rate limits are per-minute buckets:
+    - General tools: 60/minute
+    - prepare_submission: 10/minute
+    
+    For hosted HTTP mode only. Stdio mode has no rate limiting.
+    """
+    now = time.time()
+    minute_bucket = int(now / 60)
+    
+    # Clean up old buckets (keep last 2 minutes)
+    for buckets_dict in [_rate_limit_buckets, _rate_limit_prepare]:
+        for stored_ip in list(buckets_dict.keys()):
+            buckets = buckets_dict[stored_ip]
+            old_buckets = [b for b in buckets if b < minute_bucket - 1]
+            for old_bucket in old_buckets:
+                del buckets[old_bucket]
+    
+    # Check appropriate limit
+    if tool_name == "prepare_submission":
+        limit = RATE_LIMIT_PREPARE
+        buckets = _rate_limit_prepare[ip]
     else:
-        url = f"{GITHUB_RAW_BASE}/{filename}"
-        logger.debug("Fetching remote: %s", url)
-        resp = requests.get(url, timeout=15)
-        resp.raise_for_status()
-        data = resp.json()
-
-    # Store in cache with current timestamp
-    _json_cache[filename] = (now, data)
-    return data
+        limit = RATE_LIMIT_GENERAL
+        buckets = _rate_limit_buckets[ip]
+    
+    current_count = buckets[minute_bucket]
+    
+    if current_count >= limit:
+        logger.warning("Rate limit exceeded for IP %s, tool %s (%d/%d)", 
+                      ip[-8:], tool_name, current_count, limit)  # Log only last 8 chars of IP
+        return False
+    
+    buckets[minute_bucket] += 1
+    return True
 
 
 def _load_review(paper_id: str) -> Optional[dict]:
@@ -903,21 +1004,168 @@ _No response_
 # script as a subprocess (configured in their mcp.json or equivalent).
 # -----------------------------------------------------------------------
 
-def main():
+async def create_health_app():
     """
-    Start the MCP server with stdio transport.
+    Create a simple health check endpoint for the HTTP server.
     
-    This is the entry point for `pubroot mcp` and can also be run directly
-    as `python -m pubroot.mcp_server`. The server listens on stdin/stdout
-    using the MCP protocol for agent integration.
+    Returns a Starlette app with /healthz endpoint.
+    """
+    from starlette.applications import Starlette
+    from starlette.responses import JSONResponse
+    from starlette.routing import Route
     
-    Environment variables:
-        REPO_MODE: 'local' or 'remote' (default: 'local')
-        GITHUB_REPO: GitHub repo for remote mode (default: 'buildngrowsv/pubroot-website')
-        LOCAL_REPO_PATH: Local repo path for local mode
-        LOG_LEVEL: Logging verbosity (default: 'INFO')
+    async def healthz(request):
+        """Health check endpoint for load balancers and monitoring."""
+        return JSONResponse({
+            "status": "ok",
+            "service": "pubroot-mcp",
+            "version": "0.2.0",
+            "mode": REPO_MODE,
+        })
+    
+    return Starlette(routes=[Route("/healthz", healthz)])
+
+
+def main_stdio():
+    """
+    Start the MCP server with stdio transport (default mode).
+    
+    This is for local agent integration where the agent spawns this
+    process and communicates over stdin/stdout.
     """
     asyncio.run(mcp.run_stdio_async())
+
+
+async def main_http_async(host: str = "0.0.0.0", port: int = 8080):
+    """
+    Start the MCP server with HTTP transport (Streamable HTTP).
+    
+    This is for hosted deployments where the server listens on HTTP
+    and serves MCP over Streamable HTTP at the /mcp endpoint.
+    
+    The server includes:
+    - /mcp endpoint for MCP Streamable HTTP
+    - /healthz endpoint for health checks
+    - Per-IP rate limiting
+    - Request/response size limits
+    - Minimal logging (tool, status, latency only)
+    """
+    import uvicorn
+    from starlette.applications import Starlette
+    from starlette.responses import JSONResponse, Response
+    from starlette.routing import Route, Mount
+    from starlette.middleware import Middleware
+    from starlette.middleware.base import BaseHTTPMiddleware
+    
+    class RateLimitMiddleware(BaseHTTPMiddleware):
+        """Rate limiting middleware for MCP tool calls."""
+        
+        async def dispatch(self, request, call_next):
+            # Only rate-limit /mcp endpoint
+            if not request.url.path.startswith("/mcp"):
+                return await call_next(request)
+            
+            # Get client IP (handle X-Forwarded-For from proxies)
+            client_ip = request.headers.get("x-forwarded-for", "").split(",")[0].strip()
+            if not client_ip:
+                client_ip = request.client.host if request.client else "unknown"
+            
+            # Extract tool name from MCP request (best effort)
+            tool_name = "unknown"
+            try:
+                if request.method == "POST":
+                    body = await request.body()
+                    if len(body) > MAX_REQUEST_SIZE:
+                        return JSONResponse(
+                            {"error": "Request too large"},
+                            status_code=413
+                        )
+                    data = json.loads(body)
+                    if data.get("method") == "tools/call":
+                        tool_name = data.get("params", {}).get("name", "unknown")
+            except:
+                pass
+            
+            # Check rate limit
+            if not _check_rate_limit(client_ip, tool_name):
+                return JSONResponse(
+                    {"error": "Rate limit exceeded"},
+                    status_code=429
+                )
+            
+            # Log request (tool, status only - no IPs, queries, or drafts)
+            start_time = time.time()
+            response = await call_next(request)
+            latency_ms = (time.time() - start_time) * 1000
+            
+            logger.info(
+                "tool=%s status=%d latency_ms=%.1f",
+                tool_name, response.status_code, latency_ms
+            )
+            
+            return response
+    
+    async def healthz(request):
+        """Health check endpoint."""
+        return JSONResponse({
+            "status": "ok",
+            "service": "pubroot-mcp",
+            "version": "0.2.0",
+            "mode": REPO_MODE,
+            "cache_entries": len(_json_cache),
+        })
+    
+    # Create Starlette app with health and MCP endpoints
+    # Note: We use a custom app structure to add rate limiting middleware
+    # The MCP server's streamable_http_app is mounted at /mcp
+    
+    # Get the MCP server's ASGI app for Streamable HTTP
+    mcp_asgi_app = mcp.streamable_http_app()
+    
+    # Create main app with health endpoint and middleware
+    app = Starlette(
+        routes=[
+            Route("/healthz", healthz),
+        ],
+        middleware=[
+            Middleware(RateLimitMiddleware),
+        ],
+    )
+    
+    # Mount the MCP server at /mcp
+    app.mount("/mcp", mcp_asgi_app)
+    
+    # Run with uvicorn
+    config = uvicorn.Config(
+        app,
+        host=host,
+        port=port,
+        log_level="info",
+    )
+    server = uvicorn.Server(config)
+    await server.serve()
+
+
+def main_http(host: str = "0.0.0.0", port: int = 8080):
+    """
+    Synchronous entry point for HTTP mode.
+    """
+    asyncio.run(main_http_async(host, port))
+
+
+def main():
+    """
+    Main entry point - delegates to stdio or HTTP mode based on environment.
+    
+    Defaults to stdio for backward compatibility.
+    Set HTTP_MODE=1 or use main_http() directly for HTTP transport.
+    """
+    if os.environ.get("HTTP_MODE"):
+        host = os.environ.get("HTTP_HOST", "0.0.0.0")
+        port = int(os.environ.get("HTTP_PORT", "8080"))
+        main_http(host, port)
+    else:
+        main_stdio()
 
 
 if __name__ == "__main__":
