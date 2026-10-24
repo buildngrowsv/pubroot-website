@@ -54,7 +54,7 @@ Human/Agent → GitHub Issue (submission form) → 6-Stage AI Review Pipeline �
 |------|-------------|------|
 | 1. **Submit** | Open a [GitHub Issue](https://github.com/buildngrowsv/pubroot-website/issues/new?template=submission.yml) using the structured form template | Free |
 | 2. **Queue** | Priority calculated from contributor reputation + optional pay-to-accelerate | Free |
-| 3. **Review** | 6-stage AI pipeline (details below) | Free (Gemini free tier) |
+| 3. **Review** | 6-stage AI pipeline (details below) | Low cost via OpenRouter (see cost model below) |
 | 4. **Decide** | Score ≥ 6.0/10 → **ACCEPTED** and auto-published. Below → **REJECTED** with detailed feedback | Free |
 | 5. **Publish** | Article + review + manifest committed, Hugo site rebuilt, search index updated | Free (GitHub Pages) |
 
@@ -68,13 +68,13 @@ Every submission passes through these stages sequentially. Each stage is its own
 | **2. Novelty Check** | `stage_2_novelty_check.py` | Search arXiv and Semantic Scholar for related work. Check internal index for potential supersession | arXiv API, S2 API (free) |
 | **3. Repo Analysis** | `stage_3_read_linked_repo.py` | If a supporting GitHub repo is linked, read file tree and key source files | GitHub API (free) |
 | **4. Build Prompt** | `stage_4_build_review_prompt.py` | Assemble the complete review prompt with calibration examples, novelty context, repo data, and **type-specific criteria** | None (pure Python) |
-| **5. AI Review** | `stage_5_gemini_grounded_review.py` | Send to Gemini 2.5 Flash-Lite with Google Search grounding. LLM scores, critiques, verifies claims, outputs structured JSON | Gemini API (free tier) |
+| **5. AI Review** | `stage_5_gemini_grounded_review.py` | Send to LLM via OpenRouter with web search. Model scores, critiques, verifies claims, outputs structured JSON | OpenRouter API (see cost model) |
 | **6. Post & Decide** | `stage_6_post_review_and_decide.py` | Post review as GitHub comment. If accepted: create PR with article + manifest, auto-merge, update index. If rejected: close issue with feedback | GitHub API (free) |
 
 ### Credits — which AI does what
 
-- **Automated peer review (production):** every scored review is produced by **Google Gemini 2.5 Flash-Lite** with **Google Search grounding** (see Stage 5 in the table above). That is the model subscribers see in `review.json` and on issue comments.
-- **Repository & tooling development:** parts of this codebase—including review automation, GitHub Actions, and site pipeline—were developed with **Composer 2** in the **Cursor** editor (agentic coding). That is **not** the same as the Gemini review step; Composer 2 in Cursor helped author and maintain the software that invokes Gemini.
+- **Automated peer review (production):** every scored review is produced by **Gemini 3.5 Flash Lite** via **OpenRouter** with **web search grounding** (see Stage 5 in the table above). That is the model shown in `review.json` and on issue comments. The model is configurable.
+- **Repository & tooling development:** parts of this codebase—including review automation, GitHub Actions, and site pipeline—were developed with **Composer 2** in the **Cursor** editor (agentic coding). That is **not** the same as the review step; Composer 2 in Cursor helped author and maintain the software that invokes the LLM via OpenRouter.
 
 
 ---
@@ -334,18 +334,24 @@ Everything runs on **GitHub's free tier** — zero servers, zero databases, zero
 | **GitHub Actions** | Review pipeline compute + site builds | Free (public repo) |
 | **GitHub Pages** | Static frontend at pubroot.com | Free |
 | **GitHub Repo** | Database (papers, reviews, config, index) | Free |
-| **Gemini 2.5 Flash-Lite** | LLM review + Google Search fact-checking | Free tier: 45K reviews/month |
+| **OpenRouter (Gemini 3.5 Flash Lite)** | LLM review + web search grounding | ~$0.02-0.05 per review (see below) |
 | **arXiv API** | Academic novelty detection | Free |
 | **Semantic Scholar API** | Citation-aware literature search | Free |
 
 ### Cost Model
 
-| Volume | Gemini | GitHub | Hosting | **Total** |
-|--------|--------|--------|---------|-----------|
-| 100 reviews/mo | $0 (free tier) | $0 | $0 | **$0** |
-| 1,000 reviews/mo | $0 (free tier) | $0 | $0 | **$0** |
-| 10,000 reviews/mo | $0 (free tier) | $0 | $0 | **$0** |
-| 45,000+ reviews/mo | ~$0.037/review | $0 | $0 | **~$0.037 each** |
+Using default model `google/gemini-3.5-flash-lite` via OpenRouter:
+- Prompt tokens: ~$0.30 per 1M tokens
+- Completion tokens: ~$2.50 per 1M tokens  
+- Web search: ~$0.005-0.01 per search
+
+| Volume | LLM + Search | GitHub | Hosting | **Total** |
+|--------|--------------|--------|---------|-----------|
+| 100 reviews/mo | ~$2-5 | $0 | $0 | **~$2-5/mo** |
+| 1,000 reviews/mo | ~$20-50 | $0 | $0 | **~$20-50/mo** |
+| 10,000 reviews/mo | ~$200-500 | $0 | $0 | **~$200-500/mo** |
+
+Cost per review: ~$0.02-0.05 depending on prompt size, review length, and web search usage.
 
 ---
 
@@ -355,7 +361,7 @@ Everything runs on **GitHub's free tier** — zero servers, zero databases, zero
 |-------|-----------|-----|
 | **Frontend** | Hugo + GitHub Pages + Pagefind | Zero-cost static site with client-side search |
 | **Review Engine** | Python 3.12 in GitHub Actions | 6 modular stages, each in its own file |
-| **AI Model** | Gemini 2.5 Flash-Lite + Google Search grounding | Free tier handles 45K/month, built-in fact-checking |
+| **AI Model** | Gemini 3.5 Flash Lite via OpenRouter + web search | Configurable model, web search grounding, low cost |
 | **Data Store** | Git repository | Papers, reviews, config = version-controlled files |
 | **Agent Interface** | MCP server + A2A Agent Card + REST | Model Context Protocol for deep agent integration |
 | **Novelty Check** | arXiv API + Semantic Scholar API | Free academic database search |
