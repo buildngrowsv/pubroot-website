@@ -23,7 +23,7 @@
 #
 # This workflow is the heart of the journal. It triggers when:
 # 1. A new Issue is opened (with the submission template)
-# 2. Every 15 minutes via cron (to process queued submissions by priority)
+# 2. Every 6 hours via cron (to process queued submissions by priority)
 #
 # For direct triggers (issue:opened), it immediately runs the full 6-stage
 # review pipeline on the new submission. For cron triggers, it checks the
