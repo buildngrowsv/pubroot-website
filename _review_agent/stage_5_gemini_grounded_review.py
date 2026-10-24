@@ -1,46 +1,47 @@
 """
-Stage 5: Gemini Grounded Review — Pubroot
+Stage 5: OpenRouter LLM Review with Web Search — Pubroot
 
 PURPOSE:
-    Send the assembled review prompt to Gemini 2.5 Flash-Lite with Google Search
-    grounding. This single API call does BOTH the LLM review AND the web-based
-    fact-checking. Gemini autonomously searches Google to verify factual claims
-    and returns structured citations (groundingMetadata) mapping specific response
+    Send the assembled review prompt to an LLM via OpenRouter with web search
+    capabilities. OpenRouter provides unified API access to multiple LLM providers
+    and includes web search grounding via the openrouter:web_search server tool.
+    The LLM autonomously decides when to search the web to verify factual claims
+    and returns structured citations (via annotations) mapping specific response
     segments to source URLs.
     
-    This is the only stage that costs money (and even then it's $0 on the free tier).
-    The free tier allows 1,500 grounded requests/day = 45,000/month.
+    This is the only stage that costs money. Cost varies by model choice.
 
 CALLED BY:
-    review_pipeline_main.py — passes the prompt string from Stage 4.
+    review_pipeline_main.py or stages_4_to_6_reviewer.py — passes the prompt string from Stage 4.
 
 EXTERNAL APIS USED:
-    - Gemini 2.5 Flash-Lite with Google Search grounding (google-genai Python SDK)
-    - API key stored as GitHub Secret: GEMINI_API_KEY
+    - OpenRouter API (OpenAI-compatible endpoint at https://openrouter.ai/api/v1)
+    - API key stored as GitHub Secret: OPENROUTER_API_KEY
+    - Web search via openrouter:web_search server tool (default engine: auto)
 
-COST:
-    - Free tier: $0 (1,500 grounded requests/day)
-    - Paid tier (if exceeded): $0.035 per grounded prompt + ~$0.0016 in tokens
-    - Total per review on paid: ~$0.037
+COST (using default google/gemini-3.8-flash):
+    - Prompt: ~$0.825 per 1M tokens
+    - Completion: ~$4.125 per 1M tokens
+    - Web search: Additional cost per search (varies by engine, typically $0.005-0.01 per search)
+    - Estimated per review: ~$0.04-0.08 depending on prompt size and web search usage
 
 DESIGN DECISIONS:
-    - We use google-genai (the newer SDK) NOT google-generativeai (legacy).
-      The google-genai SDK is the current recommended SDK for Gemini API access
-      as of early 2026 and supports grounding tools natively.
-    - We force JSON output via response_mime_type="application/json" in the
-      GenerateContentConfig. This ensures the response is always valid JSON
-      even if the model would otherwise add prose around it.
-    - We set temperature=0.2 for consistent, deterministic reviews. Higher
-      temperatures would make reviews less reproducible.
-    - We extract grounding metadata (search queries, source URLs, confidence
-      mappings) and attach it to the review output. This metadata is stored
-      alongside the review JSON for transparency and auditability.
-    - If the Gemini call fails, we retry once. If it fails again, we return
-      a structured error that Stage 6 will handle (post error comment, don't
-      accept/reject).
-    - We validate the JSON response against our expected schema. If the model
-      produces malformed JSON, we attempt a simple fix (strip Markdown code
-      fences) before giving up.
+    - We use the OpenAI Python SDK configured for OpenRouter's base URL.
+      OpenRouter is OpenAI-compatible, so we can use the official openai SDK.
+    - Default model is google/gemini-3.5-flash-lite via OpenRouter, which provides
+      similar capabilities and cost profile to the old direct Gemini setup.
+    - Model is configurable via PUBROOT_MODEL env var or model_name parameter.
+    - We use the openrouter:web_search server tool (not deprecated :online or web plugin).
+      The model decides when and how often to search based on the prompt.
+    - OpenRouter attribution headers (HTTP-Referer, X-Title) are sent per OpenRouter docs.
+    - We set temperature=0.2 for consistent, deterministic reviews.
+    - We use JSON mode (response_format={"type": "json_object"}) to enforce structured output.
+    - We extract web search metadata from response annotations and map it to our
+      grounding_metadata format for backward compatibility with Stage 6.
+    - If the API call fails, we retry with exponential backoff. If all retries fail,
+      we return a structured error that Stage 6 will handle (post error comment).
+    - We validate the JSON response against our expected schema. If the model produces
+      malformed JSON, we attempt a simple fix (strip Markdown code fences) before giving up.
 """
 
 import json
@@ -50,45 +51,44 @@ from datetime import datetime, timezone
 from typing import Optional
 
 
-def run_gemini_grounded_review(
+def run_openrouter_review(
     review_prompt: str,
-    gemini_api_key: str,
-    model_name: str = "gemini-3.5-flash-lite",
+    openrouter_api_key: str,
+    model_name: str = "google/gemini-3.8-flash",
     max_retries: int = 2
 ) -> dict:
     """
-    Send the review prompt to Gemini with Google Search grounding and parse the result.
+    Send the review prompt to OpenRouter with web search and parse the result.
     
     This is the ONLY public function in this file. It handles the API call,
-    response parsing, JSON validation, grounding metadata extraction, and
+    response parsing, JSON validation, web search metadata extraction, and
     error handling with retries.
     
     Args:
         review_prompt: The complete prompt string from Stage 4
-        gemini_api_key: The Gemini API key (from GEMINI_API_KEY secret)
-        model_name: The Gemini model to use. Default is gemini-3.5-flash-lite.
-                    gemini-2.5-flash-lite is no longer available to new API
-                    projects (404). Can be overridden for a "deep review" tier.
+        openrouter_api_key: The OpenRouter API key (from OPENROUTER_API_KEY secret)
+        model_name: The model to use via OpenRouter. Default is google/gemini-3.8-flash.
+                    Can be overridden via PUBROOT_MODEL env var or parameter.
+                    Tested alternatives: meta/muse-spark-1.3-contributor, openai/gpt-6-luna
         max_retries: Number of times to retry on failure. Default 2 (total 2 attempts).
     
     Returns:
         dict with keys:
             - 'success' (bool): Whether the review completed successfully
-            - 'review' (dict or None): The parsed review JSON from Gemini
-            - 'grounding_metadata' (dict or None): Extracted grounding info
-            - 'raw_response_text' (str): The raw text response from Gemini
+            - 'review' (dict or None): The parsed review JSON
+            - 'grounding_metadata' (dict or None): Extracted web search info
+            - 'raw_response_text' (str): The raw text response
             - 'model_used' (str): Which model was actually used
             - 'error' (str or None): Error message if failed
     """
     
     # -----------------------------------------------------------------------
-    # Import google-genai here (not at module top) so the module can be
+    # Import OpenAI SDK here (not at module top) so the module can be
     # imported for testing even without the SDK installed. The SDK is only
     # available inside the GitHub Actions runner where it's pip-installed.
     # -----------------------------------------------------------------------
     try:
-        from google import genai
-        from google.genai import types
+        from openai import OpenAI
     except ImportError:
         return {
             "success": False,
@@ -97,75 +97,89 @@ def run_gemini_grounded_review(
             "raw_response_text": "",
             "model_used": model_name,
             "error": (
-                "google-genai SDK not installed. Run: pip install google-genai. "
-                "This SDK is required for the Gemini API call with grounding."
+                "openai SDK not installed. Run: pip install openai. "
+                "This SDK is required for the OpenRouter API call."
             ),
         }
     
     # -----------------------------------------------------------------------
-    # Configure the Gemini client
+    # Configure the OpenRouter client
     # -----------------------------------------------------------------------
-    # We pass the API key directly to the Client constructor.
-    # In GitHub Actions, this comes from the GEMINI_API_KEY secret.
+    # OpenRouter is OpenAI-compatible, so we use the OpenAI SDK with a custom
+    # base URL. In GitHub Actions, the API key comes from the OPENROUTER_API_KEY secret.
+    # We also send attribution headers per OpenRouter documentation.
     # -----------------------------------------------------------------------
     
-    client = genai.Client(api_key=gemini_api_key)
+    client = OpenAI(
+        api_key=openrouter_api_key,
+        base_url="https://openrouter.ai/api/v1",
+        default_headers={
+            "HTTP-Referer": "https://pubroot.com",
+            "X-Title": "Pubroot AI Peer Review",
+        }
+    )
     
     # -----------------------------------------------------------------------
-    # Configure the grounding tool and generation parameters
+    # Configure request parameters and web search tool
     # -----------------------------------------------------------------------
-    # google_search=types.GoogleSearch() enables Google Search grounding.
-    # The model will autonomously decide what to search based on the prompt.
-    # It typically searches for factual claims it wants to verify.
-    #
-    # response_mime_type="application/json" forces the model to output valid
-    # JSON. This is critical for our pipeline — we need parseable structured
-    # data, not prose with JSON embedded in it.
+    # The openrouter:web_search server tool enables web search grounding.
+    # The model autonomously decides when to search based on the prompt.
+    # The default engine is "auto", which uses native provider search when
+    # available (for Gemini via Google) and falls back to Exa otherwise.
     #
     # temperature=0.2 keeps reviews consistent and reproducible. The
     # calibration examples in the prompt further anchor scoring behavior.
+    #
+    # response_format={"type": "json_object"} forces JSON output. This is
+    # critical for our pipeline — we need parseable structured data.
+    #
+    # max_tokens is set to 16384 to allow for detailed claim-level analysis
+    # without truncation. In March 2026, truncated responses caused parser
+    # failures on high-scoring articles with verbose analysis.
     # -----------------------------------------------------------------------
     
-    # NOTE: Gemini does not support response_mime_type="application/json"
-    # when tools (including Google Search grounding) are enabled. The API
-    # returns 400 INVALID_ARGUMENT: "Tool use with a response mime type:
-    # 'application/json' is unsupported". We rely on the prompt's JSON
-    # schema instructions (from stage_4) and the _parse_review_json
-    # function below to extract structured data from the text response.
-    #
-    # max_output_tokens is set to 16384 because without response_mime_type
-    # forcing compact JSON output, the model returns verbose text-wrapped
-    # JSON that can exceed the default output limit. In March 2026, both
-    # articles scored 8.5 ACCEPTED but the JSON was truncated mid-response,
-    # causing the parser to fail. 16384 tokens is generous enough for even
-    # the longest reviews with full claim-level analysis.
-    # Prefer Google Search grounding. If the project has no grounded-search
-    # quota (429 RESOURCE_EXHAUSTED on tools), drop tools and continue so
-    # reviews still complete as text_only rather than failing the pipeline.
-    use_grounding = True
+    # Web search tool configuration (OpenRouter server tool, not deprecated plugin)
+    web_search_tool = {
+        "type": "openrouter:web_search",
+        "parameters": {
+            "engine": "auto",  # Use native provider search (Google for Gemini) or Exa fallback
+            "max_results": 5,   # Results per search call
+            "max_total_results": 20,  # Total results across all searches in one request
+        }
+    }
 
     last_error = None
     
     for attempt in range(max_retries):
-        config_kwargs = {
-            "temperature": 0.2,
-            "max_output_tokens": 16384,
-        }
-        if use_grounding:
-            config_kwargs["tools"] = [types.Tool(google_search=types.GoogleSearch())]
-        config = types.GenerateContentConfig(**config_kwargs)
         try:
-            response = client.models.generate_content(
+            # OpenRouter API call using OpenAI SDK
+            response = client.chat.completions.create(
                 model=model_name,
-                contents=review_prompt,
-                config=config,
+                messages=[
+                    {
+                        "role": "user",
+                        "content": review_prompt
+                    }
+                ],
+                temperature=0.2,
+                max_tokens=16384,
+                response_format={"type": "json_object"},
+                tools=[web_search_tool]
             )
             
             # Extract the text response
-            raw_text = response.text if response.text else ""
+            if not response.choices or not response.choices[0].message:
+                last_error = "OpenRouter returned empty response.choices"
+                if attempt < max_retries - 1:
+                    time.sleep(2 ** attempt)  # Exponential backoff
+                    continue
+                break
+            
+            message = response.choices[0].message
+            raw_text = message.content or ""
             
             if not raw_text:
-                last_error = "Gemini returned an empty response"
+                last_error = "OpenRouter returned an empty message.content"
                 if attempt < max_retries - 1:
                     time.sleep(2 ** attempt)  # Exponential backoff
                     continue
@@ -175,15 +189,14 @@ def run_gemini_grounded_review(
             # Parse the JSON response
             # ---------------------------------------------------------------
             # The response should be valid JSON because we set
-            # response_mime_type="application/json". But sometimes the model
-            # wraps it in Markdown code fences (```json ... ```) despite the
-            # MIME type setting. We handle that case.
+            # response_format={"type": "json_object"}. But we still handle
+            # cases where the model wraps it in Markdown code fences.
             # ---------------------------------------------------------------
             
             review_json = _parse_review_json(raw_text)
             
             if review_json is None:
-                last_error = f"Failed to parse Gemini response as JSON. Raw text: {raw_text[:500]}"
+                last_error = f"Failed to parse OpenRouter response as JSON. Raw text: {raw_text[:500]}"
                 if attempt < max_retries - 1:
                     time.sleep(2 ** attempt)
                     continue
@@ -203,14 +216,14 @@ def run_gemini_grounded_review(
                 # The pipeline can still work with incomplete data
             
             # ---------------------------------------------------------------
-            # Extract grounding metadata
+            # Extract web search metadata from annotations
             # ---------------------------------------------------------------
-            # Grounding metadata tells us what Google searches the model ran,
-            # which URLs it found, and how specific response segments map to
-            # sources. We store this alongside the review for transparency.
+            # OpenRouter returns web search results in message.annotations
+            # (url_citation format). We extract this and map it to our
+            # grounding_metadata format for backward compatibility with Stage 6.
             # ---------------------------------------------------------------
             
-            grounding = _extract_grounding_metadata(response)
+            grounding = _extract_web_search_metadata(response)
             
             return {
                 "success": True,
@@ -223,16 +236,18 @@ def run_gemini_grounded_review(
         
         except Exception as e:
             err_text = str(e)
-            last_error = f"Gemini API call failed (attempt {attempt + 1}): {err_text}"
-            quota_exhausted = (
+            last_error = f"OpenRouter API call failed (attempt {attempt + 1}): {err_text}"
+            
+            # Check for rate limiting or quota errors
+            is_rate_limit = (
                 "429" in err_text
-                or "RESOURCE_EXHAUSTED" in err_text
+                or "rate" in err_text.lower()
                 or "quota" in err_text.lower()
             )
-            if use_grounding and quota_exhausted:
-                use_grounding = False
-                last_error += " (retrying without Google Search grounding)"
-                continue
+            
+            if is_rate_limit:
+                last_error += " (rate limit or quota exceeded)"
+            
             if attempt < max_retries - 1:
                 time.sleep(2 ** attempt)  # Exponential backoff: 1s, 2s
                 continue
@@ -332,66 +347,91 @@ def _validate_review_schema(review: dict) -> list:
     return missing
 
 
-def _extract_grounding_metadata(response) -> dict:
+def _extract_web_search_metadata(response) -> dict:
     """
-    Extract grounding metadata from the Gemini response.
+    Extract web search metadata from the OpenRouter response annotations.
     
-    Grounding metadata includes:
-    - web_search_queries: What the model searched Google for
-    - grounding_chunks: Source URLs and titles the model used
-    - grounding_supports: Confidence mappings from response segments to sources
+    OpenRouter returns web search results in message.annotations with type
+    "url_citation". Each annotation contains:
+    - text: The segment of the response that cites this source
+    - url: The source URL
+    - title: The source title (if available)
+    - start_index/end_index: Character positions in the response text
+    
+    We map this to our grounding_metadata format for backward compatibility:
+    - available: bool (true if any citations exist)
+    - sources: list of {uri, title} dicts
+    - supports: list of {text, url} dicts mapping response segments to sources
+    - web_search_queries: Not directly available from OpenRouter annotations,
+      but we can infer that searches occurred if citations exist
     
     This data is stored in reviews/{paper-id}/review.json for transparency.
-    Agents consuming the review can verify claims by following the source URLs.
     
-    We wrap this in a try/except because grounding metadata structure can vary
-    between model versions, and we don't want metadata extraction failures
-    to break the pipeline.
+    We wrap this in a try/except because annotation structure can vary,
+    and we don't want metadata extraction failures to break the pipeline.
     """
     try:
-        candidate = response.candidates[0] if response.candidates else None
-        if not candidate:
-            return {"available": False, "error": "No candidates in response"}
+        if not response.choices or not response.choices[0].message:
+            return {"available": False, "error": "No message in response"}
         
-        metadata = candidate.grounding_metadata
-        if not metadata:
-            return {"available": False, "error": "No grounding metadata in response"}
+        message = response.choices[0].message
+        annotations = getattr(message, "annotations", None) or []
         
-        result = {"available": True}
+        if not annotations:
+            return {
+                "available": False,
+                "error": "No annotations in response (web search may not have been used)"
+            }
         
-        # Extract search queries
-        if metadata.web_search_queries:
-            result["web_search_queries"] = list(metadata.web_search_queries)
-        
-        # Extract grounding chunks (source URLs)
+        # Extract unique sources and citation mappings
         sources = []
-        if metadata.grounding_chunks:
-            for chunk in metadata.grounding_chunks:
-                if hasattr(chunk, "web") and chunk.web:
-                    sources.append({
-                        "title": getattr(chunk.web, "title", ""),
-                        "uri": getattr(chunk.web, "uri", ""),
-                    })
-        result["sources"] = sources
-        
-        # Extract grounding supports (confidence mappings)
         supports = []
-        if metadata.grounding_supports:
-            for support in metadata.grounding_supports:
-                support_data = {}
-                if hasattr(support, "segment") and support.segment:
-                    support_data["text"] = getattr(support.segment, "text", "")
-                if hasattr(support, "confidence_scores"):
-                    support_data["confidence_scores"] = list(support.confidence_scores) if support.confidence_scores else []
-                if hasattr(support, "grounding_chunk_indices"):
-                    support_data["chunk_indices"] = list(support.grounding_chunk_indices) if support.grounding_chunk_indices else []
-                supports.append(support_data)
-        result["supports"] = supports
+        seen_urls = set()
         
-        return result
+        for annotation in annotations:
+            # OpenRouter annotations use "url_citation" type for web search results
+            if hasattr(annotation, "type") and annotation.type == "url_citation":
+                url = getattr(annotation, "url", "")
+                title = getattr(annotation, "title", "")
+                text = getattr(annotation, "text", "")
+                
+                # Add to sources list (deduplicated by URL)
+                if url and url not in seen_urls:
+                    sources.append({
+                        "uri": url,
+                        "title": title or url,  # Fall back to URL if no title
+                    })
+                    seen_urls.add(url)
+                
+                # Add to supports (citation mappings)
+                if text and url:
+                    supports.append({
+                        "text": text,
+                        "url": url,
+                        "title": title or url,
+                    })
+        
+        if not sources:
+            return {
+                "available": False,
+                "error": "No url_citation annotations found (web search may not have been used)"
+            }
+        
+        return {
+            "available": True,
+            "sources": sources,
+            "supports": supports,
+            # web_search_queries not directly available from OpenRouter, but we know
+            # searches occurred if we have citations
+            "web_search_queries": ["(inferred from citations)"] if sources else [],
+        }
     
     except Exception as e:
         return {
             "available": False,
-            "error": f"Failed to extract grounding metadata: {str(e)}",
+            "error": f"Failed to extract web search metadata: {str(e)}",
         }
+
+
+# Backward compatibility alias for old function name (for tests and imports)
+run_gemini_grounded_review = run_openrouter_review

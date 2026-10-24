@@ -18,7 +18,7 @@ KEY FINDINGS FROM SCOUT 11:
 APPROACH:
     - We mock all 6 stage functions to test orchestration logic without
       actually calling external APIs.
-    - We test the environment variable validation (GEMINI_API_KEY, etc.).
+    - We test the environment variable validation (OPENROUTER_API_KEY, etc.).
     - We verify the pipeline continues when non-critical stages fail.
     - We verify the pipeline stops when critical stages fail.
 
@@ -186,7 +186,7 @@ def mock_env_and_files():
             json.dump(EMPTY_AGENT_INDEX, f)
 
         env_vars = {
-            "GEMINI_API_KEY": "fake-gemini-key",
+            "OPENROUTER_API_KEY": "fake-openrouter-key",
             "GITHUB_TOKEN": "fake-github-token",
             "GITHUB_REPOSITORY": "owner/repo",
             "GITHUB_WORKSPACE": tmpdir,
@@ -207,23 +207,23 @@ class TestEnvironmentValidation:
     Missing API keys should fail fast with clear error messages.
     """
 
-    def test_missing_gemini_key_fails(self):
-        """Pipeline should fail immediately without GEMINI_API_KEY."""
+    def test_missing_openrouter_key_fails(self):
+        """Pipeline should fail immediately without OPENROUTER_API_KEY."""
         with patch.dict(os.environ, {"GITHUB_TOKEN": "t", "GITHUB_REPOSITORY": "o/r"}, clear=True):
             result = run_review_pipeline(42)
             assert result["success"] is False
-            assert "GEMINI_API_KEY" in result["errors"][0]
+            assert "OPENROUTER_API_KEY" in result["errors"][0]
 
     def test_missing_github_token_fails(self):
         """Pipeline should fail immediately without GITHUB_TOKEN."""
-        with patch.dict(os.environ, {"GEMINI_API_KEY": "k", "GITHUB_REPOSITORY": "o/r"}, clear=True):
+        with patch.dict(os.environ, {"OPENROUTER_API_KEY": "k", "GITHUB_REPOSITORY": "o/r"}, clear=True):
             result = run_review_pipeline(42)
             assert result["success"] is False
             assert "GITHUB_TOKEN" in result["errors"][0]
 
     def test_invalid_github_repository_format_fails(self):
         """GITHUB_REPOSITORY must be in 'owner/repo' format."""
-        with patch.dict(os.environ, {"GEMINI_API_KEY": "k", "GITHUB_TOKEN": "t", "GITHUB_REPOSITORY": "invalid"}, clear=True):
+        with patch.dict(os.environ, {"OPENROUTER_API_KEY": "k", "GITHUB_TOKEN": "t", "GITHUB_REPOSITORY": "invalid"}, clear=True):
             result = run_review_pipeline(42)
             assert result["success"] is False
             assert "GITHUB_REPOSITORY" in result["errors"][0]

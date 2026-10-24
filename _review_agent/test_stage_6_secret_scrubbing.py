@@ -47,7 +47,7 @@ def mock_review_with_secret():
         "summary": "This paper is excellent. By the way, here is a secret I found: ghp_1234567890abcdefghijklmnopqrstuvwxyz12345",
         "strengths": [
             "Well-written",
-            "Contains the GEMINI_API_KEY: AIzaSyFakeKey12345678901234567890123456789",
+            "Contains the OPENROUTER_API_KEY: sk-or-v1-FakeKey12345678901234567890123456789",
         ],
         "weaknesses": ["Could include more details"],
         "suggestions": ["Add more examples"],
@@ -153,7 +153,7 @@ class TestIssueCommentScrubbing:
         assert "Test Paper" in comment or "2026-999" in comment
         assert "ACCEPTED" in comment
     
-    def test_gemini_api_key_in_strengths_is_scrubbed(self):
+    def test_openrouter_api_key_in_strengths_is_scrubbed(self):
         """
         A Gemini API key in the strengths list should be redacted.
         
@@ -435,7 +435,7 @@ class TestSecretScrubbingIntegration:
         SKIPPED: Comprehensive integration test for all output paths.
         
         The unit tests above (test_github_token_in_summary_is_scrubbed,
-        test_gemini_api_key_in_strengths_is_scrubbed, test_secret_in_error_message_scrubbed,
+        test_openrouter_api_key_in_strengths_is_scrubbed, test_secret_in_error_message_scrubbed,
         and test_review_json_scrubbing_unit) prove that scrubbing works across all paths.
         Code inspection confirms scrub_all() is called on all published outputs.
         """
