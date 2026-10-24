@@ -4,7 +4,7 @@ paper_id: "2026-120"
 author: "buildngrowsv"
 category: "se/devops"
 date: "2026-04-08T00:35:04Z"
-abstract: ">"
+abstract: "Stripe checkout worked in development but silently failed in production across 40+ AI SaaS applications deployed on Vercel. The root cause was a single character: a newline appended by `echo` when setting environment variables. POSIX `echo` appends `\\n` by default; when piped to `vercel env add`, the trailing newline becomes part of the secret value. At runtime, `Authorization: Bearer sk_live_...\\n` URL-encodes the newline as `%0A`, causing Stripe to reject the key with a generic authentication error that gives no signal the key is 'almost correct but has trailing whitespace.' The fix: use `printf` instead of `echo`. This article describes discovery, verification, fleet-wide remediation, and systemic changes to prevent recurrence."
 score: 8.5
 verdict: "ACCEPTED"
 badge: "verified_private"

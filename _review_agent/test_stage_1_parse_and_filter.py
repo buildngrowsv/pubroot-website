@@ -685,6 +685,265 @@ In summary, our method outperforms the baseline. We recommend further investigat
 
 
 # ---------------------------------------------------------------------------
+# YAML BLOCK MARKER STRIPPING TESTS (Apr 2026)
+# ---------------------------------------------------------------------------
+# The parser should strip YAML block-scalar markers (|, >, |-, >-, |+, >+)
+# that appear as the first line of a form field value. This bug caused 5
+# published papers to have stray markers in their abstract field.
+# ---------------------------------------------------------------------------
+
+
+class TestYamlBlockMarkerStripping:
+    """Test that stray YAML block markers are stripped from form field values."""
+
+    def test_pipe_marker_only_is_stripped(self, repo_root):
+        """A field containing only "|" should become empty string."""
+        issue_body = """### Article Title
+
+Test Title
+
+### Category
+
+ai/agent-architecture
+
+### Submission Type
+
+original-research
+
+### AI / Tooling Attribution (optional)
+
+_No response_
+
+### Abstract
+
+|
+
+### Article Body
+
+""" + " ".join(["word"] * 250) + """
+
+### Supporting Repository URL
+
+https://github.com/owner/repo
+
+### Commit SHA
+
+abc1234
+
+### Repository Visibility
+
+public
+
+### Payment Code (Optional)
+
+_No response_
+
+### Submission Agreement
+
+I agree."""
+        result = parse_and_filter_submission(issue_body, repo_root, "author")
+        assert result["parsed"]["abstract"] == ""
+    
+    def test_greater_than_marker_only_is_stripped(self, repo_root):
+        """A field containing only ">" should become empty string."""
+        issue_body = """### Article Title
+
+Test Title
+
+### Category
+
+ai/agent-architecture
+
+### Submission Type
+
+original-research
+
+### AI / Tooling Attribution (optional)
+
+_No response_
+
+### Abstract
+
+>
+
+### Article Body
+
+""" + " ".join(["word"] * 250) + """
+
+### Supporting Repository URL
+
+https://github.com/owner/repo
+
+### Commit SHA
+
+abc1234
+
+### Repository Visibility
+
+public
+
+### Payment Code (Optional)
+
+_No response_
+
+### Submission Agreement
+
+I agree."""
+        result = parse_and_filter_submission(issue_body, repo_root, "author")
+        assert result["parsed"]["abstract"] == ""
+    
+    def test_pipe_marker_with_text_strips_marker(self, repo_root):
+        """A field starting with "|" followed by text should strip the marker."""
+        issue_body = """### Article Title
+
+Test Title
+
+### Category
+
+ai/agent-architecture
+
+### Submission Type
+
+original-research
+
+### AI / Tooling Attribution (optional)
+
+_No response_
+
+### Abstract
+
+|
+This is the actual abstract text that should be preserved.
+
+### Article Body
+
+""" + " ".join(["word"] * 250) + """
+
+### Supporting Repository URL
+
+https://github.com/owner/repo
+
+### Commit SHA
+
+abc1234
+
+### Repository Visibility
+
+public
+
+### Payment Code (Optional)
+
+_No response_
+
+### Submission Agreement
+
+I agree."""
+        result = parse_and_filter_submission(issue_body, repo_root, "author")
+        assert result["parsed"]["abstract"] == "This is the actual abstract text that should be preserved."
+    
+    def test_marker_with_chomping_indicator_is_stripped(self, repo_root):
+        """Markers with chomping indicators (|-, >-, |+, >+) should be stripped."""
+        for marker in ["|-", ">-", "|+", ">+"]:
+            issue_body = f"""### Article Title
+
+Test Title
+
+### Category
+
+ai/agent-architecture
+
+### Submission Type
+
+original-research
+
+### AI / Tooling Attribution (optional)
+
+_No response_
+
+### Abstract
+
+{marker}
+This is text after the marker.
+
+### Article Body
+
+""" + " ".join(["word"] * 250) + """
+
+### Supporting Repository URL
+
+https://github.com/owner/repo
+
+### Commit SHA
+
+abc1234
+
+### Repository Visibility
+
+public
+
+### Payment Code (Optional)
+
+_No response_
+
+### Submission Agreement
+
+I agree."""
+            result = parse_and_filter_submission(issue_body, repo_root, "author")
+            assert result["parsed"]["abstract"] == "This is text after the marker.", f"Failed for marker: {marker}"
+    
+    def test_marker_in_middle_of_text_is_not_stripped(self, repo_root):
+        """A marker that appears mid-text (not on first line) should be preserved."""
+        issue_body = """### Article Title
+
+Test Title
+
+### Category
+
+ai/agent-architecture
+
+### Submission Type
+
+original-research
+
+### AI / Tooling Attribution (optional)
+
+_No response_
+
+### Abstract
+
+This is the start of the abstract.
+The pipe symbol | appears here in the middle.
+And the text continues.
+
+### Article Body
+
+""" + " ".join(["word"] * 250) + """
+
+### Supporting Repository URL
+
+https://github.com/owner/repo
+
+### Commit SHA
+
+abc1234
+
+### Repository Visibility
+
+public
+
+### Payment Code (Optional)
+
+_No response_
+
+### Submission Agreement
+
+I agree."""
+        result = parse_and_filter_submission(issue_body, repo_root, "author")
+        assert "|" in result["parsed"]["abstract"]
+        assert result["parsed"]["abstract"].startswith("This is the start")
+
+
+# ---------------------------------------------------------------------------
 # ROBUSTNESS EDGE CASES (informed by Scout 11 audit)
 # ---------------------------------------------------------------------------
 # Scout 11 identified that _extract_form_fields is fragile because it depends
