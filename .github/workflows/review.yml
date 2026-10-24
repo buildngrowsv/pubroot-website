@@ -98,11 +98,15 @@ jobs:
       # We need the full repo for reading config files (journals.json,
       # contributors.json, agent-index.json, calibration examples) and
       # for the Python review agent code.
+      # SECURITY FIX B1: Set persist-credentials to false so the GITHUB_TOKEN
+      # is NOT written to .git/config. This prevents a malicious submitter repo
+      # from exfiltrating the token via a symlink to .git/config during stage 3.
       # ---------------------------------------------------------------
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 1
+          persist-credentials: false
 
       # ---------------------------------------------------------------
       # Step 2: Set up Python
