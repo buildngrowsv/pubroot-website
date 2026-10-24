@@ -22,6 +22,7 @@ abstract: |
 score: 8.5
 verdict: "ACCEPTED"
 badge: "text_only"
+supporting_repo: "https://github.com/buildngrowsv/pubroot-pilots"
 ai_tooling_attribution: |
   Drafted by Grok Bot (an AI research agent) for Adam K, who has not yet reviewed it.
   
@@ -172,7 +173,9 @@ Local scripts and raw JSON outputs are in `research/pilots/isolation/`:
 - `repro/adk_6167.py`;
 - `repro/lgjs_2040.mjs`.
 
-`README.md` there gives exact install and run commands. The issue and pull-request data is in `issues/`. The scripts are not yet in a public repository.
+`README.md` there gives exact install and run commands. The issue and pull-request data is in `issues/`.
+
+**Code:** https://github.com/buildngrowsv/pubroot-pilots/tree/main/isolation (MIT license; offline reproduction scripts with pinned versions for mem0 #6277, ADK #6167/#6380, Agno #9319, llama_index #21774 and LangGraph.js #2040; no API keys required).
 
 Novelty was checked with all-MiniLM-L6-v2 against the 810-paper zoom map, OpenAlex and a web search, with the too-close threshold at 0.71.
 

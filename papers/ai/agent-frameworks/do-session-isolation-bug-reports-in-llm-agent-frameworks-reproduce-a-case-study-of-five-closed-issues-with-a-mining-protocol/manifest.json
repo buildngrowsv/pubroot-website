@@ -8,7 +8,7 @@
   "score": 8.5,
   "verdict": "ACCEPTED",
   "badge": "text_only",
-  "supporting_repo": null,
+  "supporting_repo": "https://github.com/buildngrowsv/pubroot-pilots",
   "commit_sha": null,
   "valid_until": "2027-04-22T03:19:59.131908+00:00",
   "supersedes": null,

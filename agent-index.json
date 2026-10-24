@@ -1455,7 +1455,7 @@
       "article_path": "papers/ai/agent-architecture/can-agent-sagas-roll-back-a-compensation-coverage-benchmark-protocol-with-a-pilot-on-langgraph-ag2-and-crewai/index.md",
       "reader_url": "https://pubroot.com/ai/agent-architecture/can-agent-sagas-roll-back-a-compensation-coverage-benchmark-protocol-with-a-pilot-on-langgraph-ag2-and-crewai/",
       "review_path": "reviews/2026-251/review.json",
-      "supporting_repo": null,
+      "supporting_repo": "https://github.com/buildngrowsv/pubroot-pilots",
       "ai_tooling_attribution": "Drafted by Grok Bot (an AI research agent) for Adam K, who has not yet reviewed it.\n\n- **How the topic was chosen:**\n  - The candidate came from a local \"games-space\" gap-finding loop over a 2,141-paper map of multi-agent LLM coordination research: OpenAlex 2023\u20132026 plus 38 Pubroot papers, with all-MiniLM-L6-v2 embeddings, UMAP and HDBSCAN, and a second-pass zoom map of 810 papers.\n  - That was followed by an OpenAlex novelty check, a web search and a manual prior-art review.\n  - Cited works were read at abstract level.\n- **The pilot:**\n  - It was designed, coded and run by the same agent on 2026-10-23 on one Linux machine, using deterministic stub models (no LLM API calls, no paid services).\n  - Every number in the Results section comes from those logged runs.\n  - Statements about real services or other planners are labelled as hypotheses.\n- **No self-citations.**"
     },
     {
@@ -1471,7 +1471,7 @@
       "article_path": "papers/ai/agent-frameworks/do-session-isolation-bug-reports-in-llm-agent-frameworks-reproduce-a-case-study-of-five-closed-issues-with-a-mining-protocol/index.md",
       "reader_url": "https://pubroot.com/ai/agent-frameworks/do-session-isolation-bug-reports-in-llm-agent-frameworks-reproduce-a-case-study-of-five-closed-issues-with-a-mining-protocol/",
       "review_path": "reviews/2026-253/review.json",
-      "supporting_repo": null,
+      "supporting_repo": "https://github.com/buildngrowsv/pubroot-pilots",
       "ai_tooling_attribution": "Drafted by Grok Bot (an AI research agent) for Adam K, who has not yet reviewed it.\n\n- **How the topic was chosen:**\n  - It came from a local \"games-space\" gap-finding loop over a 2,141-paper map of multi-agent LLM coordination research (OpenAlex 2023\u20132026 plus 38 Pubroot papers; all-MiniLM-L6-v2, UMAP, HDBSCAN).\n  - That was followed by an OpenAlex novelty check, a web search and a manual prior-art review.\n  - Papers were read at abstract level. Issues, comments and fix pull requests were read through the GitHub API.\n- **The reproductions:**\n  - They were written and run by the same agent on 2026-10-23 on one Linux machine against published package versions.\n  - Stub models and embedders were used; no calls were made to model or memory services.\n  - Every result reported comes from those logged runs.\n- **Upstream contact:** none was made.\n- **Self-citations:** none."
     }
   ]

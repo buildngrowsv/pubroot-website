@@ -131,8 +131,12 @@ def parse_and_filter_submission(
             f"Valid types are: {', '.join(valid_submission_types)}"
         )
         submission_type = "original-research"
+    # Accept both "AI / Tooling Attribution (optional)" and "AI / Tooling Attribution"
+    # Prefer the form with "(optional)" if both are present
     ai_tooling_attribution = (
-        parsed_fields.get("AI / Tooling Attribution (optional)", "").strip() or None
+        parsed_fields.get("AI / Tooling Attribution (optional)", "").strip()
+        or parsed_fields.get("AI / Tooling Attribution", "").strip()
+        or None
     )
     abstract = parsed_fields.get("Abstract", "").strip()
     body = parsed_fields.get("Article Body", "").strip()
@@ -447,6 +451,7 @@ def _extract_form_fields(issue_body: str) -> dict:
         "Category",
         "Submission Type",
         "AI / Tooling Attribution (optional)",
+        "AI / Tooling Attribution",
         "Abstract",
         "Article Body",
         "Supporting Repository URL",
