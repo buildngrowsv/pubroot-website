@@ -485,3 +485,253 @@ class TestReadKeyFiles:
 
         assert files == []
         assert total == 0
+
+
+# ---------------------------------------------------------------------------
+# SECURITY TESTS: SYMLINK PROTECTION (B1 Fix Verification)
+# ---------------------------------------------------------------------------
+
+
+class TestSymlinkProtection:
+    """
+    Security tests for the symlink exfiltration vulnerability fix (B1).
+    
+    These tests verify that a malicious submitter cannot use symlinks to
+    exfiltrate secrets or read files outside the cloned repository.
+    
+    ATTACK SCENARIOS TESTED:
+    1. Symlink to /etc/passwd (common system file)
+    2. Symlink to .git/config (would contain GITHUB_TOKEN if persist-credentials=true)
+    3. Symlink to /proc/self/environ (exposes all env vars including GEMINI_API_KEY)
+    4. Symlink using relative path traversal (../../../../etc/passwd)
+    5. Symlink to a directory outside the repo
+    
+    These tests prove that the fix (symlink detection + realpath validation) blocks
+    all known attack vectors for exfiltrating runner secrets via repository content.
+    """
+    
+    def test_symlink_to_system_file_is_skipped(self, tmp_path):
+        """
+        SECURITY TEST: A symlink to /etc/passwd should be detected and skipped.
+        
+        This simulates a malicious repo with a file named "README.md" that is
+        actually a symlink to /etc/passwd. Without the fix, this would read
+        the password file and include it in the LLM prompt, and potentially
+        in the public review comment.
+        """
+        # Create a normal file
+        (tmp_path / "safe.py").write_text("print('safe')")
+        
+        # Create a symlink to a system file (if /etc/passwd exists)
+        if os.path.exists("/etc/passwd"):
+            passwd_link = tmp_path / "README.md"
+            passwd_link.symlink_to("/etc/passwd")
+            
+            files, total = _read_key_files(str(tmp_path), max_bytes=50000)
+            
+            # README.md should NOT be in the results (it's a symlink)
+            file_paths = [f["path"] for f in files]
+            assert "README.md" not in file_paths
+            
+            # Verify the content doesn't contain /etc/passwd content
+            all_content = " ".join(f["content"] for f in files)
+            # /etc/passwd contains lines like "root:x:0:0:..."
+            assert "root:x:0:0" not in all_content
+    
+    def test_symlink_to_git_config_is_skipped(self, tmp_path):
+        """
+        SECURITY TEST: A symlink to .git/config should be blocked.
+        
+        Without persist-credentials: false, actions/checkout writes the
+        GITHUB_TOKEN to .git/config. A malicious repo could create a symlink
+        named "config.json" pointing to ../.git/config to exfiltrate it.
+        """
+        # Create a fake .git/config with a token (simulating the attack target)
+        git_dir = tmp_path / ".git"
+        git_dir.mkdir()
+        git_config = git_dir / "config"
+        git_config.write_text("[http]\n\textraheader = AUTHORIZATION: basic ghp_FAKE_TOKEN_1234567890abcdefghijklmnopqrstuvwxyz\n")
+        
+        # Create a symlink in the repo root pointing to .git/config
+        config_link = tmp_path / "config.json"
+        config_link.symlink_to(git_config)
+        
+        files, total = _read_key_files(str(tmp_path), max_bytes=50000)
+        
+        # config.json should NOT be in the results
+        file_paths = [f["path"] for f in files]
+        assert "config.json" not in file_paths
+        
+        # Verify the token doesn't appear in any read content
+        all_content = " ".join(f["content"] for f in files)
+        assert "ghp_FAKE_TOKEN" not in all_content
+    
+    def test_symlink_to_proc_environ_is_skipped(self, tmp_path):
+        """
+        SECURITY TEST: A symlink to /proc/self/environ should be blocked.
+        
+        /proc/self/environ contains all environment variables, including
+        GEMINI_API_KEY, GITHUB_TOKEN, and other secrets. A malicious repo
+        could create a symlink to this file to exfiltrate secrets.
+        
+        NOTE: /proc/self/environ reports size 0 bytes, so it passes the
+        100KB size filter in _read_key_files. This makes it a particularly
+        dangerous target that the symlink check MUST catch.
+        """
+        # Create a normal file
+        (tmp_path / "main.py").write_text("print('main')")
+        
+        # Create a symlink to /proc/self/environ (if it exists)
+        if os.path.exists("/proc/self/environ"):
+            environ_link = tmp_path / "environment.txt"
+            environ_link.symlink_to("/proc/self/environ")
+            
+            files, total = _read_key_files(str(tmp_path), max_bytes=50000)
+            
+            # environment.txt should NOT be in the results
+            file_paths = [f["path"] for f in files]
+            assert "environment.txt" not in file_paths
+    
+    def test_relative_symlink_traversal_is_blocked(self, tmp_path):
+        """
+        SECURITY TEST: Symlinks using relative path traversal should be blocked.
+        
+        A malicious repo could use ../../../../etc/passwd to try to escape
+        the repo directory. The realpath validation should catch this.
+        """
+        # Create a symlink using relative traversal
+        if os.path.exists("/etc/passwd"):
+            traversal_link = tmp_path / "data.txt"
+            # Try to escape the tmp_path and reach /etc/passwd
+            traversal_link.symlink_to("../../../../../../../../etc/passwd")
+            
+            files, total = _read_key_files(str(tmp_path), max_bytes=50000)
+            
+            # data.txt should NOT be in the results
+            file_paths = [f["path"] for f in files]
+            assert "data.txt" not in file_paths
+    
+    def test_symlink_to_directory_is_skipped(self, tmp_path):
+        """
+        SECURITY TEST: Symlinks to directories should not cause traversal.
+        
+        A symlink to a directory (e.g., /etc) should not cause os.walk to
+        traverse outside the repo.
+        """
+        # Create a symlink to a directory
+        if os.path.exists("/etc"):
+            etc_link = tmp_path / "etc_link"
+            etc_link.symlink_to("/etc")
+            
+            files, total = _read_key_files(str(tmp_path), max_bytes=50000)
+            
+            # None of the files should have paths starting with etc_link/
+            file_paths = [f["path"] for f in files]
+            assert not any(p.startswith("etc_link/") for p in file_paths)
+    
+    def test_normal_files_still_work_after_symlink_fix(self, tmp_path):
+        """
+        REGRESSION TEST: Normal files should still be read correctly.
+        
+        The symlink protection should not break normal file reading.
+        This test ensures the security fix doesn't prevent legitimate repos
+        from being reviewed.
+        """
+        # Create normal files
+        readme = tmp_path / "README.md"
+        readme.write_text("# Normal Project\nThis is safe.")
+        
+        main = tmp_path / "main.py"
+        main.write_text("def main():\n    pass")
+        
+        files, total = _read_key_files(str(tmp_path), max_bytes=50000)
+        
+        # Both normal files should be read successfully
+        file_paths = [f["path"] for f in files]
+        assert "README.md" in file_paths
+        assert "main.py" in file_paths
+        
+        # Verify content is correct
+        readme_content = next(f["content"] for f in files if f["path"] == "README.md")
+        assert "Normal Project" in readme_content
+    
+    def test_git_clone_with_core_symlinks_false(self, tmp_path):
+        """
+        INTEGRATION TEST: Verify git clone command includes -c core.symlinks=false.
+        
+        This tests that the git clone command is constructed with the security
+        flag that tells git to NOT create symlinks, even if they exist in the
+        repository history. This is defense-in-depth: even if a malicious repo
+        has symlinks committed, git won't create them on the runner filesystem.
+        """
+        with patch("stage_3_read_linked_repo.subprocess.run") as mock_run:
+            with patch("stage_3_read_linked_repo.tempfile.mkdtemp", return_value=str(tmp_path)):
+                with patch("stage_3_read_linked_repo.shutil.rmtree"):
+                    with patch("stage_3_read_linked_repo._extract_file_tree", return_value=("", 0)):
+                        with patch("stage_3_read_linked_repo._read_key_files", return_value=([], 0)):
+                            mock_run.return_value = MagicMock(returncode=0, stderr="")
+                            
+                            read_linked_repository(
+                                repo_url="https://github.com/test/repo",
+                                commit_sha=None,
+                                repo_visibility="public",
+                            )
+                            
+                            # Verify git clone was called with -c core.symlinks=false
+                            clone_call = mock_run.call_args_list[0]
+                            cmd = clone_call[0][0]
+                            
+                            assert "-c" in cmd
+                            assert "core.symlinks=false" in cmd
+    
+    @patch("stage_3_read_linked_repo.subprocess.run")
+    @patch("stage_3_read_linked_repo.tempfile.mkdtemp")
+    @patch("stage_3_read_linked_repo.shutil.rmtree")
+    def test_full_integration_malicious_repo_blocked(self, mock_rmtree, mock_mkdtemp, mock_run, tmp_path):
+        """
+        FULL INTEGRATION TEST: Simulate a malicious repo with multiple attack vectors.
+        
+        This test creates a realistic attack scenario with multiple symlinks
+        targeting different sensitive files, and verifies that ALL of them are
+        blocked by the fix.
+        """
+        # Set up a fake cloned repo with attack vectors
+        mock_mkdtemp.return_value = str(tmp_path)
+        mock_run.return_value = MagicMock(returncode=0, stderr="")
+        
+        # Create legitimate files
+        (tmp_path / "README.md").write_text("# Malicious Repo\nLooks innocent!")
+        (tmp_path / "main.py").write_text("print('hello')")
+        
+        # Create attack vectors (symlinks)
+        if os.path.exists("/etc/passwd"):
+            (tmp_path / "users.txt").symlink_to("/etc/passwd")
+        
+        if os.path.exists("/proc/self/environ"):
+            (tmp_path / "config.json").symlink_to("/proc/self/environ")
+        
+        # Mock the internal functions to use the real implementations on our tmp_path
+        with patch("stage_3_read_linked_repo._extract_file_tree", side_effect=lambda d: _extract_file_tree(d)):
+            with patch("stage_3_read_linked_repo._read_key_files", side_effect=lambda d, m: _read_key_files(d, m)):
+                result = read_linked_repository(
+                    repo_url="https://github.com/attacker/evil-repo",
+                    commit_sha=None,
+                    repo_visibility="public",
+                )
+        
+        # Verify the repo was "processed" successfully (we don't fail; we just skip bad files)
+        assert result["available"] is True
+        
+        # Verify ONLY the legitimate files were read
+        file_paths = [f["path"] for f in result["key_files"]]
+        assert "README.md" in file_paths
+        assert "main.py" in file_paths
+        
+        # Verify the attack vectors were blocked
+        assert "users.txt" not in file_paths
+        assert "config.json" not in file_paths
+        
+        # Verify no sensitive content leaked through
+        all_content = " ".join(f["content"] for f in result["key_files"])
+        assert "root:x:0:0" not in all_content  # /etc/passwd content
+        # We can't easily test for env vars here since we're not in the runner context

@@ -57,6 +57,7 @@ from pubroot_site_paths import (
     reader_url as build_reader_url,
     slugify_title,
 )
+from secret_scrubber import scrub_all
 
 # Canonical site origin for agent-index.json reader_url (override in CI if needed).
 PUBROOT_SITE_BASE = os.environ.get("PUBROOT_SITE_BASE", "https://pubroot.com")
@@ -259,6 +260,8 @@ def post_review_and_decide(
 
     try:
         _update_contributors(
+            gh=gh,
+            branch="main",  # Rejection updates go straight to main
             repo_root=repo_root,
             author=parsed_submission.get("author", "unknown"),
             score=score,
@@ -398,6 +401,27 @@ class GitHubAPI:
         resp = requests.put(url, headers=self.headers, json=data, timeout=30)
         resp.raise_for_status()
         return resp.json()
+
+    def get_file_content(self, path: str, branch: str = "main") -> tuple[str, str]:
+        """
+        Fetch the current content and SHA of a file from the given branch via GitHub API.
+        
+        This is used to fetch fresh state before updating index files, preventing
+        lost-update races when multiple pipeline runs execute concurrently.
+        
+        Returns:
+            tuple[str, str]: (decoded_content, blob_sha)
+        
+        Raises:
+            requests.HTTPError: if the file doesn't exist or the request fails
+        """
+        url = f"{self.base_url}/contents/{path}"
+        resp = requests.get(url, headers=self.headers, params={"ref": branch}, timeout=30)
+        resp.raise_for_status()
+        data = resp.json()
+        content_b64 = data.get("content", "")
+        decoded = base64.b64decode(content_b64).decode("utf-8")
+        return decoded, data.get("sha")
     
     def create_pull_request(self, title: str, body: str, head: str, base: str = "main") -> int:
         """Create a Pull Request. Returns the PR number."""
@@ -490,6 +514,12 @@ def _upload_publication_files_to_branch(
         now,
         legacy_aliases=None,
     )
+    
+    # SECURITY (B1 second pass): Scrub the article content before publishing.
+    # The article includes LLM-generated fields (review summary, strengths, weaknesses)
+    # which could theoretically contain secrets if the LLM was compromised.
+    article_content = scrub_all(article_content)
+    
     gh.create_or_update_file(
         path=paths["article_index_path"],
         content=article_content,
@@ -500,17 +530,30 @@ def _upload_publication_files_to_branch(
     manifest = _build_manifest(
         parsed_submission, review, repo_data, paper_id, now, novelty_results
     )
+    
+    # SECURITY (B1 second pass): Scrub the manifest JSON before committing.
+    # The manifest contains LLM-generated review metadata which could contain secrets.
+    manifest_json_str = json.dumps(manifest, indent=2)
+    manifest_json_str = scrub_all(manifest_json_str)
+    
     gh.create_or_update_file(
         path=paths["manifest_path"],
-        content=json.dumps(manifest, indent=2),
+        content=manifest_json_str,
         message=f"Add manifest for {paper_id}",
         branch=branch,
     )
 
     review_with_grounding = {**review, "grounding_metadata": grounding}
+    
+    # SECURITY (B1 second pass): Scrub the review JSON before committing it publicly.
+    # The LLM generates all fields in the review dict, so any of them could contain
+    # secrets if the LLM was tricked via prompt injection. Scrub the entire JSON.
+    review_json_str = json.dumps(review_with_grounding, indent=2)
+    review_json_str = scrub_all(review_json_str)
+    
     gh.create_or_update_file(
         path=f"reviews/{paper_id}/review.json",
-        content=json.dumps(review_with_grounding, indent=2),
+        content=review_json_str,
         message=f"Add review for {paper_id}",
         branch=branch,
     )
@@ -526,15 +569,10 @@ def _upload_publication_files_to_branch(
     )
     _update_agent_index(gh, branch, repo_root, index_entry)
 
-    contributors_path = os.path.join(repo_root, "contributors.json")
-    with open(contributors_path, "r") as f:
-        contributors_content = f.read()
-    gh.create_or_update_file(
-        path="contributors.json",
-        content=contributors_content,
-        message=f"Update contributor stats after {paper_id}",
-        branch=branch,
-    )
+    # Note: contributors.json is no longer committed here because it's now
+    # committed directly to main by _update_contributors() before the branch
+    # is created. This prevents race conditions and ensures rejection stats
+    # are also persisted (Bug B13 fix).
 
 
 def _handle_acceptance(
@@ -569,7 +607,10 @@ def _handle_acceptance(
         return None
 
     # Contributor stats must be reflected in contributors.json before upload.
+    # We update on the paper branch (which will be merged to main via PR or direct commit)
     _update_contributors(
+        gh=gh,
+        branch="main",  # Update on main so it's available immediately, branch will be created from latest main
         repo_root=repo_root,
         author=parsed_submission.get("author", "unknown"),
         score=float(review.get("score", 0)),
@@ -796,18 +837,44 @@ def _update_agent_index(
     """
     Add a new paper entry to agent-index.json and commit it.
     
-    We read the current file, append the new entry, update the metadata,
-    and commit the updated file to the publication branch.
+    RACE CONDITION FIX (2026-10-24):
+        Previously, this read agent-index.json from the local checkout, which was
+        the main branch state at event time (when the issue was opened). When multiple
+        reviews ran concurrently, they all started with stale state and overwrote
+        each other's updates, causing lost entries (Bug B3).
+        
+        Now we fetch the current agent-index.json from the target branch via GitHub API
+        right before updating. This ensures we always append to the latest state,
+        preventing lost-update races. The branch is typically "main" (fallback path)
+        or "paper/{paper-id}" (PR path). Both are safe because:
+        - main: always has the latest merged state
+        - paper/{paper-id}: branch was just created from main's HEAD in _handle_acceptance
+        
+        If a 409 conflict occurs (rare: two publishes hit the exact same millisecond),
+        the pipeline fails and the cron retry picks it up with fresh state.
     """
-    index_path = os.path.join(repo_root, "agent-index.json")
+    try:
+        # Fetch fresh state from the target branch via GitHub API
+        index_json_str, _blob_sha = gh.get_file_content("agent-index.json", branch=branch)
+        index_data = json.loads(index_json_str)
+    except requests.HTTPError as e:
+        # If agent-index.json doesn't exist on the branch yet (shouldn't happen),
+        # fall back to the local checkout as a last resort
+        if e.response and e.response.status_code == 404:
+            index_path = os.path.join(repo_root, "agent-index.json")
+            with open(index_path, "r") as f:
+                index_data = json.load(f)
+        else:
+            raise
     
-    with open(index_path, "r") as f:
-        index_data = json.load(f)
-    
+    # Append the new entry and update metadata
     index_data["papers"].append(new_entry)
     index_data["total_papers"] = len(index_data["papers"])
     index_data["last_updated"] = datetime.now(timezone.utc).isoformat()
     
+    # Write back to the branch
+    # GitHub API handles conflicts automatically by requiring the blob SHA on updates,
+    # but we don't retry here - if it fails, the whole pipeline fails and cron retries
     gh.create_or_update_file(
         path="agent-index.json",
         content=json.dumps(index_data, indent=2),
@@ -817,6 +884,8 @@ def _update_agent_index(
 
 
 def _update_contributors(
+    gh: GitHubAPI,
+    branch: str,
     repo_root: str,
     author: str,
     score: float,
@@ -824,16 +893,32 @@ def _update_contributors(
     category: str
 ):
     """
-    Update the contributor's stats in contributors.json.
+    Update the contributor's stats in contributors.json and commit it.
     
     This is called for BOTH accepted and rejected submissions. It updates
     the contributor's submission count, acceptance rate, average score,
     and per-category stats. The reputation score is recalculated by
     reputation_calculator.py (called separately).
     
-    We write the updated file locally. Stage 6 then commits it to the branch.
+    RACE CONDITION FIX (2026-10-24):
+        Like agent-index.json, contributors.json previously suffered from lost-update
+        races (Bug B13). Now we fetch fresh state from the target branch via GitHub API,
+        update it, and commit it back. This ensures rejection stats are persisted and
+        acceptance stats don't get overwritten by concurrent runs.
     """
-    contributors_path = os.path.join(repo_root, "contributors.json")
+    try:
+        # Fetch fresh state from the target branch via GitHub API
+        contributors_json_str, _blob_sha = gh.get_file_content("contributors.json", branch=branch)
+        data = json.loads(contributors_json_str)
+    except requests.HTTPError as e:
+        # If contributors.json doesn't exist on the branch yet (shouldn't happen),
+        # fall back to the local checkout as a last resort
+        if e.response and e.response.status_code == 404:
+            contributors_path = os.path.join(repo_root, "contributors.json")
+            with open(contributors_path, "r") as f:
+                data = json.load(f)
+        else:
+            raise
     
     with open(contributors_path, "r") as f:
         data = json.load(f)
@@ -896,8 +981,15 @@ def _update_contributors(
     
     data["contributors"] = contributors
     
-    with open(contributors_path, "w") as f:
-        json.dump(data, f, indent=2)
+    # Commit the updated contributors.json back to the branch
+    # This fixes Bug B13: rejection stats are now persisted, and acceptance
+    # stats can't be lost due to concurrent pipeline runs
+    gh.create_or_update_file(
+        path="contributors.json",
+        content=json.dumps(data, indent=2),
+        message=f"Update contributor stats: {author} ({'accepted' if accepted else 'rejected'})",
+        branch=branch,
+    )
 
 
 def _format_review_comment(
@@ -909,6 +1001,11 @@ def _format_review_comment(
     This is what the submitter sees. It needs to be clear, actionable, and
     professional. We show the key metrics prominently, then the detailed
     breakdown, then the full claims verification.
+    
+    SECURITY (B1 second pass): The formatted comment is scrubbed for secrets before
+    being returned. Even if the LLM was somehow tricked into echoing a secret that
+    leaked into the prompt, the scrubber will redact it before it reaches the public
+    issue comment.
     """
     # Determine emoji for verdict (using standard Unicode, user didn't say no emojis)
     verdict_icon = "ACCEPTED" if verdict == "ACCEPTED" else "REJECTED"
@@ -995,12 +1092,25 @@ def _format_review_comment(
         "with Google Search grounding.*"
     )
     
-    return "\n".join(lines)
+    comment_text = "\n".join(lines)
+    
+    # SECURITY (B1 second pass): Scrub any secrets that may have leaked into the LLM output.
+    # This is defense-in-depth: even if a malicious submitter exploited a bug and got secrets
+    # into the prompt, and the LLM echoed them in the review, they will be redacted here
+    # before being posted publicly.
+    comment_text = scrub_all(comment_text)
+    
+    return comment_text
 
 
 def _format_error_comment(error_msg: str, paper_id: str) -> str:
-    """Format an error comment when the review pipeline fails."""
-    return (
+    """
+    Format an error comment when the review pipeline fails.
+    
+    SECURITY (B1 second pass): Error messages could potentially contain secrets if
+    they include stack traces, environment details, or API responses. Scrub before posting.
+    """
+    comment = (
         f"# AI Peer Review — Error\n\n"
         f"**Paper ID:** `{paper_id}`\n\n"
         f"The review pipeline encountered an error:\n\n"
@@ -1010,6 +1120,7 @@ def _format_error_comment(error_msg: str, paper_id: str) -> str:
         f"---\n"
         f"*This is an automated message from the Pubroot pipeline.*"
     )
+    return scrub_all(comment)
 
 
 def _score_to_bar(score: float) -> str:
