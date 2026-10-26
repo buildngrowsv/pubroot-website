@@ -94,13 +94,19 @@ jobs:
       # ---------------------------------------------------------------
       # Step 2: Regenerate indexes from papers on disk
       # ---------------------------------------------------------------
-      # This is the single source of truth for agent-index.json and
-      # priorroot-index.json. Running this before Hugo build ensures
-      # the indexes always match the published papers, preventing
-      # lost-update races from concurrent pipeline runs (Bug B3 fix).
+      # COMMENTED OUT (2026-10-26): The regenerate script categorizes papers  
+      # by file path (prior-art/ vs not), but the committed indexes use a
+      # different categorization. A blind regenerate would move 10 papers
+      # (2026-092, 094, 098, 104, 106, 110, 115, plus others) from
+      # agent-index.json to priorroot-index.json, which is unintended.
+      # 
+      # The fetch-fresh pattern in stage_6 already prevents lost-update races
+      # (Bug B3), so this step is not critical. When the categorization issue
+      # is resolved (either fix the generator or normalize the file paths),
+      # this step can be uncommented.
       # ---------------------------------------------------------------
-      - name: Regenerate paper indexes
-        run: python3 scripts/regenerate_agent_index_from_papers.py
+      # - name: Regenerate paper indexes
+      #   run: python3 scripts/regenerate_agent_index_from_papers.py
 
       # ---------------------------------------------------------------
       # Step 3: Install Hugo
