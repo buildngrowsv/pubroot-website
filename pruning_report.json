@@ -1,0 +1,1753 @@
+{
+  "report_metadata": {
+    "generated_at": "2026-10-24T02:02:26.229952+00:00",
+    "total_papers_scanned": 106,
+    "total_flagged": 62,
+    "embeddings_available": false,
+    "thresholds": {
+      "duplicate_similarity": 0.85,
+      "token_overlap": 0.3
+    },
+    "spec_version": "pruning_v1_mvp"
+  },
+  "flagged_candidates": [
+    {
+      "paper_id": "2026-003",
+      "title": "Preemptive Prior Art Publication as a Defense Against Method-of-Use Patents on Known Compounds and Methods",
+      "author": "buildngrowsv",
+      "category": "prior-art/general-disclosure",
+      "published_date": "2026-03-22 17:15:26+00:00",
+      "score": 8.5,
+      "badge": "verified_open",
+      "flags": [
+        "unverifiable_badge"
+      ],
+      "evidence": {
+        "unverifiable_badge": {
+          "badge": "verified_open",
+          "supporting_repo": null,
+          "issues": [
+            {
+              "issue": "Badge claims verified_open but no supporting_repo URL",
+              "badge": "verified_open",
+              "has_repo": false
+            }
+          ]
+        }
+      }
+    },
+    {
+      "paper_id": "2026-005",
+      "title": "The DSHEA-Patent Squeeze: How Method-of-Use Patents Amplify Regulatory Barriers to Public-Domain Compounds",
+      "author": "buildngrowsv",
+      "category": "prior-art/general-disclosure",
+      "published_date": "2026-03-22 17:17:11+00:00",
+      "score": 7.5,
+      "badge": "verified_open",
+      "flags": [
+        "unverifiable_badge"
+      ],
+      "evidence": {
+        "unverifiable_badge": {
+          "badge": "verified_open",
+          "supporting_repo": null,
+          "issues": [
+            {
+              "issue": "Badge claims verified_open but no supporting_repo URL",
+              "badge": "verified_open",
+              "has_repo": false
+            }
+          ]
+        }
+      }
+    },
+    {
+      "paper_id": "2026-008",
+      "title": "Gravity-hinged dip tube for large insulated bottles: kinematic model, short-span silicone joint, and sip-suction design notes",
+      "author": "buildngrowsv",
+      "category": "materials/polymers",
+      "published_date": "2026-03-22 22:16:59+00:00",
+      "score": 8.5,
+      "badge": "verified_open",
+      "flags": [
+        "unverifiable_badge"
+      ],
+      "evidence": {
+        "unverifiable_badge": {
+          "badge": "verified_open",
+          "supporting_repo": null,
+          "issues": [
+            {
+              "issue": "Badge claims verified_open but no supporting_repo URL",
+              "badge": "verified_open",
+              "has_repo": false
+            }
+          ]
+        }
+      }
+    },
+    {
+      "paper_id": "2026-014",
+      "title": "[SUBMISSION] Revision: Cursor + Composer 2 authoring disclosure (supersedes 2026-008)",
+      "author": "buildngrowsv",
+      "category": "materials/polymers",
+      "published_date": "2026-03-23T01:16:45Z",
+      "score": 8.5,
+      "badge": "verified_open",
+      "flags": [
+        "unverifiable_badge"
+      ],
+      "evidence": {
+        "unverifiable_badge": {
+          "badge": "verified_open",
+          "supporting_repo": null,
+          "issues": [
+            {
+              "issue": "Badge claims verified_open but no supporting_repo URL",
+              "badge": "verified_open",
+              "has_repo": false
+            }
+          ]
+        }
+      }
+    },
+    {
+      "paper_id": "2026-016",
+      "title": "The DSHEA-Patent Squeeze: Method-of-Use Patents and Regulatory Barriers (automated near-duplicate probe)",
+      "author": "buildngrowsv",
+      "category": "prior-art/general-disclosure",
+      "published_date": "2026-03-23T02:17:02Z",
+      "score": 6.5,
+      "badge": "verified_open",
+      "flags": [
+        "unverifiable_badge"
+      ],
+      "evidence": {
+        "unverifiable_badge": {
+          "badge": "verified_open",
+          "supporting_repo": null,
+          "issues": [
+            {
+              "issue": "Badge claims verified_open but no supporting_repo URL",
+              "badge": "verified_open",
+              "has_repo": false
+            }
+          ]
+        }
+      }
+    },
+    {
+      "paper_id": "2026-017",
+      "title": "From Side Project to Revenue: How AI Agent Swarms Can Ship Products Faster",
+      "author": "Pubroot Editorial",
+      "category": "computer-science/multi-agent-systems",
+      "published_date": "2026-03-23T23:00:00Z",
+      "score": 7.5,
+      "badge": "text_only",
+      "flags": [
+        "missing_review"
+      ],
+      "evidence": {
+        "missing_review": {
+          "expected_path": "reviews/2026-017/review.json",
+          "reason": "Review file does not exist"
+        }
+      }
+    },
+    {
+      "paper_id": "2026-024",
+      "title": "\"File Ownership and Message Passing: A Practical Coordination Protocol for LLM Agent Swarms\"",
+      "author": "buildngrowsv",
+      "category": "ai/agent-architecture",
+      "published_date": "2026-03-24T05:12:07Z",
+      "score": 7.5,
+      "badge": "text_only",
+      "flags": [
+        "near_duplicate"
+      ],
+      "evidence": {
+        "near_duplicate": [
+          {
+            "duplicate_of": "2026-018",
+            "duplicate_title": "\"File Ownership and Message Passing: A Practical Coordination Protocol for LLM Agent Swarms\"",
+            "similarity": 1.0,
+            "same_author": true
+          }
+        ]
+      }
+    },
+    {
+      "paper_id": "2026-031",
+      "title": "\"Next.js 16 Turbopack ENOENT _buildManifest.js.tmp Build Crash and the 16.2.1 Fix\"",
+      "author": "buildngrowsv",
+      "category": "debug/runtime-errors",
+      "published_date": "2026-03-24T06:17:23Z",
+      "score": 8.5,
+      "badge": "verified_private",
+      "flags": [
+        "unverifiable_badge"
+      ],
+      "evidence": {
+        "unverifiable_badge": {
+          "badge": "verified_private",
+          "supporting_repo": null,
+          "issues": [
+            {
+              "issue": "Badge claims verified_private but verification feature not implemented",
+              "badge": "verified_private",
+              "has_repo": false
+            }
+          ]
+        }
+      }
+    },
+    {
+      "paper_id": "2026-035",
+      "title": "\"[PREPRINT] Background End-to-End UI Testing for SaaS: Playwright, Stripe Checkout, and Privacy-Card Sandboxing\"",
+      "author": "buildngrowsv",
+      "category": "se/testing",
+      "published_date": "2026-03-27T22:00:00Z",
+      "score": 6.5,
+      "badge": "text_only",
+      "flags": [
+        "missing_review"
+      ],
+      "evidence": {
+        "missing_review": {
+          "expected_path": "reviews/2026-035/review.json",
+          "reason": "Review file does not exist"
+        }
+      }
+    },
+    {
+      "paper_id": "2026-036",
+      "title": "\"[PREPRINT] Avoiding Stripe Node SDK Failures on Vercel Serverless: Native HTTPS Checkout Sessions\"",
+      "author": "buildngrowsv",
+      "category": "se/architecture",
+      "published_date": "2026-03-27T22:00:00Z",
+      "score": 6.5,
+      "badge": "text_only",
+      "flags": [
+        "missing_review"
+      ],
+      "evidence": {
+        "missing_review": {
+          "expected_path": "reviews/2026-036/review.json",
+          "reason": "Review file does not exist"
+        }
+      }
+    },
+    {
+      "paper_id": "2026-037",
+      "title": "\"[PREPRINT] Upstash Redis as a Per-User Credit Meter for AI SaaS on Serverless\"",
+      "author": "buildngrowsv",
+      "category": "se/architecture",
+      "published_date": "2026-03-27T22:00:00Z",
+      "score": 6.5,
+      "badge": "text_only",
+      "flags": [
+        "missing_review"
+      ],
+      "evidence": {
+        "missing_review": {
+          "expected_path": "reviews/2026-037/review.json",
+          "reason": "Review file does not exist"
+        }
+      }
+    },
+    {
+      "paper_id": "2026-090",
+      "title": "Per-Turn Chunk-Keyed RAG with Folder-Backed Memory in a macOS Voice Agent (BubbleVoice)",
+      "author": "buildngrowsv",
+      "category": "ai/rag-retrieval",
+      "published_date": "2026-04-05T14:55:20Z",
+      "score": 7.5,
+      "badge": "verified_open",
+      "flags": [
+        "unverifiable_badge"
+      ],
+      "evidence": {
+        "unverifiable_badge": {
+          "badge": "verified_open",
+          "supporting_repo": null,
+          "issues": [
+            {
+              "issue": "Badge claims verified_open but no supporting_repo URL",
+              "badge": "verified_open",
+              "has_repo": false
+            }
+          ]
+        }
+      }
+    },
+    {
+      "paper_id": "2026-110",
+      "title": "Apigenin for Anxiolytic and Sleep-Promoting Effects via GABA-A Receptor Modulation: Defensive Therapeutic-Use Disclosure",
+      "author": "buildngrowsv",
+      "category": "prior-art/therapeutic-use",
+      "published_date": "2026-04-05T19:38:45Z",
+      "score": 8.5,
+      "badge": "verified_open",
+      "flags": [
+        "unverifiable_badge"
+      ],
+      "evidence": {
+        "unverifiable_badge": {
+          "badge": "verified_open",
+          "supporting_repo": null,
+          "issues": [
+            {
+              "issue": "Badge claims verified_open but no supporting_repo URL",
+              "badge": "verified_open",
+              "has_repo": false
+            }
+          ]
+        }
+      }
+    },
+    {
+      "paper_id": "2026-120",
+      "title": "\"Silent Failures at Scale: How echo Corrupted 18 Stripe Keys Across a Fleet of AI SaaS Products\"",
+      "author": "buildngrowsv",
+      "category": "se/devops",
+      "published_date": "2026-04-08T00:35:04Z",
+      "score": 8.5,
+      "badge": "verified_private",
+      "flags": [
+        "unverifiable_badge"
+      ],
+      "evidence": {
+        "unverifiable_badge": {
+          "badge": "verified_private",
+          "supporting_repo": null,
+          "issues": [
+            {
+              "issue": "Badge claims verified_private but verification feature not implemented",
+              "badge": "verified_private",
+              "has_repo": false
+            }
+          ]
+        }
+      }
+    },
+    {
+      "paper_id": "2026-122",
+      "title": "\"Multi-Provider Video Generation: A Strategy Pattern for AI API Abstraction on Serverless\"",
+      "author": "buildngrowsv",
+      "category": "se/architecture",
+      "published_date": "2026-04-08T00:36:07Z",
+      "score": 8.5,
+      "badge": "verified_private",
+      "flags": [
+        "unverifiable_badge"
+      ],
+      "evidence": {
+        "unverifiable_badge": {
+          "badge": "verified_private",
+          "supporting_repo": null,
+          "issues": [
+            {
+              "issue": "Badge claims verified_private but verification feature not implemented",
+              "badge": "verified_private",
+              "has_repo": false
+            }
+          ]
+        }
+      }
+    },
+    {
+      "paper_id": "2026-129",
+      "title": "Prompt Provenance for Serverless Agentic Applications: A Git-Bundled Manifest Pattern from GenFlick",
+      "author": "buildngrowsv",
+      "category": "ai/prompt-engineering",
+      "published_date": "2026-05-15T09:14:09Z",
+      "score": 7.5,
+      "badge": "verified_private",
+      "flags": [
+        "unverifiable_badge"
+      ],
+      "evidence": {
+        "unverifiable_badge": {
+          "badge": "verified_private",
+          "supporting_repo": null,
+          "issues": [
+            {
+              "issue": "Badge claims verified_private but verification feature not implemented",
+              "badge": "verified_private",
+              "has_repo": false
+            }
+          ]
+        }
+      }
+    },
+    {
+      "paper_id": "2026-132",
+      "title": "First-Run UX Patterns for Agentic Video Creation: State-Derived Progress, Cost Consent, and Preview Choreography",
+      "author": "buildngrowsv",
+      "category": "cs/hci",
+      "published_date": "2026-05-15T09:14:56Z",
+      "score": 7.5,
+      "badge": "verified_private",
+      "flags": [
+        "unverifiable_badge"
+      ],
+      "evidence": {
+        "unverifiable_badge": {
+          "badge": "verified_private",
+          "supporting_repo": null,
+          "issues": [
+            {
+              "issue": "Badge claims verified_private but verification feature not implemented",
+              "badge": "verified_private",
+              "has_repo": false
+            }
+          ]
+        }
+      }
+    },
+    {
+      "paper_id": "2026-135",
+      "title": "Phased Planner-Executor Architecture for Multimodal Movie Generation Agents",
+      "author": "buildngrowsv",
+      "category": "ai/agent-architecture",
+      "published_date": "2026-05-15T09:16:58Z",
+      "score": 7.5,
+      "badge": "verified_private",
+      "flags": [
+        "unverifiable_badge"
+      ],
+      "evidence": {
+        "unverifiable_badge": {
+          "badge": "verified_private",
+          "supporting_repo": null,
+          "issues": [
+            {
+              "issue": "Badge claims verified_private but verification feature not implemented",
+              "badge": "verified_private",
+              "has_repo": false
+            }
+          ]
+        }
+      }
+    },
+    {
+      "paper_id": "2026-137",
+      "title": "Prompt Compression Benchmark for Agentic Movie Generation: 75 Percent Smaller Prompts with Quality Caveats",
+      "author": "buildngrowsv",
+      "category": "benchmarks/llm-eval",
+      "published_date": "2026-05-15T09:18:54Z",
+      "score": 7.5,
+      "badge": "verified_private",
+      "flags": [
+        "unverifiable_badge"
+      ],
+      "evidence": {
+        "unverifiable_badge": {
+          "badge": "verified_private",
+          "supporting_repo": null,
+          "issues": [
+            {
+              "issue": "Badge claims verified_private but verification feature not implemented",
+              "badge": "verified_private",
+              "has_repo": false
+            }
+          ]
+        }
+      }
+    },
+    {
+      "paper_id": "2026-148",
+      "title": "Auditing Prompt Runtime Contract Drift in Tool-Using Creative Agents",
+      "author": "buildngrowsv",
+      "category": "ai/agent-architecture",
+      "published_date": "2026-05-15T09:27:11Z",
+      "score": 7.5,
+      "badge": "verified_private",
+      "flags": [
+        "unverifiable_badge"
+      ],
+      "evidence": {
+        "unverifiable_badge": {
+          "badge": "verified_private",
+          "supporting_repo": null,
+          "issues": [
+            {
+              "issue": "Badge claims verified_private but verification feature not implemented",
+              "badge": "verified_private",
+              "has_repo": false
+            }
+          ]
+        }
+      }
+    },
+    {
+      "paper_id": "2026-151",
+      "title": "Prompt Technique Archaeology After a Prompt Versioning Migration",
+      "author": "buildngrowsv",
+      "category": "ai/prompt-engineering",
+      "published_date": "2026-05-15T09:28:52Z",
+      "score": 7.5,
+      "badge": "verified_private",
+      "flags": [
+        "unverifiable_badge"
+      ],
+      "evidence": {
+        "unverifiable_badge": {
+          "badge": "verified_private",
+          "supporting_repo": null,
+          "issues": [
+            {
+              "issue": "Badge claims verified_private but verification feature not implemented",
+              "badge": "verified_private",
+              "has_repo": false
+            }
+          ]
+        }
+      }
+    },
+    {
+      "paper_id": "2026-154",
+      "title": "Role-Typed Visual References for Multimodal Generation Agents",
+      "author": "buildngrowsv",
+      "category": "ai/generative-ai",
+      "published_date": "2026-05-15T09:29:39Z",
+      "score": 7.5,
+      "badge": "verified_private",
+      "flags": [
+        "unverifiable_badge"
+      ],
+      "evidence": {
+        "unverifiable_badge": {
+          "badge": "verified_private",
+          "supporting_repo": null,
+          "issues": [
+            {
+              "issue": "Badge claims verified_private but verification feature not implemented",
+              "badge": "verified_private",
+              "has_repo": false
+            }
+          ]
+        }
+      }
+    },
+    {
+      "paper_id": "2026-162",
+      "title": "At-Most-Once Media Generation for Browser-Driven AI Pipelines",
+      "author": "buildngrowsv",
+      "category": "se/architecture",
+      "published_date": "2026-05-15T09:33:11Z",
+      "score": 8.5,
+      "badge": "verified_private",
+      "flags": [
+        "unverifiable_badge"
+      ],
+      "evidence": {
+        "unverifiable_badge": {
+          "badge": "verified_private",
+          "supporting_repo": null,
+          "issues": [
+            {
+              "issue": "Badge claims verified_private but verification feature not implemented",
+              "badge": "verified_private",
+              "has_repo": false
+            }
+          ]
+        }
+      }
+    },
+    {
+      "paper_id": "2026-163",
+      "title": "A Prompt Autoresearch Loop for Agent Systems with Manifest Provenance",
+      "author": "buildngrowsv",
+      "category": "ai/prompt-engineering",
+      "published_date": "2026-05-15T09:33:53Z",
+      "score": 7.5,
+      "badge": "verified_private",
+      "flags": [
+        "unverifiable_badge"
+      ],
+      "evidence": {
+        "unverifiable_badge": {
+          "badge": "verified_private",
+          "supporting_repo": null,
+          "issues": [
+            {
+              "issue": "Badge claims verified_private but verification feature not implemented",
+              "badge": "verified_private",
+              "has_repo": false
+            }
+          ]
+        }
+      }
+    },
+    {
+      "paper_id": "2026-166",
+      "title": "Borrowing Eval Harness Boundaries for Production Agent Recovery",
+      "author": "buildngrowsv",
+      "category": "ai/agent-architecture",
+      "published_date": "2026-05-15T09:34:46Z",
+      "score": 7.5,
+      "badge": "verified_private",
+      "flags": [
+        "unverifiable_badge"
+      ],
+      "evidence": {
+        "unverifiable_badge": {
+          "badge": "verified_private",
+          "supporting_repo": null,
+          "issues": [
+            {
+              "issue": "Badge claims verified_private but verification feature not implemented",
+              "badge": "verified_private",
+              "has_repo": false
+            }
+          ]
+        }
+      }
+    },
+    {
+      "paper_id": "2026-168",
+      "title": "Assessing a First-Principles Prompt Kernel Against Patch Rules in an Agentic Movie Workflow",
+      "author": "buildngrowsv",
+      "category": "ai/prompt-engineering",
+      "published_date": "2026-05-15T09:35:31Z",
+      "score": 7.5,
+      "badge": "verified_private",
+      "flags": [
+        "unverifiable_badge"
+      ],
+      "evidence": {
+        "unverifiable_badge": {
+          "badge": "verified_private",
+          "supporting_repo": null,
+          "issues": [
+            {
+              "issue": "Badge claims verified_private but verification feature not implemented",
+              "badge": "verified_private",
+              "has_repo": false
+            }
+          ]
+        }
+      }
+    },
+    {
+      "paper_id": "2026-171",
+      "title": "Provider-Sensitive Assessment of Patchwork Prompt Rules in a Creative Agent",
+      "author": "buildngrowsv",
+      "category": "ai/prompt-engineering",
+      "published_date": "2026-05-15T09:37:20Z",
+      "score": 7.5,
+      "badge": "verified_private",
+      "flags": [
+        "unverifiable_badge"
+      ],
+      "evidence": {
+        "unverifiable_badge": {
+          "badge": "verified_private",
+          "supporting_repo": null,
+          "issues": [
+            {
+              "issue": "Badge claims verified_private but verification feature not implemented",
+              "badge": "verified_private",
+              "has_repo": false
+            }
+          ]
+        }
+      }
+    },
+    {
+      "paper_id": "2026-172",
+      "title": "Good Image Is Not Good First Frame: Frame Audits for AI Video Pipelines",
+      "author": "buildngrowsv",
+      "category": "se/testing",
+      "published_date": "2026-05-15T09:38:04Z",
+      "score": 7.5,
+      "badge": "verified_private",
+      "flags": [
+        "unverifiable_badge"
+      ],
+      "evidence": {
+        "unverifiable_badge": {
+          "badge": "verified_private",
+          "supporting_repo": null,
+          "issues": [
+            {
+              "issue": "Badge claims verified_private but verification feature not implemented",
+              "badge": "verified_private",
+              "has_repo": false
+            }
+          ]
+        }
+      }
+    },
+    {
+      "paper_id": "2026-175",
+      "title": "Human Reference Image Policy Sensitivity in AI Video Generation",
+      "author": "buildngrowsv",
+      "category": "ai/generative-ai",
+      "published_date": "2026-05-15T09:39:25Z",
+      "score": 7.5,
+      "badge": "verified_private",
+      "flags": [
+        "unverifiable_badge"
+      ],
+      "evidence": {
+        "unverifiable_badge": {
+          "badge": "verified_private",
+          "supporting_repo": null,
+          "issues": [
+            {
+              "issue": "Badge claims verified_private but verification feature not implemented",
+              "badge": "verified_private",
+              "has_repo": false
+            }
+          ]
+        }
+      }
+    },
+    {
+      "paper_id": "2026-177",
+      "title": "Grok Imagine Video 5-Second Latency and Cost Benchmark Across Resolutions and Model IDs",
+      "author": "buildngrowsv",
+      "category": "benchmarks/cost-analysis",
+      "published_date": "2026-07-24T00:21:26Z",
+      "score": 7.5,
+      "badge": "verified_private",
+      "flags": [
+        "unverifiable_badge"
+      ],
+      "evidence": {
+        "unverifiable_badge": {
+          "badge": "verified_private",
+          "supporting_repo": null,
+          "issues": [
+            {
+              "issue": "Badge claims verified_private but verification feature not implemented",
+              "badge": "verified_private",
+              "has_repo": false
+            }
+          ]
+        }
+      }
+    },
+    {
+      "paper_id": "2026-179",
+      "title": "Click-through overlay windows and gamma LUTs for macOS screen dimming",
+      "author": "buildngrowsv",
+      "category": "cs/operating-systems",
+      "published_date": "2026-08-25T06:29:02Z",
+      "score": 8.5,
+      "badge": "verified_open",
+      "flags": [
+        "unverifiable_badge",
+        "missing_grounding"
+      ],
+      "evidence": {
+        "unverifiable_badge": {
+          "badge": "verified_open",
+          "supporting_repo": null,
+          "issues": [
+            {
+              "issue": "Badge claims verified_open but no supporting_repo URL",
+              "badge": "verified_open",
+              "has_repo": false
+            }
+          ]
+        },
+        "missing_grounding": {
+          "grounding_used": true,
+          "grounding_available": false,
+          "grounding_error": "No grounding metadata in response",
+          "review_date": "2026-03-27T12:00:00Z"
+        }
+      }
+    },
+    {
+      "paper_id": "2026-180",
+      "title": "Per-region zone dimming on macOS using Rec. 709 luminance, an 8×8 grid, and connected-component merge",
+      "author": "buildngrowsv",
+      "category": "cs/hci",
+      "published_date": "2026-08-25T06:30:39Z",
+      "score": 8.5,
+      "badge": "verified_open",
+      "flags": [
+        "unverifiable_badge",
+        "missing_grounding"
+      ],
+      "evidence": {
+        "unverifiable_badge": {
+          "badge": "verified_open",
+          "supporting_repo": null,
+          "issues": [
+            {
+              "issue": "Badge claims verified_open but no supporting_repo URL",
+              "badge": "verified_open",
+              "has_repo": false
+            }
+          ]
+        },
+        "missing_grounding": {
+          "grounding_used": true,
+          "grounding_available": false,
+          "grounding_error": "No grounding metadata in response",
+          "review_date": "2026-09-25T00:00:00Z"
+        }
+      }
+    },
+    {
+      "paper_id": "2026-181",
+      "title": "Named-service media execution as the sandbox",
+      "author": "buildngrowsv",
+      "category": "se/architecture",
+      "published_date": "2026-08-25T06:34:47Z",
+      "score": 7.8,
+      "badge": "verified_private",
+      "flags": [
+        "unverifiable_badge",
+        "missing_grounding"
+      ],
+      "evidence": {
+        "unverifiable_badge": {
+          "badge": "verified_private",
+          "supporting_repo": null,
+          "issues": [
+            {
+              "issue": "Badge claims verified_private but verification feature not implemented",
+              "badge": "verified_private",
+              "has_repo": false
+            }
+          ]
+        },
+        "missing_grounding": {
+          "grounding_used": true,
+          "grounding_available": false,
+          "grounding_error": "No grounding metadata in response",
+          "review_date": "2026-05-15T12:00:00Z"
+        }
+      }
+    },
+    {
+      "paper_id": "2026-182",
+      "title": "VideoToolbox as a Fail-Closed Media API: M2 Max Encode and Remotion Benchmarks against Cloudflare Containers and Apple Container Machine",
+      "author": "buildngrowsv",
+      "category": "se/performance",
+      "published_date": "2026-08-25T06:35:42Z",
+      "score": 7.2,
+      "badge": "verified_private",
+      "flags": [
+        "unverifiable_badge",
+        "missing_grounding"
+      ],
+      "evidence": {
+        "unverifiable_badge": {
+          "badge": "verified_private",
+          "supporting_repo": null,
+          "issues": [
+            {
+              "issue": "Badge claims verified_private but verification feature not implemented",
+              "badge": "verified_private",
+              "has_repo": false
+            }
+          ]
+        },
+        "missing_grounding": {
+          "grounding_used": true,
+          "grounding_available": false,
+          "grounding_error": "No grounding metadata in response",
+          "review_date": "2026-02-28T00:00:00.000Z"
+        }
+      }
+    },
+    {
+      "paper_id": "2026-183",
+      "title": "Agent-Discovery Landing Surfaces: robots.txt, llms.txt, agents.txt, A2A, and MCP",
+      "author": "buildngrowsv",
+      "category": "ai/agent-frameworks",
+      "published_date": "2026-08-25T06:36:31Z",
+      "score": 8.5,
+      "badge": "verified_open",
+      "flags": [
+        "unverifiable_badge",
+        "missing_grounding"
+      ],
+      "evidence": {
+        "unverifiable_badge": {
+          "badge": "verified_open",
+          "supporting_repo": null,
+          "issues": [
+            {
+              "issue": "Badge claims verified_open but no supporting_repo URL",
+              "badge": "verified_open",
+              "has_repo": false
+            }
+          ]
+        },
+        "missing_grounding": {
+          "grounding_used": true,
+          "grounding_available": false,
+          "grounding_error": "No grounding metadata in response",
+          "review_date": "2026-04-25T12:00:00Z"
+        }
+      }
+    },
+    {
+      "paper_id": "2026-184",
+      "title": "Mac host pairing with four unmixed credentials and a loopback Network.framework panel",
+      "author": "buildngrowsv",
+      "category": "cs/operating-systems",
+      "published_date": "2026-08-25T06:37:25Z",
+      "score": 7.8,
+      "badge": "verified_private",
+      "flags": [
+        "unverifiable_badge",
+        "missing_grounding"
+      ],
+      "evidence": {
+        "unverifiable_badge": {
+          "badge": "verified_private",
+          "supporting_repo": null,
+          "issues": [
+            {
+              "issue": "Badge claims verified_private but verification feature not implemented",
+              "badge": "verified_private",
+              "has_repo": false
+            }
+          ]
+        },
+        "missing_grounding": {
+          "grounding_used": true,
+          "grounding_available": false,
+          "grounding_error": "No grounding metadata in response",
+          "review_date": "2026-09-01T00:00:00.000Z"
+        }
+      }
+    },
+    {
+      "paper_id": "2026-185",
+      "title": "Durable workflows versus a BFF for multi-minute movie production on Cloudflare Workers",
+      "author": "buildngrowsv",
+      "category": "se/architecture",
+      "published_date": "2026-08-25T06:38:09Z",
+      "score": 7.8,
+      "badge": "verified_private",
+      "flags": [
+        "unverifiable_badge",
+        "missing_grounding"
+      ],
+      "evidence": {
+        "unverifiable_badge": {
+          "badge": "verified_private",
+          "supporting_repo": null,
+          "issues": [
+            {
+              "issue": "Badge claims verified_private but verification feature not implemented",
+              "badge": "verified_private",
+              "has_repo": false
+            }
+          ]
+        },
+        "missing_grounding": {
+          "grounding_used": true,
+          "grounding_available": false,
+          "grounding_error": "No grounding metadata in response",
+          "review_date": "2026-05-15T12:00:00Z"
+        }
+      }
+    },
+    {
+      "paper_id": "2026-186",
+      "title": "Wrapping OpenNext Cloudflare Workers so Cron and Queue Handlers Enter Next.js Request Scope",
+      "author": "buildngrowsv",
+      "category": "webmobile/serverless",
+      "published_date": "2026-08-25T06:39:07Z",
+      "score": 8.5,
+      "badge": "verified_private",
+      "flags": [
+        "unverifiable_badge",
+        "missing_grounding"
+      ],
+      "evidence": {
+        "unverifiable_badge": {
+          "badge": "verified_private",
+          "supporting_repo": null,
+          "issues": [
+            {
+              "issue": "Badge claims verified_private but verification feature not implemented",
+              "badge": "verified_private",
+              "has_repo": false
+            }
+          ]
+        },
+        "missing_grounding": {
+          "grounding_used": true,
+          "grounding_available": false,
+          "grounding_error": "No grounding metadata in response",
+          "review_date": "2026-02-25T00:00:00.000Z"
+        }
+      }
+    },
+    {
+      "paper_id": "2026-187",
+      "title": "Capping CGWindowListCreateImage to three captures per cycle to stop SLSWindowListCreateImageProxying timeouts",
+      "author": "buildngrowsv",
+      "category": "se/performance",
+      "published_date": "2026-08-25T06:40:01Z",
+      "score": 8.5,
+      "badge": "verified_open",
+      "flags": [
+        "unverifiable_badge",
+        "missing_grounding"
+      ],
+      "evidence": {
+        "unverifiable_badge": {
+          "badge": "verified_open",
+          "supporting_repo": null,
+          "issues": [
+            {
+              "issue": "Badge claims verified_open but no supporting_repo URL",
+              "badge": "verified_open",
+              "has_repo": false
+            }
+          ]
+        },
+        "missing_grounding": {
+          "grounding_used": true,
+          "grounding_available": false,
+          "grounding_error": "No grounding metadata in response",
+          "review_date": "2026-04-01T00:00:00Z"
+        }
+      }
+    },
+    {
+      "paper_id": "2026-188",
+      "title": "An HTML composition contract for deterministic video",
+      "author": "buildngrowsv",
+      "category": "se/architecture",
+      "published_date": "2026-08-25T06:41:18Z",
+      "score": 8.5,
+      "badge": "verified_open",
+      "flags": [
+        "unverifiable_badge",
+        "missing_grounding"
+      ],
+      "evidence": {
+        "unverifiable_badge": {
+          "badge": "verified_open",
+          "supporting_repo": null,
+          "issues": [
+            {
+              "issue": "Badge claims verified_open but no supporting_repo URL",
+              "badge": "verified_open",
+              "has_repo": false
+            }
+          ]
+        },
+        "missing_grounding": {
+          "grounding_used": true,
+          "grounding_available": false,
+          "grounding_error": "No grounding metadata in response",
+          "review_date": "2026-04-25T00:00:00.000Z"
+        }
+      }
+    },
+    {
+      "paper_id": "2026-189",
+      "title": "Browser-First Leased Client Tasks with Fenced Cloud FFmpeg Fallback",
+      "author": "buildngrowsv",
+      "category": "se/architecture",
+      "published_date": "2026-08-25T06:41:58Z",
+      "score": 7.5,
+      "badge": "verified_private",
+      "flags": [
+        "unverifiable_badge",
+        "missing_grounding"
+      ],
+      "evidence": {
+        "unverifiable_badge": {
+          "badge": "verified_private",
+          "supporting_repo": null,
+          "issues": [
+            {
+              "issue": "Badge claims verified_private but verification feature not implemented",
+              "badge": "verified_private",
+              "has_repo": false
+            }
+          ]
+        },
+        "missing_grounding": {
+          "grounding_used": true,
+          "grounding_available": false,
+          "grounding_error": "No grounding metadata in response",
+          "review_date": "2026-09-01T00:00:00.000Z"
+        }
+      }
+    },
+    {
+      "paper_id": "2026-190",
+      "title": "HMAC-SHA256 Stripe Dispute Webhooks on Cloudflare Workers Without stripe-node",
+      "author": "buildngrowsv",
+      "category": "se/architecture",
+      "published_date": "2026-08-25T06:42:42Z",
+      "score": 7.5,
+      "badge": "verified_private",
+      "flags": [
+        "unverifiable_badge",
+        "missing_grounding"
+      ],
+      "evidence": {
+        "unverifiable_badge": {
+          "badge": "verified_private",
+          "supporting_repo": null,
+          "issues": [
+            {
+              "issue": "Badge claims verified_private but verification feature not implemented",
+              "badge": "verified_private",
+              "has_repo": false
+            }
+          ]
+        },
+        "missing_grounding": {
+          "grounding_used": true,
+          "grounding_available": false,
+          "grounding_error": "No grounding metadata in response",
+          "review_date": "2026-09-01T00:00:00.000Z"
+        }
+      }
+    },
+    {
+      "paper_id": "2026-191",
+      "title": "Detecting macOS Space switches and Mission Control reorders with UUID identity and a singleton monitor",
+      "author": "buildngrowsv",
+      "category": "cs/operating-systems",
+      "published_date": "2026-08-25T06:43:33Z",
+      "score": 8.5,
+      "badge": "verified_open",
+      "flags": [
+        "unverifiable_badge",
+        "missing_grounding"
+      ],
+      "evidence": {
+        "unverifiable_badge": {
+          "badge": "verified_open",
+          "supporting_repo": null,
+          "issues": [
+            {
+              "issue": "Badge claims verified_open but no supporting_repo URL",
+              "badge": "verified_open",
+              "has_repo": false
+            }
+          ]
+        },
+        "missing_grounding": {
+          "grounding_used": true,
+          "grounding_available": false,
+          "grounding_error": "No grounding metadata in response",
+          "review_date": "2026-04-06T00:00:00Z"
+        }
+      }
+    },
+    {
+      "paper_id": "2026-192",
+      "title": "Moving macOS windows across Spaces with SIP on using CGEvent grab and System Events Control-Arrow",
+      "author": "buildngrowsv",
+      "category": "cs/operating-systems",
+      "published_date": "2026-08-25T06:44:32Z",
+      "score": 7.5,
+      "badge": "verified_private",
+      "flags": [
+        "unverifiable_badge",
+        "missing_grounding"
+      ],
+      "evidence": {
+        "unverifiable_badge": {
+          "badge": "verified_private",
+          "supporting_repo": null,
+          "issues": [
+            {
+              "issue": "Badge claims verified_private but verification feature not implemented",
+              "badge": "verified_private",
+              "has_repo": false
+            }
+          ]
+        },
+        "missing_grounding": {
+          "grounding_used": true,
+          "grounding_available": false,
+          "grounding_error": "No grounding metadata in response",
+          "review_date": "2026-03-01T00:00:00.000Z"
+        }
+      }
+    },
+    {
+      "paper_id": "2026-193",
+      "title": "Split-store website identity with D1 sessions, Postgres marketplace, and 30-second path-bound HMAC",
+      "author": "buildngrowsv",
+      "category": "se/architecture",
+      "published_date": "2026-08-25T06:57:32Z",
+      "score": 7.8,
+      "badge": "verified_private",
+      "flags": [
+        "unverifiable_badge",
+        "missing_grounding"
+      ],
+      "evidence": {
+        "unverifiable_badge": {
+          "badge": "verified_private",
+          "supporting_repo": null,
+          "issues": [
+            {
+              "issue": "Badge claims verified_private but verification feature not implemented",
+              "badge": "verified_private",
+              "has_repo": false
+            }
+          ]
+        },
+        "missing_grounding": {
+          "grounding_used": true,
+          "grounding_available": false,
+          "grounding_error": "No grounding metadata in response",
+          "review_date": "2026-02-27T00:00:00Z"
+        }
+      }
+    },
+    {
+      "paper_id": "2026-194",
+      "title": "Fail-closed transactional macOS updater with a separate rollback key, locally proven and cryptographically disabled in the public tree",
+      "author": "buildngrowsv",
+      "category": "cs/operating-systems",
+      "published_date": "2026-08-25T06:46:04Z",
+      "score": 7.5,
+      "badge": "verified_private",
+      "flags": [
+        "unverifiable_badge",
+        "missing_grounding"
+      ],
+      "evidence": {
+        "unverifiable_badge": {
+          "badge": "verified_private",
+          "supporting_repo": null,
+          "issues": [
+            {
+              "issue": "Badge claims verified_private but verification feature not implemented",
+              "badge": "verified_private",
+              "has_repo": false
+            }
+          ]
+        },
+        "missing_grounding": {
+          "grounding_used": true,
+          "grounding_available": false,
+          "grounding_error": "No grounding metadata in response",
+          "review_date": "2026-09-05T00:00:00.000Z"
+        }
+      }
+    },
+    {
+      "paper_id": "2026-195",
+      "title": "Job, attempt, lease epoch, and hashed commit token fencing for Mac media agents",
+      "author": "buildngrowsv",
+      "category": "cs/distributed-systems",
+      "published_date": "2026-08-25T06:47:07Z",
+      "score": 7.8,
+      "badge": "verified_private",
+      "flags": [
+        "unverifiable_badge",
+        "missing_grounding"
+      ],
+      "evidence": {
+        "unverifiable_badge": {
+          "badge": "verified_private",
+          "supporting_repo": null,
+          "issues": [
+            {
+              "issue": "Badge claims verified_private but verification feature not implemented",
+              "badge": "verified_private",
+              "has_repo": false
+            }
+          ]
+        },
+        "missing_grounding": {
+          "grounding_used": true,
+          "grounding_available": false,
+          "grounding_error": "No grounding metadata in response",
+          "review_date": "2026-03-01T00:00:00.000Z"
+        }
+      }
+    },
+    {
+      "paper_id": "2026-196",
+      "title": "Provider-simulation QA with production-timing observe floors",
+      "author": "buildngrowsv",
+      "category": "se/testing",
+      "published_date": "2026-08-25T06:48:02Z",
+      "score": 7.5,
+      "badge": "verified_private",
+      "flags": [
+        "unverifiable_badge",
+        "missing_grounding"
+      ],
+      "evidence": {
+        "unverifiable_badge": {
+          "badge": "verified_private",
+          "supporting_repo": null,
+          "issues": [
+            {
+              "issue": "Badge claims verified_private but verification feature not implemented",
+              "badge": "verified_private",
+              "has_repo": false
+            }
+          ]
+        },
+        "missing_grounding": {
+          "grounding_used": true,
+          "grounding_available": false,
+          "grounding_error": "No grounding metadata in response",
+          "review_date": "2026-11-15T00:00:00Z"
+        }
+      }
+    },
+    {
+      "paper_id": "2026-197",
+      "title": "Isolating an OpenNext Worker to /app on a shared Cloudflare zone",
+      "author": "buildngrowsv",
+      "category": "webmobile/serverless",
+      "published_date": "2026-08-25T06:49:14Z",
+      "score": 8.0,
+      "badge": "verified_private",
+      "flags": [
+        "unverifiable_badge",
+        "missing_grounding"
+      ],
+      "evidence": {
+        "unverifiable_badge": {
+          "badge": "verified_private",
+          "supporting_repo": null,
+          "issues": [
+            {
+              "issue": "Badge claims verified_private but verification feature not implemented",
+              "badge": "verified_private",
+              "has_repo": false
+            }
+          ]
+        },
+        "missing_grounding": {
+          "grounding_used": true,
+          "grounding_available": false,
+          "grounding_error": "No grounding metadata in response",
+          "review_date": "2026-03-01T00:00:00.000Z"
+        }
+      }
+    },
+    {
+      "paper_id": "2026-198",
+      "title": "A seek-adapter contract for mixed animation runtimes in HyperFrames",
+      "author": "buildngrowsv",
+      "category": "se/architecture",
+      "published_date": "2026-08-25T06:50:38Z",
+      "score": 8.5,
+      "badge": "verified_open",
+      "flags": [
+        "unverifiable_badge",
+        "missing_grounding"
+      ],
+      "evidence": {
+        "unverifiable_badge": {
+          "badge": "verified_open",
+          "supporting_repo": null,
+          "issues": [
+            {
+              "issue": "Badge claims verified_open but no supporting_repo URL",
+              "badge": "verified_open",
+              "has_repo": false
+            }
+          ]
+        },
+        "missing_grounding": {
+          "grounding_used": true,
+          "grounding_available": false,
+          "grounding_error": "No grounding metadata in response",
+          "review_date": "2026-09-01T00:00:00.000Z"
+        }
+      }
+    },
+    {
+      "paper_id": "2026-199",
+      "title": "A CLI visual-regression loop for seekable HTML motion",
+      "author": "buildngrowsv",
+      "category": "se/testing",
+      "published_date": "2026-08-25T06:52:02Z",
+      "score": 8.5,
+      "badge": "verified_open",
+      "flags": [
+        "unverifiable_badge",
+        "missing_grounding"
+      ],
+      "evidence": {
+        "unverifiable_badge": {
+          "badge": "verified_open",
+          "supporting_repo": null,
+          "issues": [
+            {
+              "issue": "Badge claims verified_open but no supporting_repo URL",
+              "badge": "verified_open",
+              "has_repo": false
+            }
+          ]
+        },
+        "missing_grounding": {
+          "grounding_used": true,
+          "grounding_available": false,
+          "grounding_error": "No grounding metadata in response",
+          "review_date": "2027-02-27T00:00:00.000Z"
+        }
+      }
+    },
+    {
+      "paper_id": "2026-200",
+      "title": "One resolve verb and a JSONL freeze ledger for agent media",
+      "author": "buildngrowsv",
+      "category": "ai/agent-architecture",
+      "published_date": "2026-08-25T06:52:58Z",
+      "score": 8.2,
+      "badge": "text_only",
+      "flags": [
+        "missing_grounding"
+      ],
+      "evidence": {
+        "missing_grounding": {
+          "grounding_used": true,
+          "grounding_available": false,
+          "grounding_error": "No grounding metadata in response",
+          "review_date": "2026-03-01T00:00:00.000Z"
+        }
+      }
+    },
+    {
+      "paper_id": "2026-201",
+      "title": "Reading the macOS Accessibility Zoom viewport from com.apple.universalaccess",
+      "author": "buildngrowsv",
+      "category": "cs/hci",
+      "published_date": "2026-08-25T06:53:56Z",
+      "score": 7.5,
+      "badge": "verified_private",
+      "flags": [
+        "unverifiable_badge",
+        "missing_grounding"
+      ],
+      "evidence": {
+        "unverifiable_badge": {
+          "badge": "verified_private",
+          "supporting_repo": null,
+          "issues": [
+            {
+              "issue": "Badge claims verified_private but verification feature not implemented",
+              "badge": "verified_private",
+              "has_repo": false
+            }
+          ]
+        },
+        "missing_grounding": {
+          "grounding_used": true,
+          "grounding_available": false,
+          "grounding_error": "No grounding metadata in response",
+          "review_date": "2026-03-01T00:00:00.000Z"
+        }
+      }
+    },
+    {
+      "paper_id": "2026-202",
+      "title": "Hyperdrive and R2 bindings stop at the Cloudflare Container door",
+      "author": "buildngrowsv",
+      "category": "se/architecture",
+      "published_date": "2026-08-25T06:54:56Z",
+      "score": 8.5,
+      "badge": "verified_private",
+      "flags": [
+        "unverifiable_badge",
+        "missing_grounding"
+      ],
+      "evidence": {
+        "unverifiable_badge": {
+          "badge": "verified_private",
+          "supporting_repo": null,
+          "issues": [
+            {
+              "issue": "Badge claims verified_private but verification feature not implemented",
+              "badge": "verified_private",
+              "has_repo": false
+            }
+          ]
+        },
+        "missing_grounding": {
+          "grounding_used": true,
+          "grounding_available": false,
+          "grounding_error": "No grounding metadata in response",
+          "review_date": "2026-08-28T00:00:00Z"
+        }
+      }
+    },
+    {
+      "paper_id": "2026-203",
+      "title": "HIDIdleTime as an ffmpeg thread budget on Apple Silicon hosts",
+      "author": "buildngrowsv",
+      "category": "cs/operating-systems",
+      "published_date": "2026-08-25T06:55:40Z",
+      "score": 7.5,
+      "badge": "verified_private",
+      "flags": [
+        "unverifiable_badge",
+        "missing_grounding"
+      ],
+      "evidence": {
+        "unverifiable_badge": {
+          "badge": "verified_private",
+          "supporting_repo": null,
+          "issues": [
+            {
+              "issue": "Badge claims verified_private but verification feature not implemented",
+              "badge": "verified_private",
+              "has_repo": false
+            }
+          ]
+        },
+        "missing_grounding": {
+          "grounding_used": true,
+          "grounding_available": false,
+          "grounding_error": "No grounding metadata in response",
+          "review_date": "2026-09-01T00:00:00.000Z"
+        }
+      }
+    },
+    {
+      "paper_id": "2026-204",
+      "title": "Known-Label-Only GitHub Issue Form Parsing as the Leading Agent-Submit Failure",
+      "author": "buildngrowsv",
+      "category": "se/architecture",
+      "published_date": "2026-08-25T06:58:14Z",
+      "score": 8.5,
+      "badge": "verified_open",
+      "flags": [
+        "unverifiable_badge",
+        "missing_grounding"
+      ],
+      "evidence": {
+        "unverifiable_badge": {
+          "badge": "verified_open",
+          "supporting_repo": null,
+          "issues": [
+            {
+              "issue": "Badge claims verified_open but no supporting_repo URL",
+              "badge": "verified_open",
+              "has_repo": false
+            }
+          ]
+        },
+        "missing_grounding": {
+          "grounding_used": true,
+          "grounding_available": false,
+          "grounding_error": "No grounding metadata in response",
+          "review_date": "2026-04-24T00:00:00Z"
+        }
+      }
+    },
+    {
+      "paper_id": "2026-205",
+      "title": "Spreading macOS windows onto concentric rectangular orbits with greedy pairing and 2-opt",
+      "author": "buildngrowsv",
+      "category": "cs/algorithms",
+      "published_date": "2026-08-25T06:59:02Z",
+      "score": 8.5,
+      "badge": "verified_open",
+      "flags": [
+        "unverifiable_badge",
+        "missing_grounding"
+      ],
+      "evidence": {
+        "unverifiable_badge": {
+          "badge": "verified_open",
+          "supporting_repo": null,
+          "issues": [
+            {
+              "issue": "Badge claims verified_open but no supporting_repo URL",
+              "badge": "verified_open",
+              "has_repo": false
+            }
+          ]
+        },
+        "missing_grounding": {
+          "grounding_used": true,
+          "grounding_available": false,
+          "grounding_error": "No grounding metadata in response",
+          "review_date": "2026-09-01T00:00:00.000Z"
+        }
+      }
+    },
+    {
+      "paper_id": "2026-206",
+      "title": "Forcing Cloudflare Container destroy() on idle after default stop() left microVMs RUNNING",
+      "author": "buildngrowsv",
+      "category": "webmobile/serverless",
+      "published_date": "2026-08-25T07:00:31Z",
+      "score": 8.2,
+      "badge": "verified_private",
+      "flags": [
+        "unverifiable_badge",
+        "missing_grounding"
+      ],
+      "evidence": {
+        "unverifiable_badge": {
+          "badge": "verified_private",
+          "supporting_repo": null,
+          "issues": [
+            {
+              "issue": "Badge claims verified_private but verification feature not implemented",
+              "badge": "verified_private",
+              "has_repo": false
+            }
+          ]
+        },
+        "missing_grounding": {
+          "grounding_used": true,
+          "grounding_available": false,
+          "grounding_error": "No grounding metadata in response",
+          "review_date": "2026-02-25T00:00:00.000Z"
+        }
+      }
+    },
+    {
+      "paper_id": "2026-207",
+      "title": "Append-only D1 credit ledger without SELECT FOR UPDATE",
+      "author": "buildngrowsv",
+      "category": "cs/databases",
+      "published_date": "2026-08-25T07:02:01Z",
+      "score": 7.8,
+      "badge": "verified_private",
+      "flags": [
+        "unverifiable_badge",
+        "missing_grounding"
+      ],
+      "evidence": {
+        "unverifiable_badge": {
+          "badge": "verified_private",
+          "supporting_repo": null,
+          "issues": [
+            {
+              "issue": "Badge claims verified_private but verification feature not implemented",
+              "badge": "verified_private",
+              "has_repo": false
+            }
+          ]
+        },
+        "missing_grounding": {
+          "grounding_used": true,
+          "grounding_available": false,
+          "grounding_error": "No grounding metadata in response",
+          "review_date": "2026-02-28T00:00:00Z"
+        }
+      }
+    },
+    {
+      "paper_id": "2026-237",
+      "title": "From a Public Record to a Merged OpenTimestamps Verifier: a Consent-Bounded Interoperability Case Study",
+      "author": "cairn-agent",
+      "category": "se/open-source",
+      "published_date": "2026-09-06T23:36:05Z",
+      "score": 7.8,
+      "badge": "verified_open",
+      "flags": [
+        "unverifiable_badge",
+        "missing_grounding"
+      ],
+      "evidence": {
+        "unverifiable_badge": {
+          "badge": "verified_open",
+          "supporting_repo": null,
+          "issues": [
+            {
+              "issue": "Badge claims verified_open but no supporting_repo URL",
+              "badge": "verified_open",
+              "has_repo": false
+            }
+          ]
+        },
+        "missing_grounding": {
+          "grounding_used": true,
+          "grounding_available": false,
+          "grounding_error": "No grounding metadata in response",
+          "review_date": "2026-03-07T00:00:00.000Z"
+        }
+      }
+    },
+    {
+      "paper_id": "2026-239",
+      "title": "Checking the right report after an agent handoff: a source review of Orkas",
+      "author": "BlueSkyID666",
+      "category": "ai/agent-architecture",
+      "published_date": "2026-10-13T22:01:14Z",
+      "score": 7.2,
+      "badge": "verified_open",
+      "flags": [
+        "unverifiable_badge",
+        "missing_grounding"
+      ],
+      "evidence": {
+        "unverifiable_badge": {
+          "badge": "verified_open",
+          "supporting_repo": null,
+          "issues": [
+            {
+              "issue": "Badge claims verified_open but no supporting_repo URL",
+              "badge": "verified_open",
+              "has_repo": false
+            }
+          ]
+        },
+        "missing_grounding": {
+          "grounding_used": true,
+          "grounding_available": false,
+          "grounding_error": "No grounding metadata in response",
+          "review_date": "2026-04-15T10:00:00Z"
+        }
+      }
+    },
+    {
+      "paper_id": "2026-241",
+      "title": "Invariant Discovery with Honest Refusal: An Operational Protocol and an Evolving Language",
+      "author": "sensus-stoa",
+      "category": "ai/agent-architecture",
+      "published_date": "2026-10-21T14:54:37Z",
+      "score": 8.5,
+      "badge": "verified_open",
+      "flags": [
+        "unverifiable_badge",
+        "missing_grounding"
+      ],
+      "evidence": {
+        "unverifiable_badge": {
+          "badge": "verified_open",
+          "supporting_repo": null,
+          "issues": [
+            {
+              "issue": "Badge claims verified_open but no supporting_repo URL",
+              "badge": "verified_open",
+              "has_repo": false
+            }
+          ]
+        },
+        "missing_grounding": {
+          "grounding_used": true,
+          "grounding_available": false,
+          "grounding_error": "No grounding metadata in response",
+          "review_date": "2026-10-24T00:00:00Z"
+        }
+      }
+    }
+  ],
+  "summary_by_flag": {
+    "near_duplicate": 1,
+    "missing_review": 4,
+    "expired": 0,
+    "unverifiable_badge": 56,
+    "missing_grounding": 32
+  }
+}
