@@ -210,7 +210,24 @@ def post_review_and_decide(
             )
 
             gh.add_labels(issue_number, ["accepted", "published"])
-            _remove_labels_if_present(gh, issue_number, ["review-error", "publish-failed"])
+            _remove_labels_if_present(gh, issue_number, ["review-error", "publish-failed", "pending-review"])
+            
+            # FIX FOR BUG B9: Close accepted issues with a link to the published paper.
+            # This keeps the issue list clean and makes it clear the submission is complete.
+            # The paper URL follows the pattern: https://pubroot.com/papers/{journal}/{topic}/{slug}/
+            # We can derive it from the manifest or construct it from the paper metadata.
+            try:
+                close_comment = (
+                    f"✅ **Accepted and Published**\n\n"
+                    f"Your submission has been published as paper **{paper_id}**.\n\n"
+                    f"View it at: https://pubroot.com/papers/ (search for {paper_id})\n\n"
+                    f"Thank you for contributing to Pubroot!"
+                )
+                gh.post_comment(issue_number, close_comment)
+                gh.close_issue(issue_number)
+            except Exception as close_err:
+                # Don't fail the whole pipeline if closing fails
+                print(f"WARNING: Failed to close accepted issue: {close_err}")
 
             return {
                 "success": True,
@@ -255,6 +272,7 @@ def post_review_and_decide(
         errors.append(f"Failed to update contributors.json: {str(e)}")
 
     gh.add_labels(issue_number, ["rejected"])
+    _remove_labels_if_present(gh, issue_number, ["pending-review"])
     gh.close_issue(issue_number)
     
     return {
