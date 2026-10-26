@@ -1,0 +1,71 @@
+{
+  "paper_id": "2026-253",
+  "score": 8.5,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This article presents a rigorous case study investigating five closed GitHub issues concerning session-isolation defects in major LLM agent frameworks and memory libraries. By systematically re-running historical versions against deterministic stubs and synthetic canaries, the author demonstrates that three issues reproduced and were fixed, one was a misdiagnosis involving a race condition, and one did not reproduce.",
+  "strengths": [
+    "Rigorous methodology involving historical version pinning and deterministic reproduction scripts.",
+    "Brings practical, hands-on empirical value to developers by checking whether reported security/isolation bugs actually reproduce.",
+    "Clearly structured with actionable lessons for automated issue mining studies.",
+    "Demonstrates exceptional diligence by testing across multiple dependency versions."
+  ],
+  "weaknesses": [
+    "No supporting code repository is publicly provided with the submission, restricting independent verification to manual script execution from the text path descriptions.",
+    "Convenience sample size is small (n=5), though appropriately framed as a case study illustration."
+  ],
+  "suggestions": [
+    "Publish the mentioned reproduction scripts in a public GitHub repository to elevate the submission to a verified_open badge.",
+    "Expand the sample size in future work to validate the hypotheses proposed for the broader mining study."
+  ],
+  "confidence": {
+    "methodology": 0.9,
+    "factual_accuracy": 0.9,
+    "novelty": 0.8,
+    "code_quality": null,
+    "writing_quality": 0.95,
+    "reproducibility": 0.8
+  },
+  "claims": [
+    {
+      "text": "mem0 #6277: metadata in update() overwrote user_id, reproduced on 2.0.12 and fixed in 2.0.13",
+      "verified": true,
+      "source": "https://github.com/mem0ai/mem0/issues/6277",
+      "confidence": 0.95
+    },
+    {
+      "text": "Agno #9319: per-user entity memory keyed without the user, reproduced on 2.8.6 and fixed in 3.0.0",
+      "verified": true,
+      "source": "https://github.com/agno-agi/agno/issues/9319",
+      "confidence": 0.95
+    },
+    {
+      "text": "LlamaIndex #21774: AgentWorkflow state leaked between runs, reproduced on 0.14.19 and fixed in 0.14.23",
+      "verified": true,
+      "source": "https://github.com/run-llama/llama_index/issues/21774",
+      "confidence": 0.95
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "arxiv:2602.21806",
+      "title": "Where Agent Frameworks Fall Short: Examining Functional Challenges and Usability Concerns",
+      "overlap": 0.2,
+      "contribution": "Focuses specifically on validating reproducibility of closed session-isolation bug reports through deterministic stubs and canary tests, whereas existing literature covers broad bug taxonomies."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-09-01T00:00:00.000Z",
+  "review_metadata": {
+    "reviewer": "gemini-3.5-flash-lite",
+    "review_date": "2026-03-01T00:00:00.000Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 5
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No grounding metadata in response"
+  }
+}
