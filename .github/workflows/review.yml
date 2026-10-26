@@ -112,6 +112,7 @@ jobs:
     outputs:
       issue_number: ${{ steps.get-issue.outputs.issue_number }}
       has_issue: ${{ steps.get-issue.outputs.issue_number != '' }}
+      approved: ${{ steps.check-approval.outputs.approved }}
 
     steps:
       # ---------------------------------------------------------------
@@ -291,19 +292,15 @@ jobs:
           else
             echo "approved=false" >> $GITHUB_OUTPUT
             
-            # Post a comment explaining why the issue is gated
+            # Log gating reason (cannot post comment here: analyze-submission only has issues: read)
             REASON=$(grep "Reason:" /tmp/approval.txt | cut -d: -f2- | xargs)
             AUTHOR=$(grep "Author:" /tmp/approval.txt | cut -d: -f2- | xargs)
+            echo "Issue #$ISSUE_NUM gated: @$AUTHOR - $REASON"
             
-            gh issue comment "$ISSUE_NUM" --body "⏸️ **Review Pending Approval**
-
-This submission from @$AUTHOR requires maintainer approval before AI review can proceed.
-
-**Reason**: $REASON
-
-A maintainer with write access can approve this submission by adding the \`approved-for-review\` label. To prevent spam and abuse, first-time contributors and non-collaborators require manual approval.
-
-If this is a duplicate, spam, or off-topic submission, a maintainer can close it without review." || true
+            # TODO: Post gating comment from a job with issues: write permission
+            # (e.g., add a conditional step in review-and-publish that checks
+            # if analyze-submission.outputs.approved == 'false' and posts the
+            # explanation comment before exiting)
           fi
 
       # ---------------------------------------------------------------
@@ -356,7 +353,7 @@ If this is a duplicate, spam, or off-topic submission, a maintainer can close it
   # =============================================================================
   review-and-publish:
     needs: analyze-submission
-    if: needs.analyze-submission.outputs.has_issue == 'true'
+    if: needs.analyze-submission.outputs.has_issue == 'true' && needs.analyze-submission.outputs.approved == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
