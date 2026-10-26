@@ -92,7 +92,24 @@ jobs:
           fetch-depth: 0  # Full history for Hugo .GitInfo
 
       # ---------------------------------------------------------------
-      # Step 2: Install Hugo
+      # Step 2: Regenerate indexes from papers on disk
+      # ---------------------------------------------------------------
+      # COMMENTED OUT (2026-10-26): The regenerate script categorizes papers  
+      # by file path (prior-art/ vs not), but the committed indexes use a
+      # different categorization. A blind regenerate would move 10 papers
+      # (2026-092, 094, 098, 104, 106, 110, 115, plus others) from
+      # agent-index.json to priorroot-index.json, which is unintended.
+      # 
+      # The fetch-fresh pattern in stage_6 already prevents lost-update races
+      # (Bug B3), so this step is not critical. When the categorization issue
+      # is resolved (either fix the generator or normalize the file paths),
+      # this step can be uncommented.
+      # ---------------------------------------------------------------
+      # - name: Regenerate paper indexes
+      #   run: python3 scripts/regenerate_agent_index_from_papers.py
+
+      # ---------------------------------------------------------------
+      # Step 3: Install Hugo
       # ---------------------------------------------------------------
       # We use Hugo Extended for SCSS processing in the theme.
       # ---------------------------------------------------------------
@@ -103,7 +120,7 @@ jobs:
           extended: true
 
       # ---------------------------------------------------------------
-      # Step 3: Build the Hugo site
+      # Step 4: Build the Hugo site
       # ---------------------------------------------------------------
       # Hugo reads from _site_theme/ for the theme/layout config and
       # generates paper pages from the papers/ directory.
@@ -117,7 +134,7 @@ jobs:
           hugo --source _site_theme --destination ../public --minify --ignoreCache
 
       # ---------------------------------------------------------------
-      # Step 4: Install and run Pagefind
+      # Step 5: Install and run Pagefind
       # ---------------------------------------------------------------
       # Pagefind generates a client-side search index from the built HTML.
       # This enables instant search on the static site without a server.
@@ -126,7 +143,7 @@ jobs:
         run: npx pagefind --site public --output-subdir _pagefind || echo "Pagefind indexing skipped (no searchable content yet)"
 
       # ---------------------------------------------------------------
-      # Step 5: Copy JSON data files to the public directory
+      # Step 6: Copy JSON data files to the public directory
       # ---------------------------------------------------------------
       # These files need to be accessible at the site root for agents
       # and the A2A Agent Card.
@@ -155,7 +172,7 @@ jobs:
           cp -r .well-known public/
 
       # ---------------------------------------------------------------
-      # Step 6: Upload artifact for GitHub Pages
+      # Step 7: Upload artifact for GitHub Pages
       # ---------------------------------------------------------------
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

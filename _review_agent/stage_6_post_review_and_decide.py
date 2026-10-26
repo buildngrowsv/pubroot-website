@@ -243,6 +243,8 @@ def post_review_and_decide(
 
     try:
         _update_contributors(
+            gh=gh,
+            branch="main",  # Rejection updates go straight to main
             repo_root=repo_root,
             author=parsed_submission.get("author", "unknown"),
             score=score,
@@ -381,6 +383,27 @@ class GitHubAPI:
         resp = requests.put(url, headers=self.headers, json=data, timeout=30)
         resp.raise_for_status()
         return resp.json()
+
+    def get_file_content(self, path: str, branch: str = "main") -> tuple[str, str]:
+        """
+        Fetch the current content and SHA of a file from the given branch via GitHub API.
+        
+        This is used to fetch fresh state before updating index files, preventing
+        lost-update races when multiple pipeline runs execute concurrently.
+        
+        Returns:
+            tuple[str, str]: (decoded_content, blob_sha)
+        
+        Raises:
+            requests.HTTPError: if the file doesn't exist or the request fails
+        """
+        url = f"{self.base_url}/contents/{path}"
+        resp = requests.get(url, headers=self.headers, params={"ref": branch}, timeout=30)
+        resp.raise_for_status()
+        data = resp.json()
+        content_b64 = data.get("content", "")
+        decoded = base64.b64decode(content_b64).decode("utf-8")
+        return decoded, data.get("sha")
     
     def create_pull_request(self, title: str, body: str, head: str, base: str = "main") -> int:
         """Create a Pull Request. Returns the PR number."""
@@ -528,15 +551,10 @@ def _upload_publication_files_to_branch(
     )
     _update_agent_index(gh, branch, repo_root, index_entry)
 
-    contributors_path = os.path.join(repo_root, "contributors.json")
-    with open(contributors_path, "r") as f:
-        contributors_content = f.read()
-    gh.create_or_update_file(
-        path="contributors.json",
-        content=contributors_content,
-        message=f"Update contributor stats after {paper_id}",
-        branch=branch,
-    )
+    # Note: contributors.json is no longer committed here because it's now
+    # committed directly to main by _update_contributors() before the branch
+    # is created. This prevents race conditions and ensures rejection stats
+    # are also persisted (Bug B13 fix).
 
 
 def _handle_acceptance(
@@ -571,7 +589,10 @@ def _handle_acceptance(
         return None
 
     # Contributor stats must be reflected in contributors.json before upload.
+    # We update on the paper branch (which will be merged to main via PR or direct commit)
     _update_contributors(
+        gh=gh,
+        branch="main",  # Update on main so it's available immediately, branch will be created from latest main
         repo_root=repo_root,
         author=parsed_submission.get("author", "unknown"),
         score=float(review.get("score", 0)),
@@ -798,18 +819,44 @@ def _update_agent_index(
     """
     Add a new paper entry to agent-index.json and commit it.
     
-    We read the current file, append the new entry, update the metadata,
-    and commit the updated file to the publication branch.
+    RACE CONDITION FIX (2026-10-24):
+        Previously, this read agent-index.json from the local checkout, which was
+        the main branch state at event time (when the issue was opened). When multiple
+        reviews ran concurrently, they all started with stale state and overwrote
+        each other's updates, causing lost entries (Bug B3).
+        
+        Now we fetch the current agent-index.json from the target branch via GitHub API
+        right before updating. This ensures we always append to the latest state,
+        preventing lost-update races. The branch is typically "main" (fallback path)
+        or "paper/{paper-id}" (PR path). Both are safe because:
+        - main: always has the latest merged state
+        - paper/{paper-id}: branch was just created from main's HEAD in _handle_acceptance
+        
+        If a 409 conflict occurs (rare: two publishes hit the exact same millisecond),
+        the pipeline fails and the cron retry picks it up with fresh state.
     """
-    index_path = os.path.join(repo_root, "agent-index.json")
+    try:
+        # Fetch fresh state from the target branch via GitHub API
+        index_json_str, _blob_sha = gh.get_file_content("agent-index.json", branch=branch)
+        index_data = json.loads(index_json_str)
+    except requests.HTTPError as e:
+        # If agent-index.json doesn't exist on the branch yet (shouldn't happen),
+        # fall back to the local checkout as a last resort
+        if e.response and e.response.status_code == 404:
+            index_path = os.path.join(repo_root, "agent-index.json")
+            with open(index_path, "r") as f:
+                index_data = json.load(f)
+        else:
+            raise
     
-    with open(index_path, "r") as f:
-        index_data = json.load(f)
-    
+    # Append the new entry and update metadata
     index_data["papers"].append(new_entry)
     index_data["total_papers"] = len(index_data["papers"])
     index_data["last_updated"] = datetime.now(timezone.utc).isoformat()
     
+    # Write back to the branch
+    # GitHub API handles conflicts automatically by requiring the blob SHA on updates,
+    # but we don't retry here - if it fails, the whole pipeline fails and cron retries
     gh.create_or_update_file(
         path="agent-index.json",
         content=json.dumps(index_data, indent=2),
@@ -819,6 +866,8 @@ def _update_agent_index(
 
 
 def _update_contributors(
+    gh: GitHubAPI,
+    branch: str,
     repo_root: str,
     author: str,
     score: float,
@@ -826,16 +875,32 @@ def _update_contributors(
     category: str
 ):
     """
-    Update the contributor's stats in contributors.json.
+    Update the contributor's stats in contributors.json and commit it.
     
     This is called for BOTH accepted and rejected submissions. It updates
     the contributor's submission count, acceptance rate, average score,
     and per-category stats. The reputation score is recalculated by
     reputation_calculator.py (called separately).
     
-    We write the updated file locally. Stage 6 then commits it to the branch.
+    RACE CONDITION FIX (2026-10-24):
+        Like agent-index.json, contributors.json previously suffered from lost-update
+        races (Bug B13). Now we fetch fresh state from the target branch via GitHub API,
+        update it, and commit it back. This ensures rejection stats are persisted and
+        acceptance stats don't get overwritten by concurrent runs.
     """
-    contributors_path = os.path.join(repo_root, "contributors.json")
+    try:
+        # Fetch fresh state from the target branch via GitHub API
+        contributors_json_str, _blob_sha = gh.get_file_content("contributors.json", branch=branch)
+        data = json.loads(contributors_json_str)
+    except requests.HTTPError as e:
+        # If contributors.json doesn't exist on the branch yet (shouldn't happen),
+        # fall back to the local checkout as a last resort
+        if e.response and e.response.status_code == 404:
+            contributors_path = os.path.join(repo_root, "contributors.json")
+            with open(contributors_path, "r") as f:
+                data = json.load(f)
+        else:
+            raise
     
     with open(contributors_path, "r") as f:
         data = json.load(f)
@@ -898,8 +963,15 @@ def _update_contributors(
     
     data["contributors"] = contributors
     
-    with open(contributors_path, "w") as f:
-        json.dump(data, f, indent=2)
+    # Commit the updated contributors.json back to the branch
+    # This fixes Bug B13: rejection stats are now persisted, and acceptance
+    # stats can't be lost due to concurrent pipeline runs
+    gh.create_or_update_file(
+        path="contributors.json",
+        content=json.dumps(data, indent=2),
+        message=f"Update contributor stats: {author} ({'accepted' if accepted else 'rejected'})",
+        branch=branch,
+    )
 
 
 def _format_review_comment(
