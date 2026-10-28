@@ -68,7 +68,8 @@ def run_stages_4_to_6(analysis_data: dict) -> dict:
     
     # Read environment (full secrets for LLM and publication)
     openrouter_api_key = os.environ.get("OPENROUTER_API_KEY", "")
-    model_name = os.environ.get("PUBROOT_MODEL", "google/gemini-3.8-flash")
+    # Use 'or' pattern to handle empty string from unset GitHub secret
+    model_name = os.environ.get("PUBROOT_MODEL") or "google/gemini-3.8-flash"
     github_token = os.environ.get("GITHUB_TOKEN", "")
     github_repo = os.environ.get("GITHUB_REPOSITORY", "")
     github_workspace = os.environ.get("GITHUB_WORKSPACE", "")
@@ -106,7 +107,11 @@ def run_stages_4_to_6(analysis_data: dict) -> dict:
     
     issue_number = analysis_data["issue_number"]
     paper_id = analysis_data["paper_id"]
-    parsed = analysis_data["parsed"]
+    # Extract the inner "parsed" dict which contains the actual submission fields
+    # The analyzer returns the full stage_1 output which has structure:
+    # {"valid": True, "errors": [], "warnings": [], "parsed": {actual_fields}}
+    parsed_wrapper = analysis_data["parsed"]
+    parsed_submission = parsed_wrapper.get("parsed", {})
     novelty = analysis_data["novelty"]
     repo_data = analysis_data["repo_data"]
     priority_info = analysis_data["priority_info"]
@@ -114,13 +119,13 @@ def run_stages_4_to_6(analysis_data: dict) -> dict:
     errors = analysis_data.get("errors", [])
     
     print(f"[Stage 4-6] Processing paper {paper_id} from issue #{issue_number}")
-    print(f"[Stage 4-6] Category: {parsed.get('category', 'unknown')}")
+    print(f"[Stage 4-6] Category: {parsed_submission.get('category', 'unknown')}")
     print(f"[Stage 4-6] Repo available: {repo_data.get('available', False)}")
     
     # Stage 4: Build review prompt
     print(f"[Stage 4] Building review prompt...")
     prompt = build_review_prompt(
-        parsed_submission=parsed,
+        parsed_submission=parsed_submission,
         novelty_results=novelty,
         repo_data=repo_data,
         repo_root=github_workspace,
@@ -146,23 +151,23 @@ def run_stages_4_to_6(analysis_data: dict) -> dict:
     )
     
     if not review_result.get("success", False):
-        review_errors = review_result.get("errors", ["Unknown error"])
+        review_errors = review_result.get("error", "Unknown error")
         print(f"[Stage 5] ✗ Review failed: {review_errors}")
         
         # Post error comment and label
         owner, repo = github_repo.split("/", 1)
-        gh = GitHubAPI(owner, repo, github_token)
+        # post_review_and_decide expects review_result (with success=False), not individual params
         post_review_and_decide(
-            gh=gh,
-            review=None,
-            grounding={},
-            parsed_submission=parsed,
+            review_result=review_result,  # Contains success=False and error message
+            parsed_submission=parsed_submission,
             novelty_results=novelty,
             repo_data=repo_data,
             paper_id=paper_id,
             issue_number=issue_number,
+            repo_owner=owner,
+            repo_name=repo,
+            github_token=github_token,
             repo_root=github_workspace,
-            priority_info=priority_info,
         )
         
         return {
@@ -173,26 +178,24 @@ def run_stages_4_to_6(analysis_data: dict) -> dict:
         }
     
     review = review_result["review"]
-    grounding = review_result["grounding"]
     
     print(f"[Stage 5] ✓ Review complete. Score: {review.get('score', '?')}/10, Verdict: {review.get('verdict', '?')}")
     
     # Stage 6: Post review and decide
     print(f"[Stage 6] Posting review and deciding...")
     owner, repo = github_repo.split("/", 1)
-    gh = GitHubAPI(owner, repo, github_token)
     
     stage_6_result = post_review_and_decide(
-        gh=gh,
-        review=review,
-        grounding=grounding,
-        parsed_submission=parsed,
+        review_result=review_result,  # Contains success=True, review, and grounding_metadata
+        parsed_submission=parsed_submission,
         novelty_results=novelty,
         repo_data=repo_data,
         paper_id=paper_id,
         issue_number=issue_number,
+        repo_owner=owner,
+        repo_name=repo,
+        github_token=github_token,
         repo_root=github_workspace,
-        priority_info=priority_info,
     )
     
     if not stage_6_result.get("success", False):
@@ -206,7 +209,7 @@ def run_stages_4_to_6(analysis_data: dict) -> dict:
             "errors": errors + stage_6_errors,
         }
     
-    final_action = stage_6_result.get("action", "unknown")
+    final_action = stage_6_result.get("action_taken", "unknown")
     print(f"[Stage 6] ✓ {final_action.upper()}")
     
     # Update reputations (runs locally, commits in stage 6 if accepted)

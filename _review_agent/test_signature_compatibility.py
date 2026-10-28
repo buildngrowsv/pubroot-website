@@ -342,7 +342,7 @@ def test_reviewer_function_signatures(mock_env, mock_files):
     
     with patch("stages_4_to_6_reviewer.build_review_prompt", return_value=sample_prompt) as mock_prompt, \
          patch("stages_4_to_6_reviewer.run_openrouter_review", return_value=SAMPLE_REVIEW_RESULT) as mock_review, \
-         patch("stages_4_to_6_reviewer.post_review_and_decide", return_value={"success": True, "action": "accepted"}) as mock_post, \
+         patch("stages_4_to_6_reviewer.post_review_and_decide", return_value={"success": True, "action_taken": "accepted"}) as mock_post, \
          patch("stages_4_to_6_reviewer.update_all_reputations") as mock_reputation, \
          patch.dict(os.environ, {"GITHUB_WORKSPACE": str(mock_files)}):
         
@@ -374,10 +374,19 @@ def test_reviewer_function_signatures(mock_env, mock_files):
         # Verify post_review_and_decide was called with correct args
         assert mock_post.called
         call_kwargs = mock_post.call_args.kwargs
-        assert "gh" in call_kwargs
-        assert "review" in call_kwargs
-        assert "grounding" in call_kwargs
+        assert "review_result" in call_kwargs
         assert "parsed_submission" in call_kwargs
+        assert "novelty_results" in call_kwargs
+        assert "repo_data" in call_kwargs
+        assert "paper_id" in call_kwargs
+        assert "issue_number" in call_kwargs
+        assert "repo_owner" in call_kwargs
+        assert "repo_name" in call_kwargs
+        assert "github_token" in call_kwargs
+        assert "repo_root" in call_kwargs
+        # Verify old parameter names are NOT present
+        assert "gh" not in call_kwargs
+        assert "priority_info" not in call_kwargs
         
         # Verify result structure
         assert result["success"] is True
@@ -408,7 +417,7 @@ def test_artifact_json_compatibility(mock_env, mock_files):
          patch("stages_1_to_3_analyzer.verify_payment_code", return_value=SAMPLE_PAYMENT_VERIFICATION), \
          patch("stages_4_to_6_reviewer.build_review_prompt", return_value=sample_prompt), \
          patch("stages_4_to_6_reviewer.run_openrouter_review", return_value=SAMPLE_REVIEW_RESULT), \
-         patch("stages_4_to_6_reviewer.post_review_and_decide", return_value={"success": True, "action": "accepted"}), \
+         patch("stages_4_to_6_reviewer.post_review_and_decide", return_value={"success": True, "action_taken": "accepted"}), \
          patch("stages_4_to_6_reviewer.update_all_reputations"), \
          patch.dict(os.environ, {"GITHUB_WORKSPACE": str(mock_files)}):
         

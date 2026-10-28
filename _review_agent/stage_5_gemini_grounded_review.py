@@ -235,12 +235,43 @@ def run_openrouter_review(
             }
         
         except Exception as e:
+            # Extract detailed error information from OpenAI SDK exceptions
             err_text = str(e)
-            last_error = f"OpenRouter API call failed (attempt {attempt + 1}): {err_text}"
+            
+            # Try to extract HTTP status and response body from OpenAI APIError
+            http_status = None
+            response_body = None
+            try:
+                if hasattr(e, 'status_code'):
+                    http_status = e.status_code
+                if hasattr(e, 'response'):
+                    response = e.response
+                    if hasattr(response, 'json'):
+                        try:
+                            response_body = response.json()
+                        except:
+                            pass
+                    elif hasattr(response, 'text'):
+                        response_body = response.text[:500]  # First 500 chars
+            except:
+                pass
+            
+            # Build detailed error message
+            last_error = f"OpenRouter API call failed (attempt {attempt + 1})"
+            if http_status:
+                last_error += f" [HTTP {http_status}]"
+            if response_body:
+                # Scrub any potential secrets from response body before logging
+                from secret_scrubber import scrub_all
+                safe_body = scrub_all(str(response_body))
+                last_error += f": {safe_body[:300]}"
+            else:
+                last_error += f": {err_text[:300]}"
             
             # Check for rate limiting or quota errors
             is_rate_limit = (
-                "429" in err_text
+                (http_status and http_status == 429)
+                or "429" in err_text
                 or "rate" in err_text.lower()
                 or "quota" in err_text.lower()
             )
