@@ -2,9 +2,10 @@
 Stage 4: Build Review Prompt — Pubroot
 
 PURPOSE:
-    Assemble the complete system prompt that will be sent to Gemini 2.5 Flash-Lite
-    with Google Search grounding. This is the most architecturally important stage
-    because it determines review quality. The prompt includes:
+    Assemble the complete system prompt that will be sent to Gemini (default: 
+    google/gemini-3.8-flash) with Google Search grounding. This is the most 
+    architecturally important stage because it determines review quality. The 
+    prompt includes:
     
     1. SYSTEM INSTRUCTIONS: How to behave as a reviewer, what schema to output
     2. CALIBRATION EXAMPLES: 2-3 "gold standard" reviews from _calibration/ that
@@ -57,7 +58,7 @@ def build_review_prompt(
     
     This is the ONLY public function in this file. It takes the outputs from
     Stages 1-3 and combines them into a single prompt string that Stage 5
-    sends to Gemini 2.5 Flash-Lite with Google Search grounding.
+    sends to Gemini with Google Search grounding.
     
     Args:
         parsed_submission: Output from Stage 1 — the 'parsed' dict with title,

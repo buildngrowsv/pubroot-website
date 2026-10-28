@@ -2,9 +2,9 @@
 Stage 5: Gemini Grounded Review — Pubroot
 
 PURPOSE:
-    Send the assembled review prompt to Gemini 2.5 Flash-Lite with Google Search
-    grounding. This single API call does BOTH the LLM review AND the web-based
-    fact-checking. Gemini autonomously searches Google to verify factual claims
+    Send the assembled review prompt to Gemini (default: google/gemini-3.8-flash) with 
+    Google Search grounding. This single API call does BOTH the LLM review AND the 
+    web-based fact-checking. Gemini autonomously searches Google to verify factual claims
     and returns structured citations (groundingMetadata) mapping specific response
     segments to source URLs.
     
@@ -53,7 +53,7 @@ from typing import Optional
 def run_gemini_grounded_review(
     review_prompt: str,
     gemini_api_key: str,
-    model_name: str = "gemini-3.5-flash-lite",
+    model_name: str = "google/gemini-3.8-flash",
     max_retries: int = 2
 ) -> dict:
     """
@@ -66,9 +66,9 @@ def run_gemini_grounded_review(
     Args:
         review_prompt: The complete prompt string from Stage 4
         gemini_api_key: The Gemini API key (from GEMINI_API_KEY secret)
-        model_name: The Gemini model to use. Default is gemini-3.5-flash-lite.
-                    gemini-2.5-flash-lite is no longer available to new API
-                    projects (404). Can be overridden for a "deep review" tier.
+        model_name: The Gemini model to use. Default is google/gemini-3.8-flash.
+                    Can be overridden via PUBROOT_MODEL environment variable
+                    or for a "deep review" tier.
         max_retries: Number of times to retry on failure. Default 2 (total 2 attempts).
     
     Returns:

@@ -122,7 +122,8 @@ def run_stages_4_to_6(analysis_data: dict) -> dict:
         parsed_submission=parsed,
         novelty_results=novelty,
         repo_data=repo_data,
-        calibration_dir=os.path.join(github_workspace, "_calibration"),
+        repo_root=github_workspace,
+        paper_id=paper_id,
     )
     
     if not prompt:
@@ -137,10 +138,12 @@ def run_stages_4_to_6(analysis_data: dict) -> dict:
     
     # Stage 5: Gemini grounded review
     print(f"[Stage 5] Running Gemini grounded review...")
+    # Get model name from environment or use default
+    model_name = os.environ.get("PUBROOT_MODEL", "google/gemini-3.8-flash")
     review_result = run_gemini_grounded_review(
-        prompt=prompt,
-        api_key=gemini_api_key,
-        submission_type=parsed.get("submission_type", "original-research"),
+        review_prompt=prompt,
+        gemini_api_key=gemini_api_key,
+        model_name=model_name,
     )
     
     if not review_result.get("success", False):
@@ -148,7 +151,8 @@ def run_stages_4_to_6(analysis_data: dict) -> dict:
         print(f"[Stage 5] ✗ Review failed: {review_errors}")
         
         # Post error comment and label
-        gh = GitHubAPI(github_token, github_repo)
+        owner, repo = github_repo.split("/", 1)
+        gh = GitHubAPI(owner, repo, github_token)
         post_review_and_decide(
             gh=gh,
             review=None,
@@ -176,7 +180,8 @@ def run_stages_4_to_6(analysis_data: dict) -> dict:
     
     # Stage 6: Post review and decide
     print(f"[Stage 6] Posting review and deciding...")
-    gh = GitHubAPI(github_token, github_repo)
+    owner, repo = github_repo.split("/", 1)
+    gh = GitHubAPI(owner, repo, github_token)
     
     stage_6_result = post_review_and_decide(
         gh=gh,
