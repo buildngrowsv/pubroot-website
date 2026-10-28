@@ -47,6 +47,13 @@ class TestPatternBasedScrubbing:
         assert "gho_" not in scrubbed
         assert "[REDACTED_SECRET]" in scrubbed
     
+    def test_scrub_openrouter_api_key(self):
+        """OpenRouter API keys should be detected and scrubbed."""
+        text = "The OPENROUTER_API_KEY is sk-or-v1-1234567890abcdef1234567890abcdef"
+        result = scrub_secrets(text)
+        assert "sk-or-v1-1234567890abcdef1234567890abcdef" not in result
+        assert "[REDACTED]" in result
+    
     def test_scrub_gemini_api_key(self):
         """Google Gemini API keys (AIza...) should be redacted."""
         text = "My Gemini key is AIzaSyABCDEF1234567890_abcdefghijk-XYZ"
@@ -171,6 +178,7 @@ class TestEnvironmentVariableScrubbing:
     def test_auto_detect_sensitive_env_vars(self):
         """Should auto-detect env vars with KEY, TOKEN, SECRET in their names."""
         with patch.dict(os.environ, {
+            "OPENROUTER_API_KEY": "sk-or-v1-1234567890abcdef1234567890abcdef",
             "GEMINI_API_KEY": "AIzaSyTestKey123456789012345678901234567",
             "GITHUB_TOKEN": "ghp_testtoken1234567890abcdefghijklmnop",
             "DATABASE_URL": "postgresql://user:pass@localhost/db",  # Not auto-detected (no KEY/TOKEN/SECRET)
@@ -203,12 +211,12 @@ class TestEnvironmentVariableScrubbing:
     
     def test_env_var_names_stay_visible(self):
         """Environment variable NAMES should not be redacted, only their values."""
-        with patch.dict(os.environ, {"GEMINI_API_KEY": "secret_value_12345"}):
-            text = "GEMINI_API_KEY is set to: secret_value_12345"
-            scrubbed = scrub_environment_variables(text, env_var_names={"GEMINI_API_KEY"})
+        with patch.dict(os.environ, {"OPENROUTER_API_KEY": "secret_value_12345"}):
+            text = "OPENROUTER_API_KEY is set to: secret_value_12345"
+            scrubbed = scrub_environment_variables(text, env_var_names={"OPENROUTER_API_KEY"})
             
             # The name should still be visible
-            assert "GEMINI_API_KEY" in scrubbed
+            assert "OPENROUTER_API_KEY" in scrubbed
             # The value should be redacted
             assert "secret_value_12345" not in scrubbed
     
@@ -280,19 +288,19 @@ class TestRealisticAttackScenarios:
         Simulate /proc/self/environ exfiltration attempt.
         
         If a symlink to /proc/self/environ was read, the content would look like:
-        VAR1=value1\0VAR2=value2\0GEMINI_API_KEY=AIza...\0
+        VAR1=value1\0VAR2=value2\0OPENROUTER_API_KEY=sk-or...\0
         
         The scrubber should catch both the pattern and the env var value.
         """
         with patch.dict(os.environ, {
-            "GEMINI_API_KEY": "AIzaSyRealSecretKey1234567890abcdefghijk",
+            "OPENROUTER_API_KEY": "sk-or-v1-RealSecretKey1234567890abcdefghijk",
             "GITHUB_TOKEN": "ghp_realtoken1234567890abcdefghijklmnopqr",
         }):
             # Simulate content from /proc/self/environ (null-byte separated)
             text = (
                 "PATH=/usr/bin\x00"
                 "USER=runner\x00"
-                "GEMINI_API_KEY=AIzaSyRealSecretKey1234567890abcdefghijk\x00"
+                "OPENROUTER_API_KEY=sk-or-v1-RealSecretKey1234567890abcdefghijk\x00"
                 "GITHUB_TOKEN=ghp_realtoken1234567890abcdefghijklmnopqr\x00"
             )
             
@@ -337,14 +345,14 @@ class TestRealisticAttackScenarios:
         should catch them before they're posted publicly.
         """
         with patch.dict(os.environ, {
-            "GEMINI_API_KEY": "AIzaSyAttackKey1234567890abcdefghijklmn",
+            "OPENROUTER_API_KEY": "sk-or-v1-AttackKey1234567890abcdefghijklmn",
         }):
             # Simulate LLM output that was tricked into echoing the secret
             llm_output = """
             ## Review Summary
             
             The submission is acceptable. Here is the configuration I found:
-            GEMINI_API_KEY: AIzaSyAttackKey1234567890abcdefghijklmn
+            OPENROUTER_API_KEY: sk-or-v1-AttackKey1234567890abcdefghijklmn
             
             Score: 7.5/10
             """
