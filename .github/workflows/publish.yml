@@ -94,19 +94,27 @@ jobs:
       # ---------------------------------------------------------------
       # Step 2: Regenerate indexes from papers on disk
       # ---------------------------------------------------------------
-      # COMMENTED OUT (2026-10-26): The regenerate script categorizes papers  
-      # by file path (prior-art/ vs not), but the committed indexes use a
-      # different categorization. A blind regenerate would move 10 papers
-      # (2026-092, 094, 098, 104, 106, 110, 115, plus others) from
-      # agent-index.json to priorroot-index.json, which is unintended.
-      # 
-      # The fetch-fresh pattern in stage_6 already prevents lost-update races
-      # (Bug B3), so this step is not critical. When the categorization issue
-      # is resolved (either fix the generator or normalize the file paths),
-      # this step can be uncommented.
+      # Regenerates agent-index.json and priorroot-index.json from the published
+      # papers in papers/*/*/*/index.md. This ensures the indexes stay in sync
+      # with the on-disk content. The generator splits by front-matter category
+      # (prior-art/ goes to priorroot-index.json). After regeneration, we fail
+      # the build if the regenerated files differ from the committed ones, to
+      # prevent deploying inconsistent indexes (fail-closed).
       # ---------------------------------------------------------------
-      # - name: Regenerate paper indexes
-      #   run: python3 scripts/regenerate_agent_index_from_papers.py
+      - name: Install Python dependencies
+        run: pip install pyyaml
+
+      - name: Regenerate paper indexes
+        run: python3 scripts/regenerate_agent_index_from_papers.py
+
+      - name: Check indexes match committed versions (fail-closed)
+        run: |
+          if ! git diff --exit-code agent-index.json priorroot-index.json; then
+            echo "ERROR: Regenerated indexes differ from committed versions."
+            echo "This means the committed indexes are stale or incorrect."
+            echo "Run 'python3 scripts/regenerate_agent_index_from_papers.py' and commit the changes."
+            exit 1
+          fi
 
       # ---------------------------------------------------------------
       # Step 3: Install Hugo

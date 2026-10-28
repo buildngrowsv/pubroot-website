@@ -402,6 +402,36 @@ class GitHubAPI:
         resp.raise_for_status()
         return resp.json()
 
+    def create_or_update_file_with_sha(self, path: str, content: str, message: str, branch: str, sha: Optional[str]):
+        """
+        Create or update a file with an explicit SHA for optimistic locking.
+        
+        FIX (Root Cause B residual): This method uses the SHA from a previous read
+        to prevent lost updates. If the file changed between the read and the PUT,
+        GitHub returns 409/422 and the pipeline fails (cron will retry with fresh state).
+        
+        Args:
+            path: File path in the repo
+            content: File content (will be base64-encoded)
+            message: Commit message
+            branch: Target branch
+            sha: Blob SHA from a previous read, or None if creating a new file
+        """
+        url = f"{self.base_url}/contents/{path}"
+        encoded = base64.b64encode(content.encode("utf-8")).decode("ascii")
+        
+        data = {
+            "message": message,
+            "content": encoded,
+            "branch": branch,
+        }
+        if sha:
+            data["sha"] = sha
+        
+        resp = requests.put(url, headers=self.headers, json=data, timeout=30)
+        resp.raise_for_status()
+        return resp.json()
+
     def get_file_content(self, path: str, branch: str = "main") -> tuple[str, str]:
         """
         Fetch the current content and SHA of a file from the given branch via GitHub API.
@@ -766,7 +796,12 @@ def _build_manifest(
     parsed: dict, review: dict, repo_data: dict,
     paper_id: str, now: datetime, novelty: dict
 ) -> dict:
-    """Build the manifest.json for a published paper."""
+    """
+    Build the manifest.json for a published paper.
+    
+    FIX (Root Cause C): Use second-precision Z format for published_date to match
+    the generator and prevent field drift.
+    """
     # Calculate valid_until: 12 months for humanities/philosophy topics,
     # 6 months for everything else. Humanities content has longer shelf life
     # because it deals with ideas that change more slowly than technical content.
@@ -779,19 +814,32 @@ def _build_manifest(
     else:
         valid_until = now + timedelta(days=180)
 
+    # Normalize published_date to second precision Z (match generator)
+    published_date = now.astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    valid_until_str = valid_until.astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    
+    # Get supporting_repo, strip quotes
+    supporting_repo = parsed.get("supporting_repo")
+    if supporting_repo:
+        supporting_repo = str(supporting_repo).strip().strip('"').strip("'")
+        if not supporting_repo:
+            supporting_repo = None
+    else:
+        supporting_repo = None
+
     manifest = {
         "paper_id": paper_id,
         "title": parsed.get("title", "Untitled"),
         "author": parsed.get("author", "unknown"),
         "category": parsed.get("category", "general-technical"),
-        "published_date": now.isoformat(),
+        "published_date": published_date,
         "status": "current",
         "score": review.get("score"),
         "verdict": review.get("verdict"),
         "badge": repo_data.get("badge_type", "text_only"),
-        "supporting_repo": parsed.get("supporting_repo"),
+        "supporting_repo": supporting_repo,
         "commit_sha": parsed.get("commit_sha"),
-        "valid_until": valid_until.isoformat(),
+        "valid_until": valid_until_str,
         "supersedes": review.get("supersedes"),
         "superseded_by": None,
         "word_count": parsed.get("word_count_body", 0),
@@ -810,24 +858,72 @@ def _build_index_entry(
     article_index_path: str,
     reader_url: str,
 ) -> dict:
-    """Build an entry for agent-index.json."""
+    """
+    Build an entry for agent-index.json or priorroot-index.json.
+    
+    FIX (Root Cause C): Match the generator's field format to prevent drift.
+    - published_date: second-precision Z format (YYYY-MM-DDTHH:MM:SSZ)
+    - text fields: rstrip()
+    - supporting_repo: strip quotes, omit if null/empty
+    """
+    # Normalize published_date to second precision Z (match generator format)
+    published_date = now.astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    
+    # Get supporting_repo, strip quotes, omit if null/empty
+    supporting_repo = parsed.get("supporting_repo")
+    if supporting_repo:
+        supporting_repo = str(supporting_repo).strip().strip('"').strip("'")
+        if not supporting_repo:
+            supporting_repo = None
+    else:
+        supporting_repo = None
+    
+    # rstrip() all text fields per the brief
+    title = parsed.get("title", "Untitled")
+    if not isinstance(title, str):
+        title = str(title)
+    title = title.rstrip()
+    
+    author = parsed.get("author", "unknown")
+    if not isinstance(author, str):
+        author = str(author)
+    author = author.rstrip()
+    
+    category = parsed.get("category", "general-technical")
+    if not isinstance(category, str):
+        category = str(category)
+    category = category.rstrip()
+    
+    abstract = parsed.get("abstract", "")
+    if not isinstance(abstract, str):
+        abstract = str(abstract)
+    abstract = abstract.rstrip()[:500]  # rstrip then truncate
+    
     entry = {
         "id": paper_id,
-        "title": parsed.get("title", "Untitled"),
-        "author": parsed.get("author", "unknown"),
-        "category": parsed.get("category", "general-technical"),
-        "abstract": parsed.get("abstract", "")[:500],
-        "published_date": now.isoformat(),
+        "title": title,
+        "author": author,
+        "category": category,
+        "abstract": abstract,
+        "published_date": published_date,
         "review_score": review.get("score"),
         "badge": repo_data.get("badge_type", "text_only"),
         "status": "current",
         "article_path": article_index_path,
         "reader_url": reader_url,
         "review_path": f"reviews/{paper_id}/review.json",
-        "supporting_repo": parsed.get("supporting_repo"),
     }
-    if parsed.get("ai_tooling_attribution"):
-        entry["ai_tooling_attribution"] = parsed["ai_tooling_attribution"]
+    
+    # supporting_repo: omit the key if null or empty
+    if supporting_repo:
+        entry["supporting_repo"] = supporting_repo
+    
+    ai_attr = parsed.get("ai_tooling_attribution")
+    if ai_attr:
+        if isinstance(ai_attr, str):
+            ai_attr = ai_attr.rstrip()
+        entry["ai_tooling_attribution"] = ai_attr
+    
     return entry
 
 
@@ -835,7 +931,11 @@ def _update_agent_index(
     gh: GitHubAPI, branch: str, repo_root: str, new_entry: dict
 ):
     """
-    Add a new paper entry to agent-index.json and commit it.
+    Add a new paper entry to agent-index.json or priorroot-index.json and commit it.
+    
+    FIX (Root Cause A): Route prior-art papers to priorroot-index.json.
+    FIX (Root Cause B residual): Use the blob SHA from the read in the PUT to prevent
+    lost updates from non-pipeline writers (manual commits, PR-based publishes, etc).
     
     RACE CONDITION FIX (2026-10-24):
         Previously, this read agent-index.json from the local checkout, which was
@@ -850,36 +950,46 @@ def _update_agent_index(
         - main: always has the latest merged state
         - paper/{paper-id}: branch was just created from main's HEAD in _handle_acceptance
         
-        If a 409 conflict occurs (rare: two publishes hit the exact same millisecond),
-        the pipeline fails and the cron retry picks it up with fresh state.
+        RESIDUAL RACE FIX (2026-10-28):
+        _update_agent_index fetches the file fresh, but discards _blob_sha.
+        create_or_update_file re-GETs the sha just before the PUT, so there is no
+        optimistic lock against the content it read. Any non-pipeline writer that
+        commits between the read and the PUT (manual commit, PR-based publish) gets
+        silently overwritten. FIX: Keep the sha from the read and pass it to the PUT.
+        If a 409/422 conflict occurs, fail the pipeline so the cron retry picks it up.
     """
+    # Determine which index file to update based on category (Root Cause A fix)
+    category = new_entry.get("category", "")
+    is_priorart = category.startswith("prior-art/")
+    index_filename = "priorroot-index.json" if is_priorart else "agent-index.json"
+    
     try:
-        # Fetch fresh state from the target branch via GitHub API
-        index_json_str, _blob_sha = gh.get_file_content("agent-index.json", branch=branch)
+        # Fetch fresh state from the target branch via GitHub API, and keep the blob SHA
+        index_json_str, blob_sha = gh.get_file_content(index_filename, branch=branch)
         index_data = json.loads(index_json_str)
     except requests.HTTPError as e:
-        # If agent-index.json doesn't exist on the branch yet (shouldn't happen),
+        # If the index file doesn't exist on the branch yet (shouldn't happen),
         # fall back to the local checkout as a last resort
         if e.response and e.response.status_code == 404:
-            index_path = os.path.join(repo_root, "agent-index.json")
+            index_path = os.path.join(repo_root, index_filename)
             with open(index_path, "r") as f:
                 index_data = json.load(f)
+            blob_sha = None  # No SHA available for fallback
         else:
             raise
     
     # Append the new entry and update metadata
     index_data["papers"].append(new_entry)
     index_data["total_papers"] = len(index_data["papers"])
-    index_data["last_updated"] = datetime.now(timezone.utc).isoformat()
+    index_data["last_updated"] = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     
-    # Write back to the branch
-    # GitHub API handles conflicts automatically by requiring the blob SHA on updates,
-    # but we don't retry here - if it fails, the whole pipeline fails and cron retries
-    gh.create_or_update_file(
-        path="agent-index.json",
-        content=json.dumps(index_data, indent=2),
+    # Write back to the branch with the blob SHA to prevent lost updates
+    gh.create_or_update_file_with_sha(
+        path=index_filename,
+        content=json.dumps(index_data, indent=2, ensure_ascii=False) + "\n",
         message=f"Update paper index: add {new_entry['id']}",
         branch=branch,
+        sha=blob_sha,  # Pass the SHA to lock against concurrent updates
     )
 
 
