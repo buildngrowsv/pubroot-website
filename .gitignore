@@ -43,6 +43,10 @@ tmp/
 *.tmp
 *.log
 
+# Pruning reports (generated in CI, not committed)
+/pruning_report.json
+/pruning_report.md
+
 # Node (if Pagefind is run locally)
 node_modules/
 

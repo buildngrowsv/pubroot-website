@@ -212,15 +212,31 @@ def post_review_and_decide(
             gh.add_labels(issue_number, ["accepted", "published"])
             _remove_labels_if_present(gh, issue_number, ["review-error", "publish-failed", "pending-review"])
             
-            # FIX FOR BUG B9: Close accepted issues with a link to the published paper.
+            # Close accepted issues with a link to the published paper.
             # This keeps the issue list clean and makes it clear the submission is complete.
-            # The paper URL follows the pattern: https://pubroot.com/papers/{journal}/{topic}/{slug}/
-            # We can derive it from the manifest or construct it from the paper metadata.
+            #
+            # CORRECT URL PATTERN: https://pubroot.com/{journal}/{topic}/{slug}/
+            # Hugo's contentDir is "papers/", so papers/ is not part of the URL path.
+            # pubroot_site_paths.reader_url() already builds this correctly.
+            # 
+            # For legacy papers (papers/{paper_id}/article.md), use the Hugo alias
+            # at https://pubroot.com/{paper_id}/ which redirects to the canonical URL.
             try:
+                # Resolve publication paths to get the reader_url
+                paths = _resolve_publication_paths(gh, parsed_submission, paper_id)
+                
+                # Check if this is a legacy paper (flat layout)
+                if gh.path_exists(f"papers/{paper_id}/article.md", "main"):
+                    # Use the legacy Hugo alias
+                    paper_url = f"{PUBROOT_SITE_BASE.rstrip('/')}/{paper_id}/"
+                else:
+                    # Use the reader_url from the SEO layout
+                    paper_url = paths["reader_url"]
+                
                 close_comment = (
                     f"✅ **Accepted and Published**\n\n"
                     f"Your submission has been published as paper **{paper_id}**.\n\n"
-                    f"View it at: https://pubroot.com/papers/ (search for {paper_id})\n\n"
+                    f"View it at: {paper_url} (live within a few minutes)\n\n"
                     f"Thank you for contributing to Pubroot!"
                 )
                 gh.post_comment(issue_number, close_comment)
