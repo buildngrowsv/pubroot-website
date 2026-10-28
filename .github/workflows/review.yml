@@ -12,7 +12,7 @@
 #     (--skip-repo buildngrowsv/pubroot-website) on 2026-04-19.
 # Do NOT replace this file with a deprecation stub, do NOT migrate the
 # pipeline to Cloudflare Workers + Queues + Cron, and do NOT remove the
-# GEMINI_API_KEY / S2_API_KEY repo secrets without an explicit Operator
+# OPENROUTER_API_KEY / S2_API_KEY repo secrets without an explicit Operator
 # instruction that names the carve-out rule by filename and overrides it.
 # Bulk-decommission scripts in symplyai-platform/scripts/ already pass
 # --skip-repo buildngrowsv/pubroot-website per the carve-out; reviewer
@@ -30,15 +30,16 @@
 # issue queue for unprocessed submissions and processes them in priority order.
 #
 # The workflow uses these secrets:
-#   GEMINI_API_KEY — For the LLM review + Google Search grounding
+#   OPENROUTER_API_KEY — For the LLM review + web search grounding via OpenRouter
 #   GITHUB_TOKEN — Auto-provided by Actions for API access (no setup needed)
 #
 # Optional secrets:
 #   S2_API_KEY — Semantic Scholar API key for higher novelty check rate limits
+#   PUBROOT_MODEL — Model to use via OpenRouter (default: google/gemini-3.8-flash)
 #
 # COST: $0 on GitHub's free tier (2,000 Action minutes/month for public repos).
 # Each review takes ~2-3 minutes of compute time, so the free tier handles
-# ~700-1000 reviews/month.
+# ~700-1000 reviews/month. LLM costs via OpenRouter vary by model choice.
 # =============================================================================
 
 name: AI Peer Review Pipeline
@@ -84,10 +85,10 @@ concurrency:
 #   1. analyze-submission: Handles untrusted content (parsing, novelty check,
 #      cloning submitter repos) with NO sensitive secrets and read-only permissions.
 #   2. review-and-publish: Calls the LLM, posts results, commits files. This job
-#      has GEMINI_API_KEY and write permissions, but never touches submitter content.
+#      has OPENROUTER_API_KEY and write permissions, but never touches submitter content.
 # Data flows from job 1 → job 2 via artifacts (JSON files). This architecture ensures
 # that even if a malicious submitter exploits a bug in stages 1-3, they cannot access
-# GEMINI_API_KEY or gain write access to the repository.
+# OPENROUTER_API_KEY or gain write access to the repository.
 permissions: {}  # Permissions set per-job below
 
 jobs:
@@ -97,7 +98,7 @@ jobs:
   # This job handles all untrusted content: parsing the issue body, searching
   # external APIs, and cloning the submitter's repository. It runs with:
   #   - READ-ONLY permissions (contents: read, issues: read)
-  #   - NO GEMINI_API_KEY (no LLM secrets in scope)
+  #   - NO OPENROUTER_API_KEY (no LLM secrets in scope)
   #   - NO write-capable GITHUB_TOKEN (cannot modify repo or post comments)
   # Even if a malicious submitter exploits a vulnerability (e.g., the symlink
   # attack that B1 fixed), they cannot exfiltrate write tokens or API keys
@@ -113,6 +114,8 @@ jobs:
       issue_number: ${{ steps.get-issue.outputs.issue_number }}
       has_issue: ${{ steps.get-issue.outputs.issue_number != '' }}
       approved: ${{ steps.check-approval.outputs.approved }}
+      gate_kind: ${{ steps.check-approval.outputs.gate_kind }}
+      gate_reason: ${{ steps.check-approval.outputs.gate_reason }}
 
     steps:
       # ---------------------------------------------------------------
@@ -148,31 +151,28 @@ jobs:
           pip install -r _review_agent/requirements.txt
 
       # ---------------------------------------------------------------
-      # Step 3b: Ensure labels used by the pipeline exist
-      # ---------------------------------------------------------------
-      # GitHub rejects add_labels if the label was never created. Creating
-      # idempotently avoids manual setup when onboarding a new fork.
-      # ---------------------------------------------------------------
-      - name: Ensure pipeline labels exist
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh label create "publish-failed" --color "d73a4a" --description "Review passed; git publish step failed — safe to retry" 2>/dev/null || true
-          gh label create "approved-for-review" --color "0e8a16" --description "Maintainer-approved submission ready for AI review" 2>/dev/null || true
-          gh label create "editorial-hold" --color "b60205" --description "Submission on hold pending editorial decision" 2>/dev/null || true
-
-      # ---------------------------------------------------------------
-      # Step 4: Determine which issue to process (with gating)
+      # Step 3b: Determine which issue to process (with gating)
       # ---------------------------------------------------------------
       # For issue:opened triggers, use the event payload issue number.
       # For cron triggers, find the highest-priority unprocessed issue.
       # For manual dispatch, use the provided issue number.
       # 
-      # GATING (B2 fix): Issues are only processed if:
-      # 1. Author is a repo collaborator, OR
-      # 2. Author is on the allowlist (.github/REVIEW_ALLOWLIST.txt), OR
-      # 3. Issue has `approved-for-review` label (applied by maintainer)
+      # GATING: All candidates pass author_gating.py check before selection.
+      # The gate approves:
+      # 1. OWNER, MEMBER, or COLLABORATOR (via author_association), OR
+      # 2. Authors on .github/REVIEW_ALLOWLIST.txt, OR
+      # 3. Issues with `approved-for-review` label (under daily rate limit)
       # Issues with `editorial-hold` label are always skipped.
+      #
+      # THREE-TIER PICKER (B4 fix):
+      # 1. publish-failed (review passed, publish failed, should retry)
+      # 2. priority-labelled (critical > high > normal > low)
+      # 3. unreviewed submission (no bot review comment, newest first)
+      # 4. fallback: 0-label submissions
+      #
+      # FIX: gh issue list defaults to --limit 30. We have 119 open submissions,
+      # so #121 (54th newest), #60 (88th), and #25 (108th) were unreachable.
+      # Now every query uses --limit 500.
       # ---------------------------------------------------------------
       - name: Determine issue number
         id: get-issue
@@ -189,70 +189,93 @@ jobs:
             echo "issue_number=$DISPATCH_ISSUE" >> $GITHUB_OUTPUT
             echo "Processing issue #$DISPATCH_ISSUE (manual dispatch)"
           else
-            # Cron: first retry publish-failed (review already passed; only
-            # publication failed — often fixed by direct-to-main fallback now).
-            ISSUE=$(gh issue list \
+            # Cron: three-tier picker with gating loop
+            ISSUE=""
+            
+            # TIER 1: publish-failed (highest priority)
+            # Review already passed, only publication failed. Retry these first.
+            # Exclude editorial-hold, apply gating.
+            echo "Tier 1: Checking publish-failed issues..."
+            CANDIDATES=$(gh issue list \
               --repo "$GITHUB_REPOSITORY" \
               --state open \
               --label "publish-failed" \
-              --json number \
-              --jq '.[0].number // empty' \
+              --limit 500 \
+              --json number,labels \
+              --jq 'map(select((.labels|map(.name)) as $l | ($l|all(. != "editorial-hold")))) | .[].number' \
               2>/dev/null || true)
+            
+            for C in $CANDIDATES; do
+              python _review_agent/author_gating.py check "$C" >/dev/null 2>&1 && { ISSUE="$C"; echo "  Selected publish-failed #$C"; break; }
+              echo "  #$C skipped (gated or on hold)"
+            done
 
+            # TIER 2: priority-labelled issues
+            # FIX: gh --label "a,b,c" is an AND (all labels required). No issue has all four.
+            # Fetch all open issues with JSON, filter in jq for ANY priority: label,
+            # exclude terminal/hold labels, sort by priority (critical > high > normal > low).
             if [ -z "$ISSUE" ]; then
-              # Then pick highest-priority submission not yet finished.
-              # Include review-error for Gemini failures, but NOT publish-failed
-              # (handled above). Exclude validation-failed, accepted, rejected.
-              ISSUE=$(gh issue list \
+              echo "Tier 2: Checking priority-labelled issues..."
+              CANDIDATES=$(gh issue list \
                 --repo "$GITHUB_REPOSITORY" \
                 --state open \
-                --label "priority:critical,priority:high,priority:normal,priority:low" \
+                --limit 500 \
                 --json number,labels \
-                --jq 'map(select(.labels | map(.name) | (contains(["accepted"]) or contains(["rejected"]) or contains(["validation-failed"])) | not)) | sort_by(.labels | map(select(.name | startswith("priority:"))) | .[0].name) | .[0].number // empty' \
+                --jq 'map(select((.labels|map(.name)) as $l | (($l|any(startswith("priority:"))) and ($l|all(. != "accepted" and . != "rejected" and . != "validation-failed" and . != "publish-failed" and . != "editorial-hold"))))) | sort_by(((.labels|map(.name)|map(select(startswith("priority:")))|.[0]) as $p | {"priority:critical":0,"priority:high":1,"priority:normal":2,"priority:low":3}[$p] // 9), .number) | .[].number' \
                 2>/dev/null || true)
+              
+              for C in $CANDIDATES; do
+                python _review_agent/author_gating.py check "$C" >/dev/null 2>&1 && { ISSUE="$C"; echo "  Selected priority issue #$C"; break; }
+                echo "  #$C skipped (gated or on hold)"
+              done
             fi
 
+            # TIER 3: unreviewed submissions (no bot review comment)
+            # These are issues with the submission label but no bot review comment.
+            # Exclude terminal labels, editorial-hold, apply gating.
             if [ -z "$ISSUE" ]; then
-              # B2 FIX: Find unreviewed [SUBMISSION] issues idempotently.
-              # These are issues that have the submission label but no bot review comment,
-              # which happens when a run was cancelled before stage 0 assigned a priority.
-              # Also exclude editorial-hold and check gating before selecting.
+              echo "Tier 3: Checking unreviewed submissions..."
               CANDIDATES=$(gh issue list \
                 --repo "$GITHUB_REPOSITORY" \
                 --state open \
                 --label "submission" \
+                --limit 500 \
                 --json number,labels \
                 --jq 'map(select(.labels | map(.name) | (contains(["accepted"]) or contains(["rejected"]) or contains(["validation-failed"]) or contains(["publish-failed"]) or contains(["review-error"]) or contains(["editorial-hold"])) | not)) | .[].number' \
                 2>/dev/null || true)
               
-              for CANDIDATE in $CANDIDATES; do
-                # Check gating first (no secrets in scope)
-                python _review_agent/author_gating.py check "$CANDIDATE" >/dev/null 2>&1
-                if [ $? -ne 0 ]; then
-                  echo "  Issue #$CANDIDATE gated (needs approval)"
-                  continue
-                fi
+              for C in $CANDIDATES; do
+                python _review_agent/author_gating.py check "$C" >/dev/null 2>&1 || { echo "  #$C skipped (gated)"; continue; }
                 
                 # Check if this issue has a bot review comment
-                HAS_REVIEW=$(gh api repos/"$GITHUB_REPOSITORY"/issues/"$CANDIDATE"/comments \
+                HAS_REVIEW=$(gh api repos/"$GITHUB_REPOSITORY"/issues/"$C"/comments \
                   --jq 'map(select(.user.login == "github-actions[bot]" and (.body | contains("# AI Peer Review") or contains("Submission Validation Failed")))) | length' \
                   2>/dev/null || echo "0")
                 
                 if [ "$HAS_REVIEW" = "0" ]; then
-                  ISSUE="$CANDIDATE"
-                  echo "  Found approved unreviewed issue: #$CANDIDATE"
+                  ISSUE="$C"
+                  echo "  Found approved unreviewed issue: #$C"
                   break
                 fi
               done
             fi
 
+            # TIER 4: 0-label fallback (rare: submissions with no labels at all)
+            # Apply gating loop.
             if [ -z "$ISSUE" ]; then
-              ISSUE=$(gh issue list \
+              echo "Tier 4: Checking 0-label issues..."
+              CANDIDATES=$(gh issue list \
                 --repo "$GITHUB_REPOSITORY" \
                 --state open \
+                --limit 500 \
                 --json number,labels \
-                --jq 'map(select(.labels | length == 0)) | .[0].number // empty' \
+                --jq 'map(select(.labels | length == 0)) | .[].number' \
                 2>/dev/null || true)
+              
+              for C in $CANDIDATES; do
+                python _review_agent/author_gating.py check "$C" >/dev/null 2>&1 && { ISSUE="$C"; echo "  Selected 0-label issue #$C"; break; }
+                echo "  #$C skipped (gated)"
+              done
             fi
 
             if [ -z "$ISSUE" ]; then
@@ -265,11 +288,13 @@ jobs:
           fi
 
       # ---------------------------------------------------------------
-      # Step 5: Check author approval gate
+      # Step 4: Check author approval gate
       # ---------------------------------------------------------------
       # Verifies the issue author is approved before running stages 1-3.
       # This prevents untrusted submissions from burning resources.
       # This step runs WITHOUT GEMINI_API_KEY (security isolation).
+      #
+      # Outputs gate_kind and gate_reason for the notify-gated job (B4 fix).
       # ---------------------------------------------------------------
       - name: Check author approval
         if: steps.get-issue.outputs.issue_number != ''
@@ -292,21 +317,21 @@ jobs:
           else
             echo "approved=false" >> $GITHUB_OUTPUT
             
-            # Log gating reason (cannot post comment here: analyze-submission only has issues: read)
+            # Parse gate_kind and gate_reason for the notify-gated job
+            KIND=$(grep "Kind:" /tmp/approval.txt | cut -d: -f2- | xargs)
             REASON=$(grep "Reason:" /tmp/approval.txt | cut -d: -f2- | xargs)
             AUTHOR=$(grep "Author:" /tmp/approval.txt | cut -d: -f2- | xargs)
-            echo "Issue #$ISSUE_NUM gated: @$AUTHOR - $REASON"
             
-            # TODO: Post gating comment from a job with issues: write permission
-            # (e.g., add a conditional step in review-and-publish that checks
-            # if analyze-submission.outputs.approved == 'false' and posts the
-            # explanation comment before exiting)
+            echo "gate_kind=${KIND}" >> $GITHUB_OUTPUT
+            echo "gate_reason=${REASON}" >> $GITHUB_OUTPUT
+            
+            echo "Issue #$ISSUE_NUM gated: @$AUTHOR - $REASON (kind: $KIND)"
           fi
 
       # ---------------------------------------------------------------
       # Step 6: Run stages 1-3 (parse, novelty, repo reading)
       # ---------------------------------------------------------------
-      # SECURITY: This step has NO GEMINI_API_KEY. It only has a read-only
+      # SECURITY: This step has NO OPENROUTER_API_KEY. It only has a read-only
       # GITHUB_TOKEN and the optional S2_API_KEY (low-risk, public data).
       # The output is written to stages_1_to_3_output.json and uploaded
       # as an artifact for the second job to consume.
@@ -339,16 +364,102 @@ jobs:
           retention-days: 1
   
   # =============================================================================
-  # JOB 2: REVIEW AND PUBLISH (Stages 4-6)
+  # JOB 2: NOTIFY GATED SUBMISSIONS
+  # =============================================================================
+  # This job posts a "Review Pending Approval" comment on gated submissions.
+  # It runs only when analyze-submission found an issue but the author gate
+  # returned approved=false with kind=needs-approval.
+  #
+  # SECURITY: This job has NO secrets (no GEMINI_API_KEY, no submitter content).
+  # It only has issues: write to post the idempotent comment and add labels.
+  # Label creation is moved here from analyze-submission (which had issues: read only).
+  # =============================================================================
+  notify-gated:
+    needs: analyze-submission
+    if: needs.analyze-submission.outputs.has_issue == 'true' && needs.analyze-submission.outputs.approved == 'false' && needs.analyze-submission.outputs.gate_kind == 'needs-approval'
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    permissions:
+      issues: write
+    
+    steps:
+      # No checkout, no Python setup, no secrets - only comment posting
+      
+      # ---------------------------------------------------------------
+      # Step 1: Ensure pipeline labels exist
+      # ---------------------------------------------------------------
+      # GitHub rejects add_labels if the label was never created. Creating
+      # idempotently avoids manual setup when onboarding a new fork.
+      # Moved here from analyze-submission (which had issues: read only).
+      # ---------------------------------------------------------------
+      - name: Ensure pipeline labels exist
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh label create "publish-failed" --color "d73a4a" --description "Review passed; git publish step failed — safe to retry" 2>/dev/null || true
+          gh label create "approved-for-review" --color "0e8a16" --description "Maintainer-approved submission ready for AI review" 2>/dev/null || true
+          gh label create "editorial-hold" --color "b60205" --description "Submission on hold pending editorial decision" 2>/dev/null || true
+          gh label create "awaiting-approval" --color "fbca04" --description "Submission awaiting maintainer approval" 2>/dev/null || true
+      
+      # ---------------------------------------------------------------
+      # Step 2: Post gating comment (idempotent)
+      # ---------------------------------------------------------------
+      # Only post if:
+      # - No github-actions[bot] comment contains "pubroot:pending-approval"
+      #   or the legacy text "Review Pending Approval"
+      # - Issue does not already have awaiting-approval or approved-for-review label
+      # ---------------------------------------------------------------
+      - name: Post gating comment
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE: ${{ needs.analyze-submission.outputs.issue_number }}
+          GATE_REASON: ${{ needs.analyze-submission.outputs.gate_reason }}
+        run: |
+          # Check for existing bot comments
+          EXISTING_COUNT=$(gh api "repos/$GITHUB_REPOSITORY/issues/$ISSUE/comments" \
+            --paginate \
+            --jq '[.[]|select(.user.login=="github-actions[bot]" and ((.body|contains("pubroot:pending-approval")) or (.body|contains("Review Pending Approval"))))]|length' \
+            | awk '{s+=$1} END {print s}')
+          
+          if [ "$EXISTING_COUNT" -gt 0 ]; then
+            echo "Gating comment already exists, skipping"
+            exit 0
+          fi
+          
+          # Check for existing labels
+          LABELS=$(gh api "repos/$GITHUB_REPOSITORY/issues/$ISSUE" --jq '.labels[].name')
+          if echo "$LABELS" | grep -q "awaiting-approval\|approved-for-review"; then
+            echo "Issue already has approval-related label, skipping"
+            exit 0
+          fi
+          
+          # Post comment
+          BODY="$RUNNER_TEMP/pending.md"
+          printf '%s\n' \
+            '<!-- pubroot:pending-approval -->' \
+            '## ⏸️ Review Pending Approval' \
+            '' \
+            'This submission is queued until a maintainer adds the `approved-for-review` label.' \
+            "Reason: ${GATE_REASON}" \
+            '' \
+            'No action is needed from you. The 6-hour queue picks it up once approved.' > "$BODY"
+          
+          gh issue comment "$ISSUE" --repo "$GITHUB_REPOSITORY" --body-file "$BODY"
+          gh issue edit "$ISSUE" --add-label awaiting-approval
+          
+          echo "Posted gating comment and added awaiting-approval label"
+  
+  # =============================================================================
+  # JOB 3: REVIEW AND PUBLISH (Stages 4-6)
   # =============================================================================
   # This job runs the LLM review, posts the comment, and publishes accepted papers.
-  # It has full secrets (GEMINI_API_KEY, write-capable GITHUB_TOKEN) but NEVER
+  # It has full secrets (OPENROUTER_API_KEY, write-capable GITHUB_TOKEN) but NEVER
   # checks out or executes any code from the submitter's repository. It only reads
   # the JSON artifact produced by job 1, which contains sanitized, structured data.
   # 
   # SECURITY: Even if a malicious submitter exploited a vulnerability in stages 1-3,
   # the worst they could do is corrupt the JSON artifact. They cannot directly
-  # access GEMINI_API_KEY because it's not in scope during stages 1-3. The JSON
+  # access OPENROUTER_API_KEY because it's not in scope during stages 1-3. The JSON
   # is further scrubbed by secret_scrubber before any output is posted.
   # =============================================================================
   review-and-publish:
@@ -406,13 +517,14 @@ jobs:
       # ---------------------------------------------------------------
       # Step 5: Run stages 4-6 (prompt building, LLM review, publication)
       # ---------------------------------------------------------------
-      # SECURITY: This step has GEMINI_API_KEY and write permissions,
+      # SECURITY: This step has OPENROUTER_API_KEY and write permissions,
       # but it NEVER touches the submitter's repo. It only reads the
       # JSON artifact from job 1.
       # ---------------------------------------------------------------
       - name: Review and publish (stages 4-6)
         env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          PUBROOT_MODEL: ${{ secrets.PUBROOT_MODEL }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           GITHUB_WORKSPACE: ${{ github.workspace }}

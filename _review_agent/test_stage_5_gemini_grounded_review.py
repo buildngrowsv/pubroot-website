@@ -1,13 +1,14 @@
 """
-Tests for Stage 5: Gemini Grounded Review — Pubroot Review Pipeline
+Tests for Stage 5: OpenRouter LLM Review with Web Search — Pubroot Review Pipeline
 
 HISTORY:
     Created 2026-03-23 by Builder 6 (swarm agent) as part of T5.
-    These tests validate the Gemini API call, JSON parsing, schema
-    validation, grounding metadata extraction, and retry logic.
+    Updated 2026-10-24 for OpenRouter migration.
+    These tests validate the OpenRouter API call, JSON parsing, schema
+    validation, web search metadata extraction, and retry logic.
 
 APPROACH:
-    - The google-genai SDK is NOT installed in the test environment.
+    - The openai SDK is NOT installed in the test environment.
       We mock the import and the client to simulate API responses.
     - We test _parse_review_json and _validate_review_schema directly
       since they are the most critical untested paths (per Scout 11).
@@ -30,10 +31,11 @@ import pytest
 from unittest.mock import patch, MagicMock
 
 from stage_5_gemini_grounded_review import (
-    run_gemini_grounded_review,
+    run_openrouter_review,
+    run_gemini_grounded_review,  # backward compatibility alias
     _parse_review_json,
     _validate_review_schema,
-    _extract_grounding_metadata,
+    _extract_web_search_metadata,
 )
 
 
@@ -71,7 +73,7 @@ VALID_REVIEW_JSON = {
     "superseded_by": None,
     "valid_until": "2026-09-23T00:00:00Z",
     "review_metadata": {
-        "reviewer": "gemini-2.5-flash-lite",
+        "reviewer": "google/gemini-3.8-flash",
         "review_date": "2026-03-23T12:00:00Z",
         "grounding_used": True,
         "calibration_examples_used": 3,
@@ -232,92 +234,109 @@ class TestValidateReviewSchema:
 # ---------------------------------------------------------------------------
 
 
-class TestExtractGroundingMetadata:
+class TestExtractWebSearchMetadata:
     """
-    Tests for grounding metadata extraction from Gemini responses.
-    Grounding metadata maps response segments to Google Search sources.
+    Tests for web search metadata extraction from OpenRouter responses.
+    Web search metadata maps response segments to web sources via url_citation annotations.
     """
 
-    def test_handles_no_candidates(self):
-        """Should return unavailable when response has no candidates."""
+    def test_handles_no_choices(self):
+        """Should return unavailable when response has no choices."""
         mock_response = MagicMock()
-        mock_response.candidates = []
-        result = _extract_grounding_metadata(mock_response)
+        mock_response.choices = []
+        result = _extract_web_search_metadata(mock_response)
         assert result["available"] is False
 
-    def test_handles_no_grounding_metadata(self):
-        """Should return unavailable when candidate has no grounding metadata."""
-        mock_candidate = MagicMock()
-        mock_candidate.grounding_metadata = None
+    def test_handles_no_annotations(self):
+        """Should return unavailable when message has no annotations."""
+        mock_message = MagicMock()
+        mock_message.annotations = []
+        mock_choice = MagicMock()
+        mock_choice.message = mock_message
         mock_response = MagicMock()
-        mock_response.candidates = [mock_candidate]
-        result = _extract_grounding_metadata(mock_response)
+        mock_response.choices = [mock_choice]
+        result = _extract_web_search_metadata(mock_response)
         assert result["available"] is False
 
-    def test_extracts_search_queries(self):
-        """Should extract the list of Google Search queries used."""
-        mock_metadata = MagicMock()
-        mock_metadata.web_search_queries = ["LLM code review accuracy", "GPT-4 benchmark"]
-        mock_metadata.grounding_chunks = []
-        mock_metadata.grounding_supports = []
+    def test_extracts_url_citations(self):
+        """Should extract web sources from url_citation annotations."""
+        mock_annotation1 = MagicMock()
+        mock_annotation1.type = "url_citation"
+        mock_annotation1.url = "https://arxiv.org/abs/2511.00001"
+        mock_annotation1.title = "ArXiv Paper on LLM Review"
+        mock_annotation1.text = "GPT-4 achieves 92% accuracy"
+        
+        mock_annotation2 = MagicMock()
+        mock_annotation2.type = "url_citation"
+        mock_annotation2.url = "https://openai.com/research"
+        mock_annotation2.title = "OpenAI Research"
+        mock_annotation2.text = "Latest benchmarks show"
 
-        mock_candidate = MagicMock()
-        mock_candidate.grounding_metadata = mock_metadata
+        mock_message = MagicMock()
+        mock_message.annotations = [mock_annotation1, mock_annotation2]
+        mock_choice = MagicMock()
+        mock_choice.message = mock_message
         mock_response = MagicMock()
-        mock_response.candidates = [mock_candidate]
+        mock_response.choices = [mock_choice]
 
-        result = _extract_grounding_metadata(mock_response)
+        result = _extract_web_search_metadata(mock_response)
         assert result["available"] is True
-        assert "LLM code review accuracy" in result["web_search_queries"]
-
-    def test_extracts_source_urls(self):
-        """Should extract source URLs from grounding chunks."""
-        mock_chunk = MagicMock()
-        mock_chunk.web = MagicMock()
-        mock_chunk.web.title = "ArXiv Paper"
-        mock_chunk.web.uri = "https://arxiv.org/abs/2511.00001"
-
-        mock_metadata = MagicMock()
-        mock_metadata.web_search_queries = []
-        mock_metadata.grounding_chunks = [mock_chunk]
-        mock_metadata.grounding_supports = []
-
-        mock_candidate = MagicMock()
-        mock_candidate.grounding_metadata = mock_metadata
-        mock_response = MagicMock()
-        mock_response.candidates = [mock_candidate]
-
-        result = _extract_grounding_metadata(mock_response)
-        assert len(result["sources"]) == 1
+        assert len(result["sources"]) == 2
         assert result["sources"][0]["uri"] == "https://arxiv.org/abs/2511.00001"
+        assert result["sources"][0]["title"] == "ArXiv Paper on LLM Review"
+
+    def test_deduplicates_sources_by_url(self):
+        """Should deduplicate sources that have the same URL."""
+        mock_annotation1 = MagicMock()
+        mock_annotation1.type = "url_citation"
+        mock_annotation1.url = "https://arxiv.org/abs/2511.00001"
+        mock_annotation1.title = "ArXiv Paper"
+        mock_annotation1.text = "First mention"
+        
+        mock_annotation2 = MagicMock()
+        mock_annotation2.type = "url_citation"
+        mock_annotation2.url = "https://arxiv.org/abs/2511.00001"
+        mock_annotation2.title = "ArXiv Paper"
+        mock_annotation2.text = "Second mention"
+
+        mock_message = MagicMock()
+        mock_message.annotations = [mock_annotation1, mock_annotation2]
+        mock_choice = MagicMock()
+        mock_choice.message = mock_message
+        mock_response = MagicMock()
+        mock_response.choices = [mock_choice]
+
+        result = _extract_web_search_metadata(mock_response)
+        assert len(result["sources"]) == 1  # Deduplicated
+        assert len(result["supports"]) == 2  # But both citations recorded
 
     def test_handles_exception_gracefully(self):
         """
-        Should not crash if grounding metadata has unexpected structure.
-        This is important because metadata format can vary between Gemini
-        model versions, and we don't want metadata failures to break reviews.
+        Should not crash if metadata has unexpected structure.
+        This is important because annotation format can vary,
+        and we don't want metadata failures to break reviews.
         """
         mock_response = MagicMock()
-        mock_response.candidates = None  # Will cause AttributeError
-        result = _extract_grounding_metadata(mock_response)
+        mock_response.choices = None  # Will cause AttributeError
+        result = _extract_web_search_metadata(mock_response)
         assert result["available"] is False
         assert "error" in result
 
 
 # ---------------------------------------------------------------------------
-# TESTS: run_gemini_grounded_review (main function)
+# TESTS: run_openrouter_review (main function)
 # ---------------------------------------------------------------------------
 
 
-class TestRunGeminiGroundedReview:
+class TestRunOpenRouterReview:
     """
-    Integration tests for the main review function. We mock the google-genai
+    Integration tests for the main review function. We mock the openai
     SDK since it's not installed in the test environment.
     """
 
     def test_returns_error_when_sdk_not_installed(self):
         """
-        When google-genai is not installed, should return a structured error
+        When openai SDK is not installed, should return a structured error
         rather than crashing. This allows the module to be imported for testing.
 
         We mock sys.modules to simulate the SDK being missing, because on some
@@ -325,27 +344,27 @@ class TestRunGeminiGroundedReview:
         This was flagged by Reviewer 14 during T5 review.
         """
         import sys
-        # Temporarily remove google and google.genai from sys.modules
-        # to force the ImportError path inside run_gemini_grounded_review
+        # Temporarily remove openai from sys.modules
+        # to force the ImportError path inside run_openrouter_review
         saved_modules = {}
         for mod_name in list(sys.modules.keys()):
-            if mod_name.startswith("google"):
+            if mod_name.startswith("openai"):
                 saved_modules[mod_name] = sys.modules.pop(mod_name)
 
         try:
-            with patch.dict(sys.modules, {"google": None, "google.genai": None, "google.genai.types": None}):
-                result = run_gemini_grounded_review(
+            with patch.dict(sys.modules, {"openai": None}):
+                result = run_openrouter_review(
                     review_prompt="test prompt",
-                    gemini_api_key="fake-key",
+                    openrouter_api_key="fake-key",
                 )
                 assert result["success"] is False
-                assert "google-genai" in result["error"]
-                assert result["model_used"] == "gemini-3.5-flash-lite"
+                assert "openai" in result["error"]
+                assert result["model_used"] == "google/gemini-3.8-flash"
         finally:
             # Restore original modules
             sys.modules.update(saved_modules)
 
-    @patch("stage_5_gemini_grounded_review.run_gemini_grounded_review")
+    @patch("stage_5_gemini_grounded_review.run_openrouter_review")
     def test_successful_review_returns_parsed_json(self, mock_run):
         """A successful API call should return parsed review JSON."""
         mock_run.return_value = {
@@ -353,7 +372,7 @@ class TestRunGeminiGroundedReview:
             "review": VALID_REVIEW_JSON,
             "grounding_metadata": {"available": True, "sources": []},
             "raw_response_text": json.dumps(VALID_REVIEW_JSON),
-            "model_used": "gemini-2.5-flash-lite",
+            "model_used": "google/gemini-3.8-flash",
             "error": None,
         }
         result = mock_run("test prompt", "fake-key")
@@ -367,18 +386,22 @@ class TestRunGeminiGroundedReview:
         gives indices [0, 1] = 2 attempts, which matches the docstring
         "total 2 attempts". This test confirms the behavior.
         """
-        # Since google-genai isn't installed, we can't test the actual retry
+        # Since openai SDK isn't installed, we can't test the actual retry
         # loop. But we can verify the default parameter value.
         import inspect
-        sig = inspect.signature(run_gemini_grounded_review)
+        sig = inspect.signature(run_openrouter_review)
         default_retries = sig.parameters["max_retries"].default
         assert default_retries == 2, "Default max_retries should be 2 (total 2 attempts)"
 
     def test_returns_correct_model_name(self):
         """Should include the model name in the result."""
-        result = run_gemini_grounded_review(
+        result = run_openrouter_review(
             review_prompt="test",
-            gemini_api_key="fake",
-            model_name="gemini-2.5-pro",
+            openrouter_api_key="fake",
+            model_name="openai/gpt-4o",
         )
-        assert result["model_used"] == "gemini-2.5-pro"
+        assert result["model_used"] == "openai/gpt-4o"
+    
+    def test_backward_compatibility_alias(self):
+        """The old function name should still work via alias."""
+        assert run_gemini_grounded_review == run_openrouter_review

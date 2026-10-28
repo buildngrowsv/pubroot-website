@@ -25,8 +25,12 @@ import os
 import sys
 import json
 import requests
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Tuple, Callable
 from datetime import datetime, timezone, timedelta
+
+# Add _review_agent to path to import author_gating
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "_review_agent"))
+from author_gating import evaluate_issue, fetch_issue, get_env
 
 
 def get_github_token() -> str:
@@ -113,125 +117,134 @@ def has_bot_review_comment(token: str, repo: str, issue_number: int) -> bool:
     return False
 
 
-def is_repo_collaborator(token: str, username: str) -> bool:
-    """Check if a user is a repo collaborator."""
-    headers = {
-        "Authorization": f"Bearer {token}",
-        "Accept": "application/vnd.github+json",
-    }
+def pick_next(
+    issues: List[Dict], 
+    gate_fn: Callable[[Dict], Dict], 
+    has_bot_review_fn: Callable[[int], bool]
+) -> Tuple[Optional[int], List[Tuple[int, str]]]:
+    """
+    Implement the three-tier picker logic from review.yml.
     
-    url = f"https://api.github.com/repos/buildngrowsv/pubroot-website/collaborators/{username}"
+    Returns:
+        (picked_issue_number, skipped_with_reasons) where skipped_with_reasons
+        is a list of (issue_number, reason) tuples for issues that were checked
+        but skipped due to gating or other filters.
     
-    try:
-        resp = requests.get(url, headers=headers, timeout=10)
-        return resp.status_code == 204
-    except:
-        return False
-
-
-def is_on_allowlist(username: str) -> bool:
-    """Check if a user is on the pre-approved allowlist."""
-    allowlist_path = ".github/REVIEW_ALLOWLIST.txt"
+    The picker has three tiers (checked in order):
+    1. publish-failed (review passed, publish failed, should retry)
+    2. priority-labelled (critical > high > normal > low)
+    3. unreviewed submission (no bot review comment)
+    """
+    skipped = []
     
-    if not os.path.exists(allowlist_path):
-        return False
+    def is_terminal(labels: List[str]) -> bool:
+        """Check if issue has a terminal label."""
+        return any(lbl in labels for lbl in ["accepted", "rejected", "validation-failed"])
     
-    try:
-        with open(allowlist_path, "r") as f:
-            allowed = {line.strip().lower() for line in f if line.strip() and not line.startswith("#")}
-        return username.lower() in allowed
-    except:
-        return False
-
-
-def check_rate_limit(token: str, author: str, limit: int = 3) -> tuple[bool, int]:
-    """Check if an author has exceeded their daily submission cap."""
-    headers = {
-        "Authorization": f"Bearer {token}",
-        "Accept": "application/vnd.github+json",
-    }
+    def is_excluded(labels: List[str]) -> bool:
+        """Check if issue should be excluded from all tiers."""
+        return any(lbl in labels for lbl in ["editorial-hold"])
     
-    since = (datetime.now(timezone.utc) - timedelta(days=1)).isoformat()
+    def extract_priority(labels: List[str]) -> Optional[str]:
+        """Extract priority label from list."""
+        for lbl in labels:
+            if lbl.startswith("priority:"):
+                return lbl
+        return None
     
-    url = "https://api.github.com/repos/buildngrowsv/pubroot-website/issues"
-    params = {
-        "creator": author,
-        "state": "all",
-        "since": since,
-        "per_page": 100,
-    }
+    def priority_sort_key(lbl: str) -> int:
+        """Sort key for priority labels (critical < high < normal < low)."""
+        return {"priority:critical": 0, "priority:high": 1, "priority:normal": 2, "priority:low": 3}.get(lbl, 9)
     
-    try:
-        resp = requests.get(url, headers=headers, params=params, timeout=10)
-        resp.raise_for_status()
-        issues = resp.json()
+    # TIER 1: publish-failed
+    tier1_candidates = []
+    for issue in issues:
+        labels = [lbl["name"] for lbl in issue.get("labels", [])]
+        if "publish-failed" in labels and not is_excluded(labels):
+            tier1_candidates.append(issue)
+    
+    for candidate in tier1_candidates:
+        approval = gate_fn(candidate)
+        if approval["approved"]:
+            return candidate["number"], skipped
+        skipped.append((candidate["number"], f"gated: {approval['reason']}"))
+    
+    # TIER 2: priority-labelled
+    tier2_candidates = []
+    for issue in issues:
+        labels = [lbl["name"] for lbl in issue.get("labels", [])]
+        priority = extract_priority(labels)
+        if priority and not is_terminal(labels) and not is_excluded(labels) and "publish-failed" not in labels:
+            tier2_candidates.append((issue, priority))
+    
+    # Sort by priority, then by issue number
+    tier2_candidates.sort(key=lambda x: (priority_sort_key(x[1]), x[0]["number"]))
+    
+    for candidate, priority in tier2_candidates:
+        approval = gate_fn(candidate)
+        if approval["approved"]:
+            return candidate["number"], skipped
+        skipped.append((candidate["number"], f"gated: {approval['reason']}"))
+    
+    # TIER 3: unreviewed submissions
+    tier3_candidates = []
+    for issue in issues:
+        labels = [lbl["name"] for lbl in issue.get("labels", [])]
+        if "submission" in labels and not is_terminal(labels) and not is_excluded(labels) and "publish-failed" not in labels:
+            # Check if has priority label (would have been handled in tier 2)
+            if not any(lbl.startswith("priority:") for lbl in labels):
+                tier3_candidates.append(issue)
+    
+    for candidate in tier3_candidates:
+        approval = gate_fn(candidate)
+        if not approval["approved"]:
+            skipped.append((candidate["number"], f"gated: {approval['reason']}"))
+            continue
         
-        submission_count = sum(1 for issue in issues if issue.get("title", "").startswith("[SUBMISSION]"))
-        
-        return submission_count < limit, submission_count
-    except:
-        return True, 0
+        # Check if has bot review comment
+        if not has_bot_review_fn(candidate["number"]):
+            return candidate["number"], skipped
+    
+    # TIER 4: 0-label fallback
+    tier4_candidates = []
+    for issue in issues:
+        labels = [lbl["name"] for lbl in issue.get("labels", [])]
+        if len(labels) == 0:
+            tier4_candidates.append(issue)
+    
+    for candidate in tier4_candidates:
+        approval = gate_fn(candidate)
+        if approval["approved"]:
+            return candidate["number"], skipped
+        skipped.append((candidate["number"], f"gated: {approval['reason']}"))
+    
+    # No eligible issues found
+    return None, skipped
 
 
 def check_approval(token: str, issue: Dict) -> Dict:
     """
     Check if an issue is approved for review.
     
+    Now imports the logic from author_gating.py to ensure consistency
+    between the workflow and the dry-run script.
+    
     Returns:
         - approved (bool): whether the issue can be reviewed
         - reason (str): why it was approved or gated
-        - gate_type (str): "collaborator", "allowlist", "approved-label", "gated", "editorial-hold"
+        - gate_type (str): kind from evaluate_issue
     """
-    number = issue["number"]
-    author = issue.get("user", {}).get("login", "unknown")
-    labels = [lbl["name"] for lbl in issue.get("labels", [])]
+    repo_root = os.getcwd()
+    token_env, owner, repo = get_env()
     
-    # Check editorial-hold first (always blocks)
-    if "editorial-hold" in labels:
-        return {
-            "approved": False,
-            "reason": "editorial-hold label present",
-            "gate_type": "editorial-hold",
-        }
+    # Use the imported evaluate_issue function
+    result = evaluate_issue(issue, repo_root, token, owner, repo)
     
-    # Check if repo collaborator (auto-approved)
-    if is_repo_collaborator(token, author):
-        return {
-            "approved": True,
-            "reason": "repo collaborator",
-            "gate_type": "collaborator",
-        }
-    
-    # Check if on allowlist (auto-approved)
-    if is_on_allowlist(author):
-        return {
-            "approved": True,
-            "reason": "on allowlist",
-            "gate_type": "allowlist",
-        }
-    
-    # Check if has approval label
-    if "approved-for-review" in labels:
-        # Also check rate limit
-        allowed, count = check_rate_limit(token, author)
-        if not allowed:
-            return {
-                "approved": False,
-                "reason": f"rate limit exceeded ({count}/3 submissions in 24h)",
-                "gate_type": "rate-limited",
-            }
-        
-        return {
-            "approved": True,
-            "reason": "approved-for-review label present",
-            "gate_type": "approved-label",
-        }
-    
-    # Not approved
+    # Rename 'kind' to 'gate_type' for backward compatibility
     return {
-        "approved": False,
-        "reason": "requires approved-for-review label from maintainer",
-        "gate_type": "gated",
+        "approved": result["approved"],
+        "reason": result["reason"],
+        "gate_type": result.get("kind", "unknown"),
     }
 
 
@@ -336,6 +349,38 @@ def main():
     issues = fetch_open_submission_issues(token)
     print(f"Found {len(issues)} open submission issues")
     print()
+    
+    # Run the picker to see what the cron would pick
+    print("Running three-tier picker (matches review.yml cron logic)...")
+    print()
+    
+    gate_fn = lambda issue: check_approval(token, issue)
+    has_review_fn = lambda num: has_bot_review_comment(token, "buildngrowsv/pubroot-website", num)
+    
+    picked, skipped = pick_next(issues, gate_fn, has_review_fn)
+    
+    if picked:
+        picked_issue = next((iss for iss in issues if iss["number"] == picked), None)
+        if picked_issue:
+            print("🎯 NEXT CRON WOULD PICK:")
+            print(f"  #{picked} - {picked_issue['title'][:80]}")
+            print(f"  Author: @{picked_issue.get('user', {}).get('login', 'unknown')}")
+            labels = [lbl["name"] for lbl in picked_issue.get("labels", [])]
+            print(f"  Labels: {', '.join(labels) if labels else '(none)'}")
+            print()
+    else:
+        print("🚫 NO ISSUE WOULD BE PICKED (all gated or none eligible)")
+        print()
+    
+    if skipped:
+        print(f"Skipped {len(skipped)} issues during picker scan:")
+        for num, reason in skipped[:10]:
+            print(f"  #{num}: {reason}")
+        if len(skipped) > 10:
+            print(f"  ... and {len(skipped) - 10} more")
+        print()
+    
+    print("=" * 80)
     
     print("Categorizing issues...")
     buckets = categorize_issues(token, issues)

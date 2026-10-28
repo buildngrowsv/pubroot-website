@@ -98,6 +98,9 @@ The spec says these should transition to `status: expired`, not archived.
 
 ## Report Format
 
+Reports are written to workflow artifacts in CI (`pruning-reports` artifact) or
+to `tmp/` when run locally (`tmp/pruning_report.json` and `tmp/pruning_report.md`).
+
 ### JSON Report (`pruning_report.json`)
 
 Structured data suitable for programmatic analysis:

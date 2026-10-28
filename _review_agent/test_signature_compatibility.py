@@ -186,7 +186,8 @@ def mock_env():
         "GITHUB_TOKEN": "test-token",
         "GITHUB_REPOSITORY": "test-owner/test-repo",
         "GITHUB_WORKSPACE": "/tmp/test-workspace",
-        "GEMINI_API_KEY": "test-gemini-key",
+        "OPENROUTER_API_KEY": "test-openrouter-key",
+        "PUBROOT_MODEL": "google/gemini-3.8-flash",
         "S2_API_KEY": "test-s2-key",
     }):
         yield
@@ -331,7 +332,7 @@ def test_reviewer_function_signatures(mock_env, mock_files):
     Test that stages_4_to_6_reviewer calls all functions with correct signatures.
     
     This test mocks all stage 4-6 functions and GitHub API, then runs the
-    reviewer to verify it calls build_review_prompt and run_gemini_grounded_review
+    reviewer to verify it calls build_review_prompt and run_openrouter_review
     with the correct argument names and types.
     """
     from stages_4_to_6_reviewer import run_stages_4_to_6
@@ -340,7 +341,7 @@ def test_reviewer_function_signatures(mock_env, mock_files):
     sample_prompt = "Review this paper: Test Gemini 3.8 Flash Performance Analysis..."
     
     with patch("stages_4_to_6_reviewer.build_review_prompt", return_value=sample_prompt) as mock_prompt, \
-         patch("stages_4_to_6_reviewer.run_gemini_grounded_review", return_value=SAMPLE_REVIEW_RESULT) as mock_review, \
+         patch("stages_4_to_6_reviewer.run_openrouter_review", return_value=SAMPLE_REVIEW_RESULT) as mock_review, \
          patch("stages_4_to_6_reviewer.post_review_and_decide", return_value={"success": True, "action": "accepted"}) as mock_post, \
          patch("stages_4_to_6_reviewer.update_all_reputations") as mock_reputation, \
          patch.dict(os.environ, {"GITHUB_WORKSPACE": str(mock_files)}):
@@ -358,15 +359,16 @@ def test_reviewer_function_signatures(mock_env, mock_files):
         # Verify the old argument name is NOT present
         assert "calibration_dir" not in call_kwargs
         
-        # Verify run_gemini_grounded_review was called with correct args
+        # Verify run_openrouter_review was called with correct args
         assert mock_review.called
         call_kwargs = mock_review.call_args.kwargs
         assert "review_prompt" in call_kwargs
-        assert "gemini_api_key" in call_kwargs
+        assert "openrouter_api_key" in call_kwargs
         assert "model_name" in call_kwargs
         # Verify the old argument names are NOT present
         assert "prompt" not in call_kwargs
         assert "api_key" not in call_kwargs
+        assert "gemini_api_key" not in call_kwargs
         assert "submission_type" not in call_kwargs
         
         # Verify post_review_and_decide was called with correct args
@@ -405,7 +407,7 @@ def test_artifact_json_compatibility(mock_env, mock_files):
          patch("stages_1_to_3_analyzer.calculate_priority", return_value=SAMPLE_PRIORITY_INFO), \
          patch("stages_1_to_3_analyzer.verify_payment_code", return_value=SAMPLE_PAYMENT_VERIFICATION), \
          patch("stages_4_to_6_reviewer.build_review_prompt", return_value=sample_prompt), \
-         patch("stages_4_to_6_reviewer.run_gemini_grounded_review", return_value=SAMPLE_REVIEW_RESULT), \
+         patch("stages_4_to_6_reviewer.run_openrouter_review", return_value=SAMPLE_REVIEW_RESULT), \
          patch("stages_4_to_6_reviewer.post_review_and_decide", return_value={"success": True, "action": "accepted"}), \
          patch("stages_4_to_6_reviewer.update_all_reputations"), \
          patch.dict(os.environ, {"GITHUB_WORKSPACE": str(mock_files)}):
