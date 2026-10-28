@@ -630,6 +630,7 @@ class PruningReporter:
     
     def write_json_report(self, report: dict, output_path: Path) -> None:
         """Write the report as JSON."""
+        output_path.parent.mkdir(parents=True, exist_ok=True)
         output_path.write_text(
             json.dumps(report, indent=2, ensure_ascii=False) + "\n",
             encoding='utf-8'
@@ -726,6 +727,7 @@ class PruningReporter:
         lines.append("unpublished, or modified. This report flags candidates for manual review.")
         lines.append("")
         
+        output_path.parent.mkdir(parents=True, exist_ok=True)
         output_path.write_text("\n".join(lines), encoding='utf-8')
         print(f"Wrote Markdown report to {output_path}", file=sys.stderr)
 
@@ -742,14 +744,14 @@ def main() -> int:
     parser.add_argument(
         "--output-json",
         type=Path,
-        default=REPO_ROOT / "pruning_report.json",
-        help="JSON report output path (default: pruning_report.json)",
+        default=REPO_ROOT / "tmp" / "pruning_report.json",
+        help="JSON report output path (default: tmp/pruning_report.json)",
     )
     parser.add_argument(
         "--output-md",
         type=Path,
-        default=REPO_ROOT / "pruning_report.md",
-        help="Markdown report output path (default: pruning_report.md)",
+        default=REPO_ROOT / "tmp" / "pruning_report.md",
+        help="Markdown report output path (default: tmp/pruning_report.md)",
     )
     
     args = parser.parse_args()

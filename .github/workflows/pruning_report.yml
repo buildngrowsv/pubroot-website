@@ -64,15 +64,16 @@ jobs:
         id: pruning
         run: |
           echo "Generating pruning report..."
+          mkdir -p "$RUNNER_TEMP/pruning"
           python3 scripts/pruning_v1_report.py \
-            --output-json pruning_report.json \
-            --output-md pruning_report.md
+            --output-json "$RUNNER_TEMP/pruning/pruning_report.json" \
+            --output-md "$RUNNER_TEMP/pruning/pruning_report.md"
           
           echo "Report generation complete"
           
           # Extract summary statistics for the workflow summary
-          TOTAL_PAPERS=$(python3 -c "import json; print(json.load(open('pruning_report.json'))['report_metadata']['total_papers_scanned'])")
-          TOTAL_FLAGGED=$(python3 -c "import json; print(json.load(open('pruning_report.json'))['report_metadata']['total_flagged'])")
+          TOTAL_PAPERS=$(python3 -c "import json; print(json.load(open('$RUNNER_TEMP/pruning/pruning_report.json'))['report_metadata']['total_papers_scanned'])")
+          TOTAL_FLAGGED=$(python3 -c "import json; print(json.load(open('$RUNNER_TEMP/pruning/pruning_report.json'))['report_metadata']['total_flagged'])")
           
           echo "total_papers=$TOTAL_PAPERS" >> $GITHUB_OUTPUT
           echo "total_flagged=$TOTAL_FLAGGED" >> $GITHUB_OUTPUT
@@ -82,18 +83,11 @@ jobs:
           echo "Papers scanned: $TOTAL_PAPERS"
           echo "Papers flagged: $TOTAL_FLAGGED"
       
-      - name: Upload JSON report
+      - name: Upload reports
         uses: actions/upload-artifact@v4
         with:
-          name: pruning-report-json
-          path: pruning_report.json
-          retention-days: 90
-      
-      - name: Upload Markdown report
-        uses: actions/upload-artifact@v4
-        with:
-          name: pruning-report-markdown
-          path: pruning_report.md
+          name: pruning-reports
+          path: ${{ runner.temp }}/pruning/
           retention-days: 90
       
       - name: Display summary
@@ -105,9 +99,8 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### 📥 Download Reports" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "The pruning reports have been uploaded as workflow artifacts:" >> $GITHUB_STEP_SUMMARY
-          echo "- \`pruning-report-json\` - Structured JSON report for programmatic analysis" >> $GITHUB_STEP_SUMMARY
-          echo "- \`pruning-report-markdown\` - Human-readable Markdown report" >> $GITHUB_STEP_SUMMARY
+          echo "The pruning reports have been uploaded as a workflow artifact:" >> $GITHUB_STEP_SUMMARY
+          echo "- \`pruning-reports\` - Contains both JSON and Markdown reports" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### ⚠️ Important Notes" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
