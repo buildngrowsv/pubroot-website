@@ -52,7 +52,7 @@ class TestPatternBasedScrubbing:
         text = "The OPENROUTER_API_KEY is sk-or-v1-1234567890abcdef1234567890abcdef"
         result = scrub_secrets(text)
         assert "sk-or-v1-1234567890abcdef1234567890abcdef" not in result
-        assert "[REDACTED]" in result
+        assert "[REDACTED_SECRET]" in result
     
     def test_scrub_gemini_api_key(self):
         """Google Gemini API keys (AIza...) should be redacted."""
