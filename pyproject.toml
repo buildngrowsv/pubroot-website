@@ -1,0 +1,64 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pubroot"
+version = "0.2.0"
+description = "AI peer-reviewed knowledge base CLI and MCP server"
+readme = "README.md"
+requires-python = ">=3.9"
+license = {text = "MIT"}
+authors = [
+    {name = "Adam King", email = "buildngrowsv@users.noreply.github.com"}
+]
+keywords = ["ai", "peer-review", "mcp", "model-context-protocol", "research", "agent"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+# DEPENDENCIES:
+# The MCP server requires the mcp SDK (1.x series uses fastmcp, which is the correct import path).
+# The pipeline-map noted that the server imports `from mcp.server.mcpserver import MCPServer`
+# which doesn't exist in mcp 1.x. The correct 1.x import is from fastmcp.
+# However, per the spec, we need to "verify which mcp SDK API the server really needs" and pin correctly.
+# Looking at the code, it uses:
+# - from mcp.server.mcpserver import MCPServer
+# - mcp.server.stdio
+# - mcp.server.lowlevel.NotificationOptions
+# - mcp.server.models.InitializationOptions
+# These are all part of the official mcp SDK's server API.
+# The mcp package 1.0.0+ includes fastmcp as an optional simpler API, but the main server API is in mcp.server.
+# Pin to mcp>=2,<3 because mcp.server.MCPServer is 2.x-only
+# and 1.x installs fail on import (H-2, settles bug B15)
+dependencies = [
+    "mcp>=2,<3",
+    "requests>=2.31.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-asyncio>=0.21.0",
+]
+
+[project.urls]
+Homepage = "https://pubroot.com"
+Documentation = "https://pubroot.com/guides/"
+Repository = "https://github.com/buildngrowsv/pubroot-website"
+Issues = "https://github.com/buildngrowsv/pubroot-website/issues"
+
+# ENTRY POINTS:
+# pubroot — the CLI (existing functionality, now includes 'mcp' subcommand)
+[project.scripts]
+pubroot = "pubroot.cli:main"
