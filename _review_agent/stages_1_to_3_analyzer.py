@@ -119,18 +119,24 @@ def run_stages_1_to_3(issue_number: int) -> dict:
             "errors": [f"Failed to fetch issue: {str(e)}"],
         }
     
+    # Get repo root for file operations
+    repo_root = os.environ.get("GITHUB_WORKSPACE", os.getcwd())
+    
     # Stage 0: Calculate priority (before stage 1 so we can label early)
+    # Note: We don't have category or payment code yet, so initial priority is minimal
     priority_info = calculate_priority(
-        issue_body=issue_data["body"],
+        author=issue_data["author"],
         category="",  # Will be filled in by stage 1
-        payment_code_verified=False,  # Will be updated after payment verification
+        payment_code=None,  # Will be updated after stage 1 extracts it
+        repo_root=repo_root,
     )
     
     # Stage 1: Parse and filter
     print(f"[Stage 1] Parsing submission...")
     parsed = parse_and_filter_submission(
         issue_body=issue_data["body"],
-        author=issue_data["author"],
+        repo_root=repo_root,
+        issue_author=issue_data["author"],
     )
     
     if not parsed.get("valid", False):
@@ -144,18 +150,25 @@ def run_stages_1_to_3(issue_number: int) -> dict:
     
     # Update priority with actual category
     priority_info = calculate_priority(
-        issue_body=issue_data["body"],
+        author=issue_data["author"],
         category=parsed.get("category", ""),
-        payment_code_verified=False,
+        payment_code=parsed.get("payment_code"),
+        repo_root=repo_root,
     )
     
     # Payment verification (stage 0 continuation)
-    payment_verification = verify_payment_code(parsed.get("payment_code", ""))
+    payment_verification = verify_payment_code(
+        payment_code=parsed.get("payment_code"),
+        repo_root=repo_root,
+    )
+    
+    # Update priority with verified payment code if valid
     if payment_verification.get("valid", False):
         priority_info = calculate_priority(
-            issue_body=issue_data["body"],
+            author=issue_data["author"],
             category=parsed.get("category", ""),
-            payment_code_verified=True,
+            payment_code=parsed.get("payment_code"),
+            repo_root=repo_root,
         )
     
     # Stage 2: Novelty check
@@ -164,6 +177,7 @@ def run_stages_1_to_3(issue_number: int) -> dict:
         title=parsed.get("title", ""),
         abstract=parsed.get("abstract", ""),
         category=parsed.get("category", ""),
+        repo_root=repo_root,
         s2_api_key=s2_api_key,
     )
     
