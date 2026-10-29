@@ -23,6 +23,7 @@ import json
 import os
 import tempfile
 import pytest
+import requests
 from datetime import datetime, timezone, timedelta
 from unittest.mock import patch, MagicMock
 
@@ -418,7 +419,8 @@ class TestBuildManifest:
         """Technical content should expire in 6 months (180 days)."""
         now = datetime(2026, 3, 22, tzinfo=timezone.utc)
         manifest = _build_manifest(SAMPLE_PARSED, SAMPLE_REVIEW_SUCCESS["review"], SAMPLE_REPO_DATA, "2026-042", now, SAMPLE_NOVELTY)
-        expected = (now + timedelta(days=180)).isoformat()
+        # Expected: now + 180 days formatted as Z timezone
+        expected = (now + timedelta(days=180)).astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
         assert manifest["valid_until"] == expected
 
     def test_valid_until_is_12_months_for_humanities(self):
@@ -426,7 +428,8 @@ class TestBuildManifest:
         parsed_humanities = {**SAMPLE_PARSED, "category": "humanities/philosophy"}
         now = datetime(2026, 3, 22, tzinfo=timezone.utc)
         manifest = _build_manifest(parsed_humanities, SAMPLE_REVIEW_SUCCESS["review"], SAMPLE_REPO_DATA, "2026-042", now, SAMPLE_NOVELTY)
-        expected = (now + timedelta(days=365)).isoformat()
+        # Expected: now + 365 days formatted as Z timezone
+        expected = (now + timedelta(days=365)).astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
         assert manifest["valid_until"] == expected
 
     def test_valid_until_is_12_months_for_social(self):
@@ -434,7 +437,8 @@ class TestBuildManifest:
         parsed_social = {**SAMPLE_PARSED, "category": "social/economics"}
         now = datetime(2026, 3, 22, tzinfo=timezone.utc)
         manifest = _build_manifest(parsed_social, SAMPLE_REVIEW_SUCCESS["review"], SAMPLE_REPO_DATA, "2026-042", now, SAMPLE_NOVELTY)
-        expected = (now + timedelta(days=365)).isoformat()
+        # Expected: now + 365 days formatted as Z timezone
+        expected = (now + timedelta(days=365)).astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
         assert manifest["valid_until"] == expected
 
 
@@ -500,9 +504,22 @@ class TestUpdateContributors:
     limitation for Phase 1 where review volume is low.
     """
 
-    def test_creates_new_contributor_on_first_submission(self, temp_repo_root):
+    @patch.object(GitHubAPI, "create_or_update_file")
+    @patch.object(GitHubAPI, "get_file_content")
+    def test_creates_new_contributor_on_first_submission(self, mock_get, mock_update, temp_repo_root):
         """First submission from a new author should create their entry."""
+        gh = GitHubAPI("owner", "repo", "token")
+        
+        # Simulate 404 response so it falls back to local file
+        mock_response = MagicMock()
+        mock_response.status_code = 404
+        error = requests.HTTPError()
+        error.response = mock_response
+        mock_get.side_effect = error
+        
         _update_contributors(
+            gh=gh,
+            branch="main",
             repo_root=temp_repo_root,
             author="new-user",
             score=7.5,
@@ -510,8 +527,10 @@ class TestUpdateContributors:
             category="ai/llm-benchmarks",
         )
 
-        with open(os.path.join(temp_repo_root, "contributors.json"), "r") as f:
-            data = json.load(f)
+        # Check what was written via the mock
+        mock_update.assert_called_once()
+        written_content = mock_update.call_args[1]["content"]
+        data = json.loads(written_content)
 
         assert "new-user" in data["contributors"]
         c = data["contributors"]["new-user"]
@@ -521,17 +540,28 @@ class TestUpdateContributors:
         assert c["acceptance_rate"] == 1.0
         assert c["average_score"] == 7.5
 
-    def test_updates_existing_contributor(self, temp_repo_root):
+    @patch.object(GitHubAPI, "create_or_update_file")
+    @patch.object(GitHubAPI, "get_file_content")
+    def test_updates_existing_contributor(self, mock_get, mock_update, temp_repo_root):
         """Second submission should update running stats."""
-        # First submission
-        _update_contributors(temp_repo_root, "user-a", 8.0, True, "ai/llm-benchmarks")
-        # Second submission (rejected)
-        _update_contributors(temp_repo_root, "user-a", 4.0, False, "ai/llm-benchmarks")
+        gh = GitHubAPI("owner", "repo", "token")
+        
+        # First submission - return empty contributors
+        existing_contributors = {"contributors": {}}
+        mock_get.return_value = (json.dumps(existing_contributors), "sha123")
+        _update_contributors(gh, "main", temp_repo_root, "user-a", 8.0, True, "ai/llm-benchmarks")
+        
+        # Get the data from the first write
+        first_write = json.loads(mock_update.call_args_list[0][1]["content"])
+        
+        # Second submission - return the result of first write
+        mock_get.return_value = (json.dumps(first_write), "sha456")
+        _update_contributors(gh, "main", temp_repo_root, "user-a", 4.0, False, "ai/llm-benchmarks")
 
-        with open(os.path.join(temp_repo_root, "contributors.json"), "r") as f:
-            data = json.load(f)
-
-        c = data["contributors"]["user-a"]
+        # Get the data from the second write
+        second_write = json.loads(mock_update.call_args_list[1][1]["content"])
+        
+        c = second_write["contributors"]["user-a"]
         assert c["total_submissions"] == 2
         assert c["accepted"] == 1
         assert c["rejected"] == 1
@@ -539,41 +569,81 @@ class TestUpdateContributors:
         # Running average: 8.0, then (8.0 + (4.0-8.0)/2) = 6.0
         assert c["average_score"] == 6.0
 
-    def test_tracks_per_category_stats(self, temp_repo_root):
+    @patch.object(GitHubAPI, "create_or_update_file")
+    @patch.object(GitHubAPI, "get_file_content")
+    def test_tracks_per_category_stats(self, mock_get, mock_update, temp_repo_root):
         """Should maintain separate stats per category."""
-        _update_contributors(temp_repo_root, "user-b", 7.0, True, "ai/llm-benchmarks")
-        _update_contributors(temp_repo_root, "user-b", 5.0, False, "debug/runtime-errors")
+        gh = GitHubAPI("owner", "repo", "token")
+        
+        # First submission
+        existing_contributors = {"contributors": {}}
+        mock_get.return_value = (json.dumps(existing_contributors), "sha123")
+        _update_contributors(gh, "main", temp_repo_root, "user-b", 7.0, True, "ai/llm-benchmarks")
+        
+        # Get the data from the first write
+        first_write = json.loads(mock_update.call_args_list[0][1]["content"])
+        
+        # Second submission with different category
+        mock_get.return_value = (json.dumps(first_write), "sha456")
+        _update_contributors(gh, "main", temp_repo_root, "user-b", 5.0, False, "debug/runtime-errors")
 
-        with open(os.path.join(temp_repo_root, "contributors.json"), "r") as f:
-            data = json.load(f)
-
-        c = data["contributors"]["user-b"]
+        # Get the data from the second write
+        second_write = json.loads(mock_update.call_args_list[1][1]["content"])
+        
+        c = second_write["contributors"]["user-b"]
         assert "ai/llm-benchmarks" in c["categories"]
         assert "debug/runtime-errors" in c["categories"]
         assert c["categories"]["ai/llm-benchmarks"]["accepted"] == 1
         assert c["categories"]["debug/runtime-errors"]["accepted"] == 0
 
-    def test_running_average_formula(self, temp_repo_root):
+    @patch.object(GitHubAPI, "create_or_update_file")
+    @patch.object(GitHubAPI, "get_file_content")
+    def test_running_average_formula(self, mock_get, mock_update, temp_repo_root):
         """
         Verify the running average: new_avg = old_avg + (new_score - old_avg) / count.
         Three submissions with scores 6, 8, 10 should average to 8.0.
         """
-        _update_contributors(temp_repo_root, "avg-user", 6.0, True, "ai/llm-benchmarks")
-        _update_contributors(temp_repo_root, "avg-user", 8.0, True, "ai/llm-benchmarks")
-        _update_contributors(temp_repo_root, "avg-user", 10.0, True, "ai/llm-benchmarks")
+        gh = GitHubAPI("owner", "repo", "token")
+        
+        # First submission
+        existing_contributors = {"contributors": {}}
+        mock_get.return_value = (json.dumps(existing_contributors), "sha1")
+        _update_contributors(gh, "main", temp_repo_root, "avg-user", 6.0, True, "ai/llm-benchmarks")
+        
+        # Second submission
+        first_write = json.loads(mock_update.call_args_list[0][1]["content"])
+        mock_get.return_value = (json.dumps(first_write), "sha2")
+        _update_contributors(gh, "main", temp_repo_root, "avg-user", 8.0, True, "ai/llm-benchmarks")
+        
+        # Third submission
+        second_write = json.loads(mock_update.call_args_list[1][1]["content"])
+        mock_get.return_value = (json.dumps(second_write), "sha3")
+        _update_contributors(gh, "main", temp_repo_root, "avg-user", 10.0, True, "ai/llm-benchmarks")
 
-        with open(os.path.join(temp_repo_root, "contributors.json"), "r") as f:
-            data = json.load(f)
-
-        c = data["contributors"]["avg-user"]
+        # Get the data from the third write
+        third_write = json.loads(mock_update.call_args_list[2][1]["content"])
+        
+        c = third_write["contributors"]["avg-user"]
         assert c["average_score"] == 8.0
-
-    def test_initializes_flags_for_new_contributor(self, temp_repo_root):
+    
+    @patch.object(GitHubAPI, "create_or_update_file")
+    @patch.object(GitHubAPI, "get_file_content")
+    def test_initializes_flags_for_new_contributor(self, mock_get, mock_update, temp_repo_root):
         """New contributors should have zeroed security flags."""
-        _update_contributors(temp_repo_root, "flagless-user", 5.0, False, "ai/llm-benchmarks")
+        gh = GitHubAPI("owner", "repo", "token")
+        
+        # Simulate 404 response so it falls back to local file
+        mock_response = MagicMock()
+        mock_response.status_code = 404
+        error = requests.HTTPError()
+        error.response = mock_response
+        mock_get.side_effect = error
+        
+        _update_contributors(gh, "main", temp_repo_root, "flagless-user", 5.0, False, "ai/llm-benchmarks")
 
-        with open(os.path.join(temp_repo_root, "contributors.json"), "r") as f:
-            data = json.load(f)
+        # Check what was written via the mock
+        written_content = mock_update.call_args[1]["content"]
+        data = json.loads(written_content)
 
         flags = data["contributors"]["flagless-user"]["flags"]
         assert flags["prompt_injection_attempts"] == 0
@@ -713,8 +783,17 @@ class TestPostReviewAndDecide:
     @patch.object(GitHubAPI, "post_comment")
     @patch.object(GitHubAPI, "add_labels")
     @patch.object(GitHubAPI, "close_issue")
-    def test_rejected_updates_contributor_stats(self, mock_close, mock_labels, mock_comment, temp_repo_root):
+    @patch.object(GitHubAPI, "get_file_content")
+    @patch.object(GitHubAPI, "create_or_update_file")
+    def test_rejected_updates_contributor_stats(self, mock_update, mock_get, mock_close, mock_labels, mock_comment, temp_repo_root):
         """Rejected submissions should still update contributor stats."""
+        # Simulate 404 response so _update_contributors falls back to local file
+        mock_response = MagicMock()
+        mock_response.status_code = 404
+        error = requests.HTTPError()
+        error.response = mock_response
+        mock_get.side_effect = error
+        
         post_review_and_decide(
             review_result=SAMPLE_REVIEW_REJECTED,
             parsed_submission=SAMPLE_PARSED,
@@ -727,9 +806,234 @@ class TestPostReviewAndDecide:
             github_token="token",
             repo_root=temp_repo_root,
         )
-
-        with open(os.path.join(temp_repo_root, "contributors.json"), "r") as f:
-            data = json.load(f)
+    
+        # Check what was written via the mock
+        mock_update.assert_called_once()
+        written_content = mock_update.call_args[1]["content"]
+        data = json.loads(written_content)
 
         assert "test-user" in data["contributors"]
         assert data["contributors"]["test-user"]["rejected"] == 1
+
+
+# ---------------------------------------------------------------------------
+# TESTS: Response check bug fixes (e.response is not None)
+# ---------------------------------------------------------------------------
+
+
+class TestResponseCheckFixes:
+    """
+    Tests for the bug fix where `e.response and e.response.status_code == 404`
+    was changed to `e.response is not None and e.response.status_code == 404`.
+    
+    The bug: requests.Response is falsy for 4xx responses, so the old check
+    failed to match 404s when response was truthy but had status_code 404.
+    """
+    
+    @patch.object(GitHubAPI, "get_file_content")
+    def test_update_agent_index_handles_404_correctly(self, mock_get, temp_repo_root):
+        """
+        When GitHub API returns 404 for agent-index.json, should fall back
+        to local checkout. Tests the fix for `e.response is not None`.
+        """
+        # Simulate a 404 response
+        mock_response = MagicMock()
+        mock_response.status_code = 404
+        error = requests.HTTPError()
+        error.response = mock_response
+        mock_get.side_effect = error
+        
+        # Create a local agent-index.json for fallback
+        with open(os.path.join(temp_repo_root, "agent-index.json"), "w") as f:
+            json.dump(EMPTY_AGENT_INDEX, f)
+        
+        # This should not raise, should fall back to local file
+        from stage_6_post_review_and_decide import _update_agent_index
+        gh = GitHubAPI("owner", "repo", "token")
+        
+        # Mock create_or_update_file_with_sha to avoid actual API call
+        with patch.object(gh, "create_or_update_file_with_sha"):
+            _update_agent_index(
+                gh=gh,
+                branch="main",
+                repo_root=temp_repo_root,
+                new_entry={"id": "2026-001", "published_date": "2026-01-01T00:00:00Z"},
+            )
+    
+    @patch.object(GitHubAPI, "get_file_content")
+    def test_update_contributors_handles_404_correctly(self, mock_get, temp_repo_root):
+        """
+        When GitHub API returns 404 for contributors.json, should fall back
+        to local checkout. Tests the fix for `e.response is not None`.
+        """
+        # Simulate a 404 response
+        mock_response = MagicMock()
+        mock_response.status_code = 404
+        error = requests.HTTPError()
+        error.response = mock_response
+        mock_get.side_effect = error
+        
+        # Create a local contributors.json for fallback
+        with open(os.path.join(temp_repo_root, "contributors.json"), "w") as f:
+            json.dump(EMPTY_CONTRIBUTORS, f)
+        
+        # This should not raise, should fall back to local file
+        from stage_6_post_review_and_decide import _update_contributors
+        gh = GitHubAPI("owner", "repo", "token")
+        
+        # Mock create_or_update_file to avoid actual API call
+        with patch.object(gh, "create_or_update_file"):
+            _update_contributors(
+                gh=gh,
+                branch="main",
+                repo_root=temp_repo_root,
+                author="test-user",
+                score=7.0,
+                accepted=True,
+                category="ai/llm-benchmarks",
+            )
+
+
+# ---------------------------------------------------------------------------
+# TESTS: Index generation matches regenerator (Root Cause C fix)
+# ---------------------------------------------------------------------------
+
+
+class TestIndexGenerationMatchesRegenerator:
+    """
+    Tests that stage 6's index generation produces byte-identical output
+    to the regenerator script. This prevents CI failures at the
+    'Check indexes match committed versions (fail-closed)' step.
+    
+    Root Cause C: stage 6 used now() for last_updated (regenerator derives
+    from max published_date) and appended entries (regenerator sorts by ID).
+    """
+    
+    @patch.object(GitHubAPI, "create_or_update_file_with_sha")
+    @patch.object(GitHubAPI, "get_file_content")
+    def test_last_updated_from_max_published_date(self, mock_get, mock_update, temp_repo_root):
+        """
+        Stage 6 should calculate last_updated from max published_date,
+        not from now(), to match the regenerator's output.
+        """
+        # Create an index with existing papers
+        existing_index = {
+            "schema_version": "1.0",
+            "total_papers": 2,
+            "last_updated": "2026-03-20T10:00:00Z",
+            "papers": [
+                {"id": "2026-001", "published_date": "2026-03-20T10:00:00Z"},
+                {"id": "2026-002", "published_date": "2026-03-15T08:30:00Z"},
+            ],
+        }
+        mock_get.return_value = (json.dumps(existing_index), "sha123")
+        
+        from stage_6_post_review_and_decide import _update_agent_index
+        gh = GitHubAPI("owner", "repo", "token")
+        
+        # Add a new paper with a newer published_date
+        new_entry = {
+            "id": "2026-003",
+            "published_date": "2026-03-22T15:00:00Z",
+            "category": "ai/llm-benchmarks",
+        }
+        
+        _update_agent_index(gh, "main", temp_repo_root, new_entry)
+        
+        # Check what was written
+        mock_update.assert_called_once()
+        written_content = mock_update.call_args[1]["content"]
+        written_data = json.loads(written_content)
+        
+        # last_updated should be the max published_date (2026-003's date)
+        assert written_data["last_updated"] == "2026-03-22T15:00:00Z"
+        # Should NOT be datetime.now()
+        assert written_data["last_updated"] != datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    
+    @patch.object(GitHubAPI, "create_or_update_file_with_sha")
+    @patch.object(GitHubAPI, "get_file_content")
+    def test_papers_sorted_by_id(self, mock_get, mock_update, temp_repo_root):
+        """
+        Stage 6 should sort papers by ID after appending, to match
+        the regenerator's sorted output.
+        """
+        # Create an index with papers in arbitrary order
+        existing_index = {
+            "schema_version": "1.0",
+            "total_papers": 2,
+            "last_updated": "2026-03-20T10:00:00Z",
+            "papers": [
+                {"id": "2026-005", "published_date": "2026-03-20T10:00:00Z"},
+                {"id": "2026-001", "published_date": "2026-03-15T08:30:00Z"},
+            ],
+        }
+        mock_get.return_value = (json.dumps(existing_index), "sha123")
+        
+        from stage_6_post_review_and_decide import _update_agent_index
+        gh = GitHubAPI("owner", "repo", "token")
+        
+        # Add a new paper with an ID that should sort in the middle
+        new_entry = {
+            "id": "2026-003",
+            "published_date": "2026-03-18T12:00:00Z",
+            "category": "ai/llm-benchmarks",
+        }
+        
+        _update_agent_index(gh, "main", temp_repo_root, new_entry)
+        
+        # Check what was written
+        mock_update.assert_called_once()
+        written_content = mock_update.call_args[1]["content"]
+        written_data = json.loads(written_content)
+        
+        # Papers should be sorted by ID
+        paper_ids = [p["id"] for p in written_data["papers"]]
+        assert paper_ids == ["2026-001", "2026-003", "2026-005"]
+    
+    @patch.object(GitHubAPI, "create_or_update_file_with_sha")
+    @patch.object(GitHubAPI, "get_file_content")
+    def test_priorroot_index_routing(self, mock_get, mock_update, temp_repo_root):
+        """
+        Papers with category starting with 'prior-art/' should go to
+        priorroot-index.json, not agent-index.json.
+        """
+        # Create both indexes
+        agent_index = {
+            "schema_version": "1.0",
+            "total_papers": 1,
+            "last_updated": "2026-03-20T10:00:00Z",
+            "papers": [{"id": "2026-001", "published_date": "2026-03-20T10:00:00Z"}],
+        }
+        priorroot_index = {
+            "schema_version": "1.0",
+            "total_papers": 0,
+            "last_updated": "2026-01-01T00:00:00Z",
+            "papers": [],
+        }
+        
+        def get_file_side_effect(filename, branch):
+            if filename == "priorroot-index.json":
+                return (json.dumps(priorroot_index), "sha456")
+            return (json.dumps(agent_index), "sha123")
+        
+        mock_get.side_effect = get_file_side_effect
+        
+        from stage_6_post_review_and_decide import _update_agent_index
+        gh = GitHubAPI("owner", "repo", "token")
+        
+        # Add a prior-art paper
+        new_entry = {
+            "id": "2026-002",
+            "published_date": "2026-03-22T15:00:00Z",
+            "category": "prior-art/therapeutic-use",
+        }
+        
+        _update_agent_index(gh, "main", temp_repo_root, new_entry)
+        
+        # Should have called get_file_content with priorroot-index.json
+        assert any("priorroot-index.json" in str(call) for call in mock_get.call_args_list)
+        
+        # Should have written to priorroot-index.json
+        mock_update.assert_called_once()
+        assert mock_update.call_args[1]["path"] == "priorroot-index.json"
+

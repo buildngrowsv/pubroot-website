@@ -59,6 +59,15 @@ from pubroot_site_paths import (
 )
 from secret_scrubber import scrub_all
 
+# Import the shared index entry builder to ensure byte-identical output (Root Cause C fix)
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
+from regenerate_agent_index_from_papers import (
+    build_entry as regenerator_build_entry,
+    _normalize_date_to_second_precision,
+)
+
 # Canonical site origin for agent-index.json reader_url (override in CI if needed).
 PUBROOT_SITE_BASE = os.environ.get("PUBROOT_SITE_BASE", "https://pubroot.com")
 
@@ -986,7 +995,7 @@ def _update_agent_index(
     except requests.HTTPError as e:
         # If the index file doesn't exist on the branch yet (shouldn't happen),
         # fall back to the local checkout as a last resort
-        if e.response and e.response.status_code == 404:
+        if e.response is not None and e.response.status_code == 404:
             index_path = os.path.join(repo_root, index_filename)
             with open(index_path, "r") as f:
                 index_data = json.load(f)
@@ -997,7 +1006,19 @@ def _update_agent_index(
     # Append the new entry and update metadata
     index_data["papers"].append(new_entry)
     index_data["total_papers"] = len(index_data["papers"])
-    index_data["last_updated"] = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    
+    # Sort papers by ID to match regenerator output (Root Cause C fix)
+    index_data["papers"].sort(key=lambda e: e["id"])
+    
+    # Calculate last_updated from max published_date (Root Cause C fix)
+    # This ensures byte-identical output with the regenerator script
+    all_dates = [e["published_date"] for e in index_data["papers"] if e.get("published_date")]
+    if all_dates:
+        # all_dates are already in YYYY-MM-DDTHH:MM:SSZ format, so max() works
+        index_data["last_updated"] = max(all_dates)
+    else:
+        # Fallback to now() if there are no papers (shouldn't happen)
+        index_data["last_updated"] = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     
     # Write back to the branch with the blob SHA to prevent lost updates
     gh.create_or_update_file_with_sha(
@@ -1039,15 +1060,12 @@ def _update_contributors(
     except requests.HTTPError as e:
         # If contributors.json doesn't exist on the branch yet (shouldn't happen),
         # fall back to the local checkout as a last resort
-        if e.response and e.response.status_code == 404:
+        if e.response is not None and e.response.status_code == 404:
             contributors_path = os.path.join(repo_root, "contributors.json")
             with open(contributors_path, "r") as f:
                 data = json.load(f)
         else:
             raise
-    
-    with open(contributors_path, "r") as f:
-        data = json.load(f)
     
     contributors = data.get("contributors", {})
     
