@@ -5,13 +5,13 @@
     "buildngrowsv": {
       "github_handle": "buildngrowsv",
       "first_seen": "2026-03-22T17:15:26.769428+00:00",
-      "last_submission": "2026-10-24T03:19:59.477157+00:00",
-      "total_submissions": 78,
-      "accepted": 78,
+      "last_submission": "2026-10-29T14:24:35.964553+00:00",
+      "total_submissions": 83,
+      "accepted": 83,
       "rejected": 0,
       "withdrawn": 0,
       "acceptance_rate": 1.0,
-      "average_score": 7.81,
+      "average_score": 7.8,
       "score_trend": "insufficient_data",
       "categories": {
         "prior-art/general-disclosure": {
@@ -75,9 +75,9 @@
           "avg_score": 8.5
         },
         "se/architecture": {
-          "submissions": 11,
-          "accepted": 11,
-          "avg_score": 8.13
+          "submissions": 12,
+          "accepted": 12,
+          "avg_score": 8.1
         },
         "cs/hci": {
           "submissions": 3,
@@ -100,9 +100,9 @@
           "avg_score": 7.5
         },
         "se/testing": {
-          "submissions": 3,
-          "accepted": 3,
-          "avg_score": 7.83
+          "submissions": 5,
+          "accepted": 5,
+          "avg_score": 7.72
         },
         "benchmarks/cost-analysis": {
           "submissions": 1,
@@ -143,6 +143,16 @@
           "submissions": 1,
           "accepted": 1,
           "avg_score": 7.8
+        },
+        "benchmarks/developer-tools": {
+          "submissions": 1,
+          "accepted": 1,
+          "avg_score": 7.9
+        },
+        "ai/ai-safety": {
+          "submissions": 1,
+          "accepted": 1,
+          "avg_score": 7.5
         }
       },
       "reputation_score": 0.0,

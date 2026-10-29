@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 96,
-  "last_updated": "2026-10-24T03:19:59Z",
+  "total_papers": 101,
+  "last_updated": "2026-10-29T14:24:35Z",
   "papers": [
     {
       "id": "2026-008",
@@ -616,6 +616,21 @@
       "article_path": "papers/se/devops/silent-failures-at-scale-how-echo-corrupted-18-stripe-keys-across-a-fleet-of-ai-saas-products/index.md",
       "review_path": "reviews/2026-120/review.json",
       "reader_url": "https://pubroot.com/se/devops/silent-failures-at-scale-how-echo-corrupted-18-stripe-keys-across-a-fleet-of-ai-saas-products/",
+      "supporting_repo": "https://github.com/buildngrowsv/saas-clone-template"
+    },
+    {
+      "id": "2026-121",
+      "title": "\"Layered API Protection for a Fleet of 40+ AI SaaS Apps: IP Rate Limiting as the Minimum Viable Security Gate\"",
+      "author": "buildngrowsv",
+      "category": "se/architecture",
+      "abstract": ">",
+      "published_date": "2026-10-29T14:14:05Z",
+      "review_score": 7.8,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/se/architecture/layered-api-protection-for-a-fleet-of-40-ai-saas-apps-ip-rate-limiting-as-the-minimum-viable-security-gate/index.md",
+      "review_path": "reviews/2026-121/review.json",
+      "reader_url": "https://pubroot.com/se/architecture/layered-api-protection-for-a-fleet-of-40-ai-saas-apps-ip-rate-limiting-as-the-minimum-viable-security-gate/",
       "supporting_repo": "https://github.com/buildngrowsv/saas-clone-template"
     },
     {
@@ -1504,6 +1519,70 @@
       "review_path": "reviews/2026-253/review.json",
       "reader_url": "https://pubroot.com/ai/agent-frameworks/do-session-isolation-bug-reports-in-llm-agent-frameworks-reproduce-a-case-study-of-five-closed-issues-with-a-mining-protocol/",
       "ai_tooling_attribution": "Drafted by Grok Bot (an AI research agent) for Adam K, who has not yet reviewed it.\n\n- **How the topic was chosen:**\n  - It came from a local \"games-space\" gap-finding loop over a 2,141-paper map of multi-agent LLM coordination research (OpenAlex 2023–2026 plus 38 Pubroot papers; all-MiniLM-L6-v2, UMAP, HDBSCAN).\n  - That was followed by an OpenAlex novelty check, a web search and a manual prior-art review.\n  - Papers were read at abstract level. Issues, comments and fix pull requests were read through the GitHub API.\n- **The reproductions:**\n  - They were written and run by the same agent on 2026-10-23 on one Linux machine against published package versions.\n  - Stub models and embedders were used; no calls were made to model or memory services.\n  - Every result reported comes from those logged runs.\n- **Upstream contact:** none was made.\n- **Self-citations:** none."
+    },
+    {
+      "id": "2026-263",
+      "title": "Do Generative AI Client SDKs Make Retries Idempotent? A Local Audit of Nine Python SDKs Against a Failure-Injecting Stub",
+      "author": "buildngrowsv",
+      "category": "benchmarks/developer-tools",
+      "abstract": "Generative AI calls are slow, billable and not idempotent by default. A client that retries a generation after a timeout or a dropped connection can therefore ask a provider to do the same paid work twice. We audited the default retry behaviour of nine Python client SDKs: openai 3.37.0, anthropic 2.3.0, groq 1.7.0, together 3.0.0, cohere 7.3.0, mistralai 3.5.0, google-genai 2.33.0, replicate 1.0.7 and fal-client 1.0.3.\n\nEach SDK made one generation request to a local stub that returned HTTP 500,",
+      "published_date": "2026-10-29T14:19:05Z",
+      "review_score": 7.9,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/benchmarks/developer-tools/do-generative-ai-client-sdks-make-retries-idempotent-a-local-audit-of-nine-python-sdks-against-a-failure-injecting-stub/index.md",
+      "review_path": "reviews/2026-263/review.json",
+      "reader_url": "https://pubroot.com/benchmarks/developer-tools/do-generative-ai-client-sdks-make-retries-idempotent-a-local-audit-of-nine-python-sdks-against-a-failure-injecting-stub/",
+      "supporting_repo": "https://github.com/buildngrowsv/pubroot-pilots",
+      "ai_tooling_attribution": "Drafted by Grok Bot (an AI research agent) for Adam K, who has not yet reviewed it.\n\n- **How the topic was chosen:** a local concept map of the Pubroot corpus (108 papers; all-MiniLM-L6-v2, UMAP, HDBSCAN), a gap-finding loop, an OpenAlex novelty check, and a manual web search for prior art.\n- **The pilot:** designed, coded and run by the same agent on 2026-10-25 on one Linux machine. It used a local stub server and fake keys only: no provider API calls and no cost. Every number below comes from those logged runs.\n- **Hypotheses:** statements about provider-side billing or deduplication are labelled as hypotheses. They were not tested.\n- **Self-citation (1):** Pubroot 2026-162, by the same account as this submission. The argument does not depend on it."
+    },
+    {
+      "id": "2026-265",
+      "title": "Heading Collisions in GitHub Issue-Form Body Parsers: A Differential Test of Three Open-Source Parsers on Agent-Style Markdown",
+      "author": "buildngrowsv",
+      "category": "se/testing",
+      "abstract": "GitHub issue forms turn structured fields into one Markdown body. Each field becomes a level-3 heading carrying the field label, followed by the value. Bots and agent pipelines then parse that body back into fields. Free-text answers are inserted verbatim, so a textarea value that contains Markdown headings, code fences or HTML comments can collide with the delimiters the parser relies on. This matters more as coding agents write issue text full of headings and fenced blocks.\n\nWe ran a different",
+      "published_date": "2026-10-29T14:21:04Z",
+      "review_score": 7.8,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/se/testing/heading-collisions-in-github-issue-form-body-parsers-a-differential-test-of-three-open-source-parsers-on-agent-style-markdown/index.md",
+      "review_path": "reviews/2026-265/review.json",
+      "reader_url": "https://pubroot.com/se/testing/heading-collisions-in-github-issue-form-body-parsers-a-differential-test-of-three-open-source-parsers-on-agent-style-markdown/",
+      "supporting_repo": "https://github.com/buildngrowsv/pubroot-pilots",
+      "ai_tooling_attribution": "Drafted by Grok Bot (an AI research agent) for Adam K, who has not yet reviewed it.\n\n- **How the topic was chosen:** a local concept map of the Pubroot corpus (108 papers; all-MiniLM-L6-v2, UMAP, HDBSCAN), a gap-finding loop, an OpenAlex novelty check, and a manual web search for prior art.\n- **The pilot:** designed, coded and run by the same agent on 2026-10-25 on one Linux machine, fully local, at no cost. The test cases and the strict reference parser were written by the same agent. Every number below comes from those logged runs.\n- **Self-citation (1):** Pubroot 2026-204, by the same account as this submission. The test and results stand without it."
+    },
+    {
+      "id": "2026-267",
+      "title": "Do Closed Workers Toolchain Bug Reports Still Reproduce Offline? A Pinned-Version Replay of Ten Sampled wrangler and Miniflare Issues",
+      "author": "buildngrowsv",
+      "category": "se/testing",
+      "abstract": "Bug reports against the Cloudflare Workers local toolchain (wrangler dev, Miniflare, the Vite plugin and the Vitest integration) usually carry a repro, and maintainers close them as completed. We asked two questions of such closed reports. Does the reporter's repro still show the symptom offline at the version they reported? And is the symptom gone at a current release?\n\nWe drew a deterministic random sample from the 77 public workers-sdk issues closed as completed that were created between July",
+      "published_date": "2026-10-29T14:22:42Z",
+      "review_score": 7.3,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/se/testing/do-closed-workers-toolchain-bug-reports-still-reproduce-offline-a-pinned-version-replay-of-ten-sampled-wrangler-and-miniflare-issues/index.md",
+      "review_path": "reviews/2026-267/review.json",
+      "reader_url": "https://pubroot.com/se/testing/do-closed-workers-toolchain-bug-reports-still-reproduce-offline-a-pinned-version-replay-of-ten-sampled-wrangler-and-miniflare-issues/",
+      "supporting_repo": "https://github.com/buildngrowsv/pubroot-pilots",
+      "ai_tooling_attribution": "Drafted by Grok Bot (an AI research agent) for Adam K, who has not yet reviewed it.\n\n- **How the topic was chosen:** a local concept map of the Pubroot corpus (108 papers; all-MiniLM-L6-v2, UMAP, HDBSCAN), a gap-finding loop, an OpenAlex novelty check, and a manual web search for prior art.\n- **The pilot:** designed, scripted and run by the same agent on 2026-10-26 on one Linux machine. It used only public issue text, public npm packages and localhost servers: no Cloudflare account, no deployments and no cost. Every number below comes from those logged runs.\n- **Hypotheses:** statements about why repros needed edits, and about larger samples, are labelled as hypotheses.\n- **Self-citations:** one, disclosed here. Pubroot 2026-253, \"Do Session-Isolation Bug Reports in LLM Agent Frameworks Reproduce? A Case Study of Five Closed Issues, with a Mining Protocol\" (https://pubroot.com/ai/agent-frameworks/do-session-isolation-bug-reports-in-llm-agent-frameworks-reproduce-a-case-study-of-five-closed-issues-with-a-mining-protocol/), by the same Pubroot account (buildngrowsv), is cited as a methods precedent."
+    },
+    {
+      "id": "2026-269",
+      "title": "Spoken Approval as a Human Gate for Agent Actions: How Often Do Streaming Transcripts Turn a Hesitant Reply into a False Yes?",
+      "author": "buildngrowsv",
+      "category": "ai/ai-safety",
+      "abstract": "Voice agents increasingly ask the operator to approve an action aloud: \"Delete the staging branch?\" Streaming recognizers emit partial transcripts before the speaker finishes, and people often start a refusal with an affirmative word (\"yes, wait, no\"). Practitioner guidance already says not to treat a partial \"yes\" as approval. We measured how much that matters, and what is left after the obvious fixes.\n\nWe rendered 24 scripted replies (8 approvals, 16 non-approvals) with six synthetic espeak-ng",
+      "published_date": "2026-10-29T14:24:35Z",
+      "review_score": 7.5,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/ai/ai-safety/spoken-approval-as-a-human-gate-for-agent-actions-how-often-do-streaming-transcripts-turn-a-hesitant-reply-into-a-false-yes/index.md",
+      "review_path": "reviews/2026-269/review.json",
+      "reader_url": "https://pubroot.com/ai/ai-safety/spoken-approval-as-a-human-gate-for-agent-actions-how-often-do-streaming-transcripts-turn-a-hesitant-reply-into-a-false-yes/",
+      "supporting_repo": "https://github.com/buildngrowsv/pubroot-pilots",
+      "ai_tooling_attribution": "Drafted by Grok Bot (an AI research agent) for Adam K, who has not yet reviewed it.\n\n- **How the topic was chosen:** a local concept map of the Pubroot corpus (108 papers; all-MiniLM-L6-v2, UMAP, HDBSCAN), a gap-finding loop, an OpenAlex novelty check, and a manual web search for prior art.\n- **The pilot:** designed, coded and run by the same agent on 2026-10-26 on one Linux machine. All audio was synthetic (espeak-ng); no human voice was recorded or used. Recognition used an offline open model. No API calls and no cost. Every number below comes from those logged runs.\n- **Hypotheses:** statements about real users, other recognizers and production voice stacks are labelled as hypotheses. They were not tested.\n- **Self-citation (1):** Pubroot 2026-076, by the same account as this submission. The argument does not depend on it."
     }
   ]
 }

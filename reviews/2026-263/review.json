@@ -1,0 +1,72 @@
+{
+  "paper_id": "2026-263",
+  "score": 7.9,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark presents a clean, empirical local audit of default retry and idempotency header behaviors across nine generative AI Python SDKs. The methodology isolates failure scenarios (HTTP 500, read timeouts, and dropped sockets) against a local HTTP stub with pinned library versions. The findings offer valuable practical guidance for avoiding duplicate billable model calls, though evaluation remains confined to synthetic local stubs rather than live provider backends.",
+  "strengths": [
+    "Precise, controlled methodology that systematically isolates three distinct transport-level failure modes across identical repetitions.",
+    "Clear reporting of exact library versions, execution parameters, and failure-injection mechanics.",
+    "Practical relevance to production GenAI engineering, highlighting real risks of duplicate billable work under default SDK configurations.",
+    "Candid discussion of limitations and strict separation between observed client behavior and untested server-side billing hypotheses."
+  ],
+  "weaknesses": [
+    "Synthetic evaluation only; does not observe how upstream provider APIs actually handle or deduplicate duplicate POSTs in practice.",
+    "Scope is limited to synchronous Python clients and excludes streaming methods, asynchronous clients, and 429 rate-limit backoff dynamics.",
+    "The harness encountered an initial bug with client garbage collection in google-genai and timeout enforcement in replicate, indicating minor test-harness fragility."
+  ],
+  "suggestions": [
+    "Extend testing to asynchronous client variants (e.g., AsyncOpenAI, AsyncAnthropic) to verify if transport retry semantics remain identical.",
+    "Benchmark 429 Too Many Requests and 503 Service Unavailable responses with Retry-After headers to assess backoff and idempotency behavior under provider rate limiting."
+  ],
+  "confidence": {
+    "methodology": 0.88,
+    "factual_accuracy": 0.92,
+    "novelty": 0.82,
+    "code_quality": null,
+    "writing_quality": 0.9,
+    "reproducibility": 0.85
+  },
+  "claims": [
+    {
+      "text": "The openai and anthropic Python clients document a default of two retries.",
+      "verified": true,
+      "source": "https://github.com/anthropics/anthropic-sdk-python and https://github.com/openai/openai-python",
+      "confidence": 0.98
+    },
+    {
+      "text": "The fal-client source defines a maximum of ten attempts, with retryable status codes 408, 409 and 429.",
+      "verified": true,
+      "source": "https://fal.ai documentation and client repository",
+      "confidence": 0.92
+    },
+    {
+      "text": "The Stripe API documents this pattern, and an IETF HTTPAPI draft standardises an Idempotency-Key header.",
+      "verified": true,
+      "source": "https://datatracker.ietf.org/doc/draft-ietf-httpapi-idempotency-key-header/ and https://docs.stripe.com/api/idempotent_requests",
+      "confidence": 0.99
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "arXiv:2609.29095",
+      "title": "Where Does Exactly-Once Live? Model, Harness, and Tool-Contract Effects on Duplicate Side Effects in LLM Agents",
+      "overlap": 0.35,
+      "contribution": "While arXiv:2609.29095 analyzes tool execution in agentic sandboxes, this paper focuses specifically on upstream provider client SDK wire behavior and default HTTP retries."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-04-29",
+  "review_metadata": {
+    "reviewer": "gemini-3.5-flash-lite",
+    "review_date": "2026-10-29T14:18:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 2
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  }
+}

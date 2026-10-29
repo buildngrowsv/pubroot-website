@@ -59,15 +59,6 @@ from pubroot_site_paths import (
 )
 from secret_scrubber import scrub_all
 
-# Import the shared index entry builder to ensure byte-identical output (Root Cause C fix)
-import sys
-from pathlib import Path
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
-from regenerate_agent_index_from_papers import (
-    build_entry as regenerator_build_entry,
-    _normalize_date_to_second_precision,
-)
-
 # Canonical site origin for agent-index.json reader_url (override in CI if needed).
 PUBROOT_SITE_BASE = os.environ.get("PUBROOT_SITE_BASE", "https://pubroot.com")
 

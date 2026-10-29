@@ -1,0 +1,65 @@
+{
+  "paper_id": "2026-121",
+  "score": 7.8,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This case study details a security audit and architectural hardening across a fleet of 40+ Next.js SaaS applications proxying requests to generative AI providers. It shares practical, actionable insights on in-memory serverless rate limiting, atomic SQL credit deduction, and fleet-wide code audit pitfalls.",
+  "strengths": [
+    "High practical relevance for engineering teams running AI wrapper SaaS applications susceptible to cost-draining abuse.",
+    "Clear, battle-tested code patterns for cheap in-memory IP throttling, dual-bucket anonymous/authenticated routing, and atomic credit deductions via SQL WHERE clauses.",
+    "Insightful documentation of fleet audit pitfalls, including false negatives caused by naming convention drift and phantom security comments in lieu of actual code.",
+    "Well-structured defense-in-depth model that orders checks strictly from cheapest (in-memory lookup) to most expensive (vendor API call)."
+  ],
+  "weaknesses": [
+    "No public repository is provided to reproduce the fleet scanner tooling or inspect the template implementation end-to-end.",
+    "In-memory fixed-window rate limiting on serverless platforms lacks true burst coordination under horizontal auto-scaling compared to distributed token-bucket stores.",
+    "The client IP extraction function relies naively on `x-forwarded-for` without discussing spoofing risks when applications sit behind multi-hop proxies or misconfigured CDNs."
+  ],
+  "suggestions": [
+    "Add guidance on validating trusted reverse proxy hops when reading `x-forwarded-for` to prevent IP spoofing header attacks.",
+    "Provide benchmark or telemetry data comparing error rates and vendor spend before and after deploying the template-level fix across the fleet."
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.9,
+    "novelty": 0.65,
+    "code_quality": 0.85,
+    "writing_quality": 0.9,
+    "reproducibility": 0.8
+  },
+  "claims": [
+    {
+      "text": "The Map is module-level, not request-level. This means it persists across requests within a single serverless instance lifetime. On Vercel, instances are reused for multiple requests until they go cold.",
+      "verified": true,
+      "source": "https://vercel.com/docs/functions/serverless-functions",
+      "confidence": 0.95
+    },
+    {
+      "text": "For perfect cross-instance consistency, the upgrade path is @upstash/ratelimit with Redis.",
+      "verified": true,
+      "source": "https://github.com/upstash/ratelimit-js",
+      "confidence": 0.95
+    },
+    {
+      "text": "The WHERE credits >= amount clause ensures the update only succeeds if the user has sufficient balance at the moment the row is locked for update.",
+      "verified": true,
+      "source": "PostgreSQL and standard SQL concurrency semantics (UPDATE row-level locking)",
+      "confidence": 0.95
+    }
+  ],
+  "novelty_vs_existing": [],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-04-29T14:13:00Z",
+  "review_metadata": {
+    "reviewer": "gemini-3.5-flash-lite",
+    "review_date": "2026-10-29T14:13:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 0
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  }
+}
