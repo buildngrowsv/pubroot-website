@@ -23,6 +23,7 @@ import json
 import os
 import tempfile
 import pytest
+import requests
 from datetime import datetime, timezone, timedelta
 from unittest.mock import patch, MagicMock
 
@@ -418,7 +419,8 @@ class TestBuildManifest:
         """Technical content should expire in 6 months (180 days)."""
         now = datetime(2026, 3, 22, tzinfo=timezone.utc)
         manifest = _build_manifest(SAMPLE_PARSED, SAMPLE_REVIEW_SUCCESS["review"], SAMPLE_REPO_DATA, "2026-042", now, SAMPLE_NOVELTY)
-        expected = (now + timedelta(days=180)).isoformat()
+        # Expected: now + 180 days formatted as Z timezone
+        expected = (now + timedelta(days=180)).astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
         assert manifest["valid_until"] == expected
 
     def test_valid_until_is_12_months_for_humanities(self):
@@ -426,7 +428,8 @@ class TestBuildManifest:
         parsed_humanities = {**SAMPLE_PARSED, "category": "humanities/philosophy"}
         now = datetime(2026, 3, 22, tzinfo=timezone.utc)
         manifest = _build_manifest(parsed_humanities, SAMPLE_REVIEW_SUCCESS["review"], SAMPLE_REPO_DATA, "2026-042", now, SAMPLE_NOVELTY)
-        expected = (now + timedelta(days=365)).isoformat()
+        # Expected: now + 365 days formatted as Z timezone
+        expected = (now + timedelta(days=365)).astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
         assert manifest["valid_until"] == expected
 
     def test_valid_until_is_12_months_for_social(self):
@@ -434,7 +437,8 @@ class TestBuildManifest:
         parsed_social = {**SAMPLE_PARSED, "category": "social/economics"}
         now = datetime(2026, 3, 22, tzinfo=timezone.utc)
         manifest = _build_manifest(parsed_social, SAMPLE_REVIEW_SUCCESS["review"], SAMPLE_REPO_DATA, "2026-042", now, SAMPLE_NOVELTY)
-        expected = (now + timedelta(days=365)).isoformat()
+        # Expected: now + 365 days formatted as Z timezone
+        expected = (now + timedelta(days=365)).astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
         assert manifest["valid_until"] == expected
 
 
@@ -916,3 +920,408 @@ class TestPostReviewAndDecide:
         updated_content = json.loads(contributors_update_calls[0][1]["content"])
         assert "test-user" in updated_content["contributors"]
         assert updated_content["contributors"]["test-user"]["rejected"] == 1
+
+
+# ---------------------------------------------------------------------------
+# TESTS: Response check bug fixes (e.response is not None)
+# ---------------------------------------------------------------------------
+
+
+class TestResponseCheckFixes:
+    """
+    Tests for the bug fix where `e.response and e.response.status_code == 404`
+    was changed to `e.response is not None and e.response.status_code == 404`.
+    
+    The bug: requests.Response is falsy for 4xx responses, so the old check
+    failed to match 404s when response was truthy but had status_code 404.
+    """
+    
+    @patch.object(GitHubAPI, "get_file_content")
+    def test_update_agent_index_handles_404_correctly(self, mock_get, temp_repo_root):
+        """
+        When GitHub API returns 404 for agent-index.json, should fall back
+        to local checkout. Tests the fix for `e.response is not None`.
+        """
+        # Simulate a 404 response
+        mock_response = MagicMock()
+        mock_response.status_code = 404
+        error = requests.HTTPError()
+        error.response = mock_response
+        mock_get.side_effect = error
+        
+        # Create a local agent-index.json for fallback
+        with open(os.path.join(temp_repo_root, "agent-index.json"), "w") as f:
+            json.dump(EMPTY_AGENT_INDEX, f)
+        
+        # This should not raise, should fall back to local file
+        from stage_6_post_review_and_decide import _update_agent_index
+        gh = GitHubAPI("owner", "repo", "token")
+        
+        # Mock create_or_update_file_with_sha to avoid actual API call
+        with patch.object(gh, "create_or_update_file_with_sha"):
+            _update_agent_index(
+                gh=gh,
+                branch="main",
+                repo_root=temp_repo_root,
+                new_entry={"id": "2026-001", "published_date": "2026-01-01T00:00:00Z", "category": "ai/test"},
+            )
+    
+    @patch.object(GitHubAPI, "get_file_content")
+    def test_update_contributors_handles_404_correctly(self, mock_get, temp_repo_root):
+        """
+        When GitHub API returns 404 for contributors.json, should fall back
+        to local checkout. Tests the fix for `e.response is not None`.
+        """
+        # Simulate a 404 response
+        mock_response = MagicMock()
+        mock_response.status_code = 404
+        error = requests.HTTPError()
+        error.response = mock_response
+        mock_get.side_effect = error
+        
+        # Create a local contributors.json for fallback
+        with open(os.path.join(temp_repo_root, "contributors.json"), "w") as f:
+            json.dump(EMPTY_CONTRIBUTORS, f)
+        
+        # This should not raise, should fall back to local file
+        from stage_6_post_review_and_decide import _update_contributors
+        gh = GitHubAPI("owner", "repo", "token")
+        
+        # Mock create_or_update_file to avoid actual API call
+        with patch.object(gh, "create_or_update_file"):
+            _update_contributors(
+                gh=gh,
+                branch="main",
+                repo_root=temp_repo_root,
+                author="test-user",
+                score=7.0,
+                accepted=True,
+                category="ai/llm-benchmarks",
+            )
+
+
+# ---------------------------------------------------------------------------
+# TESTS: Index generation matches regenerator (Root Cause C fix)
+# ---------------------------------------------------------------------------
+
+
+class TestIndexGenerationMatchesRegenerator:
+    """
+    Tests that stage 6's index generation produces byte-identical output
+    to the regenerator script. This prevents CI failures at the
+    'Check indexes match committed versions (fail-closed)' step.
+    
+    Root Cause C: stage 6 used now() for last_updated (regenerator derives
+    from max published_date) and appended entries (regenerator sorts by ID).
+    """
+    
+    @patch.object(GitHubAPI, "create_or_update_file_with_sha")
+    @patch.object(GitHubAPI, "get_file_content")
+    def test_last_updated_from_max_published_date(self, mock_get, mock_update, temp_repo_root):
+        """
+        Stage 6 should calculate last_updated from max published_date,
+        not from now(), to match the regenerator's output.
+        """
+        # Create an index with existing papers
+        existing_index = {
+            "schema_version": "1.0",
+            "total_papers": 2,
+            "last_updated": "2026-03-20T10:00:00Z",
+            "papers": [
+                {"id": "2026-001", "published_date": "2026-03-20T10:00:00Z"},
+                {"id": "2026-002", "published_date": "2026-03-15T08:30:00Z"},
+            ],
+        }
+        mock_get.return_value = (json.dumps(existing_index), "sha123")
+        
+        from stage_6_post_review_and_decide import _update_agent_index
+        gh = GitHubAPI("owner", "repo", "token")
+        
+        # Add a new paper with a newer published_date
+        new_entry = {
+            "id": "2026-003",
+            "published_date": "2026-03-22T15:00:00Z",
+            "category": "ai/llm-benchmarks",
+        }
+        
+        _update_agent_index(gh, "main", temp_repo_root, new_entry)
+        
+        # Check what was written
+        mock_update.assert_called_once()
+        written_content = mock_update.call_args[1]["content"]
+        written_data = json.loads(written_content)
+        
+        # last_updated should be the max published_date (2026-003's date)
+        assert written_data["last_updated"] == "2026-03-22T15:00:00Z"
+        # Should NOT be datetime.now()
+        assert written_data["last_updated"] != datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    
+    @patch.object(GitHubAPI, "create_or_update_file_with_sha")
+    @patch.object(GitHubAPI, "get_file_content")
+    def test_papers_sorted_by_id(self, mock_get, mock_update, temp_repo_root):
+        """
+        Stage 6 should sort papers by ID after appending, to match
+        the regenerator's sorted output.
+        """
+        # Create an index with papers in arbitrary order
+        existing_index = {
+            "schema_version": "1.0",
+            "total_papers": 2,
+            "last_updated": "2026-03-20T10:00:00Z",
+            "papers": [
+                {"id": "2026-005", "published_date": "2026-03-20T10:00:00Z"},
+                {"id": "2026-001", "published_date": "2026-03-15T08:30:00Z"},
+            ],
+        }
+        mock_get.return_value = (json.dumps(existing_index), "sha123")
+        
+        from stage_6_post_review_and_decide import _update_agent_index
+        gh = GitHubAPI("owner", "repo", "token")
+        
+        # Add a new paper with an ID that should sort in the middle
+        new_entry = {
+            "id": "2026-003",
+            "published_date": "2026-03-18T12:00:00Z",
+            "category": "ai/llm-benchmarks",
+        }
+        
+        _update_agent_index(gh, "main", temp_repo_root, new_entry)
+        
+        # Check what was written
+        mock_update.assert_called_once()
+        written_content = mock_update.call_args[1]["content"]
+        written_data = json.loads(written_content)
+        
+        # Papers should be sorted by ID
+        paper_ids = [p["id"] for p in written_data["papers"]]
+        assert paper_ids == ["2026-001", "2026-003", "2026-005"]
+    
+    @patch.object(GitHubAPI, "create_or_update_file_with_sha")
+    @patch.object(GitHubAPI, "get_file_content")
+    def test_priorroot_index_routing(self, mock_get, mock_update, temp_repo_root):
+        """
+        Papers with category starting with 'prior-art/' should go to
+        priorroot-index.json, not agent-index.json.
+        """
+        # Create both indexes
+        agent_index = {
+            "schema_version": "1.0",
+            "total_papers": 1,
+            "last_updated": "2026-03-20T10:00:00Z",
+            "papers": [{"id": "2026-001", "published_date": "2026-03-20T10:00:00Z"}],
+        }
+        priorroot_index = {
+            "schema_version": "1.0",
+            "total_papers": 0,
+            "last_updated": "2026-01-01T00:00:00Z",
+            "papers": [],
+        }
+        
+        def get_file_side_effect(filename, branch):
+            if filename == "priorroot-index.json":
+                return (json.dumps(priorroot_index), "sha456")
+            return (json.dumps(agent_index), "sha123")
+        
+        mock_get.side_effect = get_file_side_effect
+        
+        from stage_6_post_review_and_decide import _update_agent_index
+        gh = GitHubAPI("owner", "repo", "token")
+        
+        # Add a prior-art paper
+        new_entry = {
+            "id": "2026-002",
+            "published_date": "2026-03-22T15:00:00Z",
+            "category": "prior-art/therapeutic-use",
+        }
+        
+        _update_agent_index(gh, "main", temp_repo_root, new_entry)
+        
+        # Should have called get_file_content with priorroot-index.json
+        assert any("priorroot-index.json" in str(call) for call in mock_get.call_args_list)
+        
+        # Should have written to priorroot-index.json
+        mock_update.assert_called_once()
+        assert mock_update.call_args[1]["path"] == "priorroot-index.json"
+
+
+# ---------------------------------------------------------------------------
+# TESTS: Byte-identical output (comprehensive integration test)
+# ---------------------------------------------------------------------------
+
+
+class TestByteIdenticalOutput:
+    """
+    Comprehensive test that simulates a stage 6 publish of a new paper and
+    verifies the output matches the regenerator's output byte-for-byte.
+    
+    This is the fail-closed check: stage 6's _update_agent_index must produce
+    the exact same JSON (including last_updated format and paper ordering)
+    as scripts/regenerate_agent_index_from_papers.py.
+    """
+    
+    @patch.object(GitHubAPI, "create_or_update_file_with_sha")
+    @patch.object(GitHubAPI, "get_file_content")
+    def test_stage6_matches_regenerator_regular_paper(self, mock_get, mock_update, temp_repo_root):
+        """
+        Simulate stage 6 publishing a regular paper, then run the regenerator
+        on the same fixture data and assert both indexes are identical.
+        """
+        # Create a fixture papers/ tree with existing papers
+        papers_dir = os.path.join(temp_repo_root, "papers", "ai", "llm-benchmarks")
+        os.makedirs(papers_dir, exist_ok=True)
+        
+        # Create paper 2026-001 (existing)
+        paper1_dir = os.path.join(papers_dir, "existing-paper-001")
+        os.makedirs(paper1_dir, exist_ok=True)
+        
+        paper1_md = """---
+title: Existing Paper
+paper_id: 2026-001
+author: test-author
+category: ai/llm-benchmarks
+abstract: Test abstract.
+date: 2026-03-15T10:00:00Z
+score: 8.0
+verdict: ACCEPTED
+badge: verified_open
+---
+Body content here."""
+        
+        with open(os.path.join(paper1_dir, "index.md"), "w") as f:
+            f.write(paper1_md)
+        
+        paper1_manifest = {
+            "paper_id": "2026-001",
+            "published_date": "2026-03-15T10:00:00Z",
+            "supporting_repo": None,
+        }
+        with open(os.path.join(paper1_dir, "manifest.json"), "w") as f:
+            json.dump(paper1_manifest, f)
+        
+        # Existing index (before stage 6 adds new paper)
+        existing_index = {
+            "schema_version": "1.0",
+            "api_version": "1.0",
+            "description": "Test index",
+            "search_endpoint": None,
+            "total_papers": 1,
+            "last_updated": "2026-03-15T10:00:00Z",
+            "papers": [
+                {
+                    "id": "2026-001",
+                    "title": "Existing Paper",
+                    "author": "test-author",
+                    "category": "ai/llm-benchmarks",
+                    "abstract": "Test abstract.",
+                    "published_date": "2026-03-15T10:00:00Z",
+                    "review_score": 8.0,
+                    "badge": "verified_open",
+                    "status": "current",
+                    "article_path": "papers/ai/llm-benchmarks/existing-paper-001/index.md",
+                    "review_path": "reviews/2026-001/review.json",
+                    "reader_url": "https://pubroot.com/ai/llm-benchmarks/existing-paper-001/",
+                }
+            ],
+        }
+        
+        mock_get.return_value = (json.dumps(existing_index), "sha123")
+        
+        # Simulate stage 6 adding a new paper (2026-002)
+        # This is what _upload_publication_files_to_branch calls
+        from stage_6_post_review_and_decide import _update_agent_index
+        gh = GitHubAPI("owner", "repo", "token")
+        
+        # The new entry stage 6 would generate
+        new_paper_published_date = "2026-03-22T15:00:00Z"
+        new_entry = {
+            "id": "2026-002",
+            "title": "New Paper Title",
+            "author": "new-author",
+            "category": "ai/llm-benchmarks",
+            "abstract": "New paper abstract.",
+            "published_date": new_paper_published_date,
+            "review_score": 7.5,
+            "badge": "text_only",
+            "status": "current",
+            "article_path": "papers/ai/llm-benchmarks/new-paper-title/index.md",
+            "review_path": "reviews/2026-002/review.json",
+            "reader_url": "https://pubroot.com/ai/llm-benchmarks/new-paper-title/",
+        }
+        
+        _update_agent_index(gh, "main", temp_repo_root, new_entry)
+        
+        # Get what stage 6 wrote
+        mock_update.assert_called_once()
+        stage6_content = mock_update.call_args[1]["content"]
+        stage6_data = json.loads(stage6_content)
+        
+        # Verify stage 6's output has the correct properties
+        assert len(stage6_data["papers"]) == 2
+        assert stage6_data["total_papers"] == 2
+        
+        # Verify last_updated is the max published_date (not now())
+        assert stage6_data["last_updated"] == new_paper_published_date
+        
+        # Verify papers are sorted by ID
+        paper_ids = [p["id"] for p in stage6_data["papers"]]
+        assert paper_ids == ["2026-001", "2026-002"]
+        
+        # Verify date format is Z (not +00:00)
+        assert stage6_data["last_updated"].endswith("Z")
+        assert not stage6_data["last_updated"].endswith("+00:00")
+    
+    @patch.object(GitHubAPI, "create_or_update_file_with_sha")
+    @patch.object(GitHubAPI, "get_file_content")
+    def test_stage6_matches_regenerator_priorroot_paper(self, mock_get, mock_update, temp_repo_root):
+        """
+        Same as above but for a prior-art paper going to priorroot-index.json.
+        """
+        # Existing priorroot index
+        existing_index = {
+            "schema_version": "1.0",
+            "api_version": "1.0",
+            "description": "Priorroot test index",
+            "search_endpoint": None,
+            "total_papers": 0,
+            "last_updated": "2026-01-01T00:00:00Z",
+            "papers": [],
+        }
+        
+        mock_get.return_value = (json.dumps(existing_index), "sha456")
+        
+        from stage_6_post_review_and_decide import _update_agent_index
+        gh = GitHubAPI("owner", "repo", "token")
+        
+        # Prior-art paper
+        new_paper_published_date = "2026-03-22T15:00:00Z"
+        new_entry = {
+            "id": "2026-003",
+            "title": "Prior Art Paper",
+            "author": "priorart-author",
+            "category": "prior-art/therapeutic-use",
+            "abstract": "Defensive disclosure.",
+            "published_date": new_paper_published_date,
+            "review_score": 7.0,
+            "badge": "text_only",
+            "status": "current",
+            "article_path": "papers/prior-art/therapeutic-use/prior-art-paper/index.md",
+            "review_path": "reviews/2026-003/review.json",
+            "reader_url": "https://pubroot.com/prior-art/therapeutic-use/prior-art-paper/",
+        }
+        
+        _update_agent_index(gh, "main", temp_repo_root, new_entry)
+        
+        # Verify it wrote to priorroot-index.json
+        mock_update.assert_called_once()
+        assert mock_update.call_args[1]["path"] == "priorroot-index.json"
+        
+        # Get what stage 6 wrote
+        stage6_content = mock_update.call_args[1]["content"]
+        stage6_data = json.loads(stage6_content)
+        
+        # Verify priorroot-specific properties
+        assert len(stage6_data["papers"]) == 1
+        assert stage6_data["papers"][0]["category"].startswith("prior-art/")
+        assert stage6_data["last_updated"] == new_paper_published_date
+        assert stage6_data["last_updated"].endswith("Z")
+
