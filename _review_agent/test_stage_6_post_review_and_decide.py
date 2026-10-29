@@ -500,9 +500,17 @@ class TestUpdateContributors:
     limitation for Phase 1 where review volume is low.
     """
 
-    def test_creates_new_contributor_on_first_submission(self, temp_repo_root):
+    @patch.object(GitHubAPI, "get_file_content")
+    @patch.object(GitHubAPI, "create_or_update_file")
+    def test_creates_new_contributor_on_first_submission(self, mock_create_update, mock_get_file, temp_repo_root):
         """First submission from a new author should create their entry."""
+        # Mock the API to return empty contributors.json
+        mock_get_file.return_value = (json.dumps(EMPTY_CONTRIBUTORS), "sha123")
+        
+        gh = GitHubAPI("owner", "repo", "token")
         _update_contributors(
+            gh=gh,
+            branch="main",
             repo_root=temp_repo_root,
             author="new-user",
             score=7.5,
@@ -510,28 +518,41 @@ class TestUpdateContributors:
             category="ai/llm-benchmarks",
         )
 
-        with open(os.path.join(temp_repo_root, "contributors.json"), "r") as f:
-            data = json.load(f)
-
-        assert "new-user" in data["contributors"]
-        c = data["contributors"]["new-user"]
+        # Verify the update was committed via API
+        mock_create_update.assert_called_once()
+        call_args = mock_create_update.call_args
+        assert call_args[1]["path"] == "contributors.json"
+        
+        # Verify the content
+        updated_content = json.loads(call_args[1]["content"])
+        assert "new-user" in updated_content["contributors"]
+        c = updated_content["contributors"]["new-user"]
         assert c["total_submissions"] == 1
         assert c["accepted"] == 1
         assert c["rejected"] == 0
         assert c["acceptance_rate"] == 1.0
         assert c["average_score"] == 7.5
 
-    def test_updates_existing_contributor(self, temp_repo_root):
+    @patch.object(GitHubAPI, "get_file_content")
+    @patch.object(GitHubAPI, "create_or_update_file")
+    def test_updates_existing_contributor(self, mock_create_update, mock_get_file, temp_repo_root):
         """Second submission should update running stats."""
-        # First submission
-        _update_contributors(temp_repo_root, "user-a", 8.0, True, "ai/llm-benchmarks")
-        # Second submission (rejected)
-        _update_contributors(temp_repo_root, "user-a", 4.0, False, "ai/llm-benchmarks")
+        gh = GitHubAPI("owner", "repo", "token")
+        
+        # First submission - start with empty contributors
+        mock_get_file.return_value = (json.dumps(EMPTY_CONTRIBUTORS), "sha123")
+        _update_contributors(gh, "main", temp_repo_root, "user-a", 8.0, True, "ai/llm-benchmarks")
+        
+        # Get the updated content from the first call
+        first_update = json.loads(mock_create_update.call_args_list[0][1]["content"])
+        
+        # Second submission (rejected) - now return the first update
+        mock_get_file.return_value = (json.dumps(first_update), "sha456")
+        _update_contributors(gh, "main", temp_repo_root, "user-a", 4.0, False, "ai/llm-benchmarks")
 
-        with open(os.path.join(temp_repo_root, "contributors.json"), "r") as f:
-            data = json.load(f)
-
-        c = data["contributors"]["user-a"]
+        # Verify the final state
+        final_update = json.loads(mock_create_update.call_args_list[1][1]["content"])
+        c = final_update["contributors"]["user-a"]
         assert c["total_submissions"] == 2
         assert c["accepted"] == 1
         assert c["rejected"] == 1
@@ -539,43 +560,66 @@ class TestUpdateContributors:
         # Running average: 8.0, then (8.0 + (4.0-8.0)/2) = 6.0
         assert c["average_score"] == 6.0
 
-    def test_tracks_per_category_stats(self, temp_repo_root):
+    @patch.object(GitHubAPI, "get_file_content")
+    @patch.object(GitHubAPI, "create_or_update_file")
+    def test_tracks_per_category_stats(self, mock_create_update, mock_get_file, temp_repo_root):
         """Should maintain separate stats per category."""
-        _update_contributors(temp_repo_root, "user-b", 7.0, True, "ai/llm-benchmarks")
-        _update_contributors(temp_repo_root, "user-b", 5.0, False, "debug/runtime-errors")
+        gh = GitHubAPI("owner", "repo", "token")
+        
+        # First submission
+        mock_get_file.return_value = (json.dumps(EMPTY_CONTRIBUTORS), "sha123")
+        _update_contributors(gh, "main", temp_repo_root, "user-b", 7.0, True, "ai/llm-benchmarks")
+        
+        # Second submission (different category)
+        first_update = json.loads(mock_create_update.call_args_list[0][1]["content"])
+        mock_get_file.return_value = (json.dumps(first_update), "sha456")
+        _update_contributors(gh, "main", temp_repo_root, "user-b", 5.0, False, "debug/runtime-errors")
 
-        with open(os.path.join(temp_repo_root, "contributors.json"), "r") as f:
-            data = json.load(f)
-
-        c = data["contributors"]["user-b"]
+        final_update = json.loads(mock_create_update.call_args_list[1][1]["content"])
+        c = final_update["contributors"]["user-b"]
         assert "ai/llm-benchmarks" in c["categories"]
         assert "debug/runtime-errors" in c["categories"]
         assert c["categories"]["ai/llm-benchmarks"]["accepted"] == 1
         assert c["categories"]["debug/runtime-errors"]["accepted"] == 0
 
-    def test_running_average_formula(self, temp_repo_root):
+    @patch.object(GitHubAPI, "get_file_content")
+    @patch.object(GitHubAPI, "create_or_update_file")
+    def test_running_average_formula(self, mock_create_update, mock_get_file, temp_repo_root):
         """
         Verify the running average: new_avg = old_avg + (new_score - old_avg) / count.
         Three submissions with scores 6, 8, 10 should average to 8.0.
         """
-        _update_contributors(temp_repo_root, "avg-user", 6.0, True, "ai/llm-benchmarks")
-        _update_contributors(temp_repo_root, "avg-user", 8.0, True, "ai/llm-benchmarks")
-        _update_contributors(temp_repo_root, "avg-user", 10.0, True, "ai/llm-benchmarks")
+        gh = GitHubAPI("owner", "repo", "token")
+        
+        # First submission
+        mock_get_file.return_value = (json.dumps(EMPTY_CONTRIBUTORS), "sha123")
+        _update_contributors(gh, "main", temp_repo_root, "avg-user", 6.0, True, "ai/llm-benchmarks")
+        
+        # Second submission
+        first_update = json.loads(mock_create_update.call_args_list[0][1]["content"])
+        mock_get_file.return_value = (json.dumps(first_update), "sha456")
+        _update_contributors(gh, "main", temp_repo_root, "avg-user", 8.0, True, "ai/llm-benchmarks")
+        
+        # Third submission
+        second_update = json.loads(mock_create_update.call_args_list[1][1]["content"])
+        mock_get_file.return_value = (json.dumps(second_update), "sha789")
+        _update_contributors(gh, "main", temp_repo_root, "avg-user", 10.0, True, "ai/llm-benchmarks")
 
-        with open(os.path.join(temp_repo_root, "contributors.json"), "r") as f:
-            data = json.load(f)
-
-        c = data["contributors"]["avg-user"]
+        final_update = json.loads(mock_create_update.call_args_list[2][1]["content"])
+        c = final_update["contributors"]["avg-user"]
         assert c["average_score"] == 8.0
 
-    def test_initializes_flags_for_new_contributor(self, temp_repo_root):
+    @patch.object(GitHubAPI, "get_file_content")
+    @patch.object(GitHubAPI, "create_or_update_file")
+    def test_initializes_flags_for_new_contributor(self, mock_create_update, mock_get_file, temp_repo_root):
         """New contributors should have zeroed security flags."""
-        _update_contributors(temp_repo_root, "flagless-user", 5.0, False, "ai/llm-benchmarks")
+        mock_get_file.return_value = (json.dumps(EMPTY_CONTRIBUTORS), "sha123")
+        
+        gh = GitHubAPI("owner", "repo", "token")
+        _update_contributors(gh, "main", temp_repo_root, "flagless-user", 5.0, False, "ai/llm-benchmarks")
 
-        with open(os.path.join(temp_repo_root, "contributors.json"), "r") as f:
-            data = json.load(f)
-
-        flags = data["contributors"]["flagless-user"]["flags"]
+        updated_content = json.loads(mock_create_update.call_args[1]["content"])
+        flags = updated_content["contributors"]["flagless-user"]["flags"]
         assert flags["prompt_injection_attempts"] == 0
         assert flags["spam_submissions"] == 0
         assert flags["dmca_strikes"] == 0
@@ -656,6 +700,133 @@ class TestGitHubAPI:
 
 
 # ---------------------------------------------------------------------------
+# TESTS: Accepted Paper Publish Path (End-to-End)
+# ---------------------------------------------------------------------------
+
+
+class TestAcceptedPaperPublishPath:
+    """
+    End-to-end test for the accepted paper publication workflow.
+    
+    This test exercises the complete path from acceptance through file creation,
+    contributor stats updates, and index updates. It would have caught the
+    UnboundLocalError in _update_contributors where contributors_path was
+    conditionally assigned but unconditionally used.
+    
+    BUG FIX (2026-10-29): Added this test to prevent regression of the
+    contributors_path UnboundLocalError that blocked issue #121 publication.
+    """
+    
+    @patch.object(GitHubAPI, "get_default_branch_sha")
+    @patch.object(GitHubAPI, "create_branch")
+    @patch.object(GitHubAPI, "path_exists")
+    @patch.object(GitHubAPI, "get_file_content")
+    @patch.object(GitHubAPI, "create_or_update_file")
+    @patch.object(GitHubAPI, "create_or_update_file_with_sha")
+    @patch.object(GitHubAPI, "create_pull_request")
+    @patch.object(GitHubAPI, "merge_pull_request")
+    @patch.object(GitHubAPI, "post_comment")
+    @patch.object(GitHubAPI, "add_labels")
+    @patch.object(GitHubAPI, "remove_label")
+    @patch.object(GitHubAPI, "close_issue")
+    def test_accepted_paper_publishes_with_api_fetched_contributors(
+        self,
+        mock_close,
+        mock_remove_label,
+        mock_add_labels,
+        mock_comment,
+        mock_merge_pr,
+        mock_create_pr,
+        mock_create_update_sha,
+        mock_create_update,
+        mock_get_file,
+        mock_path_exists,
+        mock_create_branch,
+        mock_get_sha,
+        temp_repo_root,
+    ):
+        """
+        Test the full accepted paper workflow when contributors.json is fetched
+        from the GitHub API (the normal happy path). This ensures contributors_path
+        is never referenced when the API fetch succeeds, preventing the UnboundLocalError.
+        """
+        # Setup: Mock GitHub API responses for a successful publish
+        mock_get_sha.return_value = "abc123sha"
+        mock_path_exists.return_value = False  # Paper doesn't exist yet
+        
+        # Mock get_file_content to return fresh contributors.json and agent-index.json
+        # This is the key: when this succeeds, contributors_path should NEVER be used
+        def get_file_side_effect(path, branch="main"):
+            if path == "contributors.json":
+                contributors_data = {
+                    "contributors": {
+                        "existing-user": {
+                            "github_handle": "existing-user",
+                            "total_submissions": 1,
+                            "accepted": 1,
+                            "rejected": 0,
+                            "acceptance_rate": 1.0,
+                            "average_score": 8.0,
+                            "categories": {},
+                            "flags": {
+                                "prompt_injection_attempts": 0,
+                                "spam_submissions": 0,
+                                "dmca_strikes": 0,
+                            },
+                        }
+                    }
+                }
+                return json.dumps(contributors_data), "contributors_sha_123"
+            elif path == "agent-index.json":
+                index_data = {
+                    "schema_version": "1.0",
+                    "total_papers": 0,
+                    "last_updated": "2026-01-01T00:00:00Z",
+                    "papers": [],
+                }
+                return json.dumps(index_data), "index_sha_456"
+            else:
+                raise requests.HTTPError()
+        
+        mock_get_file.side_effect = get_file_side_effect
+        mock_create_pr.return_value = 123  # PR number
+        
+        # Execute: Call post_review_and_decide with an ACCEPTED review
+        result = post_review_and_decide(
+            review_result=SAMPLE_REVIEW_SUCCESS,
+            parsed_submission=SAMPLE_PARSED,
+            novelty_results=SAMPLE_NOVELTY,
+            repo_data=SAMPLE_REPO_DATA,
+            paper_id="2026-042",
+            issue_number=121,
+            repo_owner="pubroot",
+            repo_name="pubroot",
+            github_token="test_token",
+            repo_root=temp_repo_root,
+        )
+        
+        # Verify: The workflow completed successfully
+        assert result["success"] is True
+        assert result["action_taken"] == "accepted"
+        assert result["pr_number"] == 123
+        assert result["errors"] == []
+        
+        # Verify: Contributors.json was fetched from API (not local file)
+        mock_get_file.assert_any_call("contributors.json", branch="main")
+        
+        # Verify: Contributors.json was updated via API (not local file write)
+        contributors_update_calls = [
+            call for call in mock_create_update.call_args_list
+            if "contributors.json" in str(call)
+        ]
+        assert len(contributors_update_calls) >= 1
+        
+        # Verify: The acceptance was labeled and issue closed
+        mock_add_labels.assert_called()
+        mock_close.assert_called_once_with(121)
+
+
+# ---------------------------------------------------------------------------
 # TESTS: post_review_and_decide (main function)
 # ---------------------------------------------------------------------------
 
@@ -710,11 +881,16 @@ class TestPostReviewAndDecide:
         assert result["success"] is True
         mock_close.assert_called_once_with(43)
 
+    @patch.object(GitHubAPI, "get_file_content")
+    @patch.object(GitHubAPI, "create_or_update_file")
     @patch.object(GitHubAPI, "post_comment")
     @patch.object(GitHubAPI, "add_labels")
     @patch.object(GitHubAPI, "close_issue")
-    def test_rejected_updates_contributor_stats(self, mock_close, mock_labels, mock_comment, temp_repo_root):
+    def test_rejected_updates_contributor_stats(self, mock_close, mock_labels, mock_comment, mock_create_update, mock_get_file, temp_repo_root):
         """Rejected submissions should still update contributor stats."""
+        # Mock the API to return empty contributors.json
+        mock_get_file.return_value = (json.dumps(EMPTY_CONTRIBUTORS), "sha123")
+        
         post_review_and_decide(
             review_result=SAMPLE_REVIEW_REJECTED,
             parsed_submission=SAMPLE_PARSED,
@@ -728,8 +904,15 @@ class TestPostReviewAndDecide:
             repo_root=temp_repo_root,
         )
 
-        with open(os.path.join(temp_repo_root, "contributors.json"), "r") as f:
-            data = json.load(f)
-
-        assert "test-user" in data["contributors"]
-        assert data["contributors"]["test-user"]["rejected"] == 1
+        # Verify the contributor stats were updated via API
+        mock_create_update.assert_called()
+        contributors_update_calls = [
+            call for call in mock_create_update.call_args_list
+            if "contributors.json" in str(call)
+        ]
+        assert len(contributors_update_calls) >= 1
+        
+        # Check the content that was committed
+        updated_content = json.loads(contributors_update_calls[0][1]["content"])
+        assert "test-user" in updated_content["contributors"]
+        assert updated_content["contributors"]["test-user"]["rejected"] == 1

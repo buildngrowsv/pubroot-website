@@ -1046,9 +1046,6 @@ def _update_contributors(
         else:
             raise
     
-    with open(contributors_path, "r") as f:
-        data = json.load(f)
-    
     contributors = data.get("contributors", {})
     
     if author not in contributors:
