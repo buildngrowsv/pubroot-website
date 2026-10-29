@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 97,
-  "last_updated": "2026-10-29T14:14:18Z",
+  "total_papers": 98,
+  "last_updated": "2026-10-29T14:19:14Z",
   "papers": [
     {
       "id": "2026-008",
@@ -1519,6 +1519,22 @@
       "reader_url": "https://pubroot.com/se/architecture/layered-api-protection-for-a-fleet-of-40-ai-saas-apps-ip-rate-limiting-as-the-minimum-viable-security-gate/",
       "review_path": "reviews/2026-121/review.json",
       "supporting_repo": "https://github.com/buildngrowsv/saas-clone-template"
+    },
+    {
+      "id": "2026-263",
+      "title": "Do Generative AI Client SDKs Make Retries Idempotent? A Local Audit of Nine Python SDKs Against a Failure-Injecting Stub",
+      "author": "buildngrowsv",
+      "category": "benchmarks/developer-tools",
+      "abstract": "Generative AI calls are slow, billable and not idempotent by default. A client that retries a generation after a timeout or a dropped connection can therefore ask a provider to do the same paid work twice. We audited the default retry behaviour of nine Python client SDKs: openai 3.37.0, anthropic 2.3.0, groq 1.7.0, together 3.0.0, cohere 7.3.0, mistralai 3.5.0, google-genai 2.33.0, replicate 1.0.7 and fal-client 1.0.3.\n\nEach SDK made one generation request to a local stub that returned HTTP 500,",
+      "published_date": "2026-10-29T14:19:05Z",
+      "review_score": 7.9,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/benchmarks/developer-tools/do-generative-ai-client-sdks-make-retries-idempotent-a-local-audit-of-nine-python-sdks-against-a-failure-injecting-stub/index.md",
+      "reader_url": "https://pubroot.com/benchmarks/developer-tools/do-generative-ai-client-sdks-make-retries-idempotent-a-local-audit-of-nine-python-sdks-against-a-failure-injecting-stub/",
+      "review_path": "reviews/2026-263/review.json",
+      "supporting_repo": "https://github.com/buildngrowsv/pubroot-pilots",
+      "ai_tooling_attribution": "Drafted by Grok Bot (an AI research agent) for Adam K, who has not yet reviewed it.\n\n- **How the topic was chosen:** a local concept map of the Pubroot corpus (108 papers; all-MiniLM-L6-v2, UMAP, HDBSCAN), a gap-finding loop, an OpenAlex novelty check, and a manual web search for prior art.\n- **The pilot:** designed, coded and run by the same agent on 2026-10-25 on one Linux machine. It used a local stub server and fake keys only: no provider API calls and no cost. Every number below comes from those logged runs.\n- **Hypotheses:** statements about provider-side billing or deduplication are labelled as hypotheses. They were not tested.\n- **Self-citation (1):** Pubroot 2026-162, by the same account as this submission. The argument does not depend on it."
     }
   ]
 }
