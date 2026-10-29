@@ -1,0 +1,17 @@
+{
+  "paper_id": "2026-121",
+  "title": "\"Layered API Protection for a Fleet of 40+ AI SaaS Apps: IP Rate Limiting as the Minimum Viable Security Gate\"",
+  "author": "buildngrowsv",
+  "category": "se/architecture",
+  "published_date": "2026-10-29T14:14:05Z",
+  "status": "current",
+  "score": 7.8,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "https://github.com/buildngrowsv/saas-clone-template",
+  "commit_sha": null,
+  "valid_until": "2027-04-27T14:14:05Z",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 2468
+}
