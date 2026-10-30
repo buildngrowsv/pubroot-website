@@ -215,22 +215,37 @@ def pick_next(
             continue
         
         # Check the newest bot comment
-        # FIX (Bug B20 part 6): Paginate comments fetch with per_page=100
-        comments_resp = requests.get(
-            f"https://api.github.com/repos/{repo}/issues/{candidate['number']}/comments",
-            headers={"Authorization": f"Bearer {token}", "Accept": "application/vnd.github+json"},
-            params={"per_page": 100, "page": 1},
-            timeout=30
-        )
+        # FIX (Bug B20 part 6): Paginate through ALL pages to get the newest comment
+        all_comments = []
+        page = 1
+        while True:
+            comments_resp = requests.get(
+                f"https://api.github.com/repos/{repo}/issues/{candidate['number']}/comments",
+                headers={"Authorization": f"Bearer {token}", "Accept": "application/vnd.github+json"},
+                params={"per_page": 100, "page": page},
+                timeout=30
+            )
+            if comments_resp.status_code != 200:
+                # API error: skip this candidate
+                skipped.append((candidate["number"], f"API error: {comments_resp.status_code}"))
+                break
+            
+            page_comments = comments_resp.json()
+            if not page_comments:
+                # No more pages
+                break
+            
+            all_comments.extend(page_comments)
+            page += 1
+        
         if comments_resp.status_code == 200:
-            comments = comments_resp.json()
             bot_comments = [
-                c for c in comments
+                c for c in all_comments
                 if c.get("user", {}).get("login") == "github-actions[bot]"
             ]
             
             if bot_comments:
-                # Get the newest bot comment
+                # Get the newest bot comment (last one chronologically)
                 newest_comment = bot_comments[-1]
                 body = newest_comment.get("body", "")
                 
@@ -238,7 +253,7 @@ def pick_next(
                 is_error = (
                     "# AI Peer Review — Error" in body
                     or "Submission Validation Failed" in body
-                    or "Publication Failed" in body
+                    or "# Publication step failed" in body
                 )
                 
                 if is_error:
@@ -251,9 +266,6 @@ def pick_next(
             else:
                 # No bot comments at all: eligible
                 return candidate["number"], skipped
-        else:
-            # API error: skip this candidate
-            skipped.append((candidate["number"], f"API error: {comments_resp.status_code}"))
     
     # TIER 4: 0-label fallback
     tier4_candidates = []

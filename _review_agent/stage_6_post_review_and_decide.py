@@ -486,10 +486,28 @@ class GitHubAPI:
         return resp.json()
 
     def path_exists(self, path: str, ref: str = "main") -> bool:
-        """Return True if a file exists at path on the given ref (branch or SHA)."""
+        """
+        Return True if a file exists at path on the given ref (branch or SHA).
+        
+        Returns:
+            True if the file exists (HTTP 200)
+            False if the file does not exist (HTTP 404)
+        
+        Raises:
+            requests.HTTPError: If the API returns any other status code (5xx, rate limit, etc.)
+                                to prevent silently skipping collision checks.
+        """
         url = f"{self.base_url}/contents/{path}"
         resp = requests.get(url, headers=self.headers, params={"ref": ref}, timeout=30)
-        return resp.status_code == 200
+        
+        if resp.status_code == 200:
+            return True
+        elif resp.status_code == 404:
+            return False
+        else:
+            # FIX (Bug B20 part 4): Raise on 5xx, rate limits, etc. instead of returning False
+            # Returning False on 5xx would skip the collision check and allow an overwrite
+            resp.raise_for_status()
 
     def remove_label(self, issue_number: int, label_name: str) -> None:
         """Remove a label from an issue (404 if label not on issue is OK)."""
@@ -1355,7 +1373,6 @@ def _extract_paper_id_from_frontmatter(article_content: str) -> Optional[str]:
     frontmatter = article_content[4:end_pos]
     
     # Look for paper_id: line
-    import re
     match = re.search(r'^paper_id:\s*["\']?([^"\'\n]+)["\']?', frontmatter, re.MULTILINE)
     if match:
         return match.group(1).strip()

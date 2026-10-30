@@ -272,8 +272,6 @@ Content here
     gh.get_file_content.return_value = (existing_article, "fake-sha")
     
     # This paper's ID is 2026-060
-    from stage_6_post_review_and_decide import _extract_paper_id_from_frontmatter
-    
     extracted_id = _extract_paper_id_from_frontmatter(existing_article)
     assert extracted_id == "2026-067"  # Verify extraction works
     
@@ -283,7 +281,6 @@ Content here
 
 def test_extract_paper_id_from_frontmatter():
     """Test that we can extract paper_id from Hugo frontmatter."""
-    from stage_6_post_review_and_decide import _extract_paper_id_from_frontmatter
     
     # Test with quoted value
     article = """---
@@ -439,7 +436,6 @@ def test_picker_tier3_issue_with_error_comment_is_eligible():
     """
     from scripts.dry_run_review_picker import pick_next
     from unittest.mock import Mock, patch
-    import json
     
     # Mock issue with submission label, no terminal labels
     issues = [
@@ -470,12 +466,18 @@ def test_picker_tier3_issue_with_error_comment_is_eligible():
     # Mock gate function (approve everything)
     gate_fn = lambda issue: {"approved": True, "reason": "test"}
     
-    # Mock requests.get to return our error comment
+    # Mock requests.get to return our error comment on first page, empty on second
     with patch("scripts.dry_run_review_picker.requests.get") as mock_get:
-        mock_response = Mock()
-        mock_response.status_code = 200
-        mock_response.json.return_value = mock_comments
-        mock_get.return_value = mock_response
+        # First call returns comments, second call returns empty (no more pages)
+        mock_response_page1 = Mock()
+        mock_response_page1.status_code = 200
+        mock_response_page1.json.return_value = mock_comments
+        
+        mock_response_page2 = Mock()
+        mock_response_page2.status_code = 200
+        mock_response_page2.json.return_value = []  # Empty list, no more pages
+        
+        mock_get.side_effect = [mock_response_page1, mock_response_page2]
         
         picked, skipped = pick_next(issues, gate_fn, repo="test/repo", token="test-token")
         
@@ -860,3 +862,59 @@ no-repo
         errors = result["errors"]
         assert len(errors) > 0
         assert any("DUPLICATE DETECTED" in e for e in errors)
+
+
+def test_path_exists_raises_on_5xx():
+    """
+    Test that GitHubAPI.path_exists raises on 5xx errors instead of returning False.
+    
+    Bug B20 fix: If path_exists returns False on a 5xx or rate limit, the collision
+    check is skipped and an overwrite could occur. It should raise instead.
+    """
+    from stage_6_post_review_and_decide import GitHubAPI
+    from unittest.mock import patch, Mock
+    import requests
+    
+    gh = GitHubAPI(owner="test", repo="repo", token="token")
+    
+    # Test 200 returns True
+    with patch("requests.get") as mock_get:
+        mock_resp = Mock()
+        mock_resp.status_code = 200
+        mock_get.return_value = mock_resp
+        
+        assert gh.path_exists("test/path") is True
+    
+    # Test 404 returns False
+    with patch("requests.get") as mock_get:
+        mock_resp = Mock()
+        mock_resp.status_code = 404
+        mock_get.return_value = mock_resp
+        
+        assert gh.path_exists("test/path") is False
+    
+    # Test 500 raises
+    with patch("requests.get") as mock_get:
+        mock_resp = Mock()
+        mock_resp.status_code = 500
+        mock_resp.raise_for_status.side_effect = requests.HTTPError("500 Server Error")
+        mock_get.return_value = mock_resp
+        
+        try:
+            gh.path_exists("test/path")
+            assert False, "Expected HTTPError to be raised"
+        except requests.HTTPError:
+            pass  # Expected
+    
+    # Test 403 (rate limit) raises
+    with patch("requests.get") as mock_get:
+        mock_resp = Mock()
+        mock_resp.status_code = 403
+        mock_resp.raise_for_status.side_effect = requests.HTTPError("403 Forbidden")
+        mock_get.return_value = mock_resp
+        
+        try:
+            gh.path_exists("test/path")
+            assert False, "Expected HTTPError to be raised"
+        except requests.HTTPError:
+            pass  # Expected

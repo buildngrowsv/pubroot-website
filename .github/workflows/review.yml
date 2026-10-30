@@ -262,16 +262,17 @@ jobs:
                 python _review_agent/author_gating.py check "$C" >/dev/null 2>&1 || { echo "  #$C skipped (gated)"; continue; }
                 
                 # Check the newest bot comment
-                # FIX (Bug B20 part 6): Paginate comments fetch
-                NEWEST_BOT_COMMENT=$(gh api repos/"$GITHUB_REPOSITORY"/issues/"$C"/comments \
-                  --paginate \
-                  --jq 'map(select(.user.login == "github-actions[bot]")) | reverse | .[0].body' \
-                  2>/dev/null || echo "")
+                # FIX (Bug B20 part 6): Paginate comments fetch and get the actual newest
+                # With --paginate --jq, jq runs once per page, so we need to collect all
+                # bot comments across pages and take the last one
+                NEWEST_BOT_COMMENT=$(gh api "repos/$GITHUB_REPOSITORY/issues/$C/comments" --paginate \
+                  --jq '.[] | select(.user.login == "github-actions[bot]") | {b: .body} | @json' 2>/dev/null \
+                  | tail -n 1 | jq -r '.b // empty' 2>/dev/null || echo "")
                 
                 # Issue is eligible if:
                 # 1. No bot comment at all (empty string), OR
-                # 2. Newest comment is an error (contains "# AI Peer Review — Error" or "Submission Validation Failed")
-                if [ -z "$NEWEST_BOT_COMMENT" ] || echo "$NEWEST_BOT_COMMENT" | grep -q "# AI Peer Review — Error\|Submission Validation Failed\|Publication Failed"; then
+                # 2. Newest comment is an error (contains "# AI Peer Review — Error", "Submission Validation Failed", or "# Publication step failed")
+                if [ -z "$NEWEST_BOT_COMMENT" ] || echo "$NEWEST_BOT_COMMENT" | grep -q "# AI Peer Review — Error\|Submission Validation Failed\|# Publication step failed"; then
                   ISSUE="$C"
                   echo "  Found approved unreviewed issue: #$C"
                   break
