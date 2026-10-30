@@ -262,7 +262,9 @@ jobs:
                 python _review_agent/author_gating.py check "$C" >/dev/null 2>&1 || { echo "  #$C skipped (gated)"; continue; }
                 
                 # Check the newest bot comment
+                # FIX (Bug B20 part 6): Paginate comments fetch
                 NEWEST_BOT_COMMENT=$(gh api repos/"$GITHUB_REPOSITORY"/issues/"$C"/comments \
+                  --paginate \
                   --jq 'map(select(.user.login == "github-actions[bot]")) | reverse | .[0].body' \
                   2>/dev/null || echo "")
                 

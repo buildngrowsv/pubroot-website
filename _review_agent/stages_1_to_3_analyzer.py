@@ -137,6 +137,7 @@ def run_stages_1_to_3(issue_number: int) -> dict:
         issue_body=issue_data["body"],
         repo_root=repo_root,
         issue_author=issue_data["author"],
+        paper_id=paper_id,  # Pass paper_id for self-match detection in dedup
     )
     
     if not parsed.get("valid", False):
@@ -144,6 +145,7 @@ def run_stages_1_to_3(issue_number: int) -> dict:
             "success": True,
             "action": "filtered",
             "paper_id": paper_id,
+            "issue_number": issue_number,  # FIX: include for stages_4_to_6_reviewer.py
             "parsed": parsed,
             "errors": parsed.get("errors", []),
         }

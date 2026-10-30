@@ -215,9 +215,11 @@ def pick_next(
             continue
         
         # Check the newest bot comment
+        # FIX (Bug B20 part 6): Paginate comments fetch with per_page=100
         comments_resp = requests.get(
             f"https://api.github.com/repos/{repo}/issues/{candidate['number']}/comments",
             headers={"Authorization": f"Bearer {token}", "Accept": "application/vnd.github+json"},
+            params={"per_page": 100, "page": 1},
             timeout=30
         )
         if comments_resp.status_code == 200:

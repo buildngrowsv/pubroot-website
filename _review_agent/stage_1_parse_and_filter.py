@@ -46,7 +46,8 @@ from typing import Optional
 def parse_and_filter_submission(
     issue_body: str,
     repo_root: str,
-    issue_author: str
+    issue_author: str,
+    paper_id: Optional[str] = None,
 ) -> dict:
     """
     Parse a GitHub Issue body from the submission template and validate it.
@@ -61,6 +62,9 @@ def parse_and_filter_submission(
         repo_root:  Absolute path to the repository root. Used to read
                     journals.json and agent-index.json for validation.
         issue_author: GitHub handle of the issue creator (for logging).
+        paper_id: Optional paper ID (e.g., "2026-060") for self-match detection
+                  in duplicate checking. If provided, the dedup check will skip
+                  index entries with the same paper_id.
 
     Returns:
         dict with keys:
@@ -360,10 +364,9 @@ def parse_and_filter_submission(
     #
     # This check runs BEFORE any LLM call (stage 5) to save cost on duplicates.
     #
-    # FIX (self-match): Pass issue_author so we can construct the paper_id
-    # (YYYY-NNN from the issue number embedded in the Issue URL or metadata).
-    # The check will skip index entries with matching paper_id to avoid
-    # false-positive self-matches (e.g., during republish/edit flows).
+    # FIX (self-match): Pass paper_id (if provided) so we can skip index entries
+    # with the same paper_id to avoid false-positive self-matches during
+    # edit/republish flows or cron retries.
     # -----------------------------------------------------------------------
     
     dup_error = _check_for_duplicates(
@@ -371,7 +374,7 @@ def parse_and_filter_submission(
         abstract=abstract,
         category=category,
         repo_root=repo_root,
-        issue_author=issue_author,  # Pass for self-match detection
+        paper_id=paper_id,  # Pass through from caller (analyzer provides it)
     )
     if dup_error:
         errors.append(dup_error)
@@ -447,7 +450,7 @@ def _check_for_duplicates(
     abstract: str,
     category: str,
     repo_root: str,
-    issue_author: str,
+    paper_id: Optional[str] = None,
 ) -> Optional[str]:
     """
     Check for exact and near-duplicate papers in agent-index.json and priorroot-index.json.
@@ -466,15 +469,16 @@ def _check_for_duplicates(
         This check runs BEFORE the LLM call to save cost on duplicates. It's in
         stage 1 (not stage 2) because it's a validation check, not novelty scoring.
     
-    FIX (self-match): Skip entries where the author's derived paper_id matches
-        the index entry's paper_id to avoid false-positive self-matches.
+    FIX (self-match): Skip entries where paper_id matches this submission's paper_id
+        to avoid false-positive self-matches during edit/republish flows.
     
     Args:
         title: Submission title
         abstract: Submission abstract (will be truncated to 500 chars like index)
         category: Submission category (journal/topic format)
         repo_root: Path to repo root
-        issue_author: GitHub handle of submitter (for self-match detection)
+        paper_id: This submission's paper_id (e.g., "2026-060") to skip self-matches.
+                  If None, no self-match filtering is applied.
     
     Returns:
         Error message string if a duplicate is found, None if no duplicates detected.
@@ -516,15 +520,15 @@ def _check_for_duplicates(
     # Check each paper in each index
     for idx_name, papers in indexes_to_check:
         for paper in papers:
-            paper_id = paper.get("id", "unknown")
+            paper_id_in_index = paper.get("id", "unknown")
             paper_title = paper.get("title", "")
             paper_category = paper.get("category", "")
             paper_abstract = paper.get("abstract", "")
             
-            # FIX (self-match): Skip this paper if it's the same author's submission.
-            # We can't derive the exact issue number from issue_author alone, but we
-            # can skip papers that would never be duplicates (e.g., different categories).
-            # For now, rely on the article_path check below which is more reliable.
+            # FIX (self-match): Skip this paper if it's the same paper_id as this submission.
+            # This prevents false-positive self-matches during edit/republish flows.
+            if paper_id and paper_id_in_index == paper_id:
+                continue
             
             # ---------------------------------------------------------------
             # CHECK 1: EXACT TITLE MATCH (case-insensitive, normalized)
@@ -532,11 +536,11 @@ def _check_for_duplicates(
             if _normalize_title(paper_title) == normalized_title:
                 # Nit fix: Use canonical reader_url fallback
                 reader_url = paper.get("reader_url") or _build_fallback_reader_url(
-                    paper_category, paper_title, paper_id
+                    paper_category, paper_title, paper_id_in_index
                 )
                 return (
                     f"DUPLICATE DETECTED: This submission has the exact same title as "
-                    f"published paper **{paper_id}** in {idx_name}.\n\n"
+                    f"published paper **{paper_id_in_index}** in {idx_name}.\n\n"
                     f"Existing paper: [{paper_title}]({reader_url})\n\n"
                     f"**Note**: If this is a genuine revision or update to the existing paper, "
                     f"please follow the revision process by referencing the original paper's ID "
@@ -556,11 +560,11 @@ def _check_for_duplicates(
             
             if submission_article_path == paper_article_path:
                 reader_url = paper.get("reader_url") or _build_fallback_reader_url(
-                    paper_category, paper_title, paper_id
+                    paper_category, paper_title, paper_id_in_index
                 )
                 return (
                     f"SLUG COLLISION: This submission would create the same URL path as "
-                    f"published paper **{paper_id}** in {idx_name}.\n\n"
+                    f"published paper **{paper_id_in_index}** in {idx_name}.\n\n"
                     f"Existing paper: [{paper_title}]({reader_url})\n"
                     f"Path: `{submission_article_path}`\n\n"
                     f"This typically means the titles are very similar. Please use a "
@@ -577,11 +581,11 @@ def _check_for_duplicates(
             
             if similarity >= similarity_threshold:
                 reader_url = paper.get("reader_url") or _build_fallback_reader_url(
-                    paper_category, paper_title, paper_id
+                    paper_category, paper_title, paper_id_in_index
                 )
                 return (
                     f"NEAR-DUPLICATE DETECTED: This submission is very similar to "
-                    f"published paper **{paper_id}** in {idx_name} "
+                    f"published paper **{paper_id_in_index}** in {idx_name} "
                     f"(similarity: {similarity:.1%}).\n\n"
                     f"Existing paper: [{paper_title}]({reader_url})\n\n"
                     f"The title and abstract are too similar to existing work. "

@@ -657,60 +657,58 @@ def _handle_acceptance(
     # If it does, read its frontmatter to extract the paper_id. If the paper_id
     # matches this issue's paper_id, it's an idempotent retry (safe no-op).
     # If the paper_id DIFFERS, it's a duplicate submission that resolved to the
-    # same slug (Bug B20 incident: issue #60 resolved to 2026-067's path).
-    # In that case, label publish-failed, post an error comment, don't close,
-    # and raise an exception so the workflow exits non-zero.
+    # FIX (Bug B20 part 4): Check if target path exists AND extract its paper_id.
+    # If the file exists and has a DIFFERENT paper_id, this is a path collision
+    # (e.g., issue #60 vs 2026-067). RAISE directly to trigger publish-failed.
+    # The caller (post_review_and_decide) will post ONE comment and add the label.
+    # Don't post a comment here - that causes double failure comments.
+    # -------------------------------------------------------------------------------
     _paths_probe = _resolve_publication_paths(gh, parsed_submission, paper_id)
     article_path = _paths_probe["article_index_path"]
     
     # Check for idempotent retry or path collision
-    try:
-        if gh.path_exists(article_path, "main"):
-            # File exists — try to read it to check paper_id
-            try:
-                content_result = gh.get_file_content(article_path, "main")
-                # Handle case where get_file_content returns empty or malformed result
-                if not content_result or len(content_result) != 2:
-                    # Cannot verify — treat as collision for safety
-                    raise ValueError(f"get_file_content returned malformed result: {content_result}")
-                
-                article_content, _ = content_result
-                existing_paper_id = _extract_paper_id_from_frontmatter(article_content)
-                
-                if existing_paper_id == paper_id:
-                    # Same paper_id: idempotent retry after successful publish
-                    return None
-                elif existing_paper_id:
-                    # Different paper_id: duplicate submission, same slug (Bug B20)
-                    error_msg = (
-                        f"PUBLISH COLLISION: This submission resolves to the same path as "
-                        f"existing paper **{existing_paper_id}**, but has a different paper ID "
-                        f"({paper_id}). This indicates a duplicate or near-duplicate submission "
-                        f"that was not caught by the deduplication check.\n\n"
-                        f"Path: `{article_path}`\n\n"
-                        f"The publication has been blocked. If this is a genuine new paper, "
-                        f"please use a more distinctive title."
-                    )
-                    gh.post_comment(issue_number, f"# Publication Failed\n\n{error_msg}")
-                    gh.add_labels(issue_number, ["publish-failed"])
-                    raise Exception(
-                        f"Path collision: {article_path} exists with paper_id {existing_paper_id} "
-                        f"(this issue is {paper_id}). Duplicate submission not caught by dedup."
-                    )
-                # else: existing_paper_id is None (can't extract), proceed with publish
-            except Exception as e:
-                # If we can't read the file, treat it as a collision (fail safe)
-                if "Path collision" in str(e):
-                    raise  # Re-raise our own collision exception
-                # For other errors (API failures, malformed data), log and skip check
-                # This allows tests and edge cases to proceed
-                print(f"WARNING: Could not verify existing file at {article_path}: {e}")
-                print(f"Proceeding with publish (file may not actually exist)")
-    except requests.HTTPError as http_err:
-        # HTTP errors from path_exists or get_file_content - log and proceed
-        if http_err.response is not None and http_err.response.status_code != 404:
-            print(f"WARNING: HTTP error checking path collision: {http_err}")
-            print(f"Proceeding with publish")
+    if gh.path_exists(article_path, "main"):
+        # File exists — try to read it to check paper_id
+        print(f"WARNING: Target path exists: {article_path}. Checking paper_id...")
+        
+        try:
+            content_result = gh.get_file_content(article_path, "main")
+            # Handle case where get_file_content returns empty or malformed result
+            if not content_result or len(content_result) != 2:
+                # Cannot verify — treat as collision for safety
+                raise ValueError(f"get_file_content returned malformed result: {content_result}")
+            
+            article_content, _ = content_result
+            existing_paper_id = _extract_paper_id_from_frontmatter(article_content)
+            
+            if existing_paper_id == paper_id:
+                # Same paper_id: idempotent retry after successful publish
+                print(f"Idempotent retry detected: existing paper_id {existing_paper_id} matches.")
+                return None
+            elif existing_paper_id:
+                # Different paper_id: duplicate submission, same slug (Bug B20)
+                raise Exception(
+                    f"PUBLISH COLLISION: This submission resolves to the same path as "
+                    f"existing paper **{existing_paper_id}**, but has a different paper ID "
+                    f"({paper_id}). This indicates a duplicate or near-duplicate submission "
+                    f"that was not caught by the deduplication check. "
+                    f"Path: `{article_path}`"
+                )
+            else:
+                # existing_paper_id is None (can't extract) — fail safe, treat as collision
+                raise Exception(
+                    f"Path collision: {article_path} exists but paper_id cannot be extracted. "
+                    f"This issue is {paper_id}. Cannot safely overwrite."
+                )
+        except Exception as e:
+            # If we can't read the file or extract paper_id, fail safe
+            if "PUBLISH COLLISION" in str(e) or "Path collision" in str(e):
+                raise  # Re-raise our own collision exception
+            # Other errors (API failures, etc.) - fail safe, treat as collision
+            raise Exception(
+                f"Path collision: {article_path} exists but verification failed: {e}. "
+                f"Cannot safely overwrite."
+            )
     
     # Also check legacy flat path for idempotent retries
     if gh.path_exists(f"papers/{paper_id}/article.md", "main"):
@@ -1454,7 +1452,15 @@ def _verify_publish_succeeded(
     
     try:
         index_json_str, _ = gh.get_file_content(index_name, branch="main")
-        index_data = json.loads(index_json_str)
+        try:
+            index_data = json.loads(index_json_str)
+        except (json.JSONDecodeError, ValueError) as json_err:
+            raise Exception(
+                f"PUBLISH VERIFICATION FAILED {context}: "
+                f"Could not parse {index_name} as JSON: {json_err}. "
+                f"The issue will be labeled publish-failed for retry."
+            )
+        
         papers = index_data.get("papers", [])
         
         paper_ids = [p.get("id") for p in papers]
@@ -1471,6 +1477,6 @@ def _verify_publish_succeeded(
         raise Exception(
             f"PUBLISH VERIFICATION FAILED {context}: "
             f"Could not fetch {index_name} from main to verify publication. "
-            f"HTTP {e.response.status_code if e.response else 'error'}. "
+            f"HTTP {e.response.status_code if e.response is not None else 'error'}. "
             f"The issue will be labeled publish-failed for retry."
         )
