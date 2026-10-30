@@ -27,7 +27,6 @@ RUNNING:
 """
 
 import json
-import pytest
 from unittest.mock import patch, MagicMock
 
 from stage_5_gemini_grounded_review import (
@@ -394,12 +393,14 @@ class TestRunOpenRouterReview:
         assert default_retries == 2, "Default max_retries should be 2 (total 2 attempts)"
 
     def test_returns_correct_model_name(self):
-        """Should include the model name in the result."""
-        result = run_openrouter_review(
-            review_prompt="test",
-            openrouter_api_key="fake",
-            model_name="openai/gpt-4o",
-        )
+        """Should include the model name in the result (no network: the client is mocked)."""
+        with patch("openai.OpenAI") as mock_openai, patch("time.sleep"):
+            mock_openai.return_value.chat.completions.create.side_effect = RuntimeError("offline")
+            result = run_openrouter_review(
+                review_prompt="test",
+                openrouter_api_key="fake",
+                model_name="openai/gpt-4o",
+            )
         assert result["model_used"] == "openai/gpt-4o"
     
     def test_backward_compatibility_alias(self):

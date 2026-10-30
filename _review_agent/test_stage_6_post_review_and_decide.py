@@ -741,6 +741,7 @@ class TestAcceptedPaperPublishPath:
         mock_create_branch,
         mock_get_sha,
         temp_repo_root,
+        git_data_commit,
     ):
         """
         Test the full accepted paper workflow when contributors.json is fetched
@@ -770,6 +771,9 @@ class TestAcceptedPaperPublishPath:
         # FIX (Bug B20): Also handle verification reads of agent-index.json with the paper
         # NOTE (Bug B22 fix): Stage 6 now fetches both index files when updating
         def get_file_side_effect(path, branch="main"):
+            if path in git_data_commit["files"]:
+                # Verification reads what the Git Data API commit actually wrote.
+                return git_data_commit["files"][path], "committed-sha"
             if path == "contributors.json":
                 contributors_data = {
                     "contributors": {
@@ -799,9 +803,7 @@ class TestAcceptedPaperPublishPath:
                     "search_endpoint": None,
                     "total_papers": 1,
                     "last_updated": "2026-01-01T00:00:00Z",
-                    "papers": [
-                        {"id": "2026-042", "title": "Test Paper"}  # Paper is in the index
-                    ],
+                    "papers": [],  # live index before publish; the commit must add 2026-042
                 }
                 return json.dumps(index_data), "index_sha_456"
             elif path == "priorroot-index.json":

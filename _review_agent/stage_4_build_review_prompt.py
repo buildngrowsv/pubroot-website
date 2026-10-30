@@ -43,7 +43,6 @@ COST:
 import json
 import os
 import glob
-from typing import Optional
 
 
 def build_review_prompt(

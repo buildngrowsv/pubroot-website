@@ -12,6 +12,7 @@ Items tested:
 """
 
 import os
+import sys
 import pytest
 from unittest.mock import Mock, patch
 
@@ -19,33 +20,6 @@ from unittest.mock import Mock, patch
 # ============================================================================
 # ITEM 1: Picker tier-3 gh api failure
 # ============================================================================
-
-def test_picker_gh_api_failure_workflow():
-    """
-    Test that the workflow's picker tier-3 logic checks gh api exit codes.
-    
-    Verify the fix in review.yml uses `if ! out=$(gh api ...); then` instead of
-    checking $? after a pipeline, so gh failures make the issue NOT eligible.
-    """
-    # Read the workflow file and check for the fail-closed pattern
-    with open('.github/workflows/review.yml') as f:
-        content = f.read()
-    
-    # Check that the fix is present: `if ! RAW_BOT_COMMENTS=$(gh api ...); then`
-    assert 'if ! RAW_BOT_COMMENTS=$(gh api' in content, \
-        "Picker must use 'if ! out=$(gh api ...)' pattern to check exit code"
-    
-    # Check for the skip message
-    assert 'skipped (API call failed)' in content, \
-        "Picker must skip issues when gh api fails"
-    
-    # Verify it's not using the broken $? pattern after a pipeline
-    # The line should not be: NEWEST_BOT_COMMENT=$(gh api ... | jq ...) followed by if [ $? -ne 0 ]
-    assert not ('NEWEST_BOT_COMMENT=$(gh api' in content and 
-                '| tail' in content and 
-                '| jq' in content and 
-                'if [ $? -ne 0 ]; then' in content), \
-        "Picker must not check $? after a pipeline (bash -e without pipefail)"
 
 
 # ============================================================================
@@ -551,21 +525,6 @@ def test_atomic_commit_retries_on_conflict():
     assert gh.update_ref.call_count == 2
 
 
-def test_atomic_commit_byte_identical():
-    """
-    Test that atomic commit produces byte-identical index output to the regenerator.
-    
-    This is a regression test ensuring that _compute_updated_indexes uses the same
-    logic as the regenerator (via shared index_builder functions).
-    """
-    from index_builder import serialize_index
-    
-    # The key invariant: _compute_updated_indexes MUST call serialize_index
-    # which is the same function used by regenerate_agent_index_from_papers.py
-    
-    assert callable(serialize_index), "serialize_index must be available from index_builder"
-    assert True, "Atomic commit uses shared index_builder for byte-identical output"
-
 
 # ============================================================================
 # ITEM 9: Cron retry repair
@@ -660,67 +619,307 @@ def test_cron_retry_repair():
 # ITEM 10: Test nits
 # ============================================================================
 
-def test_stale_checkout_survives():
-    """
-    Test that a live entry missing on disk survives index regeneration.
-    
-    This ensures we don't drop papers from the index just because the local
-    checkout is stale (e.g., in a pre-built snapshot).
-    """
-    # This test documents the requirement that index building should be based on
-    # live API data, not local filesystem scanning (which can be stale).
-    
-    # The fix is in stage_6: _compute_updated_indexes fetches live indexes via API
-    # and merges the new entry, rather than scanning papers/ directory.
-    
-    assert True, "Stale checkout handling implemented via API-based index updates"
+
+# ============================================================================
+# B23 round 2: behavioural tests (each one fails if its fix is reverted)
+# ============================================================================
+
+import json
+import shutil
+import subprocess
+from datetime import datetime, timezone
+from pathlib import Path
+
+import requests
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
 
 
-def test_stale_checkout_survives_real():
-    """
-    Test that publication works even when the local checkout is stale/missing papers.
-    
-    Verify that _compute_updated_indexes uses gh.get_file_content (API) instead of
-    scanning the local filesystem, so stale checkouts don't lose papers.
-    """
-    from stage_6_post_review_and_decide import _compute_updated_indexes
-    import inspect
-    
-    # Verify that _compute_updated_indexes exists and uses get_file_content
-    source = inspect.getsource(_compute_updated_indexes)
-    assert 'get_file_content' in source, \
-        "_compute_updated_indexes must use get_file_content to fetch live index"
-    assert 'agent-index.json' in source, \
-        "_compute_updated_indexes must fetch agent-index.json via API"
-    
-    # The key fix: indexes are fetched from the remote branch (via API) on every
-    # publish, not scanned from local disk. This ensures stale checkouts don't
-    # lose papers that exist on main but not locally.
-    assert True, "Stale checkout survives via API-based index fetching"
+def _bot(body):
+    return {"user": {"login": "github-actions[bot]"}, "body": body}
 
 
-def test_publish_path_mock_accuracy():
-    """
-    Test that publish-path mocks in tests report the correct paper_id.
-    
-    Previously, a mock always reported 2026-042 indexed, causing false passes.
-    """
-    # This is a documentation test - the fix is in test_bug_b20_fixes.py
-    # Mocks should be inspected to ensure they use the actual paper_id being tested
-    
-    assert True, "Publish-path mocks should use actual paper_id, not hardcoded 2026-042"
+def _picker_script():
+    import yaml
+    wf = yaml.safe_load((REPO_ROOT / ".github/workflows/review.yml").read_text())
+    for job in wf["jobs"].values():
+        for step in job.get("steps", []):
+            if step.get("name") == "Determine issue number":
+                assert "shell" not in step, "test assumes the default `bash -e` shell"
+                return step["run"]
+    raise AssertionError("picker step not found")
 
 
-def test_time_sleep_monkeypatched():
-    """
-    Test that time.sleep is mocked in retry tests to avoid slow test execution.
-    """
-    # Check that we use monkeypatch/patch for time.sleep in retry tests
-    # This is already done in the tests above via patch('time.sleep')
-    
-    import time
-    with patch('time.sleep') as mock_sleep:
-        time.sleep(10)
-        mock_sleep.assert_called_once_with(10)
-    
-    assert True, "time.sleep is properly mocked in tests"
+def _run_picker(tmp_path, issues, comments, fail_api=()):
+    """Run the real picker step under `bash -e` (Actions' default) with a fake gh."""
+    import tempfile
+    if shutil.which("jq") is None:
+        pytest.fail("jq is required for the picker test (it is on GitHub's runners)")
+    tmp_path = Path(tempfile.mkdtemp(dir=tmp_path))  # one sandbox per simulated cron run
+    bindir = tmp_path / "bin"; bindir.mkdir()
+    (tmp_path / "state.json").write_text(json.dumps({"issues": issues, "comments": comments}))
+    (bindir / "gh").write_text(f"""#!{sys.executable}
+import json, os, subprocess, sys
+a = sys.argv[1:]; st = json.load(open({str(tmp_path / 'state.json')!r}))
+if a[:2] == ["issue", "list"]:
+    lbl = a[a.index("--label") + 1] if "--label" in a else None
+    data = [i for i in st["issues"] if lbl is None or lbl in [l["name"] for l in i["labels"]]]
+elif a[0] == "api":
+    n = a[1].split("/")[-2]
+    if n in {list(map(str, fail_api))!r}:
+        sys.stderr.write("HTTP 502: Bad Gateway\\n"); sys.exit(1)
+    data = st["comments"].get(n, [])
+else:
+    sys.exit(2)
+r = subprocess.run(["jq", "-r", a[a.index("--jq") + 1]], input=json.dumps(data), capture_output=True, text=True)
+sys.stdout.write(r.stdout); sys.exit(r.returncode)
+""")
+    (bindir / "python").write_text("#!/bin/sh\nexit 0\n")  # author_gating: everyone approved
+    for f in bindir.iterdir():
+        f.chmod(0o755)
+    script = tmp_path / "step.sh"; script.write_text(_picker_script())
+    out = tmp_path / "out.txt"; out.write_text("")
+    env = {"PATH": f"{bindir}:{os.environ['PATH']}", "GITHUB_OUTPUT": str(out),
+           "GITHUB_REPOSITORY": "o/r", "EVENT_NAME": "schedule"}
+    r = subprocess.run(["bash", "-e", str(script)], env=env, capture_output=True, text=True, timeout=60)
+    assert r.returncode == 0, r.stdout + r.stderr
+    picked = [l.split("=", 1)[1] for l in out.read_text().splitlines() if l.startswith("issue_number=")]
+    return (picked[-1] if picked else ""), r.stdout
+
+
+def _labels(*names):
+    return [{"name": n} for n in names]
+
+
+def test_picker_fails_closed_when_gh_api_fails(tmp_path):
+    issues = [{"number": 7, "labels": _labels("submission")}]
+    picked, log = _run_picker(tmp_path, issues, {}, fail_api=[7])
+    assert picked == "", log
+    assert "#7 skipped (API call failed)" in log
+    # control: same issue with a working API and no bot comments is picked
+    picked, log = _run_picker(tmp_path, issues, {})
+    assert picked == "7", log
+
+
+def _cap_comments():
+    rev = _bot("# AI Peer Review — ACCEPTED")
+    fail = _bot("# Publication step failed (review was ACCEPTED)")
+    out = []
+    for i in (1, 2, 3):
+        out += [rev, _bot(f"<!-- pubroot:publish-retry-attempt-{i} -->\nPublication attempt {i} of 3..."), fail]
+    return out
+
+
+def _accepted_review():
+    return {"success": True, "review": {"score": 8.0, "verdict": "ACCEPTED", "summary": "ok"},
+            "grounding_metadata": {}}
+
+
+def _run_post_review(gh):
+    from stage_6_post_review_and_decide import post_review_and_decide
+    with patch("stage_6_post_review_and_decide.GitHubAPI", return_value=gh):
+        return post_review_and_decide(
+            review_result=_accepted_review(),
+            parsed_submission={"title": "T", "category": "ai/test", "author": "a", "abstract": "x", "body": "y"},
+            novelty_results={}, repo_data={"badge_type": "text_only"}, paper_id="2026-999",
+            issue_number=5, repo_owner="o", repo_name="r", github_token="t", repo_root="/nonexistent")
+
+
+def test_retry_cap_parks_issue_and_later_cron_runs_skip_it(tmp_path):
+    from stage_6_post_review_and_decide import GitHubAPI
+    comments = _cap_comments()
+    labels = {"submission", "publish-failed"}
+    # cron run 1: picker selects the publish-failed issue
+    picked, log = _run_picker(tmp_path, [{"number": 5, "labels": _labels(*sorted(labels))}], {"5": comments})
+    assert picked == "5", log
+    # ... stage 6 hits the cap
+    gh = Mock(spec=GitHubAPI)
+    gh.get_issue_comments.return_value = comments
+    gh.add_labels.side_effect = lambda n, ls: labels.update(ls)
+    gh.remove_label.side_effect = lambda n, l: labels.discard(l)
+    posted = []
+    gh.post_comment.side_effect = lambda n, body: posted.append(body)
+    result = _run_post_review(gh)
+    assert result["success"] is False
+    assert "editorial-hold" in labels
+    assert "publish-failed" in labels, "keep publish-failed so releasing the hold re-enters tier 1"
+    assert not any("# Publication step failed" in b for b in posted)
+    assert any("pubroot:publish-retry-cap" in b for b in posted)
+    comments = comments + [_bot(b) for b in posted]
+    # cron runs 2 and 3: nothing is picked, so no LLM call
+    for _cron_run in (2, 3):
+        picked, log = _run_picker(tmp_path, [{"number": 5, "labels": _labels(*sorted(labels))}], {"5": comments})
+        assert picked == "", log
+    # maintainer removes editorial-hold: tier 1 picks it again with a fresh count
+    labels.discard("editorial-hold")
+    picked, log = _run_picker(tmp_path, [{"number": 5, "labels": _labels(*sorted(labels))}], {"5": comments})
+    assert picked == "5", log
+    from stage_6_post_review_and_decide import _get_publish_retry_attempt
+    gh.get_issue_comments.return_value = comments
+    assert _get_publish_retry_attempt(gh, 5) == 0
+
+
+def test_get_issue_comments_paginates():
+    from stage_6_post_review_and_decide import GitHubAPI, _get_publish_retry_attempt
+    pages = {1: [{"user": {"login": "someone"}, "body": "hi"}] * 100,
+             2: [_bot(f"<!-- pubroot:publish-retry-attempt-{i} -->") for i in (1, 2, 3)]}
+
+    def fake_get(url, params=None, **kwargs):
+        resp = Mock()
+        resp.json.return_value = pages.get(params["page"], [])
+        return resp
+
+    with patch("requests.get", side_effect=fake_get):
+        assert _get_publish_retry_attempt(GitHubAPI("o", "r", "t"), 5) == 3
+
+
+def test_close_failure_is_logged_not_failed():
+    """Item 3 decision: close keeps failing after its 3 tries -> log only, stay success."""
+    from stage_6_post_review_and_decide import GitHubAPI
+    gh = Mock(spec=GitHubAPI)
+    gh.path_exists.return_value = False
+    gh.close_issue.side_effect = Exception("Failed to close issue #5 after 3 attempts: 502")
+    with patch("stage_6_post_review_and_decide._handle_acceptance", return_value=None):
+        result = _run_post_review(gh)
+    assert result["success"] is True and result["action_taken"] == "accepted"
+    added = [l for call in gh.add_labels.call_args_list for l in call[0][1]]
+    assert "publish-failed" not in added
+    gh.close_issue.assert_called_once()
+
+
+def test_atomic_commit_recomputes_indexes_after_conflict():
+    """Item 8 race: after a non-fast-forward, indexes are rebuilt from the NEW parent."""
+    from stage_6_post_review_and_decide import _commit_files_atomically, GitHubAPI
+    gh = Mock(spec=GitHubAPI)
+    gh.get_ref_sha.side_effect = ["parent-1", "parent-2"]
+    gh.get_commit.return_value = {"tree": {"sha": "base"}}
+    blobs = {}
+
+    def create_blob(content):
+        key = f"b{len(blobs)}"; blobs[key] = content; return key
+
+    gh.create_blob.side_effect = create_blob
+    gh.create_tree.return_value = "tree"
+    gh.create_commit.return_value = "commit"
+    gh.update_ref.side_effect = [requests.HTTPError(response=Mock(status_code=422)), None]
+    seen = []
+
+    def compute(parent_sha):
+        seen.append(parent_sha)
+        return f"agent@{parent_sha}", f"prior@{parent_sha}"
+
+    with patch("time.sleep"):
+        _commit_files_atomically(gh=gh, branch="main", files={"a/index.md": "x"},
+                                 commit_message="m", paper_id="2026-999", compute_indexes=compute)
+    assert seen == ["parent-1", "parent-2"]
+    committed = {i["path"]: blobs[i["sha"]] for i in gh.create_tree.call_args_list[-1][0][1]}
+    assert committed["agent-index.json"] == "agent@parent-2"
+    assert committed["priorroot-index.json"] == "prior@parent-2"
+
+
+def test_heal_uses_article_date_not_retry_clock():
+    """Item 9: a cron retry that heals the index stamps the article's own date."""
+    from stage_6_post_review_and_decide import _handle_acceptance, GitHubAPI
+    gh = Mock(spec=GitHubAPI)
+    gh.get_issue_comments.return_value = []
+    gh.path_exists.return_value = True
+    gh.get_file_content.return_value = ('---\npaper_id: "2026-999"\ndate: "2026-10-30T15:02:23Z"\n---\nbody', "sha")
+    with patch("stage_6_post_review_and_decide._update_indexes") as upd, \
+         patch("stage_6_post_review_and_decide._verify_publish_succeeded_with_retry"):
+        _handle_acceptance(gh=gh, review={"score": 7.0}, grounding={},
+                           parsed_submission={"title": "T", "category": "ai/test", "author": "a"},
+                           novelty_results={}, repo_data={}, paper_id="2026-999", issue_number=5,
+                           repo_root="/nonexistent")
+    assert upd.call_args.kwargs["now"] == datetime(2026, 10, 30, 15, 2, 23, tzinfo=timezone.utc)
+
+
+def _git_data_fake(live_files):
+    """Mock GitHubAPI whose contents/Git Data calls read and write `live_files`."""
+    from stage_6_post_review_and_decide import GitHubAPI
+    gh = Mock(spec=GitHubAPI)
+    blobs, committed = {}, {}
+
+    def get_file_content(path, branch="main"):
+        if path not in live_files:
+            raise requests.HTTPError(response=Mock(status_code=404))
+        return live_files[path], "sha"
+
+    def create_blob(content):
+        key = f"b{len(blobs)}"; blobs[key] = content; return key
+
+    def create_tree(base, items):
+        committed.clear(); committed.update({i["path"]: blobs[i["sha"]] for i in items}); return "tree"
+
+    gh.get_file_content.side_effect = get_file_content
+    gh.get_ref_sha.return_value = "parent"
+    gh.get_commit.return_value = {"tree": {"sha": "base"}}
+    gh.create_blob.side_effect = create_blob
+    gh.create_tree.side_effect = create_tree
+    gh.create_commit.return_value = "commit"
+    gh.update_ref.return_value = None
+    return gh, committed
+
+
+def _replay_inputs(paper_id):
+    import yaml
+    art = next(p for p in (REPO_ROOT / "papers").rglob("index.md") if f'paper_id: "{paper_id}"' in p.read_text())
+    _, fm_txt, body = art.read_text().split("---\n", 2)
+    fm = yaml.safe_load(fm_txt)
+    man = json.loads((art.parent / "manifest.json").read_text())
+    review = json.loads((REPO_ROOT / "reviews" / paper_id / "review.json").read_text())
+    parsed = {"title": fm["title"], "category": fm["category"], "abstract": fm["abstract"],
+              "body": body.lstrip("\n"), "author": fm["author"], "supporting_repo": man["supporting_repo"],
+              "commit_sha": man["commit_sha"], "submission_type": "original-research",
+              "word_count_body": man["word_count"], "ai_tooling_attribution": fm["ai_tooling_attribution"]}
+    now = datetime.strptime(fm["date"], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
+    return art, parsed, review, now
+
+
+def _regen(root):
+    import index_builder as IB
+    return (IB.serialize_index(IB.build_agent_index(root / "papers", root, "https://pubroot.com")),
+            IB.serialize_index(IB.build_priorroot_index(root / "papers", root, "https://pubroot.com")))
+
+
+def _tree_without(tmp_path, paper_dir, paper_id):
+    root = tmp_path / "repo"
+    shutil.copytree(REPO_ROOT / "papers", root / "papers", ignore=lambda d, n: [x for x in n if Path(d, x) == paper_dir])
+    shutil.copytree(REPO_ROOT / "reviews", root / "reviews", ignore=lambda d, n: [paper_id] if Path(d) == REPO_ROOT / "reviews" else [])
+    return root
+
+
+def test_git_data_publish_replays_2026_274_byte_identical(tmp_path):
+    """API-only replay of 2026-274 onto main-minus-274: committed indexes == regenerator."""
+    from stage_6_post_review_and_decide import _upload_publication_files_to_branch
+    art, parsed, review, now = _replay_inputs("2026-274")
+    root = _tree_without(tmp_path, art.parent, "2026-274")
+    a0, p0 = _regen(root)
+    gh, committed = _git_data_fake({"agent-index.json": a0, "priorroot-index.json": p0})
+    _upload_publication_files_to_branch(gh=gh, branch="main", review=review, grounding=review.get("grounding_metadata", {}),
+                                        parsed_submission=parsed, novelty_results={}, repo_data={"badge_type": "text_only"},
+                                        paper_id="2026-274", issue_number=1, repo_root=str(root), now=now)
+    article_path = str(art.relative_to(REPO_ROOT))
+    assert article_path in committed, sorted(committed)
+    for path, content in committed.items():
+        if not path.endswith("-index.json"):
+            (root / path).parent.mkdir(parents=True, exist_ok=True); (root / path).write_text(content)
+    ra, rp = _regen(root)
+    assert committed["agent-index.json"] == ra
+    assert committed["priorroot-index.json"] == rp
+    assert '"2026-024"' not in committed["agent-index.json"]  # archived duplicate stays out
+
+
+def test_git_data_publish_survives_stale_checkout(tmp_path):
+    """The live index has 2026-274 but the local checkout does not: it must be kept."""
+    from stage_6_post_review_and_decide import _upload_publication_files_to_branch
+    art, parsed, review, now = _replay_inputs("2026-274")
+    stale = _tree_without(tmp_path, art.parent, "2026-274")
+    live = {"agent-index.json": (REPO_ROOT / "agent-index.json").read_text(),
+            "priorroot-index.json": (REPO_ROOT / "priorroot-index.json").read_text()}
+    gh, committed = _git_data_fake(live)
+    new = dict(parsed, title="A brand new paper on stale checkouts", abstract="New.")
+    _upload_publication_files_to_branch(gh=gh, branch="main", review=review, grounding={},
+                                        parsed_submission=new, novelty_results={}, repo_data={"badge_type": "text_only"},
+                                        paper_id="2026-901", issue_number=1, repo_root=str(stale), now=now)
+    ids = {p["id"] for p in json.loads(committed["agent-index.json"])["papers"]}
+    assert {"2026-274", "2026-901"} <= ids

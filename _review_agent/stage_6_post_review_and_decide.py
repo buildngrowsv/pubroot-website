@@ -337,8 +337,8 @@ def post_review_and_decide(
             errors.append(f"Publication failed after review acceptance: {err_txt}")
             if "retry cap reached" in err_txt.lower():
                 # Park the issue: every picker tier skips editorial-hold, so no more LLM calls.
+                # Keep publish-failed so that removing editorial-hold puts it back in tier 1.
                 gh.add_labels(issue_number, ["editorial-hold"])
-                _remove_labels_if_present(gh, issue_number, ["publish-failed"])
                 return {"success": False, "action_taken": "error", "pr_number": None, "errors": errors}
             try:
                 gh.post_comment(
