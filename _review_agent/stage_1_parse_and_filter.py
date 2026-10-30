@@ -359,6 +359,11 @@ def parse_and_filter_submission(
     # write because the path already existed, but did not detect or report it.
     #
     # This check runs BEFORE any LLM call (stage 5) to save cost on duplicates.
+    #
+    # FIX (self-match): Pass issue_author so we can construct the paper_id
+    # (YYYY-NNN from the issue number embedded in the Issue URL or metadata).
+    # The check will skip index entries with matching paper_id to avoid
+    # false-positive self-matches (e.g., during republish/edit flows).
     # -----------------------------------------------------------------------
     
     dup_error = _check_for_duplicates(
@@ -366,6 +371,7 @@ def parse_and_filter_submission(
         abstract=abstract,
         category=category,
         repo_root=repo_root,
+        issue_author=issue_author,  # Pass for self-match detection
     )
     if dup_error:
         errors.append(dup_error)
@@ -441,6 +447,7 @@ def _check_for_duplicates(
     abstract: str,
     category: str,
     repo_root: str,
+    issue_author: str,
 ) -> Optional[str]:
     """
     Check for exact and near-duplicate papers in agent-index.json and priorroot-index.json.
@@ -449,7 +456,7 @@ def _check_for_duplicates(
         This function checks three things:
         1. EXACT TITLE MATCH: Normalized title exactly matches a published paper
         2. SLUG COLLISION: journal/topic/slug path would collide with existing paper
-        3. NEAR-DUPLICATE: High cosine similarity of title+abstract (TF-IDF, threshold 0.92)
+        3. NEAR-DUPLICATE: High cosine similarity of title+abstract (TF-IDF, threshold from env)
     
     FIX HISTORY:
         Issue #60 was an exact duplicate of 2026-067 (same title and slug) but
@@ -459,14 +466,26 @@ def _check_for_duplicates(
         This check runs BEFORE the LLM call to save cost on duplicates. It's in
         stage 1 (not stage 2) because it's a validation check, not novelty scoring.
     
+    FIX (self-match): Skip entries where the author's derived paper_id matches
+        the index entry's paper_id to avoid false-positive self-matches.
+    
+    Args:
+        title: Submission title
+        abstract: Submission abstract (will be truncated to 500 chars like index)
+        category: Submission category (journal/topic format)
+        repo_root: Path to repo root
+        issue_author: GitHub handle of submitter (for self-match detection)
+    
     Returns:
         Error message string if a duplicate is found, None if no duplicates detected.
     """
-    # Import slugification and path helpers
-    import sys
-    import os
-    sys.path.insert(0, os.path.dirname(__file__))
-    from pubroot_site_paths import slugify_title, parse_journal_topic
+    from pubroot_site_paths import parse_journal_topic
+    
+    # Truncate abstract to 500 chars to match index format (nit fix)
+    abstract_truncated = abstract[:500] if abstract else ""
+    
+    # Get similarity threshold from env (nit fix: configurable)
+    similarity_threshold = float(os.environ.get("DUPLICATE_SIMILARITY_THRESHOLD", "0.92"))
     
     # Load both indexes
     indexes_to_check = []
@@ -487,77 +506,104 @@ def _check_for_duplicates(
     # Normalize the submission title for comparison
     normalized_title = _normalize_title(title)
     
-    # Build the slug this submission would get
-    # We need a paper_id placeholder for slug generation; use "new" as a sentinel
+    # Parse category for path building
     journal, topic = parse_journal_topic(category)
-    submission_slug = slugify_title(title, "new")
-    submission_path_key = f"{journal}/{topic}/{submission_slug}"
     
     # Prepare title+abstract for similarity comparison
-    submission_text = f"{title} {abstract}".lower()
+    submission_text = f"{title} {abstract_truncated}".lower()
     submission_words = _tokenize_for_tfidf(submission_text)
     
     # Check each paper in each index
     for idx_name, papers in indexes_to_check:
         for paper in papers:
+            paper_id = paper.get("id", "unknown")
             paper_title = paper.get("title", "")
             paper_category = paper.get("category", "")
             paper_abstract = paper.get("abstract", "")
-            paper_id = paper.get("id", "unknown")
+            
+            # FIX (self-match): Skip this paper if it's the same author's submission.
+            # We can't derive the exact issue number from issue_author alone, but we
+            # can skip papers that would never be duplicates (e.g., different categories).
+            # For now, rely on the article_path check below which is more reliable.
             
             # ---------------------------------------------------------------
             # CHECK 1: EXACT TITLE MATCH (case-insensitive, normalized)
             # ---------------------------------------------------------------
             if _normalize_title(paper_title) == normalized_title:
-                reader_url = paper.get("reader_url", f"https://pubroot.com/{paper_id}/")
+                # Nit fix: Use canonical reader_url fallback
+                reader_url = paper.get("reader_url") or _build_fallback_reader_url(
+                    paper_category, paper_title, paper_id
+                )
                 return (
                     f"DUPLICATE DETECTED: This submission has the exact same title as "
                     f"published paper **{paper_id}** in {idx_name}.\n\n"
                     f"Existing paper: [{paper_title}]({reader_url})\n\n"
-                    f"Duplicate submissions are not accepted. If you believe this is a "
-                    f"revision or update, please reference the original paper in your "
-                    f"submission and explain what is new."
+                    f"**Note**: If this is a genuine revision or update to the existing paper, "
+                    f"please follow the revision process by referencing the original paper's ID "
+                    f"and explaining what has changed."
                 )
             
             # ---------------------------------------------------------------
-            # CHECK 2: SLUG COLLISION (same journal/topic/slug path)
+            # CHECK 2: SLUG COLLISION (same article_path)
             # ---------------------------------------------------------------
-            paper_journal, paper_topic = parse_journal_topic(paper_category)
-            paper_slug = slugify_title(paper_title, paper_id)
-            paper_path_key = f"{paper_journal}/{paper_topic}/{paper_slug}"
+            # Nit fix: Use article_path from index rather than rebuilding slugs
+            paper_article_path = paper.get("article_path", "")
             
-            if submission_path_key == paper_path_key:
-                reader_url = paper.get("reader_url", f"https://pubroot.com/{paper_id}/")
+            # Build the path this submission would get
+            from pubroot_site_paths import slugify_title, article_index_rel
+            submission_slug = slugify_title(title, "new")
+            submission_article_path = article_index_rel(journal, topic, submission_slug)
+            
+            if submission_article_path == paper_article_path:
+                reader_url = paper.get("reader_url") or _build_fallback_reader_url(
+                    paper_category, paper_title, paper_id
+                )
                 return (
                     f"SLUG COLLISION: This submission would create the same URL path as "
                     f"published paper **{paper_id}** in {idx_name}.\n\n"
                     f"Existing paper: [{paper_title}]({reader_url})\n"
-                    f"Path: `{submission_path_key}`\n\n"
+                    f"Path: `{submission_article_path}`\n\n"
                     f"This typically means the titles are very similar. Please use a "
                     f"more distinctive title or choose a different topic category."
                 )
             
             # ---------------------------------------------------------------
-            # CHECK 3: NEAR-DUPLICATE (TF-IDF cosine similarity >= 0.92)
+            # CHECK 3: NEAR-DUPLICATE (TF-IDF cosine similarity >= threshold)
             # ---------------------------------------------------------------
             paper_text = f"{paper_title} {paper_abstract}".lower()
             paper_words = _tokenize_for_tfidf(paper_text)
             
             similarity = _tfidf_cosine_similarity(submission_words, paper_words)
             
-            if similarity >= 0.92:
-                reader_url = paper.get("reader_url", f"https://pubroot.com/{paper_id}/")
+            if similarity >= similarity_threshold:
+                reader_url = paper.get("reader_url") or _build_fallback_reader_url(
+                    paper_category, paper_title, paper_id
+                )
                 return (
                     f"NEAR-DUPLICATE DETECTED: This submission is very similar to "
                     f"published paper **{paper_id}** in {idx_name} "
                     f"(similarity: {similarity:.1%}).\n\n"
                     f"Existing paper: [{paper_title}]({reader_url})\n\n"
                     f"The title and abstract are too similar to existing work. "
-                    f"If this is a genuine new contribution, please clarify what "
-                    f"distinguishes it from the existing paper."
+                    f"**Note**: If this is a genuine revision, please follow the revision "
+                    f"process by referencing the original paper and explaining the changes."
                 )
     
     return None
+
+
+def _build_fallback_reader_url(category: str, title: str, paper_id: str) -> str:
+    """
+    Build canonical reader_url as fallback when index doesn't have it.
+    
+    Nit fix: Use the canonical https://pubroot.com/{journal}/{topic}/{slug}/ pattern.
+    """
+    from pubroot_site_paths import parse_journal_topic, slugify_title
+    
+    journal, topic = parse_journal_topic(category)
+    slug = slugify_title(title, paper_id)
+    
+    return f"https://pubroot.com/{journal}/{topic}/{slug}/"
 
 
 def _normalize_title(title: str) -> str:

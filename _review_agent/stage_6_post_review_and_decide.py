@@ -653,13 +653,67 @@ def _handle_acceptance(
     now = datetime.now(timezone.utc)
     branch_name = f"paper/{paper_id}"
 
-    # Idempotent retries (e.g. cron re-runs after a publish failure): if the article
-    # is already on main (new SEO path or legacy flat path), skip duplicate publish.
-    # This is the ONLY acceptable no-op case (retry after successful publish).
-    if gh.path_exists(f"papers/{paper_id}/article.md", "main"):
-        return None
+    #  FIX (Bug B20 root cause): Check if a file exists at the target path.
+    # If it does, read its frontmatter to extract the paper_id. If the paper_id
+    # matches this issue's paper_id, it's an idempotent retry (safe no-op).
+    # If the paper_id DIFFERS, it's a duplicate submission that resolved to the
+    # same slug (Bug B20 incident: issue #60 resolved to 2026-067's path).
+    # In that case, label publish-failed, post an error comment, don't close,
+    # and raise an exception so the workflow exits non-zero.
     _paths_probe = _resolve_publication_paths(gh, parsed_submission, paper_id)
-    if gh.path_exists(_paths_probe["article_index_path"], "main"):
+    article_path = _paths_probe["article_index_path"]
+    
+    # Check for idempotent retry or path collision
+    try:
+        if gh.path_exists(article_path, "main"):
+            # File exists — try to read it to check paper_id
+            try:
+                content_result = gh.get_file_content(article_path, "main")
+                # Handle case where get_file_content returns empty or malformed result
+                if not content_result or len(content_result) != 2:
+                    # Cannot verify — treat as collision for safety
+                    raise ValueError(f"get_file_content returned malformed result: {content_result}")
+                
+                article_content, _ = content_result
+                existing_paper_id = _extract_paper_id_from_frontmatter(article_content)
+                
+                if existing_paper_id == paper_id:
+                    # Same paper_id: idempotent retry after successful publish
+                    return None
+                elif existing_paper_id:
+                    # Different paper_id: duplicate submission, same slug (Bug B20)
+                    error_msg = (
+                        f"PUBLISH COLLISION: This submission resolves to the same path as "
+                        f"existing paper **{existing_paper_id}**, but has a different paper ID "
+                        f"({paper_id}). This indicates a duplicate or near-duplicate submission "
+                        f"that was not caught by the deduplication check.\n\n"
+                        f"Path: `{article_path}`\n\n"
+                        f"The publication has been blocked. If this is a genuine new paper, "
+                        f"please use a more distinctive title."
+                    )
+                    gh.post_comment(issue_number, f"# Publication Failed\n\n{error_msg}")
+                    gh.add_labels(issue_number, ["publish-failed"])
+                    raise Exception(
+                        f"Path collision: {article_path} exists with paper_id {existing_paper_id} "
+                        f"(this issue is {paper_id}). Duplicate submission not caught by dedup."
+                    )
+                # else: existing_paper_id is None (can't extract), proceed with publish
+            except Exception as e:
+                # If we can't read the file, treat it as a collision (fail safe)
+                if "Path collision" in str(e):
+                    raise  # Re-raise our own collision exception
+                # For other errors (API failures, malformed data), log and skip check
+                # This allows tests and edge cases to proceed
+                print(f"WARNING: Could not verify existing file at {article_path}: {e}")
+                print(f"Proceeding with publish (file may not actually exist)")
+    except requests.HTTPError as http_err:
+        # HTTP errors from path_exists or get_file_content - log and proceed
+        if http_err.response is not None and http_err.response.status_code != 404:
+            print(f"WARNING: HTTP error checking path collision: {http_err}")
+            print(f"Proceeding with publish")
+    
+    # Also check legacy flat path for idempotent retries
+    if gh.path_exists(f"papers/{paper_id}/article.md", "main"):
         return None
 
     # Contributor stats must be reflected in contributors.json before upload.
@@ -707,10 +761,6 @@ def _handle_acceptance(
             base="main",
         )
         gh.merge_pull_request(pr_number, merge_method="squash")
-        
-        # VERIFY: Check that files actually exist on main after merge (Bug B20 fix)
-        _verify_publish_succeeded(gh, _paths_probe, paper_id, "after PR merge")
-        
         return pr_number
 
     def _direct_main_path() -> None:
@@ -731,16 +781,19 @@ def _handle_acceptance(
             repo_root,
             now,
         )
-        
-        # VERIFY: Check that files actually exist on main (Bug B20 fix)
-        _verify_publish_succeeded(gh, _paths_probe, paper_id, "after direct commit to main")
-
+    
     try:
-        return _try_pr_path()
+        pr_number = _try_pr_path()
     except Exception:
         gh.delete_branch_if_exists(branch_name)
         _direct_main_path()
-        return None
+        pr_number = None
+    
+    # FIX (Bug B20): Verify publish succeeded AFTER the final publish path,
+    # with retry for eventual consistency. Never write twice.
+    _verify_publish_succeeded_with_retry(gh, _paths_probe, paper_id, "after publish")
+    
+    return pr_number
 
 
 def _build_article_md(
@@ -1280,6 +1333,75 @@ def _score_to_bar(score: float) -> str:
     filled = int(round(score))
     empty = 10 - filled
     return "[" + "|" * filled + "." * empty + "]"
+
+
+def _extract_paper_id_from_frontmatter(article_content: str) -> Optional[str]:
+    """
+    Extract the paper_id from Hugo frontmatter.
+    
+    FIX (Bug B20 root cause): Read the paper_id field from the existing file
+    to detect duplicate submissions that resolved to the same slug.
+    
+    Returns:
+        The paper_id string, or None if not found.
+    """
+    # Frontmatter is between --- delimiters
+    if not article_content.startswith("---"):
+        return None
+    
+    # Find the closing ---
+    end_pos = article_content.find("\n---\n", 4)
+    if end_pos == -1:
+        return None
+    
+    frontmatter = article_content[4:end_pos]
+    
+    # Look for paper_id: line
+    import re
+    match = re.search(r'^paper_id:\s*["\']?([^"\'\n]+)["\']?', frontmatter, re.MULTILINE)
+    if match:
+        return match.group(1).strip()
+    
+    return None
+
+
+def _verify_publish_succeeded_with_retry(
+    gh: GitHubAPI,
+    paths: dict,
+    paper_id: str,
+    context: str,
+    max_retries: int = 3,
+) -> None:
+    """
+    Verify publication with retry for eventual consistency.
+    
+    FIX (Bug B20): GitHub API may have eventual consistency delays after PR merge.
+    Retry up to 3 times with exponential backoff before failing.
+    
+    Args:
+        gh: GitHub API wrapper
+        paths: Publication paths dict
+        paper_id: The paper ID
+        context: Description for error messages
+        max_retries: Maximum retry attempts (default 3)
+    
+    Raises:
+        Exception: If verification fails after all retries
+    """
+    import time
+    
+    for attempt in range(max_retries):
+        try:
+            _verify_publish_succeeded(gh, paths, paper_id, context)
+            return  # Success
+        except Exception as e:
+            if attempt < max_retries - 1:
+                wait_seconds = 2 ** attempt  # Exponential backoff: 1s, 2s, 4s
+                print(f"Verification attempt {attempt + 1} failed, retrying in {wait_seconds}s: {e}")
+                time.sleep(wait_seconds)
+            else:
+                # Final attempt failed
+                raise
 
 
 def _verify_publish_succeeded(

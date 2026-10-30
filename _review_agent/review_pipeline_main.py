@@ -246,9 +246,8 @@ def run_review_pipeline(issue_number: int) -> dict:
     if not stage1_result["valid"]:
         # Submission failed basic validation — post errors and stop
         # FIX (Bug B20 part a): Check if the errors include a duplicate detection.
-        # If so, label as "duplicate" instead of "validation-failed" and don't
-        # label as "published" or "accepted". The duplicate check runs in stage 1
-        # so we catch it before any LLM call (saving cost).
+        # If so, label as "duplicate" instead of "validation-failed" and close.
+        # Duplicates are labeled differently to distinguish them from format errors.
         errors = stage1_result["errors"]
         is_duplicate = any(
             "DUPLICATE DETECTED" in e or "SLUG COLLISION" in e or "NEAR-DUPLICATE DETECTED" in e
@@ -265,12 +264,22 @@ def run_review_pipeline(issue_number: int) -> dict:
             comment_header
             + "Your submission could not be processed due to the following issues:\n\n"
             + "\n".join(f"- {e}" for e in errors)
-            + "\n\nPlease fix these issues and resubmit."
         )
         
-        gh.post_comment(issue_number, comment_body)
-        gh.add_labels(issue_number, ["duplicate"] if is_duplicate else ["validation-failed"])
-        gh.close_issue(issue_number)  # Close duplicates and validation failures
+        if is_duplicate:
+            # Close duplicates immediately
+            comment_body += (
+                "\n\n**Note**: If this is a genuine revision or update to the existing paper, "
+                "please follow the revision process."
+            )
+            gh.post_comment(issue_number, comment_body)
+            gh.add_labels(issue_number, ["duplicate"])
+            gh.close_issue(issue_number)
+        else:
+            # Validation failures are not closed (maintainer may want to help fix)
+            comment_body += "\n\nPlease fix these issues and resubmit."
+            gh.post_comment(issue_number, comment_body)
+            gh.add_labels(issue_number, ["validation-failed"])
         
         return {"success": True, "action": "filtered", "paper_id": paper_id,
                 "score": None, "errors": errors}

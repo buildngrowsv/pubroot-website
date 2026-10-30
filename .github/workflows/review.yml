@@ -230,22 +230,23 @@ jobs:
               done
             fi
 
-            # TIER 3: unreviewed submissions (no bot review comment)
-            # These are issues with the submission label but no bot review comment.
-            # Exclude terminal labels, editorial-hold, apply gating.
+            # TIER 3: unreviewed submissions (newest bot comment missing OR is error)
+            # These are issues with the submission label but either:
+            #   - No bot review comment at all, OR
+            #   - The newest bot comment is an error comment (failed review)
             #
-            # FIX (Bug B20 part c): An issue whose only bot comment is an old error
-            # comment (posted before the review-error label was removed) must be
-            # eligible again. We check LABELS (not just comment existence) to determine
-            # if an issue has been reviewed. An issue is "unreviewed" if:
-            #   - It has NO terminal label (accepted, rejected, validation-failed)
-            #   - It does NOT have review-error, publish-failed, or pending-review
-            #   - (optional) It has no bot comment, OR it only has error comments
+            # FIX (Bug B20 part 3): Restore bot-comment check, but make it smarter.
+            # Check if the NEWEST bot comment is a review or an error. If it's an
+            # error, the issue is eligible again (even if review-error label was
+            # removed). This prevents repeat OpenRouter reviews after a non-error
+            # comment exists.
             #
-            # For simplicity and to match dry_run logic, we check ONLY labels here.
-            # If an issue has review-error or pending-review, it's not in this tier.
-            # If those labels are removed (e.g., by a maintainer after a fix), the
-            # issue becomes eligible again in this tier.
+            # Exclude terminal labels: accepted, rejected, validation-failed, published,
+            # duplicate. Also exclude publish-failed (tier 1), review-error, pending-review,
+            # and editorial-hold.
+            #
+            # NOTE: We check labels first to avoid expensive comment API calls. Only
+            # issues that pass the label filter check for bot comments.
             if [ -z "$ISSUE" ]; then
               echo "Tier 3: Checking unreviewed submissions..."
               CANDIDATES=$(gh issue list \
@@ -254,18 +255,27 @@ jobs:
                 --label "submission" \
                 --limit 500 \
                 --json number,labels \
-                --jq 'map(select(.labels | map(.name) | (contains(["accepted"]) or contains(["rejected"]) or contains(["validation-failed"]) or contains(["publish-failed"]) or contains(["review-error"]) or contains(["pending-review"]) or contains(["editorial-hold"])) | not)) | .[].number' \
+                --jq 'map(select(.labels | map(.name) | (contains(["accepted"]) or contains(["rejected"]) or contains(["validation-failed"]) or contains(["publish-failed"]) or contains(["review-error"]) or contains(["pending-review"]) or contains(["editorial-hold"]) or contains(["published"]) or contains(["duplicate"])) | not)) | .[].number' \
                 2>/dev/null || true)
               
               for C in $CANDIDATES; do
                 python _review_agent/author_gating.py check "$C" >/dev/null 2>&1 || { echo "  #$C skipped (gated)"; continue; }
                 
-                # NOTE: We removed the "has bot comment" check here. Issues are now
-                # eligible based on labels alone. If a maintainer removes review-error
-                # from an issue that only had an error comment, it becomes eligible again.
-                ISSUE="$C"
-                echo "  Found approved unreviewed issue: #$C"
-                break
+                # Check the newest bot comment
+                NEWEST_BOT_COMMENT=$(gh api repos/"$GITHUB_REPOSITORY"/issues/"$C"/comments \
+                  --jq 'map(select(.user.login == "github-actions[bot]")) | reverse | .[0].body' \
+                  2>/dev/null || echo "")
+                
+                # Issue is eligible if:
+                # 1. No bot comment at all (empty string), OR
+                # 2. Newest comment is an error (contains "# AI Peer Review — Error" or "Submission Validation Failed")
+                if [ -z "$NEWEST_BOT_COMMENT" ] || echo "$NEWEST_BOT_COMMENT" | grep -q "# AI Peer Review — Error\|Submission Validation Failed\|Publication Failed"; then
+                  ISSUE="$C"
+                  echo "  Found approved unreviewed issue: #$C"
+                  break
+                else
+                  echo "  #$C skipped (has non-error bot review)"
+                fi
               done
             fi
 

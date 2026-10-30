@@ -101,6 +101,52 @@ def run_stages_4_to_6(analysis_data: dict) -> dict:
         return analysis_data
     
     action = analysis_data.get("action", "")
+    
+    # FIX (Bug B20 part 2): Handle 'filtered' action for duplicates in CI.
+    # Stages 1-3 return action='filtered' for duplicates, but we need to label
+    # and comment on them before exiting. Check if errors contain duplicate detection.
+    if action == "filtered":
+        errors = analysis_data.get("errors", [])
+        is_duplicate = any(
+            "DUPLICATE DETECTED" in e or "SLUG COLLISION" in e or "NEAR-DUPLICATE DETECTED" in e
+            for e in errors
+        )
+        
+        if is_duplicate:
+            print(f"[Stage 4-6] Duplicate detected in stage 1. Labeling and commenting.")
+            issue_number = analysis_data.get("issue_number")
+            
+            # Post duplicate comment
+            comment_body = (
+                "# Duplicate Submission Detected\n\n"
+                "Your submission appears to duplicate an existing published paper:\n\n"
+                + "\n".join(f"- {e}" for e in errors)
+                + "\n\n**Note**: If this is a genuine revision or update to the existing paper, "
+                "please follow the revision process by referencing the original paper's ID in "
+                "your submission and explaining what has changed."
+            )
+            
+            gh = GitHubAPI(
+                owner=github_repo.split("/")[0],
+                repo=github_repo.split("/")[1],
+                token=github_token,
+            )
+            gh.post_comment(issue_number, comment_body)
+            gh.add_labels(issue_number, ["duplicate"])
+            gh.close_issue(issue_number)
+            
+            return {
+                "success": True,
+                "action": "filtered",
+                "paper_id": analysis_data.get("paper_id"),
+                "score": None,
+                "errors": errors,
+            }
+        else:
+            # Other filtered reasons (validation-failed, etc.)
+            print(f"[Stage 4-6] Analysis filtered (non-duplicate). Action: {action}")
+            return analysis_data
+    
     if action != "continue":
         print(f"[Stage 4-6] Analysis did not continue. Action: {action}")
         return analysis_data
