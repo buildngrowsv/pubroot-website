@@ -233,6 +233,19 @@ jobs:
             # TIER 3: unreviewed submissions (no bot review comment)
             # These are issues with the submission label but no bot review comment.
             # Exclude terminal labels, editorial-hold, apply gating.
+            #
+            # FIX (Bug B20 part c): An issue whose only bot comment is an old error
+            # comment (posted before the review-error label was removed) must be
+            # eligible again. We check LABELS (not just comment existence) to determine
+            # if an issue has been reviewed. An issue is "unreviewed" if:
+            #   - It has NO terminal label (accepted, rejected, validation-failed)
+            #   - It does NOT have review-error, publish-failed, or pending-review
+            #   - (optional) It has no bot comment, OR it only has error comments
+            #
+            # For simplicity and to match dry_run logic, we check ONLY labels here.
+            # If an issue has review-error or pending-review, it's not in this tier.
+            # If those labels are removed (e.g., by a maintainer after a fix), the
+            # issue becomes eligible again in this tier.
             if [ -z "$ISSUE" ]; then
               echo "Tier 3: Checking unreviewed submissions..."
               CANDIDATES=$(gh issue list \
@@ -241,22 +254,18 @@ jobs:
                 --label "submission" \
                 --limit 500 \
                 --json number,labels \
-                --jq 'map(select(.labels | map(.name) | (contains(["accepted"]) or contains(["rejected"]) or contains(["validation-failed"]) or contains(["publish-failed"]) or contains(["review-error"]) or contains(["editorial-hold"])) | not)) | .[].number' \
+                --jq 'map(select(.labels | map(.name) | (contains(["accepted"]) or contains(["rejected"]) or contains(["validation-failed"]) or contains(["publish-failed"]) or contains(["review-error"]) or contains(["pending-review"]) or contains(["editorial-hold"])) | not)) | .[].number' \
                 2>/dev/null || true)
               
               for C in $CANDIDATES; do
                 python _review_agent/author_gating.py check "$C" >/dev/null 2>&1 || { echo "  #$C skipped (gated)"; continue; }
                 
-                # Check if this issue has a bot review comment
-                HAS_REVIEW=$(gh api repos/"$GITHUB_REPOSITORY"/issues/"$C"/comments \
-                  --jq 'map(select(.user.login == "github-actions[bot]" and (.body | contains("# AI Peer Review") or contains("Submission Validation Failed")))) | length' \
-                  2>/dev/null || echo "0")
-                
-                if [ "$HAS_REVIEW" = "0" ]; then
-                  ISSUE="$C"
-                  echo "  Found approved unreviewed issue: #$C"
-                  break
-                fi
+                # NOTE: We removed the "has bot comment" check here. Issues are now
+                # eligible based on labels alone. If a maintainer removes review-error
+                # from an issue that only had an error comment, it becomes eligible again.
+                ISSUE="$C"
+                echo "  Found approved unreviewed issue: #$C"
+                break
               done
             fi
 
@@ -396,6 +405,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          gh label create "duplicate" --color "ededed" --description "Duplicate of an existing published paper" 2>/dev/null || true
           gh label create "publish-failed" --color "d73a4a" --description "Review passed; git publish step failed — safe to retry" 2>/dev/null || true
           gh label create "approved-for-review" --color "0e8a16" --description "Maintainer-approved submission ready for AI review" 2>/dev/null || true
           gh label create "editorial-hold" --color "b60205" --description "Submission on hold pending editorial decision" 2>/dev/null || true

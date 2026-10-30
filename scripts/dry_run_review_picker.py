@@ -187,10 +187,22 @@ def pick_next(
         skipped.append((candidate["number"], f"gated: {approval['reason']}"))
     
     # TIER 3: unreviewed submissions
+    # FIX (Bug B20 part c): Base eligibility on LABELS, not bot comment existence.
+    # An issue with only an old error comment but NO review-error label is eligible.
     tier3_candidates = []
     for issue in issues:
         labels = [lbl["name"] for lbl in issue.get("labels", [])]
-        if "submission" in labels and not is_terminal(labels) and not is_excluded(labels) and "publish-failed" not in labels:
+        # Must have submission label
+        # Must NOT have terminal labels
+        # Must NOT have publish-failed (tier 1)
+        # Must NOT have priority labels (tier 2)
+        # Must NOT have review-error, pending-review, or editorial-hold
+        if ("submission" in labels 
+            and not is_terminal(labels) 
+            and not is_excluded(labels) 
+            and "publish-failed" not in labels
+            and "review-error" not in labels
+            and "pending-review" not in labels):
             # Check if has priority label (would have been handled in tier 2)
             if not any(lbl.startswith("priority:") for lbl in labels):
                 tier3_candidates.append(issue)
@@ -201,9 +213,10 @@ def pick_next(
             skipped.append((candidate["number"], f"gated: {approval['reason']}"))
             continue
         
-        # Check if has bot review comment
-        if not has_bot_review_fn(candidate["number"]):
-            return candidate["number"], skipped
+        # NOTE (Bug B20 fix): We no longer check for bot comments here. Label-based
+        # eligibility means an issue with only an error comment but no review-error
+        # label is eligible again. This matches the review.yml tier 3 logic.
+        return candidate["number"], skipped
     
     # TIER 4: 0-label fallback
     tier4_candidates = []

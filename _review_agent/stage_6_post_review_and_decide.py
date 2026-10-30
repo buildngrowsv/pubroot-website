@@ -636,16 +636,26 @@ def _handle_acceptance(
     Publish accepted work: bump contributor stats locally, upload files, then
     merge via PR. If the PR path fails (403, merge rules, etc.), fall back to
     committing the same files directly to main so the site still updates.
+    
+    FIX (Bug B20 part b): This function now verifies that files were actually
+    written and the index was updated. If the publish is a no-op (existing path,
+    slug collision, any silent failure), it raises an exception so stage 6 fails
+    loudly with a publish-failed label and a non-zero exit code.
 
     Returns:
         PR number if merged via PR, or None if published via direct commits to main
         or if the article was already on main (idempotent retry).
+    
+    Raises:
+        Exception: If the publish step completes but no files were written or the
+                   index was not updated (indicates a silent collision or skip).
     """
     now = datetime.now(timezone.utc)
     branch_name = f"paper/{paper_id}"
 
     # Idempotent retries (e.g. cron re-runs after a publish failure): if the article
     # is already on main (new SEO path or legacy flat path), skip duplicate publish.
+    # This is the ONLY acceptable no-op case (retry after successful publish).
     if gh.path_exists(f"papers/{paper_id}/article.md", "main"):
         return None
     _paths_probe = _resolve_publication_paths(gh, parsed_submission, paper_id)
@@ -697,6 +707,10 @@ def _handle_acceptance(
             base="main",
         )
         gh.merge_pull_request(pr_number, merge_method="squash")
+        
+        # VERIFY: Check that files actually exist on main after merge (Bug B20 fix)
+        _verify_publish_succeeded(gh, _paths_probe, paper_id, "after PR merge")
+        
         return pr_number
 
     def _direct_main_path() -> None:
@@ -717,6 +731,9 @@ def _handle_acceptance(
             repo_root,
             now,
         )
+        
+        # VERIFY: Check that files actually exist on main (Bug B20 fix)
+        _verify_publish_succeeded(gh, _paths_probe, paper_id, "after direct commit to main")
 
     try:
         return _try_pr_path()
@@ -1263,3 +1280,75 @@ def _score_to_bar(score: float) -> str:
     filled = int(round(score))
     empty = 10 - filled
     return "[" + "|" * filled + "." * empty + "]"
+
+
+def _verify_publish_succeeded(
+    gh: GitHubAPI,
+    paths: dict,
+    paper_id: str,
+    context: str,
+) -> None:
+    """
+    Verify that publication actually wrote files and updated the index (Bug B20 fix).
+    
+    FIX HISTORY:
+        Issue #60 was a duplicate of 2026-067. Stage 6 ran _upload_publication_files_to_branch,
+        but the article path already existed, so the GitHub API silently skipped the write
+        (returning 200 OK with no content change). The PR merged, labels were added, issue
+        was closed, but NO new files were created and agent-index.json was NOT updated.
+        
+        This function detects that failure case by checking that:
+        1. The article file exists on main after the publish operation
+        2. The paper_id appears in agent-index.json or priorroot-index.json
+        
+        If either check fails, we raise an exception so the workflow run fails and the
+        issue gets labeled publish-failed (not published).
+    
+    Args:
+        gh: GitHub API wrapper
+        paths: Publication paths dict from _resolve_publication_paths
+        paper_id: The paper ID (e.g., "2026-060")
+        context: Description of when this check runs (for error message)
+    
+    Raises:
+        Exception: If verification fails (article path missing or paper not in index)
+    """
+    article_path = paths["article_index_path"]
+    
+    # CHECK 1: Article file exists on main
+    if not gh.path_exists(article_path, "main"):
+        raise Exception(
+            f"PUBLISH VERIFICATION FAILED {context}: "
+            f"Article file '{article_path}' does not exist on main. "
+            f"This indicates a silent collision or no-op write. "
+            f"The issue will be labeled publish-failed for retry."
+        )
+    
+    # CHECK 2: Paper appears in agent-index.json or priorroot-index.json
+    # Determine which index based on category
+    category = paths.get("journal", "")
+    is_priorart = category.startswith("prior-art")
+    index_name = "priorroot-index.json" if is_priorart else "agent-index.json"
+    
+    try:
+        index_json_str, _ = gh.get_file_content(index_name, branch="main")
+        index_data = json.loads(index_json_str)
+        papers = index_data.get("papers", [])
+        
+        paper_ids = [p.get("id") for p in papers]
+        if paper_id not in paper_ids:
+            raise Exception(
+                f"PUBLISH VERIFICATION FAILED {context}: "
+                f"Paper {paper_id} was not added to {index_name}. "
+                f"Found {len(paper_ids)} papers, but {paper_id} is missing. "
+                f"This indicates the index update was skipped or failed. "
+                f"The issue will be labeled publish-failed for retry."
+            )
+    except requests.HTTPError as e:
+        # If we can't fetch the index, that's a real failure too
+        raise Exception(
+            f"PUBLISH VERIFICATION FAILED {context}: "
+            f"Could not fetch {index_name} from main to verify publication. "
+            f"HTTP {e.response.status_code if e.response else 'error'}. "
+            f"The issue will be labeled publish-failed for retry."
+        )

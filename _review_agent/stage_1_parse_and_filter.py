@@ -344,6 +344,33 @@ def parse_and_filter_submission(
             )
 
     # -----------------------------------------------------------------------
+    # STEP 7b: DUPLICATE DETECTION (Bug B20 fix)
+    # -----------------------------------------------------------------------
+    # Check for exact duplicates and near-duplicates against all published papers
+    # in both agent-index.json and priorroot-index.json. This prevents:
+    #   1. Exact title duplicates (same normalized title)
+    #   2. Slug collisions (same journal/topic/slug path)
+    #   3. Near-duplicates (high similarity in title+abstract)
+    #
+    # FIX HISTORY: Issue #60 was an exact duplicate of 2026-067 (same title and
+    # slug) but passed stages 1-3 with no duplicate flag, got ACCEPTED at 6.8,
+    # then stage 6 labeled it published and closed it but wrote nothing (no
+    # papers/ folder, no index change). Stage 6 silently skipped the duplicate
+    # write because the path already existed, but did not detect or report it.
+    #
+    # This check runs BEFORE any LLM call (stage 5) to save cost on duplicates.
+    # -----------------------------------------------------------------------
+    
+    dup_error = _check_for_duplicates(
+        title=title,
+        abstract=abstract,
+        category=category,
+        repo_root=repo_root,
+    )
+    if dup_error:
+        errors.append(dup_error)
+
+    # -----------------------------------------------------------------------
     # STEP 8: Validate supporting repo URL format (if provided)
     # -----------------------------------------------------------------------
 
@@ -358,6 +385,8 @@ def parse_and_filter_submission(
 
     # -----------------------------------------------------------------------
     # STEP 9: Validate commit SHA format (if provided)
+    # -----------------------------------------------------------------------
+    # NOTE: Previously step 8, renumbered after adding duplicate detection as 7b.
     # -----------------------------------------------------------------------
 
     if commit_sha:
@@ -405,6 +434,208 @@ def parse_and_filter_submission(
 # file because they're tightly coupled to the parsing logic and not reused
 # elsewhere. The one-function-per-file rule applies to the PUBLIC API function.
 # ---------------------------------------------------------------------------
+
+
+def _check_for_duplicates(
+    title: str,
+    abstract: str,
+    category: str,
+    repo_root: str,
+) -> Optional[str]:
+    """
+    Check for exact and near-duplicate papers in agent-index.json and priorroot-index.json.
+    
+    DUPLICATE DETECTION (Bug B20 fix):
+        This function checks three things:
+        1. EXACT TITLE MATCH: Normalized title exactly matches a published paper
+        2. SLUG COLLISION: journal/topic/slug path would collide with existing paper
+        3. NEAR-DUPLICATE: High cosine similarity of title+abstract (TF-IDF, threshold 0.92)
+    
+    FIX HISTORY:
+        Issue #60 was an exact duplicate of 2026-067 (same title and slug) but
+        passed stages 1-3 with no flag. It got ACCEPTED at 6.8, then stage 6
+        silently skipped the write (path existed) but labeled it published anyway.
+        
+        This check runs BEFORE the LLM call to save cost on duplicates. It's in
+        stage 1 (not stage 2) because it's a validation check, not novelty scoring.
+    
+    Returns:
+        Error message string if a duplicate is found, None if no duplicates detected.
+    """
+    # Import slugification and path helpers
+    import sys
+    import os
+    sys.path.insert(0, os.path.dirname(__file__))
+    from pubroot_site_paths import slugify_title, parse_journal_topic
+    
+    # Load both indexes
+    indexes_to_check = []
+    for idx_file in ["agent-index.json", "priorroot-index.json"]:
+        idx_path = os.path.join(repo_root, idx_file)
+        try:
+            with open(idx_path, "r") as f:
+                idx_data = json.load(f)
+                indexes_to_check.append((idx_file, idx_data.get("papers", [])))
+        except (FileNotFoundError, json.JSONDecodeError):
+            # If an index is missing or corrupt, skip it (shouldn't happen in production)
+            continue
+    
+    if not indexes_to_check:
+        # No indexes available (shouldn't happen), can't check for duplicates
+        return None
+    
+    # Normalize the submission title for comparison
+    normalized_title = _normalize_title(title)
+    
+    # Build the slug this submission would get
+    # We need a paper_id placeholder for slug generation; use "new" as a sentinel
+    journal, topic = parse_journal_topic(category)
+    submission_slug = slugify_title(title, "new")
+    submission_path_key = f"{journal}/{topic}/{submission_slug}"
+    
+    # Prepare title+abstract for similarity comparison
+    submission_text = f"{title} {abstract}".lower()
+    submission_words = _tokenize_for_tfidf(submission_text)
+    
+    # Check each paper in each index
+    for idx_name, papers in indexes_to_check:
+        for paper in papers:
+            paper_title = paper.get("title", "")
+            paper_category = paper.get("category", "")
+            paper_abstract = paper.get("abstract", "")
+            paper_id = paper.get("id", "unknown")
+            
+            # ---------------------------------------------------------------
+            # CHECK 1: EXACT TITLE MATCH (case-insensitive, normalized)
+            # ---------------------------------------------------------------
+            if _normalize_title(paper_title) == normalized_title:
+                reader_url = paper.get("reader_url", f"https://pubroot.com/{paper_id}/")
+                return (
+                    f"DUPLICATE DETECTED: This submission has the exact same title as "
+                    f"published paper **{paper_id}** in {idx_name}.\n\n"
+                    f"Existing paper: [{paper_title}]({reader_url})\n\n"
+                    f"Duplicate submissions are not accepted. If you believe this is a "
+                    f"revision or update, please reference the original paper in your "
+                    f"submission and explain what is new."
+                )
+            
+            # ---------------------------------------------------------------
+            # CHECK 2: SLUG COLLISION (same journal/topic/slug path)
+            # ---------------------------------------------------------------
+            paper_journal, paper_topic = parse_journal_topic(paper_category)
+            paper_slug = slugify_title(paper_title, paper_id)
+            paper_path_key = f"{paper_journal}/{paper_topic}/{paper_slug}"
+            
+            if submission_path_key == paper_path_key:
+                reader_url = paper.get("reader_url", f"https://pubroot.com/{paper_id}/")
+                return (
+                    f"SLUG COLLISION: This submission would create the same URL path as "
+                    f"published paper **{paper_id}** in {idx_name}.\n\n"
+                    f"Existing paper: [{paper_title}]({reader_url})\n"
+                    f"Path: `{submission_path_key}`\n\n"
+                    f"This typically means the titles are very similar. Please use a "
+                    f"more distinctive title or choose a different topic category."
+                )
+            
+            # ---------------------------------------------------------------
+            # CHECK 3: NEAR-DUPLICATE (TF-IDF cosine similarity >= 0.92)
+            # ---------------------------------------------------------------
+            paper_text = f"{paper_title} {paper_abstract}".lower()
+            paper_words = _tokenize_for_tfidf(paper_text)
+            
+            similarity = _tfidf_cosine_similarity(submission_words, paper_words)
+            
+            if similarity >= 0.92:
+                reader_url = paper.get("reader_url", f"https://pubroot.com/{paper_id}/")
+                return (
+                    f"NEAR-DUPLICATE DETECTED: This submission is very similar to "
+                    f"published paper **{paper_id}** in {idx_name} "
+                    f"(similarity: {similarity:.1%}).\n\n"
+                    f"Existing paper: [{paper_title}]({reader_url})\n\n"
+                    f"The title and abstract are too similar to existing work. "
+                    f"If this is a genuine new contribution, please clarify what "
+                    f"distinguishes it from the existing paper."
+                )
+    
+    return None
+
+
+def _normalize_title(title: str) -> str:
+    """
+    Normalize a title for exact-match comparison.
+    
+    Lowercases, strips whitespace, removes common punctuation, and collapses
+    multiple spaces. This catches duplicates even if one has extra punctuation
+    or spacing differences.
+    """
+    t = title.lower().strip()
+    # Remove common punctuation that doesn't affect meaning
+    t = re.sub(r"[:\-—–_.!?;,\"'`]", " ", t)
+    # Collapse multiple spaces
+    t = re.sub(r"\s+", " ", t).strip()
+    return t
+
+
+def _tokenize_for_tfidf(text: str) -> list:
+    """
+    Tokenize text for TF-IDF similarity: lowercase, alphanumeric words only,
+    remove common stop words.
+    """
+    # Split on non-alphanumeric
+    words = re.findall(r'\b[a-z0-9]+\b', text.lower())
+    
+    # Remove stop words (common English words that don't help with similarity)
+    stop_words = {
+        "the", "is", "are", "was", "were", "of", "in", "to", "for", "and", 
+        "or", "on", "with", "as", "by", "this", "that", "it", "from", "at", 
+        "be", "has", "had", "have", "a", "an", "but", "not", "can", "will",
+        "would", "should", "could", "may", "might", "if", "then", "than",
+        "we", "they", "our", "their", "how", "when", "where", "why", "what",
+        "who", "which", "such", "so", "just", "now", "here", "there", "all",
+        "some", "any", "more", "most", "other", "into", "over", "out", "up",
+        "down", "only", "do", "does", "did", "i", "you", "he", "she", "his",
+        "her", "its", "my", "your"
+    }
+    
+    return [w for w in words if w not in stop_words and len(w) > 2]
+
+
+def _tfidf_cosine_similarity(words1: list, words2: list) -> float:
+    """
+    Compute TF-IDF weighted cosine similarity between two word lists.
+    
+    This is a simple local implementation (no scikit-learn dependency) that
+    builds a term frequency (TF) vector for each document and computes cosine
+    similarity. The "IDF" is implicit: rare words (appearing in only one doc)
+    get more weight because they don't appear in the other doc's denominator.
+    
+    Returns:
+        Similarity score in [0.0, 1.0], where 1.0 is identical.
+    """
+    if not words1 or not words2:
+        return 0.0
+    
+    # Build term frequency maps
+    from collections import Counter
+    tf1 = Counter(words1)
+    tf2 = Counter(words2)
+    
+    # Get the union of terms
+    all_terms = set(tf1.keys()) | set(tf2.keys())
+    
+    # Build vectors (term frequency as the "TF-IDF" approximation)
+    vec1 = [tf1.get(term, 0) for term in all_terms]
+    vec2 = [tf2.get(term, 0) for term in all_terms]
+    
+    # Compute cosine similarity: (vec1 · vec2) / (||vec1|| * ||vec2||)
+    dot_product = sum(a * b for a, b in zip(vec1, vec2))
+    mag1 = sum(a * a for a in vec1) ** 0.5
+    mag2 = sum(b * b for b in vec2) ** 0.5
+    
+    if mag1 == 0 or mag2 == 0:
+        return 0.0
+    
+    return dot_product / (mag1 * mag2)
 
 
 def _extract_form_fields(issue_body: str) -> dict:
