@@ -940,6 +940,30 @@ h1, h2, h3, h4 {
   .content-grid { grid-template-columns: 1fr; }
 }
 
+/* Paper status banner (archived/docked papers) */
+.paper-status-banner {
+  grid-column: 1 / -1;
+  padding: 16px 20px;
+  margin-bottom: 24px;
+  background: var(--warning-light, #FEF3C7);
+  border: 1px solid var(--warning, #F59E0B);
+  border-radius: 6px;
+  color: var(--text);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+.paper-status-banner strong {
+  font-weight: 600;
+  text-transform: capitalize;
+}
+.paper-status-banner a {
+  color: var(--accent);
+  text-decoration: underline;
+}
+.paper-status-banner a:hover {
+  color: var(--accent-hover);
+}
+
 /* Article body */
 .article-body {
   font-size: 1rem;
