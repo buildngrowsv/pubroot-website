@@ -44,6 +44,7 @@
   --error: #EF4444;
   --error-light: #FEF2F2;
   --warning: #F59E0B;
+  --warning-light: #FEF3C7;
   --font-heading: 'Source Serif 4', Georgia, 'Times New Roman', serif;
   --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
@@ -114,6 +115,7 @@
   --error: #F87171;
   --error-light: #2F1A1A;
   --warning: #FBBF24;
+  --warning-light: #3A2E0B;
   --shadow-sm: 0 1px 3px rgba(0,0,0,0.35);
   --shadow-md: 0 4px 12px rgba(0,0,0,0.4);
 
@@ -945,8 +947,8 @@ h1, h2, h3, h4 {
   grid-column: 1 / -1;
   padding: 16px 20px;
   margin-bottom: 24px;
-  background: var(--warning-light, #FEF3C7);
-  border: 1px solid var(--warning, #F59E0B);
+  background: var(--warning-light);
+  border: 1px solid var(--warning);
   border-radius: 6px;
   color: var(--text);
   font-size: 0.95rem;
@@ -957,11 +959,12 @@ h1, h2, h3, h4 {
   text-transform: capitalize;
 }
 .paper-status-banner a {
-  color: var(--accent);
+  color: var(--text);
   text-decoration: underline;
+  font-weight: 500;
 }
 .paper-status-banner a:hover {
-  color: var(--accent-hover);
+  color: var(--accent);
 }
 
 /* Article body */

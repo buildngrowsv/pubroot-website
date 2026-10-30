@@ -25,6 +25,7 @@ import tempfile
 import pytest
 import requests
 from datetime import datetime, timezone, timedelta
+from pathlib import Path
 from unittest.mock import patch, MagicMock
 
 from stage_6_post_review_and_decide import (
@@ -1473,4 +1474,86 @@ class TestIndexUpdateWithStatefulAPI:
             assert final_index["total_papers"] == 3
         finally:
             time.sleep = original_sleep
+    
+    def test_publish_does_not_readd_archived_paper(self, temp_repo_root):
+        """
+        Test (d): Verify that publishing a new paper does not re-add archived papers.
+        
+        This test seeds the API with the committed indexes (which exclude 2026-024),
+        publishes a new paper 2026-900, and verifies:
+        - 2026-024 remains absent
+        - 2026-018 and 2026-900 are present
+        - total_papers is committed_total + 1
+        - The uploaded index contains only the 2026-900 entry plus committed entries
+        """
+        # Load the real committed indexes
+        repo_root = Path(__file__).resolve().parents[1]
+        committed_agent_index = json.loads((repo_root / "agent-index.json").read_text(encoding="utf-8"))
+        committed_priorroot_index = json.loads((repo_root / "priorroot-index.json").read_text(encoding="utf-8"))
+        
+        committed_total = committed_agent_index["total_papers"]
+        
+        # Verify 2026-024 is not in the committed index
+        committed_ids = [p["id"] for p in committed_agent_index["papers"]]
+        assert "2026-024" not in committed_ids, "2026-024 must be excluded from committed index"
+        assert "2026-018" in committed_ids, "2026-018 must be in committed index"
+        
+        # Setup: Create a fake API seeded with committed indexes
+        fake_api = FakeGitHubContentsAPI()
+        fake_api.set_file("agent-index.json", json.dumps(committed_agent_index, indent=2) + "\n")
+        fake_api.set_file("priorroot-index.json", json.dumps(committed_priorroot_index, indent=2) + "\n")
+        
+        # Create a GitHubAPI mock
+        gh = GitHubAPI("owner", "repo", "token")
+        gh.get_file_content = fake_api.get_file_content
+        gh.create_or_update_file_with_sha = fake_api.create_or_update_file_with_sha
+        
+        # Call _update_indexes to add paper 2026-900
+        from stage_6_post_review_and_decide import _update_indexes
+        
+        new_paper_data = {
+            "title": "Test Paper 900",
+            "author": "test-author",
+            "category": "ai/test",
+            "abstract": "Test abstract for paper 900",
+            "supporting_repo": None,
+            "ai_tooling_attribution": None,
+        }
+        
+        review = {"score": 7.5}
+        repo_data = {"badge_type": "text_only"}
+        now = datetime(2026, 10, 30, 15, 0, 0, tzinfo=timezone.utc)
+        paths = {
+            "article_index_path": "papers/ai/test/test-paper-900/index.md",
+            "reader_url": "https://pubroot.com/ai/test/test-paper-900/",
+        }
+        
+        # Patch time.sleep to avoid waiting
+        import time
+        original_sleep = time.sleep
+        time.sleep = lambda x: None
+        
+        try:
+            _update_indexes(gh, "main", "2026-900", new_paper_data, review, repo_data, now, paths)
+            
+            # Verify: 2026-024 is still absent, 2026-018 and 2026-900 are present
+            final_index = json.loads(fake_api.files["agent-index.json"]["content"])
+            final_paper_ids = [p["id"] for p in final_index["papers"]]
+            
+            assert "2026-024" not in final_paper_ids, "2026-024 must remain excluded"
+            assert "2026-018" in final_paper_ids, "2026-018 must be present"
+            assert "2026-900" in final_paper_ids, "New paper 2026-900 must be present"
+            
+            # Verify total is committed_total + 1
+            assert final_index["total_papers"] == committed_total + 1
+            
+            # Verify the upload contains exactly the committed entries plus 2026-900
+            # (no re-added archived papers)
+            expected_ids = set(committed_ids) | {"2026-900"}
+            actual_ids = set(final_paper_ids)
+            assert actual_ids == expected_ids, \
+                f"Index should contain committed papers + 2026-900 only. Diff: {actual_ids ^ expected_ids}"
+        finally:
+            time.sleep = original_sleep
+
 
