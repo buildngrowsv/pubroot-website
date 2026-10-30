@@ -97,6 +97,13 @@
 
     <!-- Two-column: Article + Review -->
     <div class="content-grid">
+      {{- with .Params.status }}{{ if ne . "current" }}
+      <!-- Pruning tombstone (specs/pruning.md): non-current papers stay readable -->
+      <div class="paper-status-banner paper-status-{{ . }}" role="note" data-pagefind-ignore>
+        <strong>This paper is {{ . }}</strong>{{ with $.Params.status_changed }} as of {{ . }}{{ end }}{{ with $.Params.status_reason }} (reason: {{ . }}){{ end }}.
+        {{- with $.Params.superseded_by }} See <a href="/{{ . }}/">{{ . }}</a> for the current version.{{ end }}
+      </div>
+      {{- end }}{{ end }}
       <!-- Article body -->
       <div class="article-body">
         {{ $articleHTML }}

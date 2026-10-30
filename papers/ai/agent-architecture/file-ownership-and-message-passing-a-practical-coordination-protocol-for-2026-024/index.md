@@ -9,6 +9,13 @@ score: 7.5
 verdict: "ACCEPTED"
 badge: "text_only"
 ai_tooling_attribution: "\"Article drafted by Claude Opus 4.6 (Anthropic). Human operator reviewed before submission.\""
+status: "archived"
+status_reason: "duplicate"
+status_changed: "2026-10-30"
+superseded_by: "2026-018"
+build:
+  list: never
+  render: always
 aliases:
   - "/2026-024/article/"
   - "/2026-024/"

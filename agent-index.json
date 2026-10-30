@@ -3,7 +3,7 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 102,
+  "total_papers": 101,
   "last_updated": "2026-10-30T15:02:23Z",
   "papers": [
     {
@@ -96,22 +96,6 @@
       "article_path": "papers/ai/agent-architecture/building-a-scalable-ai-tool-clone-factory-how-we-ship-one-saas-product-p/index.md",
       "review_path": "reviews/2026-022/review.json",
       "reader_url": "https://pubroot.com/ai/agent-architecture/building-a-scalable-ai-tool-clone-factory-how-we-ship-one-saas-product-p/"
-    },
-    {
-      "id": "2026-024",
-      "title": "\"File Ownership and Message Passing: A Practical Coordination Protocol for LLM Agent Swarms\"",
-      "author": "buildngrowsv",
-      "category": "ai/agent-architecture",
-      "abstract": "\"Multi-agent LLM systems face a fundamental coordination problem: how do you let 10-20 autonomous agents edit the same codebase simultaneously without merge conflicts, lost work, or incoherent output? This article presents a practical coordination protocol developed through production use in a 20-agent swarm that ships software across multiple repositories. The protocol rests on three mechanisms: a shared coordination board with strict file ownership, an asynchronous message-passing system, and ",
-      "published_date": "2026-03-24T05:12:07Z",
-      "review_score": 7.5,
-      "badge": "text_only",
-      "status": "current",
-      "article_path": "papers/ai/agent-architecture/file-ownership-and-message-passing-a-practical-coordination-protocol-for-2026-024/index.md",
-      "review_path": "reviews/2026-024/review.json",
-      "reader_url": "https://pubroot.com/ai/agent-architecture/file-ownership-and-message-passing-a-practical-coordination-protocol-for-2026-024/",
-      "supporting_repo": "https://github.com/buildngrowsv/pubroot-website",
-      "ai_tooling_attribution": "\"Article drafted by Claude Opus 4.6 (Anthropic). Human operator reviewed before submission.\""
     },
     {
       "id": "2026-026",

@@ -39,6 +39,7 @@ def main() -> int:
     
     # Collect all paper IDs from disk using the shared should_include_paper logic
     disk_papers: dict[str, Path] = {}
+    non_current_papers: set[str] = set()  # Track archived/non-current papers
     for index_md in sorted(papers_root.glob("*/*/*/index.md")):
         fm, _ = _fm_and_body(index_md)
         
@@ -50,6 +51,13 @@ def main() -> int:
                 manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
             except (json.JSONDecodeError, OSError):
                 continue
+        
+        # Track non-current papers (archived, etc.) separately
+        if fm and fm.get("paper_id"):
+            pid = str(fm["paper_id"]).strip().strip('"').strip("'")
+            status = fm.get("status") or (manifest.get("status") if manifest else None)
+            if status and status != "current":
+                non_current_papers.add(pid)
         
         # Apply shared paper selection logic (includes archiving check)
         if not should_include_paper(index_md, papers_root, fm, manifest):
@@ -121,7 +129,8 @@ def main() -> int:
         errors.append(f"Index entries with missing review.json files: {sorted(dangling_review_links)}")
     
     # Check 4: Review files without corresponding papers (orphaned reviews)
-    orphaned_reviews = disk_reviews - set(disk_papers.keys())
+    # Exclude non-current papers (archived, etc.) - they're expected to have reviews but no index entry
+    orphaned_reviews = disk_reviews - set(disk_papers.keys()) - non_current_papers
     if orphaned_reviews:
         warnings.append(f"Review files without corresponding papers: {sorted(orphaned_reviews)}")
     

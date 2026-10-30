@@ -536,6 +536,71 @@ def test_stage6_excludes_archived_papers():
     assert "2026-003" in paper_ids
 
 
+def test_regenerator_excludes_real_archived_paper_2026_024():
+    """
+    Test (l): Verify the real archived paper 2026-024 is excluded from indexes.
+    
+    This test builds indexes from the real papers/ directory and verifies:
+    - 2026-024 is absent from both agent-index.json and priorroot-index.json
+    - 2026-018 (the superseding paper) is present in agent-index.json
+    - total_papers equals len(papers) in both indexes
+    - 024's frontmatter has status='archived' and superseded_by='2026-018'
+    - 024's manifest has supersedes=null
+    - should_include_paper returns False for 024 and True for 018
+    """
+    repo_root = Path(__file__).resolve().parents[1]
+    papers_root = repo_root / "papers"
+    
+    # Build indexes from real papers
+    agent_index = build_agent_index(papers_root, repo_root)
+    priorroot_index = build_priorroot_index(papers_root, repo_root)
+    
+    # Verify 2026-024 is not in agent-index
+    agent_paper_ids = [p["id"] for p in agent_index["papers"]]
+    assert "2026-024" not in agent_paper_ids, "2026-024 must be excluded from agent-index"
+    
+    # Verify 2026-024 is not in priorroot-index
+    priorroot_paper_ids = [p["id"] for p in priorroot_index["papers"]]
+    assert "2026-024" not in priorroot_paper_ids, "2026-024 must be excluded from priorroot-index"
+    
+    # Verify 2026-018 is present in agent-index
+    assert "2026-018" in agent_paper_ids, "2026-018 (superseding paper) must be present"
+    
+    # Verify total_papers matches actual count
+    assert agent_index["total_papers"] == len(agent_index["papers"])
+    assert priorroot_index["total_papers"] == len(priorroot_index["papers"])
+    
+    # Verify 024's frontmatter has correct archiving metadata
+    paper_024_dir = papers_root / "ai" / "agent-architecture" / "file-ownership-and-message-passing-a-practical-coordination-protocol-for-2026-024"
+    index_md_024 = paper_024_dir / "index.md"
+    assert index_md_024.exists(), "2026-024 paper must exist on disk"
+    
+    fm_024, _ = _fm_and_body(index_md_024)
+    assert fm_024 is not None
+    assert fm_024.get("status") == "archived"
+    assert fm_024.get("superseded_by") == "2026-018"
+    
+    # Verify 024's manifest has supersedes=null
+    manifest_024_path = paper_024_dir / "manifest.json"
+    assert manifest_024_path.exists()
+    manifest_024 = json.loads(manifest_024_path.read_text(encoding="utf-8"))
+    assert manifest_024.get("supersedes") is None, "024's supersedes must be null"
+    assert manifest_024.get("superseded_by") == "2026-018"
+    
+    # Verify should_include_paper logic
+    assert should_include_paper(index_md_024, papers_root, fm_024, manifest_024) is False, \
+        "should_include_paper must return False for 024"
+    
+    # Verify 018 is included
+    paper_018_dir = papers_root / "ai" / "agent-architecture" / "file-ownership-and-message-passing-a-practical-coordination-protocol-for"
+    index_md_018 = paper_018_dir / "index.md"
+    assert index_md_018.exists()
+    fm_018, _ = _fm_and_body(index_md_018)
+    manifest_018 = json.loads((paper_018_dir / "manifest.json").read_text(encoding="utf-8"))
+    assert should_include_paper(index_md_018, papers_root, fm_018, manifest_018) is True, \
+        "should_include_paper must return True for 018"
+
+
 if __name__ == "__main__":
     # Allow running directly: python scripts/test_index_golden.py
     pytest.main([__file__, "-v"])
