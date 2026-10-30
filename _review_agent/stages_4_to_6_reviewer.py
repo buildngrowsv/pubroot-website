@@ -30,7 +30,6 @@ USAGE:
 import json
 import os
 import sys
-from datetime import datetime, timezone
 
 # Import only the stages we need (4-6)
 from stage_4_build_review_prompt import build_review_prompt
@@ -127,7 +126,7 @@ def run_stages_4_to_6(analysis_data: dict) -> dict:
         )
         
         if is_duplicate:
-            print(f"[Stage 4-6] Duplicate detected in stage 1. Labeling and commenting.")
+            print("[Stage 4-6] Duplicate detected in stage 1. Labeling and commenting.")
             
             # Post duplicate comment
             comment_body = (
@@ -144,7 +143,7 @@ def run_stages_4_to_6(analysis_data: dict) -> dict:
             gh.close_issue(issue_number)
         else:
             # Other validation failures (word count, format, etc.)
-            print(f"[Stage 4-6] Validation failed in stage 1. Labeling and commenting.")
+            print("[Stage 4-6] Validation failed in stage 1. Labeling and commenting.")
             
             comment_body = (
                 "# Submission Validation Failed\n\n"
@@ -178,7 +177,6 @@ def run_stages_4_to_6(analysis_data: dict) -> dict:
     parsed_submission = parsed_wrapper.get("parsed", {})
     novelty = analysis_data["novelty"]
     repo_data = analysis_data["repo_data"]
-    priority_info = analysis_data["priority_info"]
     
     errors = analysis_data.get("errors", [])
     
@@ -187,7 +185,7 @@ def run_stages_4_to_6(analysis_data: dict) -> dict:
     print(f"[Stage 4-6] Repo available: {repo_data.get('available', False)}")
     
     # Stage 4: Build review prompt
-    print(f"[Stage 4] Building review prompt...")
+    print("[Stage 4] Building review prompt...")
     prompt = build_review_prompt(
         parsed_submission=parsed_submission,
         novelty_results=novelty,
@@ -204,10 +202,10 @@ def run_stages_4_to_6(analysis_data: dict) -> dict:
             "errors": ["Failed to build review prompt"],
         }
     
-    print(f"[Stage 4] ✓ Prompt built ({len(prompt)} chars)")
+    print("[Stage 4] ✓ Prompt built ({} chars)".format(len(prompt)))
     
     # Stage 5: OpenRouter LLM review with web search
-    print(f"[Stage 5] Running LLM review via OpenRouter (model: {model_name})...")
+    print("[Stage 5] Running LLM review via OpenRouter (model: {})...".format(model_name))
     review_result = run_openrouter_review(
         review_prompt=prompt,
         openrouter_api_key=openrouter_api_key,
@@ -216,7 +214,7 @@ def run_stages_4_to_6(analysis_data: dict) -> dict:
     
     if not review_result.get("success", False):
         review_errors = review_result.get("error", "Unknown error")
-        print(f"[Stage 5] ✗ Review failed: {review_errors}")
+        print("[Stage 5] ✗ Review failed: {}".format(review_errors))
         
         # Post error comment and label
         owner, repo = github_repo.split("/", 1)
@@ -243,10 +241,10 @@ def run_stages_4_to_6(analysis_data: dict) -> dict:
     
     review = review_result["review"]
     
-    print(f"[Stage 5] ✓ Review complete. Score: {review.get('score', '?')}/10, Verdict: {review.get('verdict', '?')}")
+    print("[Stage 5] ✓ Review complete. Score: {}/10, Verdict: {}".format(review.get('score', '?'), review.get('verdict', '?')))
     
     # Stage 6: Post review and decide
-    print(f"[Stage 6] Posting review and deciding...")
+    print("[Stage 6] Posting review and deciding...")
     owner, repo = github_repo.split("/", 1)
     
     stage_6_result = post_review_and_decide(
@@ -264,7 +262,7 @@ def run_stages_4_to_6(analysis_data: dict) -> dict:
     
     if not stage_6_result.get("success", False):
         stage_6_errors = stage_6_result.get("errors", ["Unknown publication error"])
-        print(f"[Stage 6] ✗ Publication failed: {stage_6_errors}")
+        print("[Stage 6] ✗ Publication failed: {}".format(stage_6_errors))
         return {
             "success": False,
             "action": "publish_error",
@@ -274,11 +272,11 @@ def run_stages_4_to_6(analysis_data: dict) -> dict:
         }
     
     final_action = stage_6_result.get("action_taken", "unknown")
-    print(f"[Stage 6] ✓ {final_action.upper()}")
+    print("[Stage 6] ✓ {}".format(final_action.upper()))
     
     # Update reputations (runs locally, commits in stage 6 if accepted)
     if final_action == "accepted":
-        print(f"[Reputation] Updating contributor reputations...")
+        print("[Reputation] Updating contributor reputations...")
         update_all_reputations(github_workspace)
     
     return {
@@ -298,12 +296,12 @@ def main():
     analysis_json_path = sys.argv[1]
     
     model_name = os.environ.get("PUBROOT_MODEL", "google/gemini-3.8-flash")
-    print(f"=== Stages 4-6 Reviewer (LLM + Publication) ===")
-    print(f"Input: {analysis_json_path}")
-    print(f"Environment: OPENROUTER_API_KEY, GITHUB_TOKEN (write)")
-    print(f"Model: {model_name}")
-    print(f"SECURITY: This job NEVER touches the submitter's repository.")
-    print(f"          All repo data comes from the sanitized JSON artifact.")
+    print("=== Stages 4-6 Reviewer (LLM + Publication) ===")
+    print("Input: {}".format(analysis_json_path))
+    print("Environment: OPENROUTER_API_KEY, GITHUB_TOKEN (write)")
+    print("Model: {}".format(model_name))
+    print("SECURITY: This job NEVER touches the submitter's repository.")
+    print("          All repo data comes from the sanitized JSON artifact.")
     print()
     
     # Load the analysis from job 1
@@ -317,11 +315,11 @@ def main():
     result = run_stages_4_to_6(analysis_data)
     
     print()
-    print(f"✓ Pipeline complete.")
-    print(f"  Action: {result['action']}")
-    print(f"  Success: {result['success']}")
+    print("✓ Pipeline complete.")
+    print("  Action: {}".format(result['action']))
+    print("  Success: {}".format(result['success']))
     if result.get("score"):
-        print(f"  Score: {result['score']}/10")
+        print("  Score: {}/10".format(result['score']))
     
     # Exit with appropriate code
     if result["action"] in ["error", "review_error", "publish_error"]:

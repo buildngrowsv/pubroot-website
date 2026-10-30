@@ -265,9 +265,21 @@ jobs:
                 # FIX (Bug B20 part 6): Paginate comments fetch and get the actual newest
                 # With --paginate --jq, jq runs once per page, so we need to collect all
                 # bot comments across pages and take the last one
-                NEWEST_BOT_COMMENT=$(gh api "repos/$GITHUB_REPOSITORY/issues/$C/comments" --paginate \
-                  --jq '.[] | select(.user.login == "github-actions[bot]") | {b: .body} | @json' 2>/dev/null \
-                  | tail -n 1 | jq -r '.b // empty' 2>/dev/null || echo "")
+                #
+                # FIX (Bug B23 item 1): Check exit code of gh api call. If it fails
+                # (network error, rate limit, etc.), skip this issue (fail closed).
+                # The previous "|| echo" made failures always succeed with empty string.
+                # The step runs under `bash -e` without pipefail, so test gh's own
+                # status with `if !` (exempt from -e) instead of a pipeline's $?.
+                if ! RAW_BOT_COMMENTS=$(gh api "repos/$GITHUB_REPOSITORY/issues/$C/comments" --paginate \
+                  --jq '.[] | select(.user.login == "github-actions[bot]") | {b: .body} | @json' 2>/dev/null); then
+                  echo "  #$C skipped (API call failed)"
+                  continue
+                fi
+                if ! NEWEST_BOT_COMMENT=$(printf '%s\n' "$RAW_BOT_COMMENTS" | tail -n 1 | jq -r '.b // empty' 2>/dev/null); then
+                  echo "  #$C skipped (unparseable comment JSON)"
+                  continue
+                fi
                 
                 # Issue is eligible if:
                 # 1. No bot comment at all (empty string), OR

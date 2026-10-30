@@ -45,9 +45,7 @@ DESIGN DECISIONS:
 """
 
 import json
-import os
 import time
-from datetime import datetime, timezone
 from typing import Optional
 
 
@@ -153,6 +151,7 @@ def run_openrouter_review(
     for attempt in range(max_retries):
         try:
             # OpenRouter API call using OpenAI SDK
+            # Pass extra_body to request usage stats (prompt, completion, reasoning tokens + cost)
             response = client.chat.completions.create(
                 model=model_name,
                 messages=[
@@ -164,7 +163,8 @@ def run_openrouter_review(
                 temperature=0.2,
                 max_tokens=16384,
                 response_format={"type": "json_object"},
-                tools=[web_search_tool]
+                tools=[web_search_tool],
+                extra_body={"usage": {"include": True}}
             )
             
             # Extract the text response
@@ -225,12 +225,41 @@ def run_openrouter_review(
             
             grounding = _extract_web_search_metadata(response)
             
+            # ---------------------------------------------------------------
+            # Log token usage and cost (B23 item 6)
+            # ---------------------------------------------------------------
+            # OpenRouter returns usage stats when we pass extra_body={"usage": {"include": True}}.
+            # These include prompt_tokens, completion_tokens, reasoning_tokens (if applicable),
+            # and cost_usd. We log them here and store in review_metadata if present.
+            # ---------------------------------------------------------------
+            usage_info = {}
+            try:
+                usage = getattr(response, "usage", None)
+                if usage is not None:
+                    # OpenRouter shape: usage.cost (credits = USD), reasoning tokens under
+                    # completion_tokens_details, and completion_tokens already includes them.
+                    details = getattr(usage, "completion_tokens_details", None)
+                    usage_info = {
+                        "prompt_tokens": getattr(usage, "prompt_tokens", None),
+                        "completion_tokens": getattr(usage, "completion_tokens", None),
+                        "reasoning_tokens": getattr(details, "reasoning_tokens", None) if details is not None else None,
+                        "total_tokens": getattr(usage, "total_tokens", None),
+                        "cost_usd": getattr(usage, "cost", None),
+                    }
+                    print(f"[Stage 5] Usage: {json.dumps(usage_info)}")
+                    if isinstance(review_json.get("review_metadata"), dict):
+                        review_json["review_metadata"]["usage"] = usage_info
+            except Exception as usage_err:
+                # Don't fail the whole review if usage extraction fails
+                print(f"[Stage 5] Warning: Failed to extract usage info: {usage_err}")
+            
             return {
                 "success": True,
                 "review": review_json,
                 "grounding_metadata": grounding,
                 "raw_response_text": raw_text,
                 "model_used": model_name,
+                "usage": usage_info,
                 "error": None,
             }
         
