@@ -1236,7 +1236,7 @@ def _format_review_comment(
         f"**Score:** {score}/10 {score_bar}",
         f"**Badge:** `{badge}`",
         "",
-        f"## Summary",
+        "## Summary",
         summary,
         "",
     ]
