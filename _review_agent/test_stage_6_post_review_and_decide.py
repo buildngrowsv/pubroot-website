@@ -181,6 +181,37 @@ def temp_repo_root():
 # ---------------------------------------------------------------------------
 
 
+
+@pytest.fixture(autouse=True)
+def git_data_commit(monkeypatch):
+    """
+    B23: publication now goes through the Git Data API (blobs, tree, commit, ref)
+    and reads retry markers from issue comments. Record what would be committed
+    and make any unmocked HTTP call fail loudly instead of reaching api.github.com.
+    Returns {"files": {path: content}} for the last committed tree.
+    """
+    def _no_network(*args, **kwargs):
+        raise AssertionError(f"unmocked network call in test: {args[1:3]}")
+    monkeypatch.setattr(requests.Session, "request", _no_network)
+    blobs, last = {}, {"files": {}}
+    def _create_blob(self, content):
+        sha = f"blob-{len(blobs)}"
+        blobs[sha] = content
+        return sha
+    def _create_tree(self, base_tree_sha, tree_items):
+        last["files"] = {item["path"]: blobs[item["sha"]] for item in tree_items}
+        return "tree-sha"
+    monkeypatch.setattr(GitHubAPI, "get_issue_comments", lambda self, n: [])
+    monkeypatch.setattr(GitHubAPI, "get_ref_sha", lambda self, ref: "parent-sha")
+    monkeypatch.setattr(GitHubAPI, "get_commit", lambda self, sha: {"tree": {"sha": "base-tree"}})
+    monkeypatch.setattr(GitHubAPI, "create_blob", _create_blob)
+    monkeypatch.setattr(GitHubAPI, "create_tree", _create_tree)
+    monkeypatch.setattr(GitHubAPI, "create_commit", lambda self, msg, tree, parent: "commit-sha")
+    monkeypatch.setattr(GitHubAPI, "update_ref", lambda self, ref, sha, force=False: None)
+    monkeypatch.setattr("time.sleep", lambda s: None)
+    return last
+
+
 class TestHugoDateStringUtc:
     """
     Tests for the Hugo date formatting function. This was introduced to fix
@@ -710,6 +741,7 @@ class TestAcceptedPaperPublishPath:
         mock_create_branch,
         mock_get_sha,
         temp_repo_root,
+        git_data_commit,
     ):
         """
         Test the full accepted paper workflow when contributors.json is fetched
@@ -739,6 +771,9 @@ class TestAcceptedPaperPublishPath:
         # FIX (Bug B20): Also handle verification reads of agent-index.json with the paper
         # NOTE (Bug B22 fix): Stage 6 now fetches both index files when updating
         def get_file_side_effect(path, branch="main"):
+            if path in git_data_commit["files"]:
+                # Verification reads what the Git Data API commit actually wrote.
+                return git_data_commit["files"][path], "committed-sha"
             if path == "contributors.json":
                 contributors_data = {
                     "contributors": {
@@ -768,9 +803,7 @@ class TestAcceptedPaperPublishPath:
                     "search_endpoint": None,
                     "total_papers": 1,
                     "last_updated": "2026-01-01T00:00:00Z",
-                    "papers": [
-                        {"id": "2026-042", "title": "Test Paper"}  # Paper is in the index
-                    ],
+                    "papers": [],  # live index before publish; the commit must add 2026-042
                 }
                 return json.dumps(index_data), "index_sha_456"
             elif path == "priorroot-index.json":
@@ -1027,6 +1060,7 @@ class TestSecretScrubbingInIndexEntries:
         mock_create_branch,
         mock_get_sha,
         temp_repo_root,
+        git_data_commit,
     ):
         """
         BLOCKER TEST: A fake ghp_ token in the abstract must be scrubbed to
@@ -1108,14 +1142,9 @@ class TestSecretScrubbingInIndexEntries:
         
         # Verify: agent-index.json was updated with a SCRUBBED entry
         # Find the call that updated agent-index.json
-        index_update_calls = [
-            call for call in mock_create_update_sha.call_args_list
-            if "agent-index.json" in str(call)
-        ]
-        assert len(index_update_calls) >= 1
-        
-        # Extract the index content that was uploaded
-        index_content = index_update_calls[0][1]["content"]
+        # B23: agent-index.json is committed in the same Git Data API commit as the paper
+        assert "agent-index.json" in git_data_commit["files"]
+        index_content = git_data_commit["files"]["agent-index.json"]
         index_data = json.loads(index_content)
         
         # Find the paper entry

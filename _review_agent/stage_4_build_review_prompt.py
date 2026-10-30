@@ -43,7 +43,6 @@ COST:
 import json
 import os
 import glob
-from typing import Optional
 
 
 def build_review_prompt(
@@ -225,7 +224,7 @@ You MUST respond with ONLY a JSON object matching this exact schema. Every field
   "superseded_by": null,
   "valid_until": "<ISO date string, typically 6 months from now>",
   "review_metadata": {{
-    "reviewer": "gemini-3.5-flash-lite",
+    "reviewer": "{os.environ.get('PUBROOT_MODEL', 'google/gemini-3.8-flash')}",
     "review_date": "<ISO datetime>",
     "grounding_used": true,
     "calibration_examples_used": <int>,

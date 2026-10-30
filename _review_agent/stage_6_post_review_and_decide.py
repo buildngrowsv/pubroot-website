@@ -44,6 +44,7 @@ import json
 import os
 import base64
 import re
+import time
 from datetime import datetime, timezone, timedelta
 from typing import Optional
 from urllib.parse import quote
@@ -69,7 +70,77 @@ from index_builder import (
 PUBROOT_SITE_BASE = os.environ.get("PUBROOT_SITE_BASE", "https://pubroot.com")
 
 
-def _resolve_publication_paths(gh, parsed: dict, paper_id: str) -> dict:
+def _get_publish_retry_attempt(gh: "GitHubAPI", issue_number: int) -> int:
+    """
+    Get the current publish retry attempt count for an issue.
+    
+    We look for bot comments containing the marker "pubroot:publish-retry-attempt-N"
+    where N is the attempt number. Returns the highest N found, or 0 if none exist.
+    
+    Args:
+        gh: GitHub API wrapper
+        issue_number: Issue number to check
+    
+    Returns:
+        Current retry attempt count (0 if this is the first attempt)
+    """
+    try:
+        comments = gh.get_issue_comments(issue_number)
+        max_attempt = 0
+        
+        for comment in comments:
+            # Only check bot's own comments
+            if comment.get("user", {}).get("login") != "github-actions[bot]":
+                continue
+            
+            body = comment.get("body", "")
+            # Look for marker: pubroot:publish-retry-attempt-N
+            if "pubroot:publish-retry-cap" in body:
+                max_attempt = 0  # a maintainer released the hold; count afresh
+                continue
+            match = re.search(r'pubroot:publish-retry-attempt-(\d+)', body)
+            if match:
+                attempt = int(match.group(1))
+                max_attempt = max(max_attempt, attempt)
+        
+        return max_attempt
+    except Exception as e:
+        # If we can't check, assume 0 (first attempt) to avoid blocking retries
+        print(f"Warning: Failed to check retry attempts: {e}")
+        return 0
+
+
+def _record_publish_retry_attempt(gh: "GitHubAPI", issue_number: int, attempt: int) -> None:
+    """
+    Record a publish retry attempt by posting a comment with a machine-readable marker.
+    
+    The marker is "pubroot:publish-retry-attempt-N" where N is the attempt number.
+    This lets us track retries without relying on labels (which can be removed by users).
+    
+    Args:
+        gh: GitHub API wrapper
+        issue_number: Issue number
+        attempt: Attempt number (1, 2, 3, ...)
+    """
+    try:
+        # Don't post a new comment every time - check if this attempt is already recorded
+        existing_attempt = _get_publish_retry_attempt(gh, issue_number)
+        if existing_attempt >= attempt:
+            # Already recorded
+            return
+        
+        # Post a minimal marker comment
+        gh.post_comment(
+            issue_number,
+            f"<!-- pubroot:publish-retry-attempt-{attempt} -->\n"
+            f"Publication attempt {attempt} of 3..."
+        )
+    except Exception as e:
+        # Don't fail the whole publish if we can't record the attempt
+        print(f"Warning: Failed to record retry attempt: {e}")
+
+
+def _resolve_publication_paths(gh: "GitHubAPI", parsed: dict, paper_id: str) -> dict:
     """
     Compute journal/topic/slug and repo-relative paths for the SEO layout:
     papers/{journal}/{topic}/{slug}/index.md
@@ -248,8 +319,12 @@ def post_review_and_decide(
                 gh.post_comment(issue_number, close_comment)
                 gh.close_issue(issue_number)
             except Exception as close_err:
-                # Don't fail the whole pipeline if closing fails
-                print(f"WARNING: Failed to close accepted issue: {close_err}")
+                # ITEM 3 (Bug B23): If close_issue fails (5xx after retries or network error),
+                # log the error but return success=True. The paper is already published and
+                # visible on the site, so we must NOT label it publish-failed (which would
+                # trigger a re-review). The issue stays open with accepted+published labels;
+                # no picker tier will choose it, so this is safe.
+                print("WARNING: Failed to close accepted issue: {}".format(close_err))
 
             return {
                 "success": True,
@@ -260,6 +335,11 @@ def post_review_and_decide(
         except Exception as e:
             err_txt = str(e)
             errors.append(f"Publication failed after review acceptance: {err_txt}")
+            if "retry cap reached" in err_txt.lower():
+                # Park the issue: every picker tier skips editorial-hold, so no more LLM calls.
+                # Keep publish-failed so that removing editorial-hold puts it back in tier 1.
+                gh.add_labels(issue_number, ["editorial-hold"])
+                return {"success": False, "action_taken": "error", "pr_number": None, "errors": errors}
             try:
                 gh.post_comment(
                     issue_number,
@@ -340,6 +420,19 @@ class GitHubAPI:
         resp.raise_for_status()
         return resp.json()
     
+    def get_issue_comments(self, issue_number: int) -> list:
+        """Get all comments on a GitHub Issue."""
+        url = f"{self.base_url}/issues/{issue_number}/comments"
+        comments, page = [], 1
+        while True:
+            resp = requests.get(url, headers=self.headers, params={"per_page": 100, "page": page}, timeout=30)
+            resp.raise_for_status()
+            batch = resp.json()
+            comments.extend(batch)
+            if len(batch) < 100:
+                return comments
+            page += 1
+    
     def add_labels(self, issue_number: int, labels: list):
         """Add labels to a GitHub Issue."""
         url = f"{self.base_url}/issues/{issue_number}/labels"
@@ -348,11 +441,53 @@ class GitHubAPI:
         return resp.json()
     
     def close_issue(self, issue_number: int):
-        """Close a GitHub Issue."""
+        """
+        Close a GitHub Issue.
+        
+        FIX (Bug B23 item 3): Retry on 5xx errors with bounded backoff.
+        A 5xx from GitHub should not silently skip the close step.
+        """
         url = f"{self.base_url}/issues/{issue_number}"
-        resp = requests.patch(url, headers=self.headers, json={"state": "closed"}, timeout=30)
-        resp.raise_for_status()
-        return resp.json()
+        max_retries = 3
+        backoff_delays = [2, 4, 8]  # seconds
+        
+        for attempt in range(max_retries):
+            try:
+                resp = requests.patch(url, headers=self.headers, json={"state": "closed"}, timeout=30)
+                resp.raise_for_status()
+                return resp.json()
+            except requests.HTTPError as e:
+                status_code = e.response.status_code if e.response is not None else 0
+                
+                # Retry on 5xx server errors
+                if 500 <= status_code < 600:
+                    if attempt < max_retries - 1:
+                        delay = backoff_delays[attempt]
+                        print(f"Warning: GitHub API returned {status_code} on close_issue. "
+                              f"Retrying in {delay}s (attempt {attempt + 1}/{max_retries})...")
+                        time.sleep(delay)
+                        continue
+                    else:
+                        # Max retries exhausted on 5xx
+                        raise Exception(
+                            f"Failed to close issue #{issue_number} after {max_retries} attempts. "
+                            f"GitHub API returned {status_code}. This is a server error, not a client error."
+                        ) from e
+                else:
+                    # Not a 5xx - raise immediately (4xx client errors, etc.)
+                    raise
+            except requests.RequestException as e:
+                # Network errors, timeouts, etc.
+                if attempt < max_retries - 1:
+                    delay = backoff_delays[attempt]
+                    print(f"Warning: Network error on close_issue: {e}. "
+                          f"Retrying in {delay}s (attempt {attempt + 1}/{max_retries})...")
+                    time.sleep(delay)
+                    continue
+                else:
+                    raise Exception(
+                        f"Failed to close issue #{issue_number} after {max_retries} attempts due to network error."
+                    ) from e
     
     def get_default_branch_sha(self) -> str:
         """Get the SHA of the HEAD commit on the default branch (main)."""
@@ -475,6 +610,111 @@ class GitHubAPI:
         decoded = base64.b64decode(content_b64).decode("utf-8")
         return decoded, data.get("sha")
     
+    def create_blob(self, content: str) -> str:
+        """
+        Create a blob via Git Data API.
+        
+        Args:
+            content: File content
+        
+        Returns:
+            Blob SHA
+        """
+        url = f"{self.base_url}/git/blobs"
+        encoded = base64.b64encode(content.encode("utf-8")).decode("ascii")
+        resp = requests.post(url, headers=self.headers, json={
+            "content": encoded,
+            "encoding": "base64"
+        }, timeout=30)
+        resp.raise_for_status()
+        return resp.json()["sha"]
+    
+    def create_tree(self, base_tree_sha: str, tree_items: list) -> str:
+        """
+        Create a tree via Git Data API.
+        
+        Args:
+            base_tree_sha: SHA of the base tree (from the parent commit)
+            tree_items: List of dicts with keys: path, mode, type, sha
+        
+        Returns:
+            Tree SHA
+        """
+        url = f"{self.base_url}/git/trees"
+        resp = requests.post(url, headers=self.headers, json={
+            "base_tree": base_tree_sha,
+            "tree": tree_items
+        }, timeout=30)
+        resp.raise_for_status()
+        return resp.json()["sha"]
+    
+    def create_commit(self, message: str, tree_sha: str, parent_sha: str) -> str:
+        """
+        Create a commit via Git Data API.
+        
+        Args:
+            message: Commit message
+            tree_sha: SHA of the tree
+            parent_sha: SHA of the parent commit
+        
+        Returns:
+            Commit SHA
+        """
+        url = f"{self.base_url}/git/commits"
+        resp = requests.post(url, headers=self.headers, json={
+            "message": message,
+            "tree": tree_sha,
+            "parents": [parent_sha]
+        }, timeout=30)
+        resp.raise_for_status()
+        return resp.json()["sha"]
+    
+    def update_ref(self, ref: str, commit_sha: str, force: bool = False) -> None:
+        """
+        Update a ref via Git Data API.
+        
+        Args:
+            ref: Ref name (e.g., "heads/main")
+            commit_sha: SHA of the commit
+            force: Whether to force update (default False for safety)
+        """
+        url = f"{self.base_url}/git/refs/{ref}"
+        resp = requests.patch(url, headers=self.headers, json={
+            "sha": commit_sha,
+            "force": force
+        }, timeout=30)
+        resp.raise_for_status()
+    
+    def get_ref_sha(self, ref: str) -> str:
+        """
+        Get the SHA of a ref.
+        
+        Args:
+            ref: Ref name (e.g., "heads/main")
+        
+        Returns:
+            Commit SHA
+        """
+        url = f"{self.base_url}/git/refs/{ref}"
+        resp = requests.get(url, headers=self.headers, timeout=30)
+        resp.raise_for_status()
+        return resp.json()["object"]["sha"]
+    
+    def get_commit(self, commit_sha: str) -> dict:
+        """
+        Get commit details via Git Data API.
+        
+        Args:
+            commit_sha: Commit SHA
+        
+        Returns:
+            Commit data dict with tree SHA, parents, etc.
+        """
+        url = f"{self.base_url}/git/commits/{commit_sha}"
+        resp = requests.get(url, headers=self.headers, timeout=30)
+        resp.raise_for_status()
+        return resp.json()
+    
     def create_pull_request(self, title: str, body: str, head: str, base: str = "main") -> int:
         """Create a Pull Request. Returns the PR number."""
         url = f"{self.base_url}/pulls"
@@ -571,11 +811,17 @@ def _upload_publication_files_to_branch(
     Create or update all publication files on the given branch (feature branch
     or main). Idempotent: safe to call again after a failed PR step when
     retrying onto main.
+    
+    FIX (Bug B23 item 8): Use Git Data API to commit all files (paper files + both indexes)
+    in a SINGLE atomic commit. This prevents race conditions where agent-index.json is
+    updated but priorroot-index.json update fails, leaving indexes inconsistent.
 
     LAYOUT (Apr 2026): articles live under papers/{journal}/{topic}/{slug}/index.md
     for SEO-friendly URLs; legacy_aliases is only used by one-off migrations.
     """
     paths = _resolve_publication_paths(gh, parsed_submission, paper_id)
+    
+    # Build all file contents in memory first
     article_content = _build_article_md(
         parsed_submission,
         review,
@@ -586,56 +832,209 @@ def _upload_publication_files_to_branch(
     )
     
     # SECURITY (B1 second pass): Scrub the article content before publishing.
-    # The article includes LLM-generated fields (review summary, strengths, weaknesses)
-    # which could theoretically contain secrets if the LLM was compromised.
     article_content = scrub_all(article_content)
     
-    gh.create_or_update_file(
-        path=paths["article_index_path"],
-        content=article_content,
-        message=f"Publish article: {parsed_submission.get('title', paper_id)}",
-        branch=branch,
-    )
-
     manifest = _build_manifest(
         parsed_submission, review, repo_data, paper_id, now, novelty_results
     )
-    
-    # SECURITY (B1 second pass): Scrub the manifest JSON before committing.
-    # The manifest contains LLM-generated review metadata which could contain secrets.
     manifest_json_str = json.dumps(manifest, indent=2)
     manifest_json_str = scrub_all(manifest_json_str)
     
-    gh.create_or_update_file(
-        path=paths["manifest_path"],
-        content=manifest_json_str,
-        message=f"Add manifest for {paper_id}",
-        branch=branch,
-    )
-
     review_with_grounding = {**review, "grounding_metadata": grounding}
-    
-    # SECURITY (B1 second pass): Scrub the review JSON before committing it publicly.
-    # The LLM generates all fields in the review dict, so any of them could contain
-    # secrets if the LLM was tricked via prompt injection. Scrub the entire JSON.
     review_json_str = json.dumps(review_with_grounding, indent=2)
     review_json_str = scrub_all(review_json_str)
     
-    gh.create_or_update_file(
-        path=f"reviews/{paper_id}/review.json",
-        content=review_json_str,
-        message=f"Add review for {paper_id}",
+    # Commit paper files + both indexes in ONE commit; indexes are recomputed
+    # from the parent commit inside the retry loop.
+    _commit_files_atomically(
+        gh=gh,
         branch=branch,
+        files={
+            paths["article_index_path"]: article_content,
+            paths["manifest_path"]: manifest_json_str,
+            f"reviews/{paper_id}/review.json": review_json_str,
+        },
+        commit_message=f"Publish: {parsed_submission.get('title', paper_id)} ({paper_id})",
+        paper_id=paper_id,
+        compute_indexes=lambda parent_sha: _compute_updated_indexes(
+            gh=gh, branch=parent_sha, paper_id=paper_id, parsed_submission=parsed_submission,
+            review=review, repo_data=repo_data, now=now, paths=paths,
+        ),
     )
-
-    # Update both agent-index.json and priorroot-index.json by merging the new paper entry.
-    # This ensures byte-identical output with the regenerator (Bug B22 fix).
-    _update_indexes(gh, branch, paper_id, parsed_submission, review, repo_data, now, paths)
 
     # Note: contributors.json is no longer committed here because it's now
     # committed directly to main by _update_contributors() before the branch
     # is created. This prevents race conditions and ensures rejection stats
     # are also persisted (Bug B13 fix).
+
+
+def _compute_updated_indexes(
+    gh: GitHubAPI,
+    branch: str,
+    paper_id: str,
+    parsed_submission: dict,
+    review: dict,
+    repo_data: dict,
+    now: datetime,
+    paths: dict,
+) -> tuple[str, str]:
+    """
+    Compute the updated agent-index.json and priorroot-index.json contents.
+    
+    This is extracted from _update_indexes so we can compute both index contents
+    before committing anything (needed for atomic Git Data API commit).
+    
+    Returns:
+        tuple[str, str]: (agent_index_content, priorroot_index_content)
+    """
+    published_date = now.astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    
+    # Build scrubbed entry (same as _update_indexes)
+    scrubbed_title = scrub_all(str(parsed_submission.get("title", "Untitled")))
+    scrubbed_author = scrub_all(str(parsed_submission.get("author", "unknown")))
+    scrubbed_abstract = scrub_all(str(parsed_submission.get("abstract", "")))
+    scrubbed_supporting_repo = None
+    if parsed_submission.get("supporting_repo"):
+        scrubbed_supporting_repo = scrub_all(str(parsed_submission["supporting_repo"]))
+    scrubbed_ai_attr = None
+    if parsed_submission.get("ai_tooling_attribution"):
+        scrubbed_ai_attr = scrub_all(str(parsed_submission["ai_tooling_attribution"]))
+    
+    new_entry = build_index_entry_from_data(
+        paper_id=paper_id,
+        title=scrubbed_title,
+        author=scrubbed_author,
+        category=parsed_submission.get("category", "general-technical"),
+        abstract=scrubbed_abstract,
+        published_date=published_date,
+        review_score=review.get("score"),
+        badge=repo_data.get("badge_type", "text_only"),
+        article_path=paths["article_index_path"],
+        reader_url=paths["reader_url"],
+        review_path=f"reviews/{paper_id}/review.json",
+        supporting_repo=scrubbed_supporting_repo,
+        ai_tooling_attribution=scrubbed_ai_attr,
+    )
+    
+    # Fetch live indexes
+    is_priorart = new_entry["category"].startswith("prior-art/")
+    target_index_file = "priorroot-index.json" if is_priorart else "agent-index.json"
+    other_index_file = "agent-index.json" if is_priorart else "priorroot-index.json"
+    
+    target_index_json, _ = gh.get_file_content(target_index_file, branch=branch)
+    target_index = json.loads(target_index_json)
+    
+    other_index_json, _ = gh.get_file_content(other_index_file, branch=branch)
+    other_index = json.loads(other_index_json)
+    
+    # Merge new entry into target index
+    merge_entry_into_index(target_index, new_entry)
+    
+    # Apply selection and sort to both indexes
+    all_entries = target_index["papers"] + other_index["papers"]
+    apply_selection_and_sort(target_index, all_entries)
+    apply_selection_and_sort(other_index, all_entries)
+    
+    # Serialize both indexes
+    agent_index_content = serialize_index(target_index if not is_priorart else other_index)
+    priorroot_index_content = serialize_index(target_index if is_priorart else other_index)
+    
+    return agent_index_content, priorroot_index_content
+
+
+def _commit_files_atomically(
+    gh: GitHubAPI,
+    branch: str,
+    files: dict,
+    commit_message: str,
+    paper_id: str,
+    compute_indexes=None,
+) -> None:
+    """
+    Commit multiple files in a SINGLE atomic commit using Git Data API.
+    
+    FIX (Bug B23 item 8): This ensures all files (paper files + both indexes) land
+    in exactly one commit. If any file fails, the whole commit fails. Retries on
+    non-fast-forward with bounded backoff, then raises to trigger publish-failed.
+    
+    Args:
+        gh: GitHub API wrapper
+        branch: Target branch (e.g., "main" or "paper/2026-042")
+        files: Dict of {path: content} for all files to commit
+        commit_message: Commit message
+        paper_id: Paper ID (for error messages)
+    """
+    max_retries = 3
+    backoff_delays = [2, 4, 8]  # seconds
+    
+    for attempt in range(max_retries):
+        try:
+            # Get current branch state
+            ref = f"heads/{branch}"
+            parent_sha = gh.get_ref_sha(ref)
+            parent_commit = gh.get_commit(parent_sha)
+            base_tree_sha = parent_commit["tree"]["sha"]
+            
+            # Recompute both indexes from the commit we are about to parent on, so a
+            # retry after a non-fast-forward never writes a stale index (lost update).
+            all_files = dict(files)
+            if compute_indexes is not None:
+                all_files["agent-index.json"], all_files["priorroot-index.json"] = compute_indexes(parent_sha)
+
+            # Create blobs for all files
+            tree_items = []
+            for path, content in all_files.items():
+                blob_sha = gh.create_blob(content)
+                tree_items.append({
+                    "path": path,
+                    "mode": "100644",  # Regular file
+                    "type": "blob",
+                    "sha": blob_sha
+                })
+            
+            # Create tree with all files
+            tree_sha = gh.create_tree(base_tree_sha, tree_items)
+            
+            # Create commit
+            commit_sha = gh.create_commit(commit_message, tree_sha, parent_sha)
+            
+            # Update ref with force=false (fail on non-fast-forward)
+            gh.update_ref(ref, commit_sha, force=False)
+            
+            print("Successfully committed {} files in atomic commit {}".format(len(all_files), commit_sha[:7]))
+            return
+            
+        except requests.HTTPError as e:
+            # Check for non-fast-forward (409 Conflict or 422 Unprocessable Entity)
+            status_code = e.response.status_code if e.response is not None else 0
+            if status_code in (409, 422):
+                if attempt < max_retries - 1:
+                    delay = backoff_delays[attempt]
+                    print(f"Non-fast-forward on atomic commit (attempt {attempt + 1}/{max_retries}). "
+                          f"Retrying after {delay}s backoff...")
+                    time.sleep(delay)
+                    continue
+                else:
+                    # Max retries exhausted - fail into publish-failed
+                    raise Exception(
+                        f"Atomic commit failed after {max_retries} attempts due to conflicts. "
+                        f"Another writer modified the branch between read and write. "
+                        f"Paper {paper_id} will be retried by the cron job."
+                    ) from e
+            else:
+                # Other HTTP error - propagate immediately
+                raise
+        except Exception as e:
+            # Other errors (network, etc.) - retry with backoff
+            if attempt < max_retries - 1:
+                delay = backoff_delays[attempt]
+                print(f"Atomic commit error: {e}. Retrying after {delay}s (attempt {attempt + 1}/{max_retries})...")
+                time.sleep(delay)
+                continue
+            else:
+                raise Exception(
+                    f"Atomic commit failed after {max_retries} attempts: {e}"
+                ) from e
 
 
 def _handle_acceptance(
@@ -658,6 +1057,9 @@ def _handle_acceptance(
     written and the index was updated. If the publish is a no-op (existing path,
     slug collision, any silent failure), it raises an exception so stage 6 fails
     loudly with a publish-failed label and a non-zero exit code.
+    
+    FIX (Bug B23 item 2): Check retry attempt count. If the paper file exists but
+    isn't in the index after 3 attempts, give up and leave for human review.
 
     Returns:
         PR number if merged via PR, or None if published via direct commits to main
@@ -668,6 +1070,34 @@ def _handle_acceptance(
                    index was not updated (indicates a silent collision or skip).
     """
     now = datetime.now(timezone.utc)
+    
+    # FIX (Bug B23 item 2): Check retry attempt count before starting
+    # Track retries via a comment marker "pubroot:publish-retry-attempt-N"
+    # If we've already tried 3 times, give up and leave for human review
+    MAX_RETRY_ATTEMPTS = 3
+    retry_attempt = _get_publish_retry_attempt(gh, issue_number)
+    
+    if retry_attempt >= MAX_RETRY_ATTEMPTS:
+        # Cap reached - post a comment and give up
+        gh.post_comment(
+            issue_number,
+            f"<!-- pubroot:publish-retry-cap -->\n# Publication Retry Cap Reached\n\n"
+            f"**Paper ID:** `{paper_id}`\n\n"
+            f"This issue has been retried {retry_attempt} times, but publication still fails. "
+            f"The paper may have a path collision, index conflict, or other issue that "
+            f"requires human intervention.\n\n"
+            f"A maintainer should investigate and either:\n"
+            f"1. Fix the underlying issue and remove the `editorial-hold` label to retry, or\n"
+            f"2. Close this issue with an explanation if it cannot be published.\n\n"
+            f"Automatic retries have been stopped to prevent infinite loops."
+        )
+        raise Exception(
+            f"Publication retry cap reached ({MAX_RETRY_ATTEMPTS} attempts). "
+            f"Leaving for human review."
+        )
+    
+    # Record this attempt (increment counter)
+    _record_publish_retry_attempt(gh, issue_number, retry_attempt + 1)
     branch_name = f"paper/{paper_id}"
 
     #  FIX (Bug B20 root cause): Check if a file exists at the target path.
@@ -700,7 +1130,32 @@ def _handle_acceptance(
             
             if existing_paper_id == paper_id:
                 # Same paper_id: idempotent retry after successful publish
-                print(f"Idempotent retry detected: existing paper_id {existing_paper_id} matches.")
+                # FIX (Bug B23 item 9): Don't return early - re-run index update and
+                # verification to repair a half-failed publish (article exists but indexes
+                # may not be updated).
+                print("Idempotent retry detected: existing paper_id {} matches.".format(existing_paper_id))
+                print("Re-running index update and verification to repair any half-failed state...")
+                
+                # Re-run index update (safe to do multiple times - it's a merge operation)
+                _paths_probe = _resolve_publication_paths(gh, parsed_submission, paper_id)
+                _m = re.search(r'^date:\s*"?(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z)"?\s*$', article_content, re.M)
+                if not _m:
+                    raise ValueError("idempotent retry: existing article has no parseable date: frontmatter")
+                heal_now = datetime.strptime(_m.group(1), "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
+                _update_indexes(
+                    gh=gh,
+                    branch="main",
+                    paper_id=paper_id,
+                    parsed_submission=parsed_submission,
+                    review=review,
+                    repo_data=repo_data,
+                    now=heal_now,
+                    paths=_paths_probe,
+                )
+                
+                # Verify the publish succeeded (indexes updated, article exists)
+                _verify_publish_succeeded_with_retry(gh, _paths_probe, paper_id, "after idempotent retry")
+                
                 return None
             elif existing_paper_id:
                 # Different paper_id: duplicate submission, same slug (Bug B20)

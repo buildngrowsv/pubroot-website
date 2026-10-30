@@ -595,7 +595,17 @@ def test_dedup_no_self_matches_in_real_index():
     import os
     from stage_1_parse_and_filter import _check_for_duplicates
     
-    repo_root = os.environ.get("GITHUB_WORKSPACE", os.getcwd())
+    # Find repo root (works from both repo root and _review_agent/)
+    repo_root = os.environ.get("GITHUB_WORKSPACE")
+    if not repo_root:
+        # If not in CI, find repo root by looking for agent-index.json
+        cwd = os.getcwd()
+        if os.path.exists(os.path.join(cwd, "agent-index.json")):
+            repo_root = cwd
+        elif os.path.exists(os.path.join(cwd, "..", "agent-index.json")):
+            repo_root = os.path.abspath(os.path.join(cwd, ".."))
+        else:
+            repo_root = cwd
     
     # Load the real index
     index_path = os.path.join(repo_root, "agent-index.json")
@@ -683,11 +693,11 @@ def test_dedup_still_flags_issue_60_vs_2026_067():
         assert "2026-067" in dup_error, (
             f"Expected duplicate error to mention paper 2026-067, got: {dup_error}"
         )
-        print(f"✓ Issue #60 correctly flagged against 2026-067")
+        print("✓ Issue #60 correctly flagged against 2026-067")
     else:
         # This might happen if 2026-067 doesn't exist in the test index yet
-        print(f"⚠ Warning: No duplicate detected for issue #60. This is expected if "
-              f"2026-067 is not in the index yet.")
+        print("⚠ Warning: No duplicate detected for issue #60. This is expected if "
+              "2026-067 is not in the index yet.")
 
 
 
