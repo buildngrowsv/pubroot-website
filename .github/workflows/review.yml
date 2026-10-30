@@ -230,9 +230,23 @@ jobs:
               done
             fi
 
-            # TIER 3: unreviewed submissions (no bot review comment)
-            # These are issues with the submission label but no bot review comment.
-            # Exclude terminal labels, editorial-hold, apply gating.
+            # TIER 3: unreviewed submissions (newest bot comment missing OR is error)
+            # These are issues with the submission label but either:
+            #   - No bot review comment at all, OR
+            #   - The newest bot comment is an error comment (failed review)
+            #
+            # FIX (Bug B20 part 3): Restore bot-comment check, but make it smarter.
+            # Check if the NEWEST bot comment is a review or an error. If it's an
+            # error, the issue is eligible again (even if review-error label was
+            # removed). This prevents repeat OpenRouter reviews after a non-error
+            # comment exists.
+            #
+            # Exclude terminal labels: accepted, rejected, validation-failed, published,
+            # duplicate. Also exclude publish-failed (tier 1), review-error, pending-review,
+            # and editorial-hold.
+            #
+            # NOTE: We check labels first to avoid expensive comment API calls. Only
+            # issues that pass the label filter check for bot comments.
             if [ -z "$ISSUE" ]; then
               echo "Tier 3: Checking unreviewed submissions..."
               CANDIDATES=$(gh issue list \
@@ -241,21 +255,29 @@ jobs:
                 --label "submission" \
                 --limit 500 \
                 --json number,labels \
-                --jq 'map(select(.labels | map(.name) | (contains(["accepted"]) or contains(["rejected"]) or contains(["validation-failed"]) or contains(["publish-failed"]) or contains(["review-error"]) or contains(["editorial-hold"])) | not)) | .[].number' \
+                --jq 'map(select(.labels | map(.name) | (contains(["accepted"]) or contains(["rejected"]) or contains(["validation-failed"]) or contains(["publish-failed"]) or contains(["review-error"]) or contains(["pending-review"]) or contains(["editorial-hold"]) or contains(["published"]) or contains(["duplicate"])) | not)) | .[].number' \
                 2>/dev/null || true)
               
               for C in $CANDIDATES; do
                 python _review_agent/author_gating.py check "$C" >/dev/null 2>&1 || { echo "  #$C skipped (gated)"; continue; }
                 
-                # Check if this issue has a bot review comment
-                HAS_REVIEW=$(gh api repos/"$GITHUB_REPOSITORY"/issues/"$C"/comments \
-                  --jq 'map(select(.user.login == "github-actions[bot]" and (.body | contains("# AI Peer Review") or contains("Submission Validation Failed")))) | length' \
-                  2>/dev/null || echo "0")
+                # Check the newest bot comment
+                # FIX (Bug B20 part 6): Paginate comments fetch and get the actual newest
+                # With --paginate --jq, jq runs once per page, so we need to collect all
+                # bot comments across pages and take the last one
+                NEWEST_BOT_COMMENT=$(gh api "repos/$GITHUB_REPOSITORY/issues/$C/comments" --paginate \
+                  --jq '.[] | select(.user.login == "github-actions[bot]") | {b: .body} | @json' 2>/dev/null \
+                  | tail -n 1 | jq -r '.b // empty' 2>/dev/null || echo "")
                 
-                if [ "$HAS_REVIEW" = "0" ]; then
+                # Issue is eligible if:
+                # 1. No bot comment at all (empty string), OR
+                # 2. Newest comment is an error (contains "# AI Peer Review — Error", "Submission Validation Failed", or "# Publication step failed")
+                if [ -z "$NEWEST_BOT_COMMENT" ] || echo "$NEWEST_BOT_COMMENT" | grep -q "# AI Peer Review — Error\|Submission Validation Failed\|# Publication step failed"; then
                   ISSUE="$C"
                   echo "  Found approved unreviewed issue: #$C"
                   break
+                else
+                  echo "  #$C skipped (has non-error bot review)"
                 fi
               done
             fi
@@ -396,6 +418,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          gh label create "duplicate" --color "ededed" --description "Duplicate of an existing published paper" 2>/dev/null || true
           gh label create "publish-failed" --color "d73a4a" --description "Review passed; git publish step failed — safe to retry" 2>/dev/null || true
           gh label create "approved-for-review" --color "0e8a16" --description "Maintainer-approved submission ready for AI review" 2>/dev/null || true
           gh label create "editorial-hold" --color "b60205" --description "Submission on hold pending editorial decision" 2>/dev/null || true

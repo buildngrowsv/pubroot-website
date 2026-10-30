@@ -120,7 +120,8 @@ def has_bot_review_comment(token: str, repo: str, issue_number: int) -> bool:
 def pick_next(
     issues: List[Dict], 
     gate_fn: Callable[[Dict], Dict], 
-    has_bot_review_fn: Callable[[int], bool]
+    repo: str = "buildngrowsv/pubroot-website",
+    token: str = "",
 ) -> Tuple[Optional[int], List[Tuple[int, str]]]:
     """
     Implement the three-tier picker logic from review.yml.
@@ -186,14 +187,26 @@ def pick_next(
             return candidate["number"], skipped
         skipped.append((candidate["number"], f"gated: {approval['reason']}"))
     
-    # TIER 3: unreviewed submissions
+    # TIER 3: unreviewed submissions (newest bot comment missing OR is error)
+    # FIX (Bug B20 part 3): Check the NEWEST bot comment. Issue is eligible if:
+    #   1. No bot comment at all, OR
+    #   2. Newest bot comment is an error (review failed, publish failed, etc.)
+    # This prevents repeat OpenRouter reviews after a successful non-error review.
+    #
+    # Exclude terminal labels: accepted, rejected, validation-failed, published, duplicate
+    # Also exclude publish-failed (tier 1), review-error, pending-review, editorial-hold
     tier3_candidates = []
     for issue in issues:
         labels = [lbl["name"] for lbl in issue.get("labels", [])]
-        if "submission" in labels and not is_terminal(labels) and not is_excluded(labels) and "publish-failed" not in labels:
-            # Check if has priority label (would have been handled in tier 2)
-            if not any(lbl.startswith("priority:") for lbl in labels):
-                tier3_candidates.append(issue)
+        terminal_or_excluded = [
+            "accepted", "rejected", "validation-failed", "published", "duplicate",
+            "publish-failed", "review-error", "pending-review", "editorial-hold"
+        ]
+        
+        if ("submission" in labels 
+            and not any(lbl in labels for lbl in terminal_or_excluded)
+            and not any(lbl.startswith("priority:") for lbl in labels)):
+            tier3_candidates.append(issue)
     
     for candidate in tier3_candidates:
         approval = gate_fn(candidate)
@@ -201,9 +214,58 @@ def pick_next(
             skipped.append((candidate["number"], f"gated: {approval['reason']}"))
             continue
         
-        # Check if has bot review comment
-        if not has_bot_review_fn(candidate["number"]):
-            return candidate["number"], skipped
+        # Check the newest bot comment
+        # FIX (Bug B20 part 6): Paginate through ALL pages to get the newest comment
+        all_comments = []
+        page = 1
+        while True:
+            comments_resp = requests.get(
+                f"https://api.github.com/repos/{repo}/issues/{candidate['number']}/comments",
+                headers={"Authorization": f"Bearer {token}", "Accept": "application/vnd.github+json"},
+                params={"per_page": 100, "page": page},
+                timeout=30
+            )
+            if comments_resp.status_code != 200:
+                # API error: skip this candidate
+                skipped.append((candidate["number"], f"API error: {comments_resp.status_code}"))
+                break
+            
+            page_comments = comments_resp.json()
+            if not page_comments:
+                # No more pages
+                break
+            
+            all_comments.extend(page_comments)
+            page += 1
+        
+        if comments_resp.status_code == 200:
+            bot_comments = [
+                c for c in all_comments
+                if c.get("user", {}).get("login") == "github-actions[bot]"
+            ]
+            
+            if bot_comments:
+                # Get the newest bot comment (last one chronologically)
+                newest_comment = bot_comments[-1]
+                body = newest_comment.get("body", "")
+                
+                # Check if it's an error comment
+                is_error = (
+                    "# AI Peer Review — Error" in body
+                    or "Submission Validation Failed" in body
+                    or "# Publication step failed" in body
+                )
+                
+                if is_error:
+                    # Eligible: newest comment is an error
+                    return candidate["number"], skipped
+                else:
+                    # Has non-error review, skip
+                    skipped.append((candidate["number"], "has non-error bot review"))
+                    continue
+            else:
+                # No bot comments at all: eligible
+                return candidate["number"], skipped
     
     # TIER 4: 0-label fallback
     tier4_candidates = []
@@ -355,9 +417,8 @@ def main():
     print()
     
     gate_fn = lambda issue: check_approval(token, issue)
-    has_review_fn = lambda num: has_bot_review_comment(token, "buildngrowsv/pubroot-website", num)
     
-    picked, skipped = pick_next(issues, gate_fn, has_review_fn)
+    picked, skipped = pick_next(issues, gate_fn, repo="buildngrowsv/pubroot-website", token=token)
     
     if picked:
         picked_issue = next((iss for iss in issues if iss["number"] == picked), None)

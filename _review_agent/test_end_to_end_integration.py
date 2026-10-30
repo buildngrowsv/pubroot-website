@@ -233,6 +233,26 @@ def test_end_to_end_analyzer_to_reviewer(mock_files):
         mock_gh_instance = MagicMock()
         mock_gh_instance.post_comment.return_value = None
         mock_gh_instance.add_labels.return_value = None
+        mock_gh_instance.close_issue.return_value = None
+        
+        # FIX: Mock path_exists with side_effect to handle both collision check and verification
+        # First call is collision check (should return False), subsequent calls are verification (should return True)
+        path_exists_calls = [False, True, True, True]  # First False for collision check, then True for verifications
+        mock_gh_instance.path_exists.side_effect = path_exists_calls
+        
+        # FIX: Mock get_file_content to return valid index JSON for verification
+        # The publish verification checks if paper_id is in the index
+        mock_index_json = json.dumps({
+            "papers": [
+                {"id": "2026-121", "title": "Test Paper", "category": "ai/llm-benchmarks"}
+            ]
+        })
+        mock_gh_instance.get_file_content.return_value = (mock_index_json, "sha")
+        
+        # Mock other methods used by publisher
+        mock_gh_instance.create_or_update_file.return_value = {"commit": {"sha": "abc123"}}
+        mock_gh_instance.create_pr.return_value = None
+        
         mock_github_api_class.return_value = mock_gh_instance
         
         # ===================================================================

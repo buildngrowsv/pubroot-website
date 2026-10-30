@@ -245,21 +245,44 @@ def run_review_pipeline(issue_number: int) -> dict:
     
     if not stage1_result["valid"]:
         # Submission failed basic validation — post errors and stop
+        # FIX (Bug B20 part a): Check if the errors include a duplicate detection.
+        # If so, label as "duplicate" instead of "validation-failed" and close.
+        # Duplicates are labeled differently to distinguish them from format errors.
+        errors = stage1_result["errors"]
+        is_duplicate = any(
+            "DUPLICATE DETECTED" in e or "SLUG COLLISION" in e or "NEAR-DUPLICATE DETECTED" in e
+            for e in errors
+        )
+        
         error_msg = "Submission failed validation:\n" + "\n".join(
-            f"- {e}" for e in stage1_result["errors"]
+            f"- {e}" for e in errors
         )
         print(f"\nREJECTED at Stage 1: {error_msg}")
         
-        gh.post_comment(issue_number, (
-            f"# Submission Validation Failed\n\n"
-            f"Your submission could not be processed due to the following issues:\n\n"
-            + "\n".join(f"- {e}" for e in stage1_result["errors"])
-            + "\n\nPlease fix these issues and resubmit."
-        ))
-        gh.add_labels(issue_number, ["validation-failed"])
+        comment_header = "# Duplicate Submission Detected\n\n" if is_duplicate else "# Submission Validation Failed\n\n"
+        comment_body = (
+            comment_header
+            + "Your submission could not be processed due to the following issues:\n\n"
+            + "\n".join(f"- {e}" for e in errors)
+        )
+        
+        if is_duplicate:
+            # Close duplicates immediately
+            comment_body += (
+                "\n\n**Note**: If this is a genuine revision or update to the existing paper, "
+                "please follow the revision process."
+            )
+            gh.post_comment(issue_number, comment_body)
+            gh.add_labels(issue_number, ["duplicate"])
+            gh.close_issue(issue_number)
+        else:
+            # Validation failures are not closed (maintainer may want to help fix)
+            comment_body += "\n\nPlease fix these issues and resubmit."
+            gh.post_comment(issue_number, comment_body)
+            gh.add_labels(issue_number, ["validation-failed"])
         
         return {"success": True, "action": "filtered", "paper_id": paper_id,
-                "score": None, "errors": stage1_result["errors"]}
+                "score": None, "errors": errors}
 
     # -----------------------------------------------------------------------
     # PAYMENT VERIFICATION (between Stage 1 and Stage 2)

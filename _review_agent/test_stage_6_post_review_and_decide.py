@@ -753,13 +753,28 @@ class TestAcceptedPaperPublishPath:
         Test the full accepted paper workflow when contributors.json is fetched
         from the GitHub API (the normal happy path). This ensures contributors_path
         is never referenced when the API fetch succeeds, preventing the UnboundLocalError.
+        
+        FIX (Bug B20): This test now handles the publish verification that checks
+        path_exists and index content after files are written.
         """
         # Setup: Mock GitHub API responses for a successful publish
         mock_get_sha.return_value = "abc123sha"
-        mock_path_exists.return_value = False  # Paper doesn't exist yet
+        
+        # FIX (Bug B20): path_exists is called multiple times:
+        # 1. Initial check: paper doesn't exist yet (return False to trigger publish)
+        # 2. Verification check: paper exists after write (return True to pass verification)
+        path_exists_calls = []
+        def path_exists_side_effect(path, ref="main"):
+            path_exists_calls.append((path, ref))
+            # Return False for initial existence checks, True for verification checks
+            if len(path_exists_calls) <= 2:
+                return False  # Initial checks for idempotent retry
+            return True  # Verification checks after publish
+        mock_path_exists.side_effect = path_exists_side_effect
         
         # Mock get_file_content to return fresh contributors.json and agent-index.json
         # This is the key: when this succeeds, contributors_path should NEVER be used
+        # FIX (Bug B20): Also handle verification reads of agent-index.json with the paper
         def get_file_side_effect(path, branch="main"):
             if path == "contributors.json":
                 contributors_data = {
@@ -782,11 +797,14 @@ class TestAcceptedPaperPublishPath:
                 }
                 return json.dumps(contributors_data), "contributors_sha_123"
             elif path == "agent-index.json":
+                # FIX (Bug B20): Return index WITH the paper for verification reads
                 index_data = {
                     "schema_version": "1.0",
-                    "total_papers": 0,
+                    "total_papers": 1,
                     "last_updated": "2026-01-01T00:00:00Z",
-                    "papers": [],
+                    "papers": [
+                        {"id": "2026-042", "title": "Test Paper"}  # Paper is in the index
+                    ],
                 }
                 return json.dumps(index_data), "index_sha_456"
             else:

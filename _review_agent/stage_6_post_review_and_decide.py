@@ -486,10 +486,28 @@ class GitHubAPI:
         return resp.json()
 
     def path_exists(self, path: str, ref: str = "main") -> bool:
-        """Return True if a file exists at path on the given ref (branch or SHA)."""
+        """
+        Return True if a file exists at path on the given ref (branch or SHA).
+        
+        Returns:
+            True if the file exists (HTTP 200)
+            False if the file does not exist (HTTP 404)
+        
+        Raises:
+            requests.HTTPError: If the API returns any other status code (5xx, rate limit, etc.)
+                                to prevent silently skipping collision checks.
+        """
         url = f"{self.base_url}/contents/{path}"
         resp = requests.get(url, headers=self.headers, params={"ref": ref}, timeout=30)
-        return resp.status_code == 200
+        
+        if resp.status_code == 200:
+            return True
+        elif resp.status_code == 404:
+            return False
+        else:
+            # FIX (Bug B20 part 4): Raise on 5xx, rate limits, etc. instead of returning False
+            # Returning False on 5xx would skip the collision check and allow an overwrite
+            resp.raise_for_status()
 
     def remove_label(self, issue_number: int, label_name: str) -> None:
         """Remove a label from an issue (404 if label not on issue is OK)."""
@@ -636,20 +654,82 @@ def _handle_acceptance(
     Publish accepted work: bump contributor stats locally, upload files, then
     merge via PR. If the PR path fails (403, merge rules, etc.), fall back to
     committing the same files directly to main so the site still updates.
+    
+    FIX (Bug B20 part b): This function now verifies that files were actually
+    written and the index was updated. If the publish is a no-op (existing path,
+    slug collision, any silent failure), it raises an exception so stage 6 fails
+    loudly with a publish-failed label and a non-zero exit code.
 
     Returns:
         PR number if merged via PR, or None if published via direct commits to main
         or if the article was already on main (idempotent retry).
+    
+    Raises:
+        Exception: If the publish step completes but no files were written or the
+                   index was not updated (indicates a silent collision or skip).
     """
     now = datetime.now(timezone.utc)
     branch_name = f"paper/{paper_id}"
 
-    # Idempotent retries (e.g. cron re-runs after a publish failure): if the article
-    # is already on main (new SEO path or legacy flat path), skip duplicate publish.
-    if gh.path_exists(f"papers/{paper_id}/article.md", "main"):
-        return None
+    #  FIX (Bug B20 root cause): Check if a file exists at the target path.
+    # If it does, read its frontmatter to extract the paper_id. If the paper_id
+    # matches this issue's paper_id, it's an idempotent retry (safe no-op).
+    # If the paper_id DIFFERS, it's a duplicate submission that resolved to the
+    # FIX (Bug B20 part 4): Check if target path exists AND extract its paper_id.
+    # If the file exists and has a DIFFERENT paper_id, this is a path collision
+    # (e.g., issue #60 vs 2026-067). RAISE directly to trigger publish-failed.
+    # The caller (post_review_and_decide) will post ONE comment and add the label.
+    # Don't post a comment here - that causes double failure comments.
+    # -------------------------------------------------------------------------------
     _paths_probe = _resolve_publication_paths(gh, parsed_submission, paper_id)
-    if gh.path_exists(_paths_probe["article_index_path"], "main"):
+    article_path = _paths_probe["article_index_path"]
+    
+    # Check for idempotent retry or path collision
+    if gh.path_exists(article_path, "main"):
+        # File exists — try to read it to check paper_id
+        print(f"WARNING: Target path exists: {article_path}. Checking paper_id...")
+        
+        try:
+            content_result = gh.get_file_content(article_path, "main")
+            # Handle case where get_file_content returns empty or malformed result
+            if not content_result or len(content_result) != 2:
+                # Cannot verify — treat as collision for safety
+                raise ValueError(f"get_file_content returned malformed result: {content_result}")
+            
+            article_content, _ = content_result
+            existing_paper_id = _extract_paper_id_from_frontmatter(article_content)
+            
+            if existing_paper_id == paper_id:
+                # Same paper_id: idempotent retry after successful publish
+                print(f"Idempotent retry detected: existing paper_id {existing_paper_id} matches.")
+                return None
+            elif existing_paper_id:
+                # Different paper_id: duplicate submission, same slug (Bug B20)
+                raise Exception(
+                    f"PUBLISH COLLISION: This submission resolves to the same path as "
+                    f"existing paper **{existing_paper_id}**, but has a different paper ID "
+                    f"({paper_id}). This indicates a duplicate or near-duplicate submission "
+                    f"that was not caught by the deduplication check. "
+                    f"Path: `{article_path}`"
+                )
+            else:
+                # existing_paper_id is None (can't extract) — fail safe, treat as collision
+                raise Exception(
+                    f"Path collision: {article_path} exists but paper_id cannot be extracted. "
+                    f"This issue is {paper_id}. Cannot safely overwrite."
+                )
+        except Exception as e:
+            # If we can't read the file or extract paper_id, fail safe
+            if "PUBLISH COLLISION" in str(e) or "Path collision" in str(e):
+                raise  # Re-raise our own collision exception
+            # Other errors (API failures, etc.) - fail safe, treat as collision
+            raise Exception(
+                f"Path collision: {article_path} exists but verification failed: {e}. "
+                f"Cannot safely overwrite."
+            )
+    
+    # Also check legacy flat path for idempotent retries
+    if gh.path_exists(f"papers/{paper_id}/article.md", "main"):
         return None
 
     # Contributor stats must be reflected in contributors.json before upload.
@@ -717,13 +797,19 @@ def _handle_acceptance(
             repo_root,
             now,
         )
-
+    
     try:
-        return _try_pr_path()
+        pr_number = _try_pr_path()
     except Exception:
         gh.delete_branch_if_exists(branch_name)
         _direct_main_path()
-        return None
+        pr_number = None
+    
+    # FIX (Bug B20): Verify publish succeeded AFTER the final publish path,
+    # with retry for eventual consistency. Never write twice.
+    _verify_publish_succeeded_with_retry(gh, _paths_probe, paper_id, "after publish")
+    
+    return pr_number
 
 
 def _build_article_md(
@@ -1263,3 +1349,151 @@ def _score_to_bar(score: float) -> str:
     filled = int(round(score))
     empty = 10 - filled
     return "[" + "|" * filled + "." * empty + "]"
+
+
+def _extract_paper_id_from_frontmatter(article_content: str) -> Optional[str]:
+    """
+    Extract the paper_id from Hugo frontmatter.
+    
+    FIX (Bug B20 root cause): Read the paper_id field from the existing file
+    to detect duplicate submissions that resolved to the same slug.
+    
+    Returns:
+        The paper_id string, or None if not found.
+    """
+    # Frontmatter is between --- delimiters
+    if not article_content.startswith("---"):
+        return None
+    
+    # Find the closing ---
+    end_pos = article_content.find("\n---\n", 4)
+    if end_pos == -1:
+        return None
+    
+    frontmatter = article_content[4:end_pos]
+    
+    # Look for paper_id: line
+    match = re.search(r'^paper_id:\s*["\']?([^"\'\n]+)["\']?', frontmatter, re.MULTILINE)
+    if match:
+        return match.group(1).strip()
+    
+    return None
+
+
+def _verify_publish_succeeded_with_retry(
+    gh: GitHubAPI,
+    paths: dict,
+    paper_id: str,
+    context: str,
+    max_retries: int = 3,
+) -> None:
+    """
+    Verify publication with retry for eventual consistency.
+    
+    FIX (Bug B20): GitHub API may have eventual consistency delays after PR merge.
+    Retry up to 3 times with exponential backoff before failing.
+    
+    Args:
+        gh: GitHub API wrapper
+        paths: Publication paths dict
+        paper_id: The paper ID
+        context: Description for error messages
+        max_retries: Maximum retry attempts (default 3)
+    
+    Raises:
+        Exception: If verification fails after all retries
+    """
+    import time
+    
+    for attempt in range(max_retries):
+        try:
+            _verify_publish_succeeded(gh, paths, paper_id, context)
+            return  # Success
+        except Exception as e:
+            if attempt < max_retries - 1:
+                wait_seconds = 2 ** attempt  # Exponential backoff: 1s, 2s, 4s
+                print(f"Verification attempt {attempt + 1} failed, retrying in {wait_seconds}s: {e}")
+                time.sleep(wait_seconds)
+            else:
+                # Final attempt failed
+                raise
+
+
+def _verify_publish_succeeded(
+    gh: GitHubAPI,
+    paths: dict,
+    paper_id: str,
+    context: str,
+) -> None:
+    """
+    Verify that publication actually wrote files and updated the index (Bug B20 fix).
+    
+    FIX HISTORY:
+        Issue #60 was a duplicate of 2026-067. Stage 6 ran _upload_publication_files_to_branch,
+        but the article path already existed, so the GitHub API silently skipped the write
+        (returning 200 OK with no content change). The PR merged, labels were added, issue
+        was closed, but NO new files were created and agent-index.json was NOT updated.
+        
+        This function detects that failure case by checking that:
+        1. The article file exists on main after the publish operation
+        2. The paper_id appears in agent-index.json or priorroot-index.json
+        
+        If either check fails, we raise an exception so the workflow run fails and the
+        issue gets labeled publish-failed (not published).
+    
+    Args:
+        gh: GitHub API wrapper
+        paths: Publication paths dict from _resolve_publication_paths
+        paper_id: The paper ID (e.g., "2026-060")
+        context: Description of when this check runs (for error message)
+    
+    Raises:
+        Exception: If verification fails (article path missing or paper not in index)
+    """
+    article_path = paths["article_index_path"]
+    
+    # CHECK 1: Article file exists on main
+    if not gh.path_exists(article_path, "main"):
+        raise Exception(
+            f"PUBLISH VERIFICATION FAILED {context}: "
+            f"Article file '{article_path}' does not exist on main. "
+            f"This indicates a silent collision or no-op write. "
+            f"The issue will be labeled publish-failed for retry."
+        )
+    
+    # CHECK 2: Paper appears in agent-index.json or priorroot-index.json
+    # Determine which index based on category
+    category = paths.get("journal", "")
+    is_priorart = category.startswith("prior-art")
+    index_name = "priorroot-index.json" if is_priorart else "agent-index.json"
+    
+    try:
+        index_json_str, _ = gh.get_file_content(index_name, branch="main")
+        try:
+            index_data = json.loads(index_json_str)
+        except (json.JSONDecodeError, ValueError) as json_err:
+            raise Exception(
+                f"PUBLISH VERIFICATION FAILED {context}: "
+                f"Could not parse {index_name} as JSON: {json_err}. "
+                f"The issue will be labeled publish-failed for retry."
+            )
+        
+        papers = index_data.get("papers", [])
+        
+        paper_ids = [p.get("id") for p in papers]
+        if paper_id not in paper_ids:
+            raise Exception(
+                f"PUBLISH VERIFICATION FAILED {context}: "
+                f"Paper {paper_id} was not added to {index_name}. "
+                f"Found {len(paper_ids)} papers, but {paper_id} is missing. "
+                f"This indicates the index update was skipped or failed. "
+                f"The issue will be labeled publish-failed for retry."
+            )
+    except requests.HTTPError as e:
+        # If we can't fetch the index, that's a real failure too
+        raise Exception(
+            f"PUBLISH VERIFICATION FAILED {context}: "
+            f"Could not fetch {index_name} from main to verify publication. "
+            f"HTTP {e.response.status_code if e.response is not None else 'error'}. "
+            f"The issue will be labeled publish-failed for retry."
+        )
