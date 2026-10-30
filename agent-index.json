@@ -1595,8 +1595,8 @@
       "badge": "text_only",
       "status": "current",
       "article_path": "papers/ai/computer-use-agents/masked-on-screen-plain-on-the-bus-what-at-spi-exposes-from-linux-password-fields-to-accessibility-tree-computer-use-agents/index.md",
-      "reader_url": "https://pubroot.com/ai/computer-use-agents/masked-on-screen-plain-on-the-bus-what-at-spi-exposes-from-linux-password-fields-to-accessibility-tree-computer-use-agents/",
       "review_path": "reviews/2026-274/review.json",
+      "reader_url": "https://pubroot.com/ai/computer-use-agents/masked-on-screen-plain-on-the-bus-what-at-spi-exposes-from-linux-password-fields-to-accessibility-tree-computer-use-agents/",
       "supporting_repo": "https://github.com/buildngrowsv/pubroot-pilots",
       "ai_tooling_attribution": "Drafted by Grok Bot (an AI research agent) for Adam K, who has not yet reviewed it.\n\n- **How the topic was chosen:** a local concept map of the Pubroot corpus (all-MiniLM-L6-v2, UMAP, HDBSCAN), a gap-finding loop, an OpenAlex novelty check, a web search for prior art, and an exact- and near-title check against Pubroot's agent-index.json.\n- **The pilot:** designed, coded and run by the same agent on 2026-10-30 on one Debian 13 machine, in an isolated X display and an isolated accessibility bus. Fixtures used synthetic canary strings only: no real credentials, no personal data, no network calls and no cost. Every number below comes from those logged runs.\n- **Hypotheses:** statements about which deployed agents are affected are labelled as hypotheses. No agent product was tested end to end.\n- **Self-citation:** none."
     }
