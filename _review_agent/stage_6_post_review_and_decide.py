@@ -58,6 +58,12 @@ from pubroot_site_paths import (
     slugify_title,
 )
 from secret_scrubber import scrub_all
+from index_builder import (
+    build_index_entry_from_data,
+    merge_entry_into_index,
+    apply_selection_and_sort,
+    serialize_index,
+)
 
 # Canonical site origin for agent-index.json reader_url (override in CI if needed).
 PUBROOT_SITE_BASE = os.environ.get("PUBROOT_SITE_BASE", "https://pubroot.com")
@@ -622,16 +628,9 @@ def _upload_publication_files_to_branch(
         branch=branch,
     )
 
-    index_entry = _build_index_entry(
-        parsed_submission,
-        review,
-        repo_data,
-        paper_id,
-        now,
-        paths["article_index_path"],
-        paths["reader_url"],
-    )
-    _update_agent_index(gh, branch, repo_root, index_entry)
+    # Update both agent-index.json and priorroot-index.json by merging the new paper entry.
+    # This ensures byte-identical output with the regenerator (Bug B22 fix).
+    _update_indexes(gh, branch, paper_id, parsed_submission, review, repo_data, now, paths)
 
     # Note: contributors.json is no longer committed here because it's now
     # committed directly to main by _update_contributors() before the branch
@@ -951,160 +950,156 @@ def _build_manifest(
     return manifest
 
 
-def _build_index_entry(
-    parsed: dict,
+def _update_indexes(
+    gh: GitHubAPI,
+    branch: str,
+    paper_id: str,
+    parsed_submission: dict,
     review: dict,
     repo_data: dict,
-    paper_id: str,
     now: datetime,
-    article_index_path: str,
-    reader_url: str,
-) -> dict:
-    """
-    Build an entry for agent-index.json or priorroot-index.json.
-    
-    FIX (Root Cause C): Match the generator's field format to prevent drift.
-    - published_date: second-precision Z format (YYYY-MM-DDTHH:MM:SSZ)
-    - text fields: rstrip()
-    - supporting_repo: strip quotes, omit if null/empty
-    """
-    # Normalize published_date to second precision Z (match generator format)
-    published_date = now.astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-    
-    # Get supporting_repo, strip quotes, omit if null/empty
-    supporting_repo = parsed.get("supporting_repo")
-    if supporting_repo:
-        supporting_repo = str(supporting_repo).strip().strip('"').strip("'")
-        if not supporting_repo:
-            supporting_repo = None
-    else:
-        supporting_repo = None
-    
-    # rstrip() all text fields per the brief
-    title = parsed.get("title", "Untitled")
-    if not isinstance(title, str):
-        title = str(title)
-    title = title.rstrip()
-    
-    author = parsed.get("author", "unknown")
-    if not isinstance(author, str):
-        author = str(author)
-    author = author.rstrip()
-    
-    category = parsed.get("category", "general-technical")
-    if not isinstance(category, str):
-        category = str(category)
-    category = category.rstrip()
-    
-    abstract = parsed.get("abstract", "")
-    if not isinstance(abstract, str):
-        abstract = str(abstract)
-    abstract = abstract.rstrip()[:500]  # rstrip then truncate
-    
-    entry = {
-        "id": paper_id,
-        "title": title,
-        "author": author,
-        "category": category,
-        "abstract": abstract,
-        "published_date": published_date,
-        "review_score": review.get("score"),
-        "badge": repo_data.get("badge_type", "text_only"),
-        "status": "current",
-        "article_path": article_index_path,
-        "reader_url": reader_url,
-        "review_path": f"reviews/{paper_id}/review.json",
-    }
-    
-    # supporting_repo: omit the key if null or empty
-    if supporting_repo:
-        entry["supporting_repo"] = supporting_repo
-    
-    ai_attr = parsed.get("ai_tooling_attribution")
-    if ai_attr:
-        if isinstance(ai_attr, str):
-            ai_attr = ai_attr.rstrip()
-        entry["ai_tooling_attribution"] = ai_attr
-    
-    return entry
-
-
-def _update_agent_index(
-    gh: GitHubAPI, branch: str, repo_root: str, new_entry: dict
+    paths: dict,
 ):
     """
-    Add a new paper entry to agent-index.json or priorroot-index.json and commit it.
+    Update both agent-index.json and priorroot-index.json with a new paper entry.
     
-    FIX (Root Cause A): Route prior-art papers to priorroot-index.json.
-    FIX (Root Cause B residual): Use the blob SHA from the read in the PUT to prevent
-    lost updates from non-pipeline writers (manual commits, PR-based publishes, etc).
+    FIX (Bug B22 - Oct 2026): Stage 6 now merges the new paper entry into live indexes
+    fetched from the target branch, ensuring byte-identical output with the regenerator.
     
-    RACE CONDITION FIX (2026-10-24):
-        Previously, this read agent-index.json from the local checkout, which was
-        the main branch state at event time (when the issue was opened). When multiple
-        reviews ran concurrently, they all started with stale state and overwrote
-        each other's updates, causing lost entries (Bug B3).
+    KEY INSIGHT:
+        Stage 6 runs in CI with an event-time checkout. The new paper's files are uploaded
+        via GitHub API, NOT written to disk. Therefore, we can't scan papers/ to build indexes.
+        Instead, we:
+        1. GET live indexes from target branch with their SHAs
+        2. Build new paper's entry from in-memory data (same data we're uploading)
+        3. Merge entry into live indexes
+        4. Apply shared selection, sort, last_updated logic
+        5. Commit with optimistic locking and retry on conflict (max 3 attempts)
+    
+    OPTIMISTIC LOCKING:
+        We fetch each index's content and SHA in the same API call. If another writer
+        modified the index between our read and write, GitHub returns 409/422. We retry
+        up to 3 times, then fail into publish-failed for cron retry.
         
-        Now we fetch the current agent-index.json from the target branch via GitHub API
-        right before updating. This ensures we always append to the latest state,
-        preventing lost-update races. The branch is typically "main" (fallback path)
-        or "paper/{paper-id}" (PR path). Both are safe because:
-        - main: always has the latest merged state
-        - paper/{paper-id}: branch was just created from main's HEAD in _handle_acceptance
-        
-        RESIDUAL RACE FIX (2026-10-28):
-        _update_agent_index fetches the file fresh, but discards _blob_sha.
-        create_or_update_file re-GETs the sha just before the PUT, so there is no
-        optimistic lock against the content it read. Any non-pipeline writer that
-        commits between the read and the PUT (manual commit, PR-based publish) gets
-        silently overwritten. FIX: Keep the sha from the read and pass it to the PUT.
-        If a 409/422 conflict occurs, fail the pipeline so the cron retry picks it up.
+    Args:
+        gh: GitHub API client
+        branch: Target branch ("main" or "paper/{paper-id}")
+        paper_id: The paper ID being published
+        parsed_submission: Parsed submission data from Stage 1
+        review: Review data from Stage 5
+        repo_data: Repository data from Stage 3
+        now: Publication timestamp
+        paths: Publication paths dict (article_index_path, reader_url, etc.)
     """
-    # Determine which index file to update based on category (Root Cause A fix)
-    category = new_entry.get("category", "")
-    is_priorart = category.startswith("prior-art/")
-    index_filename = "priorroot-index.json" if is_priorart else "agent-index.json"
+    # Build the new paper's entry from in-memory data
+    # This is the same data we're uploading to manifest.json and frontmatter
+    published_date = now.astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     
-    try:
-        # Fetch fresh state from the target branch via GitHub API, and keep the blob SHA
-        index_json_str, blob_sha = gh.get_file_content(index_filename, branch=branch)
-        index_data = json.loads(index_json_str)
-    except requests.HTTPError as e:
-        # If the index file doesn't exist on the branch yet (shouldn't happen),
-        # fall back to the local checkout as a last resort
-        if e.response is not None and e.response.status_code == 404:
-            index_path = os.path.join(repo_root, index_filename)
-            with open(index_path, "r") as f:
-                index_data = json.load(f)
-            blob_sha = None  # No SHA available for fallback
-        else:
-            raise
+    # SECURITY (Bug B22 secret scrubbing): Build the index entry from the EXACT
+    # scrubbed strings that get uploaded to the repo. This ensures the index entry
+    # is byte-identical to what the regenerator derives from the committed files.
+    # All text fields must be scrubbed before being passed to build_index_entry_from_data.
+    scrubbed_title = scrub_all(str(parsed_submission.get("title", "Untitled")))
+    scrubbed_author = scrub_all(str(parsed_submission.get("author", "unknown")))
+    scrubbed_abstract = scrub_all(str(parsed_submission.get("abstract", "")))
+    scrubbed_supporting_repo = None
+    if parsed_submission.get("supporting_repo"):
+        scrubbed_supporting_repo = scrub_all(str(parsed_submission["supporting_repo"]))
+    scrubbed_ai_attr = None
+    if parsed_submission.get("ai_tooling_attribution"):
+        scrubbed_ai_attr = scrub_all(str(parsed_submission["ai_tooling_attribution"]))
     
-    # Append the new entry and update metadata
-    index_data["papers"].append(new_entry)
-    index_data["total_papers"] = len(index_data["papers"])
-    
-    # Sort papers by ID to match regenerator output (Root Cause C fix)
-    index_data["papers"].sort(key=lambda e: e["id"])
-    
-    # Calculate last_updated from max published_date (Root Cause C fix)
-    # This ensures byte-identical output with the regenerator script
-    all_dates = [e["published_date"] for e in index_data["papers"] if e.get("published_date")]
-    if all_dates:
-        # all_dates are already in YYYY-MM-DDTHH:MM:SSZ format, so max() works
-        index_data["last_updated"] = max(all_dates)
-    else:
-        # Fallback to now() if there are no papers (shouldn't happen)
-        index_data["last_updated"] = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-    
-    # Write back to the branch with the blob SHA to prevent lost updates
-    gh.create_or_update_file_with_sha(
-        path=index_filename,
-        content=json.dumps(index_data, indent=2, ensure_ascii=False) + "\n",
-        message=f"Update paper index: add {new_entry['id']}",
-        branch=branch,
-        sha=blob_sha,  # Pass the SHA to lock against concurrent updates
+    new_entry = build_index_entry_from_data(
+        paper_id=paper_id,
+        title=scrubbed_title,
+        author=scrubbed_author,
+        category=parsed_submission.get("category", "general-technical"),
+        abstract=scrubbed_abstract,
+        published_date=published_date,
+        review_score=review.get("score"),
+        badge=repo_data.get("badge_type", "text_only"),
+        article_path=paths["article_index_path"],
+        reader_url=paths["reader_url"],
+        review_path=f"reviews/{paper_id}/review.json",
+        supporting_repo=scrubbed_supporting_repo,
+        ai_tooling_attribution=scrubbed_ai_attr,
     )
+    
+    # Determine which index to update based on category
+    is_priorart = new_entry["category"].startswith("prior-art/")
+    target_index_file = "priorroot-index.json" if is_priorart else "agent-index.json"
+    other_index_file = "agent-index.json" if is_priorart else "priorroot-index.json"
+    
+    # Retry loop for optimistic locking conflicts
+    # Backoff delays for retries (patchable in tests)
+    backoff_delays = [1, 2, 4]  # seconds: 1s, 2s, 4s
+    max_retries = 3
+    for attempt in range(max_retries):
+        try:
+            # Fetch live indexes with their SHAs (same API call)
+            target_index_json, target_sha = gh.get_file_content(target_index_file, branch=branch)
+            target_index = json.loads(target_index_json)
+            
+            other_index_json, other_sha = gh.get_file_content(other_index_file, branch=branch)
+            other_index = json.loads(other_index_json)
+            
+            # Merge new entry into target index
+            merge_entry_into_index(target_index, new_entry)
+            
+            # Apply selection (filter archived) and sort to both indexes.
+            # We need ALL entries for last_updated calculation (max published_date
+            # across both indexes ensures they stay in sync).
+            all_entries = target_index["papers"] + other_index["papers"]
+            apply_selection_and_sort(target_index, all_entries)
+            apply_selection_and_sort(other_index, all_entries)
+            
+            # Serialize with canonical formatting
+            target_content = serialize_index(target_index)
+            other_content = serialize_index(other_index)
+            
+            # Commit target index (the one with the new paper)
+            gh.create_or_update_file_with_sha(
+                path=target_index_file,
+                content=target_content,
+                message=f"Update {target_index_file}: add {paper_id}",
+                branch=branch,
+                sha=target_sha,
+            )
+            
+            # Only commit other index if it changed (last_updated update)
+            # Compare with fetched content to avoid redundant writes
+            if other_content != other_index_json:
+                gh.create_or_update_file_with_sha(
+                    path=other_index_file,
+                    content=other_content,
+                    message=f"Update {other_index_file}: last_updated after {paper_id}",
+                    branch=branch,
+                    sha=other_sha,
+                )
+            
+            # Success - exit retry loop
+            return
+            
+        except requests.HTTPError as e:
+            # Check for optimistic locking conflict (409 Conflict or 422 Unprocessable Entity)
+            if e.response is not None and e.response.status_code in (409, 422):
+                if attempt < max_retries - 1:
+                    # Retry with fresh state after backoff delay
+                    import time
+                    delay = backoff_delays[attempt]
+                    print(f"Index update conflict on attempt {attempt + 1}, retrying after {delay}s backoff...")
+                    time.sleep(delay)
+                    continue
+                else:
+                    # Max retries exhausted - fail into publish-failed
+                    raise Exception(
+                        f"Index update failed after {max_retries} attempts due to conflicts. "
+                        f"Another writer modified the index between read and write. "
+                        f"This paper will be retried by the cron job."
+                    )
+            else:
+                # Other HTTP error - propagate immediately
+                raise
 
 
 def _update_contributors(
@@ -1241,7 +1236,7 @@ def _format_review_comment(
         f"**Score:** {score}/10 {score_bar}",
         f"**Badge:** `{badge}`",
         "",
-        f"## Summary",
+        "## Summary",
         summary,
         "",
     ]
