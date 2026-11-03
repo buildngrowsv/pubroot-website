@@ -366,8 +366,11 @@ jobs:
           ISSUE_NUM="${{ steps.get-issue.outputs.issue_number }}"
           echo "Checking approval for issue #$ISSUE_NUM..."
           
-          python _review_agent/author_gating.py check "$ISSUE_NUM" > /tmp/approval.txt 2>&1
-          EXIT_CODE=$?
+          if python _review_agent/author_gating.py check "$ISSUE_NUM" > /tmp/approval.txt 2>&1; then
+            EXIT_CODE=0
+          else
+            EXIT_CODE=$?
+          fi
           
           cat /tmp/approval.txt
           
@@ -377,14 +380,25 @@ jobs:
             echo "approved=false" >> $GITHUB_OUTPUT
             
             # Parse gate_kind and gate_reason for the notify-gated job
-            KIND=$(grep "Kind:" /tmp/approval.txt | cut -d: -f2- | xargs)
-            REASON=$(grep "Reason:" /tmp/approval.txt | cut -d: -f2- | xargs)
-            AUTHOR=$(grep "Author:" /tmp/approval.txt | cut -d: -f2- | xargs)
+            # `|| true`: a missing line (crash, usage error) must not kill the
+            # step under errexit/pipefail before the outputs are written.
+            KIND=$(grep "Kind:" /tmp/approval.txt | cut -d: -f2- | xargs) || true
+            REASON=$(grep "Reason:" /tmp/approval.txt | cut -d: -f2- | xargs) || true
+            AUTHOR=$(grep "Author:" /tmp/approval.txt | cut -d: -f2- | xargs) || true
             
             echo "gate_kind=${KIND}" >> $GITHUB_OUTPUT
             echo "gate_reason=${REASON}" >> $GITHUB_OUTPUT
             
             echo "Issue #$ISSUE_NUM gated: @$AUTHOR - $REASON (kind: $KIND)"
+            
+            # A gate *error* (issue fetch failed, crash) is not a gating decision:
+            # fail the run visibly instead of ending green with nothing done.
+            # Outputs are already written; notify-gated and review-and-publish
+            # stay skipped, and publish.yml skips non-success runs.
+            if [ -z "$KIND" ] || [ "$KIND" = "error" ] || [ "$KIND" = "unknown" ]; then
+              echo "::error::Gating check failed for issue #$ISSUE_NUM (kind: ${KIND:-none}): ${REASON:-no reason}"
+              exit 1
+            fi
           fi
 
       # ---------------------------------------------------------------
@@ -440,6 +454,10 @@ jobs:
     timeout-minutes: 3
     permissions:
       issues: write
+    # No checkout in this job, so gh cannot infer the repo from git: without
+    # GH_REPO, `gh label create` / `gh issue edit` fail ("not a git repository").
+    env:
+      GH_REPO: ${{ github.repository }}
     
     steps:
       # No checkout, no Python setup, no secrets - only comment posting
@@ -477,6 +495,9 @@ jobs:
           ISSUE: ${{ needs.analyze-submission.outputs.issue_number }}
           GATE_REASON: ${{ needs.analyze-submission.outputs.gate_reason }}
         run: |
+          # pipefail: if the comments fetch fails, stop (fail closed) instead of
+          # awk printing an empty count and a duplicate notice being posted.
+          set -o pipefail
           # Check for existing bot comments
           EXISTING_COUNT=$(gh api "repos/$GITHUB_REPOSITORY/issues/$ISSUE/comments" \
             --paginate \
