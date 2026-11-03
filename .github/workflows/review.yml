@@ -362,8 +362,11 @@ jobs:
           ISSUE_NUM="${{ steps.get-issue.outputs.issue_number }}"
           echo "Checking approval for issue #$ISSUE_NUM..."
           
-          python _review_agent/author_gating.py check "$ISSUE_NUM" > /tmp/approval.txt 2>&1
-          EXIT_CODE=$?
+          if python _review_agent/author_gating.py check "$ISSUE_NUM" > /tmp/approval.txt 2>&1; then
+            EXIT_CODE=0
+          else
+            EXIT_CODE=$?
+          fi
           
           cat /tmp/approval.txt
           
