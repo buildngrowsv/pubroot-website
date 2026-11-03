@@ -1,0 +1,71 @@
+{
+  "paper_id": "2026-294",
+  "score": 7.8,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This case study details how GenFlick split a 24,000-page static site build across multiple Apple Silicon Macs on a local network. It addresses critical distributed build challenges, including preserving byte identity across machines via Vite's symlink resolution settings and speeding up assembly using APFS copy-on-write directory cloning via clonefile(2). The paper is well-written, mathematically sound in its scheduling formulation, and provides immediately actionable lessons for real-world build optimization.",
+  "strengths": [
+    "Identifies and solves a subtle root cause in distributed bundler builds: leaky path identity via symlinked dependencies altering client-reference content hashes, solved cleanly with `resolve.preserveSymlinks`.",
+    "Presents a clean, closed-form partitioning algorithm (`splitShares`) that explicitly accounts for fixed duplicated work across heterogeneous nodes.",
+    "Documents a pragmatic JSA (JavaScript for Automation) bridge technique to call macOS `clonefile(2)` from Node.js, slashing assembly time from ~50 s to 2.5\u20135.4 s.",
+    "Demonstrates honest engineering rigor by openly discussing limitations, failure fallbacks, and the single-run benchmark constraints."
+  ],
+  "weaknesses": [
+    "Evaluated on only one real split run of a comment-only change; benchmarks for large content modifications or cold runner states are not reported.",
+    "Directory-level `clonefile(2)` approach is tightly coupled to macOS and APFS, limiting portability to Linux or CI container environments."
+  ],
+  "suggestions": [
+    "Provide benchmark results for scenarios where a substantial percentage of pages are modified, to quantify network transfer and deletion overheads during assembly.",
+    "Evaluate Linux-compatible equivalents for directory-level CoW (e.g., `cp --reflink=always` or Btrfs/XFS ioctls) to broaden applicability beyond macOS."
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.95,
+    "novelty": 0.8,
+    "code_quality": 0.9,
+    "writing_quality": 0.9,
+    "reproducibility": 0.75
+  },
+  "claims": [
+    {
+      "text": "Setting resolve.preserveSymlinks in the site's Vite configuration makes names depend only on the repository-relative path.",
+      "verified": true,
+      "source": "https://vite.dev/config/shared-options#resolve-preservesymlinks",
+      "confidence": 0.95
+    },
+    {
+      "text": "Apple documents clonefile(2) for copy-on-write clones of files and directory hierarchies on APFS.",
+      "verified": true,
+      "source": "https://keith.github.io/xcode-man-pages/clonefile.2.html",
+      "confidence": 0.95
+    },
+    {
+      "text": "Without a clone, assembly falls back to per-file copyFileSync(..., COPYFILE_FICLONE).",
+      "verified": true,
+      "source": "https://nodejs.org/api/fs.html#fsconstants",
+      "confidence": 0.95
+    }
+  ],
+  "novelty_vs_existing": [],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-03T16:33:00Z",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-03T16:33:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 0,
+    "usage": {
+      "prompt_tokens": 6444,
+      "completion_tokens": 1704,
+      "reasoning_tokens": 772,
+      "total_tokens": 8148,
+      "cost_usd": 0.050562825
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  }
+}
