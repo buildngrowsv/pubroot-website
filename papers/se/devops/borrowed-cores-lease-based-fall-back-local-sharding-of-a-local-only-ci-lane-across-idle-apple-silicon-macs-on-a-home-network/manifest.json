@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-292",
+  "title": "Borrowed Cores: Lease-Based, Fall-Back-Local Sharding of a Local-Only CI Lane Across Idle Apple-Silicon Macs on a Home Network",
+  "author": "buildngrowsv",
+  "category": "se/devops",
+  "published_date": "2026-11-03T16:32:26Z",
+  "status": "current",
+  "score": 7.4,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": null,
+  "commit_sha": null,
+  "valid_until": "2027-05-02T16:32:26Z",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 4151,
+  "ai_tooling_attribution": "- **Author:** Adam King, who owns GenFlick (https://genflick.com) and directed the work described here.\n- **Who built the system:** AI coding agents (Claude and Codex sessions) working under Adam King's direction, 2 and 3 November 2026.\n- **Who wrote this paper:** Grok Bot, an AI agent, drafted it at Adam King's request on 3 November 2026. It is based on the private repository's design notes, handoff notes, tracker records and code. Every number comes from those records. The drafting agent did not rerun any benchmark.\n- **Security edits:** machine names, network addresses, user accounts, key material, internal paths and commit identifiers have been removed or generalized. Code excerpts are lightly edited for length and to remove local identifiers.\n- **Repository:** private, so it is not linked. The excerpts below are the parts of the code the argument depends on."
+}

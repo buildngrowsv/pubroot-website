@@ -1,0 +1,90 @@
+{
+  "paper_id": "2026-292",
+  "score": 7.4,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This case study details a lease-based, zero-trust test sharding scheduler that offloads local CI suites across idle Apple-silicon Macs on a local network to relieve a saturated controller machine. The system demonstrates practical engineering solutions for local compute scavenging, including Git object transport, greedy LPT scheduling, late-join queues, and failure isolation, while providing concrete performance gains.",
+  "strengths": [
+    "High practical value for engineering teams running intensive local CI pipelines or agentic coding loops on Apple-silicon hardware",
+    "Pragmatic security and failure isolation model: runners cannot issue authoritative failures, receive no credentials, and execute detached Git worktrees",
+    "Detailed documentation of subtle real-world edge cases, including accounting for sibling lane processes during CPU probes and preventing asynchronous Node.js pipe write truncation on process exit",
+    "Honest discussion of methodology and operational limitations, specifically acknowledging small sample sizes and network environment factors"
+  ],
+  "weaknesses": [
+    "No public repository or reusable tool artifact provided, limiting direct reproducibility to code snippets and architectural patterns",
+    "Evaluations were performed in non-interleaved runs under varying uncontrolled agent background loads, meaning benchmark numbers are indicative rather than statistically rigorous"
+  ],
+  "suggestions": [
+    "Extract the scheduling scripts, probe routines, and lease managers into an open-source utility repository to enable full community reproducibility",
+    "Run systematic benchmark trials under controlled synthetic CPU loads to measure latency improvements and variance with formal confidence intervals"
+  ],
+  "confidence": {
+    "methodology": 0.75,
+    "factual_accuracy": 0.95,
+    "novelty": 0.75,
+    "code_quality": null,
+    "writing_quality": 0.9,
+    "reproducibility": 0.65
+  },
+  "claims": [
+    {
+      "text": "The split is Graham's LPT heuristic (Graham, 1969, \"Bounds on multiprocessing timing anomalies\", SIAM J. Appl. Math.).",
+      "verified": true,
+      "source": "https://doi.org/10.1137/0117039",
+      "confidence": 0.98
+    },
+    {
+      "text": "Condor (Litzkow, Livny and Mutka, 1988, \"Condor: a hunter of idle workstations\", ICDCS) scheduled jobs on idle machines and evicted them when owners returned.",
+      "verified": true,
+      "source": "https://doi.org/10.1109/DCS.1988.12507",
+      "confidence": 0.98
+    },
+    {
+      "text": "`rr` (github.com/rileyhilliard/rr) syncs a working tree to SSH hosts, locks a free host and runs shards in parallel.",
+      "verified": true,
+      "source": "https://github.com/rileyhilliard/rr",
+      "confidence": 0.95
+    },
+    {
+      "text": "On macOS, stdout to a pipe is asynchronous, so the process.exit() after the end of input dropped whatever was still queued.",
+      "verified": true,
+      "source": "https://nodejs.org/api/process.html#processprocessstdout",
+      "confidence": 0.92
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "rileyhilliard/rr",
+      "title": "rr: Easily sync code to a remote machine and run commands there",
+      "overlap": 0.45,
+      "contribution": "Adds load-probed CPU/memory leasing, automated Git object push rather than rsync trees, LPT test-timing sharding, a dynamic late-join queue, and strict fallback-to-local failure arbitration"
+    },
+    {
+      "id": "condor-icdcs-1988",
+      "title": "Condor: A Hunter of Idle Workstations",
+      "overlap": 0.35,
+      "contribution": "Adapts classical workstation cycle scavenging specifically to modern local test runner suites (Vitest, PostgreSQL) on Apple-silicon Macs with unmanaged desktop workers and zero credential sharing"
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-03T16:32:00Z",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-03T16:32:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 2,
+    "usage": {
+      "prompt_tokens": 9454,
+      "completion_tokens": 2447,
+      "reasoning_tokens": 1284,
+      "total_tokens": 11901,
+      "cost_usd": 0.07226675
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  }
+}
