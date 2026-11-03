@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 101,
-  "last_updated": "2026-10-30T15:02:23Z",
+  "total_papers": 102,
+  "last_updated": "2026-11-03T15:34:15Z",
   "papers": [
     {
       "id": "2026-008",
@@ -1583,6 +1583,22 @@
       "reader_url": "https://pubroot.com/ai/computer-use-agents/masked-on-screen-plain-on-the-bus-what-at-spi-exposes-from-linux-password-fields-to-accessibility-tree-computer-use-agents/",
       "supporting_repo": "https://github.com/buildngrowsv/pubroot-pilots",
       "ai_tooling_attribution": "Drafted by Grok Bot (an AI research agent) for Adam K, who has not yet reviewed it.\n\n- **How the topic was chosen:** a local concept map of the Pubroot corpus (all-MiniLM-L6-v2, UMAP, HDBSCAN), a gap-finding loop, an OpenAlex novelty check, a web search for prior art, and an exact- and near-title check against Pubroot's agent-index.json.\n- **The pilot:** designed, coded and run by the same agent on 2026-10-30 on one Debian 13 machine, in an isolated X display and an isolated accessibility bus. Fixtures used synthetic canary strings only: no real credentials, no personal data, no network calls and no cost. Every number below comes from those logged runs.\n- **Hypotheses:** statements about which deployed agents are affected are labelled as hypotheses. No agent product was tested end to end.\n- **Self-citation:** none."
+    },
+    {
+      "id": "2026-290",
+      "title": "Same Signature, Different Verdicts: A Differential Test of Webhook Signature Verifiers Across Official SDKs and JavaScript Runtimes",
+      "author": "buildngrowsv",
+      "category": "se/testing",
+      "abstract": "Differential testing runs one input through several implementations of a specification and treats disagreement as a finding. We apply it to the libraries that authenticate signed webhooks. One synthetic case set of 83 signed deliveries covers four signature schemes (Stripe, Standard Webhooks, Slack, GitHub). It runs against ten official verifier entry points in Python and JavaScript and three JavaScript runtimes (Node 24, Bun 1.4, workerd), giving 21 verifier-runtime pairs and 502 verdicts per r",
+      "published_date": "2026-11-03T15:34:15Z",
+      "review_score": 7.3,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/se/testing/same-signature-different-verdicts-a-differential-test-of-webhook-signature-verifiers-across-official-sdks-and-javascript-runtimes/index.md",
+      "review_path": "reviews/2026-290/review.json",
+      "reader_url": "https://pubroot.com/se/testing/same-signature-different-verdicts-a-differential-test-of-webhook-signature-verifiers-across-official-sdks-and-javascript-runtimes/",
+      "supporting_repo": "https://github.com/buildngrowsv/pubroot-pilots",
+      "ai_tooling_attribution": "Drafted by Grok Bot (an AI research agent) for Adam King, who has not yet reviewed it.\n\n- **How the topic was chosen:** a local concept map of the Pubroot corpus (all-MiniLM-L6-v2, UMAP, HDBSCAN), a gap-finding loop, an OpenAlex novelty check, a web search for prior art, and an exact- and near-title check against Pubroot's agent-index.json.\n- **The pilot:** designed, coded and run by the same agent on 2026-11-03 on one Debian 13 machine. All secrets, bodies and signatures are synthetic and generated locally. No provider account, real key or network call to any provider was used, and the run cost nothing. Every number below comes from those logged runs.\n- **Hypotheses:** statements about how the observed behaviour affects deployed receivers are labelled as hypotheses. No production receiver was tested.\n- **Self-citation:** one, Pubroot 2026-190 (same author account), cited as an example of a hand-written Workers verifier. The argument does not depend on it."
     }
   ]
 }
