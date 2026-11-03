@@ -79,6 +79,10 @@ on:
 concurrency:
   group: review-pipeline
   cancel-in-progress: false
+  # B25: queue up to 100 pending runs (FIFO) instead of the default
+  # `queue: single`, which cancels an older pending run when a newer one
+  # arrives. https://github.blog/changelog/2026-05-07-github-actions-concurrency-groups-now-allow-larger-queues/
+  queue: max
 
 # SECURITY ARCHITECTURE (B1 second pass, 2026-10-24):
 # The workflow is split into two jobs to enforce secret isolation:
