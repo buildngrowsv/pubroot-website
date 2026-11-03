@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 104,
-  "last_updated": "2026-11-03T16:33:48Z",
+  "total_papers": 105,
+  "last_updated": "2026-11-03T16:35:10Z",
   "papers": [
     {
       "id": "2026-008",
@@ -1614,6 +1614,21 @@
       "review_path": "reviews/2026-292/review.json",
       "reader_url": "https://pubroot.com/se/devops/borrowed-cores-lease-based-fall-back-local-sharding-of-a-local-only-ci-lane-across-idle-apple-silicon-macs-on-a-home-network/",
       "ai_tooling_attribution": "- **Author:** Adam King, who owns GenFlick (https://genflick.com) and directed the work described here.\n- **Who built the system:** AI coding agents (Claude and Codex sessions) working under Adam King's direction, 2 and 3 November 2026.\n- **Who wrote this paper:** Grok Bot, an AI agent, drafted it at Adam King's request on 3 November 2026. It is based on the private repository's design notes, handoff notes, tracker records and code. Every number comes from those records. The drafting agent did not rerun any benchmark.\n- **Security edits:** machine names, network addresses, user accounts, key material, internal paths and commit identifiers have been removed or generalized. Code excerpts are lightly edited for length and to remove local identifiers.\n- **Repository:** private, so it is not linked. The excerpts below are the parts of the code the argument depends on."
+    },
+    {
+      "id": "2026-293",
+      "title": "When Choosing Tests Costs More Than Running Them: An Audit of a Local CI Lane for Agent-Written Code and the Test-Selection Overheads It Exposed",
+      "author": "buildngrowsv",
+      "category": "se/testing",
+      "abstract": "GenFlick runs its CI as a local \"lane\" on one operator Mac. The lane merges and verifies commits written by many concurrent coding agents. It selects tests from recorded per-test inputs across about 3,900 Vitest files and 380 PostgreSQL suites.\n\nWe report an audit of 332 lane runs (28 to 31 October 2026) and the selection-side fixes that followed. In successful landings that ran tests, the median landing took 23.3 minutes (p90 96), of which tests were about 7. Waiting for a check slot had a medi",
+      "published_date": "2026-11-03T16:35:10Z",
+      "review_score": 7.7,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/se/testing/when-choosing-tests-costs-more-than-running-them-an-audit-of-a-local-ci-lane-for-agent-written-code-and-the-test-selection-overheads-it-expo/index.md",
+      "review_path": "reviews/2026-293/review.json",
+      "reader_url": "https://pubroot.com/se/testing/when-choosing-tests-costs-more-than-running-them-an-audit-of-a-local-ci-lane-for-agent-written-code-and-the-test-selection-overheads-it-expo/",
+      "ai_tooling_attribution": "- **Author:** Adam King, who owns GenFlick (https://genflick.com) and directed the work described here.\n- **Who built the system:** AI coding agents (Claude and Codex sessions) working under Adam King's direction, August to November 2026. The lane audit in section 2 was a read-only script over the lane's saved run records.\n- **Who wrote this paper:** Grok Bot, an AI agent, drafted it at Adam King's request on 3 November 2026. It is based on the private repository's audit reports, runbook, decision logs and handoff notes. Every number comes from those records. The drafting agent did not rerun any measurement.\n- **Security edits:** machine names, hostnames, network details, user accounts, internal paths, session identifiers and commit identifiers have been removed or generalized. Code excerpts are lightly edited.\n- **Repository:** private, so it is not linked."
     },
     {
       "id": "2026-294",
