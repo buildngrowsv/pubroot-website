@@ -72,6 +72,11 @@ on:
         description: 'Issue number to process'
         required: true
         type: number
+      drain_depth:
+        description: 'Drain chain counter (internal use)'
+        required: false
+        type: number
+        default: 0
 
 # Concurrency: only one review pipeline instance runs at a time.
 # If a new trigger fires while one is running, it queues (not cancels).
@@ -591,3 +596,102 @@ jobs:
         working-directory: _review_agent
         run: |
           python stages_4_to_6_reviewer.py stages_1_to_3_output.json
+  
+  # =============================================================================
+  # JOB 4: DRAIN (B25 Fix — Burst-resistant concurrency)
+  # =============================================================================
+  # This job runs after the review jobs finish (including when they were skipped)
+  # and re-runs the picker logic in a read-only, decide-only mode. If at least
+  # one issue still qualifies (using the same tiers, gates, and limits as the
+  # cron sweep), it dispatches review.yml again via workflow_dispatch with an
+  # incremented drain_depth counter.
+  #
+  # This prevents the middle issue-event run from being cancelled when three
+  # submissions arrive in a burst. The concurrency group keeps one running + one
+  # pending, and a newer pending run cancels the older pending one. The drain
+  # ensures that cancelled runs are eventually picked up.
+  #
+  # SAFETY:
+  # - No dispatch when the picker finds nothing (including picker errors, which
+  #   fail closed)
+  # - No double review: issues already reviewed/published/rejected are filtered
+  #   out by the picker's bot comment check and terminal label exclusions
+  # - Don't make the drop worse: the drain checks for pending/queued runs via
+  #   gh run list and doesn't dispatch if one exists (this would cause the
+  #   drain's pending run to cancel the queued issue-event run)
+  # - No self-triggered loops: the drain_depth input is incremented on each
+  #   dispatch and capped at 5
+  #
+  # SECURITY: This job has actions: write (to dispatch review.yml) but NO
+  # OPENROUTER_API_KEY or GEMINI_API_KEY. All other jobs keep their current
+  # permissions.
+  # =============================================================================
+  drain:
+    needs: [analyze-submission, review-and-publish]
+    # Run even if review-and-publish was skipped (e.g., approval gate failed)
+    # but NOT if analyze-submission failed (picker needs the gate logic)
+    if: always() && needs.analyze-submission.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      actions: write  # To dispatch review.yml
+      contents: read  # To read scripts and allowlist
+      issues: read    # To check issue state and labels
+    
+    steps:
+      # ---------------------------------------------------------------
+      # Step 1: Checkout the repo
+      # ---------------------------------------------------------------
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+      
+      # ---------------------------------------------------------------
+      # Step 2: Set up Python
+      # ---------------------------------------------------------------
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+      
+      # ---------------------------------------------------------------
+      # Step 3: Install Python dependencies
+      # ---------------------------------------------------------------
+      - name: Install dependencies
+        run: |
+          pip install -r _review_agent/requirements.txt
+      
+      # ---------------------------------------------------------------
+      # Step 4: Run drain decision logic
+      # ---------------------------------------------------------------
+      # The drain_decision.py script checks:
+      # 1. drain_depth < drain_max (hard cap at 5)
+      # 2. No pending/queued/waiting review.yml runs (via gh API)
+      # 3. At least one issue qualifies (via the picker logic)
+      # 
+      # If all checks pass, it dispatches review.yml with drain_depth + 1.
+      # If any check fails, it logs the reason and exits 1 (no dispatch).
+      #
+      # Exit code 0 = dispatched successfully (or would dispatch in dry-run)
+      # Exit code 1 = should not dispatch (or dispatch failed)
+      # ---------------------------------------------------------------
+      - name: Drain decision
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_WORKSPACE: ${{ github.workspace }}
+          DRAIN_DEPTH: ${{ github.event.inputs.drain_depth || 0 }}
+        run: |
+          echo "Running drain decision logic..."
+          echo "Drain depth: $DRAIN_DEPTH / 5 (max)"
+          
+          # Run the drain decision script with --dispatch flag
+          # This will dispatch review.yml if all safety checks pass
+          python scripts/drain_decision.py --drain-depth "$DRAIN_DEPTH" --drain-max 5 --dispatch || true
+          
+          # Note: We use || true because the exit code is informational
+          # (0 = dispatched, 1 = did not dispatch). Either outcome is valid.
+          # The script logs the decision reason clearly.
