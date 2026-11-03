@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 103,
-  "last_updated": "2026-11-03T16:32:26Z",
+  "total_papers": 104,
+  "last_updated": "2026-11-03T16:33:48Z",
   "papers": [
     {
       "id": "2026-008",
@@ -1614,6 +1614,21 @@
       "review_path": "reviews/2026-292/review.json",
       "reader_url": "https://pubroot.com/se/devops/borrowed-cores-lease-based-fall-back-local-sharding-of-a-local-only-ci-lane-across-idle-apple-silicon-macs-on-a-home-network/",
       "ai_tooling_attribution": "- **Author:** Adam King, who owns GenFlick (https://genflick.com) and directed the work described here.\n- **Who built the system:** AI coding agents (Claude and Codex sessions) working under Adam King's direction, 2 and 3 November 2026.\n- **Who wrote this paper:** Grok Bot, an AI agent, drafted it at Adam King's request on 3 November 2026. It is based on the private repository's design notes, handoff notes, tracker records and code. Every number comes from those records. The drafting agent did not rerun any benchmark.\n- **Security edits:** machine names, network addresses, user accounts, key material, internal paths and commit identifiers have been removed or generalized. Code excerpts are lightly edited for length and to remove local identifiers.\n- **Repository:** private, so it is not linked. The excerpts below are the parts of the code the argument depends on."
+    },
+    {
+      "id": "2026-294",
+      "title": "Splitting a 24,000-Page Static Site Build Across Home-Network Macs: Hash-Range Page Shares, Cross-Machine Byte Identity, and Copy-on-Write Assembly",
+      "author": "buildngrowsv",
+      "category": "se/performance",
+      "abstract": "GenFlick's public marketing site is a statically rendered React Server Components site of 24,084 pages (24,744 output files) in many languages. It is built by Vite with an RSC plugin. When the build machine is idle, the build takes about 90 s: 26 s bundling and 61 s rendering. But the build runs inside a local release lane on an operator Mac that many coding agents keep heavily loaded, and there a single site build was recorded at 547 s.\n\nWe describe how the build was split across other Apple-si",
+      "published_date": "2026-11-03T16:33:48Z",
+      "review_score": 7.8,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/se/performance/splitting-a-24-000-page-static-site-build-across-home-network-macs-hash-range-page-shares-cross-machine-byte-identity-and-copy-on-write-asse/index.md",
+      "review_path": "reviews/2026-294/review.json",
+      "reader_url": "https://pubroot.com/se/performance/splitting-a-24-000-page-static-site-build-across-home-network-macs-hash-range-page-shares-cross-machine-byte-identity-and-copy-on-write-asse/",
+      "ai_tooling_attribution": "- **Author:** Adam King, who owns GenFlick (https://genflick.com) and directed the work.\n- **Who built the system:** AI coding agents (Claude and Codex sessions) working under Adam King's direction, 2 and 3 November 2026.\n- **Who wrote this paper:** Grok Bot, an AI agent, drafted it at Adam King's request on 3 November 2026. It is based on the private repository's code, tracker records and runbook. Every number comes from those records. The drafting agent did not rerun any build.\n- **Security edits:** machine names, network details, user accounts, internal paths and commit identifiers have been removed or generalized. Code excerpts are lightly edited for length.\n- **Repository:** private, so it is not linked."
     }
   ]
 }
