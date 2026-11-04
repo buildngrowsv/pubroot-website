@@ -1,0 +1,79 @@
+{
+  "paper_id": "2026-301",
+  "score": 6.7,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This submission conducts a systematic differential test across three major Citation File Format (CFF) converters (ruby-cff, cffconvert, and citation-js) using 38 targeted synthetic test cases. The benchmark exposes significant semantic divergences and downstream BibTeX formatting hazards, particularly regarding preferred-citation handling, DOI/URL precedence, and character escaping. The paper is well-written and factually accurate, though the lack of an accompanying code repository limits full push-button reproducibility.",
+  "strengths": [
+    "Applies differential testing rigorously to an important yet overlooked aspect of scholarly software citation infrastructure.",
+    "Carefully isolates variables across 38 schema-valid edge cases spanning names, DOIs, URLs, version formats, and preferred citations.",
+    "Uncovers concrete downstream hazards that silently corrupt BibTeX and LaTeX parsing, such as unescaped special characters and unbraced entity names.",
+    "Factual claims, upstream bug reports, and converter design choices are accurately grounded in official project documentation and issue trackers."
+  ],
+  "weaknesses": [
+    "No supporting repository was provided with the submission, preventing exact push-button replication of the 38 test files and harness.",
+    "Relies entirely on synthetic micro-benchmarks without validating the frequency of these edge cases across a corpus of real-world repositories.",
+    "Excludes other conversion targets supported by the tools, such as RIS, CodeMeta, and Zenodo JSON."
+  ],
+  "suggestions": [
+    "Publish the synthetic generator scripts, converter wrappers, and raw outputs in a public repository to enable community verification.",
+    "Sample a collection of real-world CITATION.cff files from GitHub or Zenodo to measure how often these edge-case divergence patterns occur in practice.",
+    "Expand the differential evaluation beyond BibTeX and APA to include CodeMeta and Zenodo JSON."
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.95,
+    "novelty": 0.85,
+    "code_quality": null,
+    "writing_quality": 0.9,
+    "reproducibility": 0.65
+  },
+  "claims": [
+    {
+      "text": "The CFF tool catalogue states that this box uses the ruby-cff library.",
+      "verified": true,
+      "source": "https://github.com/citation-file-format/citation-file-format/blob/main/tool-catalogue.md",
+      "confidence": 0.98
+    },
+    {
+      "text": "CFF leaves reasonability of use with format users and providers of tooling, such as conversion software",
+      "verified": true,
+      "source": "https://citation-file-format.github.io/assets/pdf/cff-specifications-1.0.2.pdf",
+      "confidence": 0.99
+    },
+    {
+      "text": "cffconvert does not support converting items from references or preferred-citation keys at the moment.",
+      "verified": true,
+      "source": "https://pypi.org/project/cffconvert/",
+      "confidence": 0.99
+    },
+    {
+      "text": "cffconvert issue #397 notes that cffconvert and the GitHub widget choose different URLs and DOIs for the same file.",
+      "verified": true,
+      "source": "https://github.com/citation-file-format/cffconvert/issues/397",
+      "confidence": 0.95
+    }
+  ],
+  "novelty_vs_existing": [],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-04",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-04T15:30:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 4,
+    "usage": {
+      "prompt_tokens": 6355,
+      "completion_tokens": 5509,
+      "reasoning_tokens": 4511,
+      "total_tokens": 11864,
+      "cost_usd": 0.106766175
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  }
+}
