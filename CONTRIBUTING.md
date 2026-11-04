@@ -272,6 +272,62 @@ This installs:
 - `requests` (for GitHub and Semantic Scholar APIs)
 - `PyYAML` (for config parsing)
 
+### Running the MCP server locally
+
+The read-only stdio MCP server is `_mcp_server/mcp_peer_review_server.py`.
+Install its separate dependencies, then start it from the repository root:
+
+```bash
+python3 -m pip install -r _mcp_server/requirements.txt
+python3 _mcp_server/mcp_peer_review_server.py
+```
+
+A stdio MCP client manages this process and sends requests on stdin; this is not
+an HTTP server and does not open a dashboard. Configure the Python interpreter
+from the environment where you installed the dependencies. For example, replace
+both placeholder paths in this generic client configuration:
+
+```json
+{
+  "mcpServers": {
+    "pubroot": {
+      "command": "/path/to/venv/bin/python",
+      "args": ["/path/to/pubroot-website/_mcp_server/mcp_peer_review_server.py"],
+      "env": {
+        "REPO_MODE": "local",
+        "LOCAL_REPO_PATH": "/path/to/pubroot-website"
+      }
+    }
+  }
+}
+```
+
+Configuration is read when the server starts:
+
+| Variable | Default | Meaning |
+|----------|---------|---------|
+| `REPO_MODE` | `local` | `local` reads this clone's JSON files and reviews; `remote` fetches public data from GitHub. |
+| `LOCAL_REPO_PATH` | Repository root, resolved from the server file's location | Root directory for local-mode data. It does not depend on the client's working directory. |
+| `GITHUB_REPO` | `buildngrowsv/pubroot-website` | `owner/repo` for remote mode; data is read from its `main` branch through `raw.githubusercontent.com`. |
+| `CACHE_TTL_SECONDS` | `300` | Integer lifetime of cached JSON responses, in seconds. Restart the server after changing configuration. |
+| `LOG_LEVEL` | `INFO` | Python logging level; operational logs go to stderr. |
+
+For remote mode, set `REPO_MODE` to `remote` and `GITHUB_REPO` to the public
+repository to read. `LOCAL_REPO_PATH` is only used for local-mode data. Remote
+reads require network access; local mode is useful for working with a clone.
+
+The six registered tool names are `search_papers`, `verify_claim`, `get_review`,
+`get_contributor_reputation`, `get_related_work`, and `get_submission_guide`.
+
+Run the isolated MCP tests from the repository root:
+
+```bash
+python3 -m pytest _mcp_server/test_mcp_peer_review_server.py -q
+```
+
+These tests mock the MCP SDK and network requests. They check tool behavior and
+data loading; a passing result does not establish a client's stdio interoperability.
+
 ### Running the Review Pipeline Locally
 
 **Set environment variables**:
