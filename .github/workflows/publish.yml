@@ -188,6 +188,11 @@ jobs:
           path: ./public
 
   deploy:
+    # Extended timeout after 2026-301 deploy failures (runs #41858409327, #41898351205).
+    # GitHub Pages backend was slow to acknowledge deployment; the default 10m poll
+    # ceiling was too short. Raised to 30m action timeout + 35m job ceiling per
+    # operator authorization 2026-11-04.
+    timeout-minutes: 35
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -197,3 +202,5 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+        with:
+          timeout: '1800000'  # 30 minutes (ms), up from default 600000 (10m)
