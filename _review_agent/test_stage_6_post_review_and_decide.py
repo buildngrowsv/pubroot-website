@@ -24,6 +24,7 @@ import os
 import tempfile
 import pytest
 import requests
+import yaml
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from unittest.mock import patch, MagicMock
@@ -369,6 +370,48 @@ class TestBuildArticleMd:
     Tests for article markdown generation. The output is a Hugo-compatible
     file with YAML frontmatter that maps to template variables.
     """
+
+    @staticmethod
+    def frontmatter(parsed=SAMPLE_PARSED, repo_data=SAMPLE_REPO_DATA, aliases=None):
+        content = _build_article_md(
+            parsed, SAMPLE_REVIEW_SUCCESS["review"], repo_data, "2026-042",
+            datetime(2026, 3, 22, 17, 0, 0, tzinfo=timezone.utc),
+            legacy_aliases=aliases,
+        )
+        return yaml.safe_load(content.split("---\n", 2)[1])
+
+    @pytest.mark.parametrize("text", [
+        'A "quoted" title: with # symbols',
+        "- leading dash",
+        "> leading marker",
+        'First line: # quoted\nSecond line with "quotes"',
+    ])
+    def test_yaml_round_trip_for_special_title_and_abstract(self, text):
+        parsed = {**SAMPLE_PARSED, "title": text, "abstract": text}
+        frontmatter = self.frontmatter(parsed)
+        expected = text.rstrip("\n") + "\n" if "\n" in text else text
+        assert frontmatter["title"] == expected
+        assert frontmatter["abstract"] == expected
+
+    def test_badge_comes_from_repo_data(self):
+        assert self.frontmatter(repo_data={**SAMPLE_REPO_DATA, "badge_type": "verified_private"})["badge"] == "verified_private"
+        assert self.frontmatter(repo_data={})["badge"] == "text_only"
+
+    @pytest.mark.parametrize("attribution", [None, "", 'Codex: reviewed by "author" #1'])
+    def test_optional_ai_tooling_attribution(self, attribution):
+        parsed = {**SAMPLE_PARSED, "ai_tooling_attribution": attribution}
+        frontmatter = self.frontmatter(parsed)
+        if attribution:
+            assert frontmatter["ai_tooling_attribution"] == attribution
+        else:
+            assert "ai_tooling_attribution" not in frontmatter
+
+    def test_legacy_aliases_round_trip(self):
+        aliases = ["/legacy/article/", '/path/with "quotes"/#fragment']
+        assert self.frontmatter(aliases=aliases)["aliases"] == aliases
+
+    def test_no_aliases_key_when_omitted(self):
+        assert "aliases" not in self.frontmatter()
 
     def test_includes_frontmatter_delimiters(self):
         """Article should start with --- and have a closing ---."""
