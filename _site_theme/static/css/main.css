@@ -45,6 +45,7 @@
   --error-light: #FEF2F2;
   --warning: #F59E0B;
   --warning-light: #FEF3C7;
+  --paper-banner-link-active: #00695C;
   --font-heading: 'Source Serif 4', Georgia, 'Times New Roman', serif;
   --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
@@ -116,6 +117,7 @@
   --error-light: #2F1A1A;
   --warning: #FBBF24;
   --warning-light: #3A2E0B;
+  --paper-banner-link-active: #00D4BE;
   --shadow-sm: 0 1px 3px rgba(0,0,0,0.35);
   --shadow-md: 0 4px 12px rgba(0,0,0,0.4);
 
@@ -963,8 +965,10 @@ h1, h2, h3, h4 {
   text-decoration: underline;
   font-weight: 500;
 }
-.paper-status-banner a:hover {
-  color: var(--accent);
+.paper-status-banner a:hover,
+.paper-status-banner a:focus-visible {
+  color: var(--paper-banner-link-active);
+  text-decoration-thickness: 2px;
 }
 
 /* Article body */
