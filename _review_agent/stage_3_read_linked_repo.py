@@ -164,7 +164,11 @@ def read_linked_repository(
     
     try:
         # Clone the repository
-        clone_cmd = ["git", "clone", "--quiet"]
+        # SECURITY: Disable symlink support during clone to prevent symlink attacks.
+        # This ensures git won't create symlinks even if they exist in the repo.
+        # Combined with runtime symlink checks below, this provides defense in depth
+        # against attempts to exfiltrate secrets or runner files via symlink traversal.
+        clone_cmd = ["git", "-c", "core.symlinks=false", "clone", "--quiet"]
         if not commit_sha:
             clone_cmd.extend(["--depth", "1"])
         clone_cmd.extend([repo_url, tmp_dir])
@@ -378,6 +382,30 @@ def _read_key_files(repo_dir: str, max_bytes: int) -> tuple:
             
             full_path = os.path.join(root, filename)
             rel_path = os.path.relpath(full_path, repo_dir)
+            
+            # SECURITY FIX B1: Block symlinks to prevent exfiltration of secrets or runner files.
+            # A malicious repo could contain a symlink named README.md pointing to /etc/passwd,
+            # .git/config (which contains GITHUB_TOKEN when persist-credentials is true), or
+            # /proc/self/environ (which exposes GEMINI_API_KEY and other secrets). This check
+            # ensures we only read regular files that exist within the cloned repo boundary.
+            # This defense works in combination with git clone -c core.symlinks=false above.
+            if os.path.islink(full_path):
+                continue
+            
+            # SECURITY FIX B1: Verify the resolved path stays within the repo directory.
+            # Even if a symlink was somehow created (e.g., on Windows or via git worktree bugs),
+            # this check ensures we never read files outside the clone. realpath() resolves all
+            # symbolic links and returns the canonical absolute path. We verify it starts with
+            # the repo_dir to prevent directory traversal attacks.
+            try:
+                real_path = os.path.realpath(full_path)
+                repo_real = os.path.realpath(repo_dir)
+                # Ensure the resolved path is inside the repo (or is the repo itself)
+                if not real_path.startswith(repo_real + os.sep) and real_path != repo_real:
+                    continue
+            except (OSError, ValueError):
+                # If we can't resolve the path, skip it rather than risking reading a malicious file
+                continue
             
             # Skip large files (>100KB individual) — they're probably generated or data
             try:

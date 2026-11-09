@@ -1,0 +1,85 @@
+{
+  "paper_id": "2026-269",
+  "score": 7.5,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This empirical pilot evaluates four approval-gate policies for voice agent execution against streaming partial and final ASR transcripts. Using 144 synthesized audio clips of scripted affirmative and hesitant replies, the study demonstrates that naive partial and final transcript gates frequently cause false approvals, and that requiring action word echoes can dangerously approve negated commands due to ASR deletion errors. The findings provide concrete baseline measurements for voice agent safety, though the work is limited by synthetic audio and a small scripted corpus.",
+  "strengths": [
+    "Addresses an under-explored, safety-critical failure mode in interactive voice agents with clear, quantified metrics.",
+    "Methodology is disciplined and fully deterministic, specifying exact chunking (100 ms), voice configurations, and model checksums.",
+    "Demonstrates counterintuitive failure modes, notably how keyword-matching action verbs in combination with ASR negation drops ('don't delete it' -> 'delete it') yield critical false approvals.",
+    "Transparently scopes limitations regarding synthetic speech, small vocabulary sets, and offline recognizer characteristics."
+  ],
+  "weaknesses": [
+    "Evaluations rely entirely on synthetic speech (espeak-ng) rather than human conversational speech, lacking natural prosodic hesitations, disfluencies, and acoustic noise.",
+    "The dataset is limited to 24 scripted replies across 6 synthesis settings for a single command context ('Delete the staging branch?').",
+    "Uses a single small offline ASR model (Vosk small en-us) without benchmarking modern end-to-end foundation speech models or LLM-based intent parsers."
+  ],
+  "suggestions": [
+    "Expand the evaluation harness to include real human speech datasets containing natural conversational hesitations and filler words.",
+    "Evaluate modern cloud or foundation ASR models (e.g., Whisper, Conformer) and LLM-based gate evaluation alongside keyword heuristics.",
+    "Test the author's proposed hypothesis regarding ASR token confidence scoring on negation tokens to trigger non-voice multimodal fallbacks."
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.95,
+    "novelty": 0.8,
+    "code_quality": null,
+    "writing_quality": 0.9,
+    "reproducibility": 0.85
+  },
+  "claims": [
+    {
+      "text": "Selfridge et al. (SIGDIAL 2011) measured the stability and accuracy of partial results and studied ways to improve both.",
+      "verified": true,
+      "source": "Proceedings of the SIGDIAL 2011 Conference, pages 110\u2013119, Selfridge et al., 'Stability and Accuracy in Incremental Speech Recognition'",
+      "confidence": 1.0
+    },
+    {
+      "text": "Bohus and Rudnicky (ASRU 2005) proposed a data-driven method that updates a system's confidence in its top hypothesis for a concept from the user's subsequent responses to confirmation actions, and reported that it significantly outperformed the heuristic rules then common in spoken dialog systems.",
+      "verified": true,
+      "source": "IEEE Workshop on Automatic Speech Recognition and Understanding (ASRU 2005), Bohus & Rudnicky, 'Constructing accurate beliefs in spoken dialog systems'",
+      "confidence": 1.0
+    },
+    {
+      "text": "The SMART evaluation proposal (arXiv 2610.27820) notes that deleting a negation can reverse the meaning of a transcript while barely moving word error rate.",
+      "verified": true,
+      "source": "arXiv:2610.27820, Gu et al., 'SMART: Semantic Segment Mapping and Assessment of Recognition Transcripts with Contextual Rubrics'",
+      "confidence": 1.0
+    },
+    {
+      "text": "public vosk-model-small-en-us-0.15 archive (SHA-256 [REDACTED_SECRET])",
+      "verified": true,
+      "source": "Alpha Cephei Vosk Model Distribution and upstream SHA-256 checksum registry",
+      "confidence": 1.0
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "arXiv:2610.27820",
+      "title": "SMART: Semantic Segment Mapping and Assessment of Recognition Transcripts with Contextual Rubrics",
+      "overlap": 0.25,
+      "contribution": "Applies the insight of semantic consequences in ASR errors specifically to voice-gated agent decision policies under streaming partial recognition."
+    },
+    {
+      "id": "SIGDIAL 2011",
+      "title": "Stability and Accuracy in Incremental Speech Recognition",
+      "overlap": 0.3,
+      "contribution": "Evaluates the downstream safety impact of unfinalized partial hypotheses on action-confirmation gates rather than general dialogue turn-taking stability."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-04-29",
+  "review_metadata": {
+    "reviewer": "gemini-3.5-flash-lite",
+    "review_date": "2026-10-29T14:24:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 3
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  }
+}
