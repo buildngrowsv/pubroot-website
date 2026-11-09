@@ -1407,17 +1407,17 @@ def build_parser():
     p_install.set_defaults(func=cmd_install)
 
     # --- mcp ---
-    # NEW: Start the MCP server over stdio for agent integration
-    # This enables `uvx pubroot mcp` to work as a one-line MCP server install
+    # NEW: Start the MCP server over stdio or HTTP
+    # This enables `uvx pubroot mcp` (stdio) or `pubroot mcp --http` (HTTP server)
     p_mcp = subs.add_parser(
         "mcp",
-        help="Start the MCP server over stdio (for agent integration)"
+        help="Start the MCP server (stdio or HTTP transport)"
     )
     p_mcp.add_argument(
         "--mode",
         choices=["local", "remote"],
         default="remote",
-        help="Data source: 'local' (filesystem) or 'remote' (GitHub raw URLs). Default: remote"
+        help="Data source: 'local' (filesystem) or 'remote' (pubroot.com URLs). Default: remote"
     )
     p_mcp.add_argument(
         "--repo",
@@ -1429,6 +1429,22 @@ def build_parser():
         default=None,
         help="Local repo path for local mode. Default: auto-detect or current directory"
     )
+    p_mcp.add_argument(
+        "--http",
+        action="store_true",
+        help="Use HTTP transport (Streamable HTTP) instead of stdio. For hosted deployment."
+    )
+    p_mcp.add_argument(
+        "--host",
+        default="0.0.0.0",
+        help="HTTP server host (only with --http). Default: 0.0.0.0"
+    )
+    p_mcp.add_argument(
+        "--port",
+        type=int,
+        default=8080,
+        help="HTTP server port (only with --http). Default: 8080"
+    )
     p_mcp.set_defaults(func=cmd_mcp)
 
     return parser
@@ -1436,15 +1452,18 @@ def build_parser():
 
 def cmd_mcp(args):
     """
-    Start the MCP server over stdio.
+    Start the MCP server over stdio or HTTP.
     
     This is the entry point for `pubroot mcp`, which starts the MCP server
-    that agents can connect to via the Model Context Protocol. The server
-    reads data from either local filesystem or GitHub raw URLs.
+    that agents can connect to via the Model Context Protocol.
     
-    IMPORTANT: This function does NOT return — it runs the async event loop
-    for the MCP server. When invoked, it transfers control to the MCP server
-    module's main() function, which handles stdio transport and tool routing.
+    Modes:
+    - stdio (default): for local agent integration (spawned subprocess)
+    - HTTP (--http): for hosted deployment with Streamable HTTP transport
+    
+    The server reads data from either local filesystem or remote URLs (pubroot.com).
+    
+    IMPORTANT: This function does NOT return — it runs the MCP server loop.
     """
     # Set environment variables for the MCP server based on CLI args
     os.environ["REPO_MODE"] = args.mode
@@ -1456,11 +1475,20 @@ def cmd_mcp(args):
     # We import here (not at module top) to avoid loading MCP dependencies
     # when users just want to run CLI commands like 'pubroot search'
     try:
-        from pubroot.mcp_server import main as mcp_main
-        mcp_main()
+        if args.http:
+            # HTTP mode: start HTTP server with Streamable HTTP transport
+            from pubroot.mcp_server import main_http
+            print(f"Starting Pubroot MCP server on http://{args.host}:{args.port}", file=sys.stderr)
+            print(f"MCP endpoint: http://{args.host}:{args.port}/mcp", file=sys.stderr)
+            print(f"Health check: http://{args.host}:{args.port}/healthz", file=sys.stderr)
+            main_http(host=args.host, port=args.port)
+        else:
+            # Stdio mode: start stdio server (default)
+            from pubroot.mcp_server import main_stdio
+            main_stdio()
     except ImportError as e:
         print(f"Error: MCP server dependencies not available: {e}", file=sys.stderr)
-        print("Install with: pip install 'pubroot[mcp]' or pip install mcp>=1.1.0", file=sys.stderr)
+        print("Install with: pip install pubroot", file=sys.stderr)
         sys.exit(1)
 
 

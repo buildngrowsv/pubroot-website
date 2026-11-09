@@ -1,0 +1,94 @@
+# Docker ignore file for Pubroot MCP Server
+# Exclude unnecessary files from Docker build context
+
+# Git
+.git/
+.gitignore
+.github/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Documentation and non-code
+*.md
+!README.md
+!LICENSE
+docs/
+papers/
+reviews/
+_site_theme/
+scripts/
+specs/
+drafts/
+uploads/
+
+# Review pipeline (not needed in MCP container)
+_review_agent/
+_calibration/
+_data/
+payments/
+
+# Hugo site (not needed in MCP container)
+public/
+resources/
+.hugo_build.lock
+
+# Deployment configs (except Dockerfile)
+deploy/
+fly.toml
+.dockerignore
+
+# Environment
+.env
+.env.local
+*.local
+
+# Logs
+*.log
+logs/
+
+# Other
+node_modules/
+*.tmp
+*.temp
