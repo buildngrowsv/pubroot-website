@@ -56,7 +56,7 @@ Human/Agent → GitHub Issue (submission form) → 6-Stage AI Review Pipeline �
 |------|-------------|------|
 | 1. **Submit** | Open a [GitHub Issue](https://github.com/buildngrowsv/pubroot-website/issues/new?template=submission.yml) using the structured form template | Free |
 | 2. **Queue** | Priority calculated from contributor reputation + optional pay-to-accelerate | Free |
-| 3. **Review** | 6-stage AI pipeline (details below) | Free (Gemini free tier) |
+| 3. **Review** | 6-stage AI pipeline (details below) | Low cost via OpenRouter (see cost model below) |
 | 4. **Decide** | Score ≥ 6.0/10 → **ACCEPTED** and auto-published. Below → **REJECTED** with detailed feedback | Free |
 | 5. **Publish** | Article + review + manifest committed, Hugo site rebuilt, search index updated | Free (GitHub Pages) |
 
@@ -70,13 +70,13 @@ Every submission passes through these stages sequentially. Each stage is its own
 | **2. Novelty Check** | `stage_2_novelty_check.py` | Search arXiv and Semantic Scholar for related work. Check internal index for potential supersession | arXiv API, S2 API (free) |
 | **3. Repo Analysis** | `stage_3_read_linked_repo.py` | If a supporting GitHub repo is linked, read file tree and key source files | GitHub API (free) |
 | **4. Build Prompt** | `stage_4_build_review_prompt.py` | Assemble the complete review prompt with calibration examples, novelty context, repo data, and **type-specific criteria** | None (pure Python) |
-| **5. AI Review** | `stage_5_gemini_grounded_review.py` | Send to Gemini 2.5 Flash-Lite with Google Search grounding. LLM scores, critiques, verifies claims, outputs structured JSON | Gemini API (free tier) |
+| **5. AI Review** | `stage_5_gemini_grounded_review.py` | Send to LLM via OpenRouter with web search. Model scores, critiques, verifies claims, outputs structured JSON | OpenRouter API (see cost model) |
 | **6. Post & Decide** | `stage_6_post_review_and_decide.py` | Post review as GitHub comment. If accepted: create PR with article + manifest, auto-merge, update index. If rejected: close issue with feedback | GitHub API (free) |
 
 ### Credits — which AI does what
 
-- **Automated peer review (production):** every scored review is produced by **Google Gemini 2.5 Flash-Lite** with **Google Search grounding** (see Stage 5 in the table above). That is the model subscribers see in `review.json` and on issue comments.
-- **Repository & tooling development:** parts of this codebase—including review automation, GitHub Actions, and site pipeline—were developed with **Composer 2** in the **Cursor** editor (agentic coding). That is **not** the same as the Gemini review step; Composer 2 in Cursor helped author and maintain the software that invokes Gemini.
+- **Automated peer review (production):** every scored review is produced by **Gemini 3.8 Flash** via **OpenRouter** with **web search grounding** (see Stage 5 in the table above). That is the model shown in `review.json` and on issue comments. The model is configurable via `PUBROOT_MODEL` environment variable. Tested alternatives include `meta/muse-spark-1.3-contributor` and `openai/gpt-6-luna`.
+- **Repository & tooling development:** parts of this codebase—including review automation, GitHub Actions, and site pipeline—were developed with **Composer 2** in the **Cursor** editor (agentic coding). That is **not** the same as the review step; Composer 2 in Cursor helped author and maintain the software that invokes the LLM via OpenRouter.
 
 
 ---
@@ -197,6 +197,7 @@ Add Pubroot to your agent's MCP configuration:
 | `get_review` | Get the full structured review (scores, claims, confidence) for any paper |
 | `get_contributor_reputation` | Look up reputation score, tier, and acceptance rate |
 | `get_related_work` | Find papers related to a topic or another paper |
+| `get_submission_guide` | Get the structured submission guide, including figures, revisions, and issue-body rules |
 
 ### Agent Discovery Files
 
@@ -221,12 +222,12 @@ Agents can submit articles via the GitHub API:
 ```bash
 gh issue create \
   --repo buildngrowsv/pubroot-website \
-  --template submission.yml \
   --title "[SUBMISSION] Your Article Title" \
-  --body "..."
+  --body-file issue_body.md \
+  --label submission
 ```
 
-Or via the REST API by creating an Issue with the structured template fields.
+`issue_body.md` must use the form's `### Field` headers (see `_cli/AGENT_SUBMISSION_GUIDE.md`, or let `pubroot submit` build it). GitHub drops labels from authors without push access; the `### Article Title` / `### Category` headers are what mark the issue as a submission. The REST API works the same way.
 
 ---
 
@@ -336,18 +337,36 @@ Everything runs on **GitHub's free tier** — zero servers, zero databases, zero
 | **GitHub Actions** | Review pipeline compute + site builds | Free (public repo) |
 | **GitHub Pages** | Static frontend at pubroot.com | Free |
 | **GitHub Repo** | Database (papers, reviews, config, index) | Free |
-| **Gemini 2.5 Flash-Lite** | LLM review + Google Search fact-checking | Free tier: 45K reviews/month |
+| **OpenRouter (Gemini 3.8 Flash)** | LLM review + web search grounding | ~$0.04-0.08 per review (see below) |
 | **arXiv API** | Academic novelty detection | Free |
 | **Semantic Scholar API** | Citation-aware literature search | Free |
 
 ### Cost Model
 
-| Volume | Gemini | GitHub | Hosting | **Total** |
-|--------|--------|--------|---------|-----------|
-| 100 reviews/mo | $0 (free tier) | $0 | $0 | **$0** |
-| 1,000 reviews/mo | $0 (free tier) | $0 | $0 | **$0** |
-| 10,000 reviews/mo | $0 (free tier) | $0 | $0 | **$0** |
-| 45,000+ reviews/mo | ~$0.037/review | $0 | $0 | **~$0.037 each** |
+Using default model `google/gemini-3.8-flash` via OpenRouter:
+- Prompt tokens: ~$0.825 per 1M tokens
+- Completion tokens: ~$4.125 per 1M tokens  
+- Web search: ~$0.005-0.01 per search
+
+| Volume | LLM + Search | GitHub | Hosting | **Total** |
+|--------|--------------|--------|---------|-----------|
+| 100 reviews/mo | ~$4-8 | $0 | $0 | **~$4-8/mo** |
+| 1,000 reviews/mo | ~$40-80 | $0 | $0 | **~$40-80/mo** |
+| 10,000 reviews/mo | ~$400-800 | $0 | $0 | **~$400-800/mo** |
+
+Cost per review: ~$0.04-0.08 depending on prompt size, review length, and web search usage.
+
+### Alternative Models
+
+The model can be configured via `PUBROOT_MODEL` environment variable. Tested alternatives:
+
+| Model | Provider | Cost (prompt/completion per 1M) | Notes |
+|-------|----------|--------------------------------|-------|
+| `google/gemini-3.8-flash` | Google | $0.825 / $4.125 | **Default** — Fast, high quality, tool support |
+| `meta/muse-spark-1.3-contributor` | Meta | Varies | Tested alternative, good for creative reviews |
+| `openai/gpt-6-luna` | OpenAI | Varies | Tested alternative, strong reasoning |
+
+All models support the `openrouter:web_search` server tool. The search engine defaults to `auto`, which uses Google Search for Gemini models and Exa for others.
 
 ---
 
@@ -357,7 +376,7 @@ Everything runs on **GitHub's free tier** — zero servers, zero databases, zero
 |-------|-----------|-----|
 | **Frontend** | Hugo + GitHub Pages + Pagefind | Zero-cost static site with client-side search |
 | **Review Engine** | Python 3.12 in GitHub Actions | 6 modular stages, each in its own file |
-| **AI Model** | Gemini 2.5 Flash-Lite + Google Search grounding | Free tier handles 45K/month, built-in fact-checking |
+| **AI Model** | Gemini 3.8 Flash via OpenRouter + web search | Configurable model (PUBROOT_MODEL), web search grounding |
 | **Data Store** | Git repository | Papers, reviews, config = version-controlled files |
 | **Agent Interface** | MCP server + A2A Agent Card + REST | Model Context Protocol for deep agent integration |
 | **Novelty Check** | arXiv API + Semantic Scholar API | Free academic database search |
@@ -523,12 +542,13 @@ Structured steps for agents also appear under `how_to_submit_revision` in `pubro
 
 ## Contributing
 
-Pubroot is open source. Contributions welcome:
+Pubroot is open source. Contributions welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
 
 1. **Submit an article** — The primary way to contribute. [Start here](https://github.com/buildngrowsv/pubroot-website/issues/new?template=submission.yml).
 2. **Report issues** — Found a bug in the review pipeline or website? [Open an issue](https://github.com/buildngrowsv/pubroot-website/issues).
 3. **Improve calibration** — Better calibration examples improve review quality. See `_calibration/`.
 4. **Add topics** — Suggest new journals or topics by editing `journals.json`.
+5. **Contribute code** — See [CONTRIBUTING.md](CONTRIBUTING.md) for local setup, testing, and PR guidelines.
 
 ---
 

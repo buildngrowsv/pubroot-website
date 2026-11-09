@@ -1,0 +1,86 @@
+{
+  "paper_id": "2026-293",
+  "score": 7.7,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This case study provides an empirical audit of a local continuous integration lane processing commits from concurrent coding agents, identifying that test selection overheads frequently surpassed test execution times. Through profiling 332 runs and implementing targeted optimizations\u2014including Git read memoization, per-blob reader caching, and per-file miss holds\u2014the authors reduced selection wall and CPU times substantially. The study offers valuable practical insights and cautionary lessons for engineering teams adopting test-impact analysis.",
+  "strengths": [
+    "Identifies an important real-world failure mode where the computational overhead of regression test selection dominates the runtime of modern test runners.",
+    "Provides concrete, quantitative metrics across 332 runs, including median and p90 percentiles for each phase of the local CI pipeline.",
+    "Details actionable architectural fixes for common CI pitfalls, such as memoizing Git object lookups, avoiding redundant tree searches, and decoupling worker threads.",
+    "Introduces an innovative 'per-file miss hold' policy that preserves safety without falling back to expensive global selection disabling."
+  ],
+  "weaknesses": [
+    "No public code repository or sanitized dataset is provided to independently reproduce or inspect the selector tooling and replay runs.",
+    "The evaluation is restricted to a single repository on a single high-spec operator workstation (Apple M4 Max), limiting generalization across diverse hosting architectures.",
+    "The post-optimization benchmarks rely primarily on a single replay run at load 70 and one follow-up verify rather than multi-run distributions with statistical confidence intervals."
+  ],
+  "suggestions": [
+    "Provide a minimal reproducible benchmark repository demonstrating the Git subprocess memoizer and the per-blob reader search cache.",
+    "Collect and report multi-run variance (e.g., box plots or interquartile ranges) across multiple CI days to substantiate post-fix performance stability under varying load conditions.",
+    "Formalize the 'miss hold' state transition machine into a standalone specification or reusable package for test runners like Vitest or Jest."
+  ],
+  "confidence": {
+    "methodology": 0.8,
+    "factual_accuracy": 0.9,
+    "novelty": 0.75,
+    "code_quality": null,
+    "writing_quality": 0.9,
+    "reproducibility": 0.6
+  },
+  "claims": [
+    {
+      "text": "Ekstazi (Gligoric, Eloussi and Marinov, ISSTA 2015) selects tests by dynamically recorded file dependencies and reports that cheap, coarse dependencies beat finer analyses once the cost of the analysis itself is counted.",
+      "verified": true,
+      "source": "https://doi.org/10.1145/2771783.2771784",
+      "confidence": 0.98
+    },
+    {
+      "text": "Meta's predictive test selection (Machalica et al., ICSE-SEIP 2019) selects at very large scale on dedicated infrastructure.",
+      "verified": true,
+      "source": "https://doi.org/10.1109/ICSE-SEIP.2019.00018",
+      "confidence": 0.99
+    },
+    {
+      "text": "Google's TAP (Memon et al., ICSE-SEIP 2017) and continuous testing research analyze test dependencies and frequency across large codebases.",
+      "verified": true,
+      "source": "https://doi.org/10.1109/ICSE-SEIP.2017.16",
+      "confidence": 0.98
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "ISSTA-2015-Ekstazi",
+      "title": "Practical Regression Test Selection with Dynamic File Dependencies",
+      "overlap": 0.45,
+      "contribution": "While Ekstazi established the viability of dynamic file-dependency selection, this case study documents real-world operational bottlenecks in an agent-heavy environment where selection tooling and redundant Git diff subprocesses overtook test execution."
+    },
+    {
+      "id": "ICSE-SEIP-2019-Machalica",
+      "title": "Predictive Test Selection",
+      "overlap": 0.35,
+      "contribution": "Focuses on local, deterministic impact-based test selection and Git query memoization on developer workstations, in contrast to machine-learning-based predictive selection operating across distributed data-center pipelines."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-03T16:34:00Z",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-03T16:34:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 4,
+    "usage": {
+      "prompt_tokens": 7336,
+      "completion_tokens": 2165,
+      "reasoning_tokens": 946,
+      "total_tokens": 9501,
+      "cost_usd": 0.066948425
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  }
+}

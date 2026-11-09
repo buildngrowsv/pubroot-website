@@ -1,0 +1,79 @@
+{
+  "paper_id": "2026-267",
+  "score": 7.3,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This study conducts a pinned-version offline replay of closed-as-completed bug reports from the Cloudflare Workers SDK repository. The authors find that 'closed as completed' is an imperfect proxy for resolved bugs due to issue conversions to discussions and withdrawn reports, while demonstrating that most reproducible local bugs can be validated offline with minor configuration adjustments. The methodology is well-documented and transparent, though limited by a modest sample size.",
+  "strengths": [
+    "Pragmatic and rigorous replay methodology tracking exact version pins, environment configurations, and minimal code edits required for reproducibility.",
+    "Uncovers a notable practical pitfall in automated issue mining: GitHub issue-to-discussion conversions and withdrawn reports being tagged as 'completed' by default APIs.",
+    "Transparent reporting of negative results, repro modifications, and clear scoping of inclusion/exclusion criteria.",
+    "Provides a reproducible template and pilot protocol for larger-scale empirical evaluations of serverless and runtime toolchain fidelity."
+  ],
+  "weaknesses": [
+    "Small sample size (10 sampled, 8 replayed), limiting quantitative claims to counts rather than statistically significant rates.",
+    "Host OS discrepancies (Linux testing box versus macOS environments used by original issue filers) could obscure platform-specific edge cases.",
+    "The concept of an 'edit budget' is pragmatic but remains qualitative and lacks formalized boundaries across different toolchain environments."
+  ],
+  "suggestions": [
+    "Formalize the 'edit budget' heuristics into categorized mutation rules (e.g., directory restructuring vs. config injection) to standardize repro replay across studies.",
+    "Expand the dataset to include a larger multi-month frame or cross-runtime sample (e.g., Deno, Bun) to determine whether the 25% discrepancy rate generalizes across modern JavaScript runtime ecosystems.",
+    "Evaluate fix commits directly alongside release tags to pinpoint whether fixes occurred in the core runtime (workerd) or toolchain wrapper layers (wrangler/miniflare)."
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.9,
+    "novelty": 0.75,
+    "code_quality": null,
+    "writing_quality": 0.85,
+    "reproducibility": 0.8
+  },
+  "claims": [
+    {
+      "text": "Mazhar et al. (ICSE 2025) measured emulator fidelity directly. They fuzzed 255 APIs of LocalStack and Azurite against the real AWS and Azure services and found discrepancies in 94 (37%).",
+      "verified": true,
+      "source": "https://doi.org/10.1109/icse55347.2025.00077",
+      "confidence": 0.95
+    },
+    {
+      "text": "Rahman, Khomh and Castelluccio (ICSME 2020) studied why bug reports in Firefox and Eclipse are not reproducible",
+      "verified": true,
+      "source": "https://doi.org/10.1109/icsme46990.2020.00063",
+      "confidence": 0.95
+    },
+    {
+      "text": "Cloudflare's announcement of Miniflare 3 on workerd describes the move from reimplemented APIs to the production runtime as nearly removing behaviour mismatches.",
+      "verified": true,
+      "source": "https://blog.cloudflare.com/miniflare-and-workerd/",
+      "confidence": 0.9
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "10.1109/icse55347.2025.00077",
+      "title": "Fidelity of Cloud Emulators: The Imitation Game of Testing Cloud-Based Software",
+      "overlap": 0.35,
+      "contribution": "Focuses on replaying reporter-provided minimal bug issue scripts offline across versions in Cloudflare Workers rather than fuzzing cloud emulator APIs against production backends."
+    },
+    {
+      "id": "10.1109/icsme46990.2020.00063",
+      "title": "Why are Some Bugs Non-Reproducible? An Empirical Investigation using Data Fusion",
+      "overlap": 0.3,
+      "contribution": "Examines closed-as-completed issue status fidelity and offline replayability specifically within serverless local toolchains instead of investigating non-reproducible bug reports in desktop/IDE software."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-04-29",
+  "review_metadata": {
+    "reviewer": "gemini-3.5-flash-lite",
+    "review_date": "2026-10-29T14:22:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 2
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  }
+}

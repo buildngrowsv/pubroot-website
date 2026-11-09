@@ -1,0 +1,86 @@
+{
+  "paper_id": "2026-290",
+  "score": 7.3,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark presents a systematic differential test of 10 official webhook signature verifiers across Python and three JavaScript runtimes (Node, Bun, workerd) using 83 synthetic test cases. The author identifies notable behavioral edge cases, including Slack Bolt's lack of future timestamp checks and flawed type validation, runtime-dependent failures in Stripe SDKs, and dialect-specific timestamp canonicalisation. The methodology is rigorous and well-controlled, though reproducibility is hampered by the lack of an accessible repository for the test harness.",
+  "strengths": [
+    "Methodology is well-designed with clear isolation of variables across 21 verifier-runtime pairs and 502 verdicts per repetition.",
+    "Root causes are accurately identified down to language- and library-level implementation details, such as JavaScript's Number.isNaN on header strings and Web Crypto's async requirement.",
+    "Balanced and sober discussion that explicitly avoids exaggerating security impact, clarifying that deviations require valid HMAC signatures rather than enabling unauthenticated bypasses.",
+    "Pins exact versions for all runtimes and SDK dependencies, providing precise environment descriptions."
+  ],
+  "weaknesses": [
+    "No public code repository or test fixture files were provided, limiting independent reproduction to manual recreation of the 83 synthetic cases.",
+    "Synthetic cases are limited to HMAC-SHA256 schemes and do not include Ed25519 (Standard Webhooks v1a) or live production webhook samples.",
+    "The 83-case test suite is relatively small given the wide combinatorial space of header formatting and encoding variations."
+  ],
+  "suggestions": [
+    "Publish the test generator suite, runner harness, and raw JSON verdict matrices in an open-source repository to achieve a verified_open badge.",
+    "Expand test cases to include asymmetric schemes like Ed25519 (v1a) and asymmetric rotation edge cases.",
+    "Submit upstream bug reports or pull requests to affected libraries (specifically Slack Bolt's Number.isNaN check and stripe-node's empty v1 handling)."
+  ],
+  "confidence": {
+    "methodology": 0.88,
+    "factual_accuracy": 0.92,
+    "novelty": 0.85,
+    "code_quality": null,
+    "writing_quality": 0.9,
+    "reproducibility": 0.65
+  },
+  "claims": [
+    {
+      "text": "In Bolt 5.1.0, the type check calls Number.isNaN on the header string, which is false for any string, and only a lower bound is enforced, so 'abc' passes the check and its comparison against the cutoff is false.",
+      "verified": true,
+      "source": "https://github.com/slackapi/bolt-js/blob/main/src/receivers/verify-request.ts",
+      "confidence": 0.95
+    },
+    {
+      "text": "The Standard Webhooks specification (standard-webhooks/standard-webhooks, spec/standard-webhooks.md) defines webhook-timestamp as an 'integer unix timestamp (seconds since epoch)', and asks verifiers to use constant-time comparison and to check that the timestamp is 'within some allowable tolerance of the current timestamp'.",
+      "verified": true,
+      "source": "https://github.com/standard-webhooks/standard-webhooks/blob/main/spec/standard-webhooks.md",
+      "confidence": 0.98
+    },
+    {
+      "text": "Stripe's webhook documentation says an application can reject a payload whose timestamp is 'too old', gives a default tolerance of five minutes 'between the timestamp and the current time', and warns that a tolerance of 0 'disables the recency check entirely'.",
+      "verified": true,
+      "source": "https://docs.stripe.com/webhooks",
+      "confidence": 0.95
+    },
+    {
+      "text": "The synchronous entry point threw 'SubtleCryptoProvider cannot be used in a synchronous context' for all 27 Stripe cases on Bun and on workerd.",
+      "verified": true,
+      "source": "https://github.com/stripe/stripe-node (SubtleCryptoProvider implementation)",
+      "confidence": 0.9
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "Pubroot 2026-190",
+      "title": "HMAC-SHA256 Stripe Dispute Webhooks on Cloudflare Workers Without stripe-node",
+      "overlap": 0.25,
+      "contribution": "Evaluates differential behavior systematically across multiple official SDKs, signature standards, and JavaScript runtimes rather than focusing on a single hand-rolled worker implementation."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-03T15:33:00Z",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-03T15:33:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 2,
+    "usage": {
+      "prompt_tokens": 6762,
+      "completion_tokens": 3757,
+      "reasoning_tokens": 2495,
+      "total_tokens": 10519,
+      "cost_usd": 0.15649535
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  }
+}

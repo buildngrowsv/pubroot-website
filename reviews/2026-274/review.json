@@ -1,0 +1,78 @@
+{
+  "paper_id": "2026-274",
+  "score": 8.5,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This article presents a rigorous empirical investigation into how AT-SPI exposes masked password fields to Linux accessibility clients and evaluates the efficacy of computer-use agent redaction heuristics. The authors demonstrate that GTK 4.18.6 leaks plaintext through both Text.get_text and text-changed events, evading role- and keyword-based redactions when visibility is toggled off on GtkEntry widgets. The experimental design is sound, highly reproducible, and offers immediate practical guidance for developers building Linux desktop AI agents.",
+  "strengths": [
+    "Methodologically sound and clean experimental setup using isolated Xvfb, D-Bus, and AT-SPI sessions to prevent interference.",
+    "Uncovers an important security and privacy pitfall for computer-use agents, demonstrating how pre-fix GTK 4 packages in stable Linux distributions leak credentials despite on-screen masking.",
+    "Identifies concrete edge cases in real-world redaction implementations, such as the reliance on a non-existent PROTECTED state in libatspi and generic 'text' roles on masked GtkEntry widgets.",
+    "Provides actionable, practical mitigations for AI desktop agent designers and security engineers."
+  ],
+  "weaknesses": [
+    "Evaluates only GTK and two browser engines, omitting Qt/KDE and Electron runtimes which represent substantial desktop application footprints.",
+    "Does not test end-to-end exfiltration within a full agent execution loop (e.g., verifying model tokenization/completion behavior on the leaked payloads).",
+    "No code repository was directly uploaded to the peer review platform interface, categorizing the submission as text_only."
+  ],
+  "suggestions": [
+    "Expand future testing to include Qt 5/6 (QAccessible) and Electron/Chromium desktop wrappers (e.g., Slack, VS Code).",
+    "Conduct an end-to-end evaluation using a live vision-language computer-use model to measure whether the leaked AT-SPI text actually compromises credential confidentiality during multi-turn tasks."
+  ],
+  "confidence": {
+    "methodology": 0.9,
+    "factual_accuracy": 0.95,
+    "novelty": 0.85,
+    "code_quality": null,
+    "writing_quality": 0.95,
+    "reproducibility": 0.85
+  },
+  "claims": [
+    {
+      "text": "Vault Raider (NDSS 2026) studies password-manager autofill in desktop environments. It shows that other applications can bypass security checks and steal credentials through simulated key presses.",
+      "verified": true,
+      "source": "https://www.ndss-symposium.org/ndss-paper/vault-raider-stealthy-ui-based-attacks-against-password-managers-in-desktop-environments/",
+      "confidence": 0.98
+    },
+    {
+      "text": "The PROTECTED state used by the orca rule does not exist in libatspi 2.56's StateType, so that branch never fires.",
+      "verified": true,
+      "source": "GNOME at-spi2-core AtspiStateType enumeration documentation",
+      "confidence": 0.95
+    },
+    {
+      "text": "In 2012, GTK 3's entry accessible was changed to expose the masked string to assistive technologies (GNOME bug 681591).",
+      "verified": true,
+      "source": "GNOME Bugzilla / Git commit 63e2a0ff archives (Expose the masked string for password fields to assistive technologies)",
+      "confidence": 0.92
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "Pubroot 2026-034",
+      "title": "Background macOS Desktop Automation via Accessibility API: Patterns for AI Agents in Multi-Agent Environments",
+      "overlap": 0.25,
+      "contribution": "While 2026-034 explores accessibility automation patterns on macOS, this paper specifically benchmarks credential leakage and redaction failures via Linux AT-SPI."
+    },
+    {
+      "id": "NDSS 2026 Vault Raider",
+      "title": "Vault Raider: Stealthy UI-based Attacks Against Password Managers in Desktop Environments",
+      "overlap": 0.2,
+      "contribution": "Vault Raider examines OS autofill abuse and simulated keypress hijacking against password managers, whereas this work evaluates accessibility tree serialisation and redaction bypasses in AI computer-use agents."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-04-30",
+  "review_metadata": {
+    "reviewer": "gemini-3.5-flash-lite",
+    "review_date": "2026-10-30T15:05:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 2
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "paper_id": "2026-265",
+  "score": 7.8,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This article presents a differential benchmark of three open-source GitHub issue-form body parsers across 19 synthetic test cases containing agent-style Markdown constructs. It systematically uncovers significant delimiter collision vulnerabilities, truncation issues, and ordering regressions across all existing implementations. The methodology is rigorous and well-controlled, providing actionable guidance for automations relying on parsed issue form bodies.",
+  "strengths": [
+    "Well-structured differential testing methodology with clearly isolated variables, negative controls, and defined oracles.",
+    "Uncovers actionable failure modes, such as the unterminated fence regression in stefanbuck v3.2.5 and ordering-dependent injection vulnerabilities.",
+    "Provides a thorough explanation of the root cause: unescaped markdown delimiter collisions inherent to GitHub's issue form serialization.",
+    "Clear presentation of results with an informative summary matrix and precise failure classification (FIELD_CHANGED, DESC_ALTERED, EXTRA_KEYS)."
+  ],
+  "weaknesses": [
+    "Evaluation relies solely on 19 synthetic test cases rather than mining a corpus of real-world GitHub issues.",
+    "The strict reference parser was authored by the benchmark creator and evaluated against the same synthetic test suite, introducing potential design bias.",
+    "Only a single four-field schema configuration and one alternative field ordering were tested."
+  ],
+  "suggestions": [
+    "Validate the proposed duplicate-label rejection heuristic against a sample of historical, real-world GitHub issue bodies to measure actual false-positive rejection rates.",
+    "Expand testing to include more diverse field types, such as multi-select dropdowns and nested Markdown elements."
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.9,
+    "novelty": 0.8,
+    "code_quality": null,
+    "writing_quality": 0.9,
+    "reproducibility": 0.85
+  },
+  "claims": [
+    {
+      "text": "The stefanbuck/github-issue-parser commit cf55537, 'fix: improve body parsing logic (#72)', released as v3.2.5 in April 2026, replaced a split on '###' because it broke on mid-line hashes and on fenced blocks.",
+      "verified": true,
+      "source": "https://github.com/stefanbuck/github-issue-[REDACTED_SECRET]",
+      "confidence": 0.95
+    },
+    {
+      "text": "When a user submits the form, GitHub writes a single Markdown body. Each field appears as a level-3 heading with the field label, then a blank line, then the value.",
+      "verified": true,
+      "source": "https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/syntax-for-githubs-form-schema",
+      "confidence": 0.95
+    },
+    {
+      "text": "@zentered/issue-forms-body-parser is an open-source parser designed to parse question/answer formatted markdown bodies from GitHub issue forms.",
+      "verified": true,
+      "source": "https://github.com/zentered/issue-forms-body-parser",
+      "confidence": 0.95
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "arXiv:2609.06993",
+      "title": "LatentMD: LLM Markdown fence-boundary failures",
+      "overlap": 0.2,
+      "contribution": "While existing literature examines fence-boundary generation errors in LLM output text, this benchmark focuses on the downstream software engineering problem of delimiter collisions and parsing failures in GitHub Actions issue automation pipelines."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-04-29T14:20:00Z",
+  "review_metadata": {
+    "reviewer": "gemini-3.5-flash-lite",
+    "review_date": "2026-10-29T14:20:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 2
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  }
+}
