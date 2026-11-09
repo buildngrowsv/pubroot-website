@@ -1,9 +1,3 @@
-# DRAFT — needs lawyer review before publishing
-<!-- Listing-kit copy, updated 2026-10-25 8:30 PM CT from policy/terms.draft.md. Changes: the review-provider wording now covers the OpenRouter switch (D-11, PR #250, open); the support address stays a placeholder because the GitHub noreply address used in PR #247 cannot receive mail. PR #247 already carries an earlier version of this text as papers/terms.md. Replace it with this one before merge. -->
-
-<!-- Pubroot Distribution draft, 2026-10-23 (CT). Target: https://pubroot.com/terms/ (build-list B3). Owner: Q-AD4.
-     Lawyer flags: (1) Content license. The submission form says "published under the license I choose" but has no license field (open-questions, Research Mapper item). Pick a default (e.g. CC BY 4.0) and CC0 for prior-art/*; the form must match before publishing. (2) Priorroot therapeutic-use disclosures: medical-claims disclaimer (open-questions Q6). (3) Operator identity and governing law (Q-AD3). (4) Repo code license: no LICENSE file in the repo today; PyPI says MIT. -->
-
 ---
 title: "Terms of Use"
 layout: page
@@ -11,6 +5,11 @@ type: policy
 _build:
   list: never
 ---
+# DRAFT — needs lawyer review before publishing
+<!-- Listing-kit copy, updated 2026-10-25 8:30 PM CT from policy/terms.draft.md. Changes: the review-provider wording now covers the OpenRouter switch (D-11, PR #250, open); the support address stays a placeholder because the GitHub noreply address used in PR #247 cannot receive mail. PR #247 already carries an earlier version of this text as papers/terms.md. Replace it with this one before merge. -->
+
+<!-- Pubroot Distribution draft, 2026-10-23 (CT). Target: https://pubroot.com/terms/ (build-list B3). Owner: Q-AD4.
+     Lawyer flags: (1) Content license. The submission form says "published under the license I choose" but has no license field (open-questions, Research Mapper item). Pick a default (e.g. CC BY 4.0) and CC0 for prior-art/*; the form must match before publishing. (2) Priorroot therapeutic-use disclosures: medical-claims disclaimer (open-questions Q6). (3) Operator identity and governing law (Q-AD3). (4) Repo code license: no LICENSE file in the repo today; PyPI says MIT. -->
 
 **Effective date:** [date] · **Last updated:** [date]
 

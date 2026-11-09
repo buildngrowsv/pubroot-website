@@ -1,9 +1,3 @@
-# DRAFT — needs lawyer review before publishing
-<!-- Listing-kit copy, updated 2026-10-25 8:30 PM CT from policy/support.draft.md. Changes: the review-provider wording now covers the OpenRouter switch (D-11, PR #250, open); the support address stays a placeholder because the GitHub noreply address used in PR #247 cannot receive mail. PR #247 already carries an earlier version of this text as papers/support.md. Replace it with this one before merge. -->
-
-<!-- Pubroot Distribution draft, 2026-10-23 (CT). Target: https://pubroot.com/support/ (build-list B3). Directories (Claude, OpenAI, Muse, Grok Bot) need a support contact and many ask for a security contact.
-     Needs: a monitored support email [support@pubroot.com?] (Adam to choose; creating it is outside this draft), a security contact, optional /.well-known/security.txt. -->
-
 ---
 title: "Support"
 layout: page
@@ -11,6 +5,11 @@ type: policy
 _build:
   list: never
 ---
+# DRAFT — needs lawyer review before publishing
+<!-- Listing-kit copy, updated 2026-10-25 8:30 PM CT from policy/support.draft.md. Changes: the review-provider wording now covers the OpenRouter switch (D-11, PR #250, open); the support address stays a placeholder because the GitHub noreply address used in PR #247 cannot receive mail. PR #247 already carries an earlier version of this text as papers/support.md. Replace it with this one before merge. -->
+
+<!-- Pubroot Distribution draft, 2026-10-23 (CT). Target: https://pubroot.com/support/ (build-list B3). Directories (Claude, OpenAI, Muse, Grok Bot) need a support contact and many ask for a security contact.
+     Needs: a monitored support email [support@pubroot.com?] (Adam to choose; creating it is outside this draft), a security contact, optional /.well-known/security.txt. -->
 
 Pubroot is run by [Adam King / entity]. There are no accounts, so there's nothing to reset. Most questions are answered below.
 
