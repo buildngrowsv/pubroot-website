@@ -20,8 +20,6 @@ RUNNING:
 """
 
 import json
-import os
-import tempfile
 import pytest
 
 from stage_1_parse_and_filter import parse_and_filter_submission
@@ -497,9 +495,7 @@ class TestLanguageDetection:
 
     def test_non_english_text_produces_warning(self, repo_root):
         """Non-English text should trigger a language warning."""
-        # Japanese text — won't have common English word overlap
-        japanese_body = "これはテストです。" * 100  # Repeat for word count
-        # We need 200+ words — but Japanese tokenization differs. Use mixed approach.
+        # We need 200+ words — use Spanish filler words with no English overlap
         non_english_body = "palabra " * 250  # Spanish filler words, no English overlap
         issue_body = _build_issue_body(body=non_english_body.strip())
         result = parse_and_filter_submission(issue_body, repo_root, "author")
