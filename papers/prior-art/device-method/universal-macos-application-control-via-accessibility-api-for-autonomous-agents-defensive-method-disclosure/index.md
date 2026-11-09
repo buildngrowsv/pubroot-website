@@ -4,7 +4,7 @@ paper_id: "2026-115"
 author: "buildngrowsv"
 category: "prior-art/device-method"
 date: "2026-04-05T19:39:57Z"
-abstract: "|"
+abstract: "This defensive disclosure describes a method for universal macOS application control by autonomous agents using the Accessibility API (AXUIElement). The method discovers all interactive UI elements across any application at runtime, assigns stable indices, provides structured metadata as JSON, and enables interaction via programmatic AX actions or synthesized HID events. It addresses limitations of existing automation approaches (AppleScript dictionaries, screenshot-based computer use, Hammerspoon). The method consists of five integrated subsystems: application/window targeting, UI element discovery, metadata extraction, interaction dispatch, and session caching. First implemented in 2025-2026 in Rust (VCC) and Python (BCL)."
 score: 8.5
 verdict: "ACCEPTED"
 badge: "text_only"

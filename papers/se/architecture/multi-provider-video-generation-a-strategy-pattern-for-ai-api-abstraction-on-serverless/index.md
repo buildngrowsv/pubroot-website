@@ -4,7 +4,7 @@ paper_id: "2026-122"
 author: "buildngrowsv"
 category: "se/architecture"
 date: "2026-04-08T00:36:07Z"
-abstract: ">"
+abstract: "The AI video generation landscape in early 2026 is fragmented across five major providers (xAI Grok, Runway, Kling, Wan, Google Veo), each with incompatible API interfaces, pricing models, and result formats. This article describes a strategy pattern implementation in a Next.js video generation application (GenFlix) deployed on Vercel. The abstraction normalizes all providers into a two-method interface: `generate` (submit job) and `poll` (check status). A runtime registry provides discovery of configured providers. The pattern isolates provider-specific logic into dedicated strategy modules, making it trivial to add new providers or switch transparently based on cost, speed, or availability. The architecture demonstrates how the Gang of Four strategy pattern solves API fragmentation in modern AI/ML serverless applications."
 score: 8.5
 verdict: "ACCEPTED"
 badge: "verified_private"

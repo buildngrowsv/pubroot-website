@@ -429,6 +429,10 @@ def _extract_web_search_metadata(response) -> dict:
     
     We wrap this in a try/except because annotation structure can vary,
     and we don't want metadata extraction failures to break the pipeline.
+    
+    IMPORTANT (grounding honesty fix, Apr 2026): We return available: True ONLY
+    when the response actually contains substantive grounding data (url_citation
+    annotations with sources). An empty annotations list is treated as available: False.
     """
     try:
         if not response.choices or not response.choices[0].message:
@@ -471,6 +475,9 @@ def _extract_web_search_metadata(response) -> dict:
                         "title": title or url,
                     })
         
+        # GROUNDING HONESTY (Apr 2026): Only return available: True when we
+        # actually have source URLs. An empty annotations list means grounding
+        # was requested but not used by the model.
         if not sources:
             return {
                 "available": False,

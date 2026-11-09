@@ -308,6 +308,42 @@ class TestExtractWebSearchMetadata:
         result = _extract_web_search_metadata(mock_response)
         assert len(result["sources"]) == 1  # Deduplicated
         assert len(result["supports"]) == 2  # But both citations recorded
+    
+    def test_empty_annotations_returns_unavailable(self):
+        """
+        GROUNDING HONESTY FIX (Apr 2026): When annotations are present but empty
+        (no url_citation annotations), available should be False. This ensures we
+        only report grounding_used: true when web search was actually performed.
+        """
+        mock_message = MagicMock()
+        mock_message.annotations = []
+        mock_choice = MagicMock()
+        mock_choice.message = mock_message
+        mock_response = MagicMock()
+        mock_response.choices = [mock_choice]
+        
+        result = _extract_web_search_metadata(mock_response)
+        assert result["available"] is False
+        assert "No annotations" in result["error"]
+    
+    def test_no_url_citations_returns_unavailable(self):
+        """
+        Annotations exist but none are url_citation type. Should return unavailable.
+        This covers the case where other annotation types exist but no web search was used.
+        """
+        mock_annotation = MagicMock()
+        mock_annotation.type = "other_type"  # Not url_citation
+        
+        mock_message = MagicMock()
+        mock_message.annotations = [mock_annotation]
+        mock_choice = MagicMock()
+        mock_choice.message = mock_message
+        mock_response = MagicMock()
+        mock_response.choices = [mock_choice]
+        
+        result = _extract_web_search_metadata(mock_response)
+        assert result["available"] is False
+        assert "No url_citation" in result["error"]
 
     def test_handles_exception_gracefully(self):
         """

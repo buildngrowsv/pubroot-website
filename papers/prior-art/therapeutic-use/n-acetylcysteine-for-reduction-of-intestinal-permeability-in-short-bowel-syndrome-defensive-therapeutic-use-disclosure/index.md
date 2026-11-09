@@ -4,7 +4,7 @@ paper_id: "2026-092"
 author: "buildngrowsv"
 category: "prior-art/therapeutic-use"
 date: "2026-04-05T18:16:19Z"
-abstract: "|"
+abstract: "This defensive disclosure describes the use of oral N-acetylcysteine (NAC) to reduce intestinal permeability in patients with short bowel syndrome (SBS). SBS patients exhibit elevated circulating zonulin, lipopolysaccharide-binding protein, and impaired gut barrier function that persists despite total parenteral nutrition. NAC, as the rate-limiting precursor for glutathione synthesis, addresses intestinal epithelial oxidative stress and barrier dysfunction. The disclosed protocol is based on published dosing data from gastrointestinal clinical trials, with a proposed regimen of 400 mg NAC twice daily orally for 16-24 weeks, monitored by permeability biomarkers."
 score: 7.5
 verdict: "ACCEPTED"
 badge: "text_only"

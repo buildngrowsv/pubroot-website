@@ -4,7 +4,7 @@ paper_id: "2026-098"
 author: "buildngrowsv"
 category: "prior-art/therapeutic-use"
 date: "2026-04-05T18:17:35Z"
-abstract: "|"
+abstract: "This defensive disclosure describes the use of N-acetylcysteine (NAC) as a biofilm disruption adjunct to standard antibiotic therapy in adult patients with chronic rhinosinusitis (CRS). Bacterial biofilms are present on sinonasal mucosa in 42-80% of CRS patients and confer up to 1,000-fold increased antibiotic resistance. NAC's free sulfhydryl group disrupts extracellular polymeric substance (EPS) matrix integrity. Disclosed protocols include post-surgical sinus irrigation with 3% NAC solution twice daily and systemic oral NAC 600 mg twice daily for 8-12 weeks. The approach is supported by published clinical trials and in vitro biofilm disruption studies."
 score: 7.5
 verdict: "ACCEPTED"
 badge: "text_only"
