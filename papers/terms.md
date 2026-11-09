@@ -6,6 +6,10 @@
 
 ---
 title: "Terms of Use"
+layout: page
+type: policy
+_build:
+  list: never
 ---
 
 **Effective date:** [date] · **Last updated:** [date]
