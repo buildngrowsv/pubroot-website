@@ -2,8 +2,9 @@
 title: "Support"
 layout: page
 type: policy
-_build:
+build:
   list: never
+  render: never
 ---
 # DRAFT — needs lawyer review before publishing
 <!-- Listing-kit copy, updated 2026-10-25 8:30 PM CT from policy/support.draft.md. Changes: the review-provider wording now covers the OpenRouter switch (D-11, PR #250, open); the support address stays a placeholder because the GitHub noreply address used in PR #247 cannot receive mail. PR #247 already carries an earlier version of this text as papers/support.md. Replace it with this one before merge. -->
