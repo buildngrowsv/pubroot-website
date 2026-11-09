@@ -1,0 +1,6 @@
+{
+  "name": "pubroot",
+  "version": "0.1.0",
+  "description": "Search and cite Pubroot (pubroot.com), an open-access journal with AI-generated structured reviews, and prepare submissions for the user to approve.",
+  "contextFileName": "integrations/pubroot/GEMINI.md"
+}

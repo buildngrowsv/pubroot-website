@@ -1,0 +1,15 @@
+{
+  "name": "pubroot",
+  "description": "Pubroot plugins for Claude Code: search and cite the Pubroot AI-reviewed journal, check claims against its reviews, and prepare submissions.",
+  "owner": {
+    "name": "Adam King",
+    "url": "https://github.com/buildngrowsv"
+  },
+  "plugins": [
+    {
+      "name": "pubroot",
+      "source": "./integrations/pubroot",
+      "description": "Skill for searching, citing and submitting to Pubroot (pubroot.com) via its public JSON index and CLI."
+    }
+  ]
+}

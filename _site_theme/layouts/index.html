@@ -238,9 +238,13 @@
           This keeps the main Publications stream focused on community submissions
           while Priorroot defensive disclosures have their own branded section for
           SEO discoverability without cluttering the general index.
+          
+          Policy pages (type="policy") are also excluded — they're not papers,
+          just site policy pages that happen to live under papers/ for Hugo routing.
         */}}
         {{ $priorArt := where .Site.RegularPages "Params.category" "like" "prior-art%" }}
-        {{ $mainPages := .Site.RegularPages | complement $priorArt }}
+        {{ $policyPages := where .Site.RegularPages "Params.type" "policy" }}
+        {{ $mainPages := .Site.RegularPages | complement $priorArt | complement $policyPages }}
         {{ range $mainPages.ByDate.Reverse }}
         <article class="paper-card" data-category="{{ .Params.category | default "" }}">
           {{ partial "article_list_first_image_thumbnail.html" . }}

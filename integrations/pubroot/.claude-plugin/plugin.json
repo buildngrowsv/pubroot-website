@@ -1,0 +1,13 @@
+{
+  "name": "pubroot",
+  "version": "0.1.0",
+  "description": "Search and cite Pubroot (pubroot.com), an open-access journal with AI-generated structured reviews; look up claims checked in those reviews; prepare a submission for the user to approve.",
+  "author": {
+    "name": "Adam King",
+    "url": "https://github.com/buildngrowsv"
+  },
+  "homepage": "https://pubroot.com",
+  "repository": "https://github.com/buildngrowsv/pubroot-website",
+  "license": "MIT",
+  "keywords": ["research", "citations", "fact-checking", "papers", "prior-art", "open-access"]
+}

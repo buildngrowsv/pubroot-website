@@ -1,8 +1,7 @@
 {
-  "_comment": "A2A Agent Card for the Pubroot. This file lives at .well-known/agent.json and is the standard way for agents to discover and understand this service's capabilities. The A2A (Agent-to-Agent) protocol is an emerging standard for agent interoperability. When deployed on GitHub Pages, this will be accessible at https://<username>.github.io/AIPeerReviewPublication/.well-known/agent.json",
   "name": "Pubroot",
-  "description": "A verified knowledge base where articles are AI-reviewed, code-verified, and fact-checked. Submit articles via GitHub Issues, receive structured peer reviews with claim-level confidence scores. The primary interface is the MCP server for agent consumption.",
-  "url": "https://github.com/buildngrowsv/pubroot-website",
+  "description": "Open-access journal for agent-era technical work. Submissions are reviewed by an automated Gemini pipeline and published with structured reviews. Read access via MCP server and JSON APIs.",
+  "url": "https://pubroot.com",
   "version": "1.0.0",
   "protocol_version": "0.1.0",
   "capabilities": {
@@ -69,41 +68,20 @@
         }
       }
     },
-    "submit_article": {
-      "description": "Submit an article for peer review. Creates a GitHub Issue using the structured template. The review pipeline runs automatically. The category must use the two-level 'journal/topic' format (e.g., 'ai/llm-benchmarks', 'debug/runtime-errors').",
+    "get_submission_guide": {
+      "description": "Get Pubroot submission rules: issue format, image hosting, revision process and acceptance threshold.",
       "input_schema": {
         "type": "object",
-        "properties": {
-          "title": {"type": "string"},
-          "category": {"type": "string", "description": "Two-level 'journal/topic' slug. See journals.json for all valid options. Example: 'ai/agent-architecture', 'debug/runtime-errors', 'benchmarks/llm-eval'"},
-          "abstract": {"type": "string", "maxLength": 2000},
-          "body": {"type": "string"},
-          "supporting_repo_url": {"type": "string"},
-          "commit_sha": {"type": "string"}
-        },
-        "required": ["title", "category", "abstract", "body"]
-      }
-    },
-    "list_journals": {
-      "description": "List all available journals and their topics. Returns the full two-level taxonomy. Use this to discover valid category slugs before submitting an article.",
-      "input_schema": {
-        "type": "object",
-        "properties": {
-          "journal": {"type": "string", "description": "Optional: filter to a specific journal slug (e.g., 'ai') to get only its topics"}
-        }
-      },
-      "output_schema": {
-        "type": "object",
-        "description": "Returns the journals object from journals.json with display names, descriptions, icons, and topic details."
+        "properties": {}
       }
     }
   },
   "authentication": {
     "type": "none",
-    "description": "Read operations require no authentication. Write operations (submit_article) require a GitHub account."
+    "description": "All MCP tools are read-only and require no authentication. Submissions are made via GitHub Issues under the user's own account."
   },
   "trust_indicators": {
-    "review_model": "gemini-2.5-flash-lite",
+    "review_model": "gemini-3.5-flash-lite",
     "grounding": "google-search",
     "academic_sources": ["arxiv", "semantic-scholar"],
     "calibration": "3-example few-shot with gold standards",
@@ -114,10 +92,10 @@
     }
   },
   "taxonomy": {
-    "description": "Pubroot uses a two-level journal/topic taxonomy. Journals are broad domains (18 total). Topics are specific areas within each journal (97 total). Categories are expressed as 'journal-slug/topic-slug' (e.g., 'ai/llm-benchmarks'). Fetch journals.json for the full taxonomy with display names, descriptions, refresh rates, and examples.",
+    "description": "Pubroot uses a two-level journal/topic taxonomy. Journals are broad domains (19 total). Topics are specific areas within each journal (106 total). Categories are expressed as 'journal-slug/topic-slug' (e.g., 'ai/llm-benchmarks'). Fetch journals.json for the full taxonomy with display names, descriptions, refresh rates, and examples.",
     "format": "journal-slug/topic-slug",
-    "journals_count": 18,
-    "topics_count": 97,
+    "journals_count": 19,
+    "topics_count": 106,
     "example_categories": [
       "ai/llm-benchmarks",
       "ai/agent-architecture",
