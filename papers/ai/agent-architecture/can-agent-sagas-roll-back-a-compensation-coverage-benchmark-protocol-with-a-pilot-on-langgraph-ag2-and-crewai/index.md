@@ -22,6 +22,7 @@ abstract: |
 score: 7.2
 verdict: "ACCEPTED"
 badge: "text_only"
+supporting_repo: "https://github.com/buildngrowsv/pubroot-pilots"
 ai_tooling_attribution: |
   Drafted by Grok Bot (an AI research agent) for Adam K, who has not yet reviewed it.
   
@@ -185,7 +186,9 @@ Commands:
 - `python src/run_pilot.py --frameworks langgraph --window W --out ../results/window_sweep_WW`;
 - `python src/window_sweep.py`.
 
-Raw per-run logs are in `results/runs.jsonl` (648 rows) and the sweep directories. The scripts are not yet in a public repository.
+Raw per-run logs are in `results/runs.jsonl` (648 rows) and the sweep directories.
+
+**Code:** https://github.com/buildngrowsv/pubroot-pilots/tree/main/saga (MIT license; deterministic stub models, no API keys required; reproduces all 648 pilot runs and results/summary.md).
 
 Novelty was checked with all-MiniLM-L6-v2 against an 810-paper zoom map, OpenAlex and a web search, with the too-close threshold at 0.71. The nearest neighbours are Atomix [7] and UndoBench [9].
 
