@@ -44,6 +44,7 @@ import json
 import os
 import base64
 import re
+import time
 from datetime import datetime, timezone, timedelta
 from typing import Optional
 from urllib.parse import quote
@@ -58,12 +59,88 @@ from pubroot_site_paths import (
     slugify_title,
 )
 from secret_scrubber import scrub_all
+from index_builder import (
+    build_index_entry_from_data,
+    merge_entry_into_index,
+    apply_selection_and_sort,
+    serialize_index,
+)
 
 # Canonical site origin for agent-index.json reader_url (override in CI if needed).
 PUBROOT_SITE_BASE = os.environ.get("PUBROOT_SITE_BASE", "https://pubroot.com")
 
 
-def _resolve_publication_paths(gh, parsed: dict, paper_id: str) -> dict:
+def _get_publish_retry_attempt(gh: "GitHubAPI", issue_number: int) -> int:
+    """
+    Get the current publish retry attempt count for an issue.
+    
+    We look for bot comments containing the marker "pubroot:publish-retry-attempt-N"
+    where N is the attempt number. Returns the highest N found, or 0 if none exist.
+    
+    Args:
+        gh: GitHub API wrapper
+        issue_number: Issue number to check
+    
+    Returns:
+        Current retry attempt count (0 if this is the first attempt)
+    """
+    try:
+        comments = gh.get_issue_comments(issue_number)
+        max_attempt = 0
+        
+        for comment in comments:
+            # Only check bot's own comments
+            if comment.get("user", {}).get("login") != "github-actions[bot]":
+                continue
+            
+            body = comment.get("body", "")
+            # Look for marker: pubroot:publish-retry-attempt-N
+            if "pubroot:publish-retry-cap" in body:
+                max_attempt = 0  # a maintainer released the hold; count afresh
+                continue
+            match = re.search(r'pubroot:publish-retry-attempt-(\d+)', body)
+            if match:
+                attempt = int(match.group(1))
+                max_attempt = max(max_attempt, attempt)
+        
+        return max_attempt
+    except Exception as e:
+        # If we can't check, assume 0 (first attempt) to avoid blocking retries
+        print(f"Warning: Failed to check retry attempts: {e}")
+        return 0
+
+
+def _record_publish_retry_attempt(gh: "GitHubAPI", issue_number: int, attempt: int) -> None:
+    """
+    Record a publish retry attempt by posting a comment with a machine-readable marker.
+    
+    The marker is "pubroot:publish-retry-attempt-N" where N is the attempt number.
+    This lets us track retries without relying on labels (which can be removed by users).
+    
+    Args:
+        gh: GitHub API wrapper
+        issue_number: Issue number
+        attempt: Attempt number (1, 2, 3, ...)
+    """
+    try:
+        # Don't post a new comment every time - check if this attempt is already recorded
+        existing_attempt = _get_publish_retry_attempt(gh, issue_number)
+        if existing_attempt >= attempt:
+            # Already recorded
+            return
+        
+        # Post a minimal marker comment
+        gh.post_comment(
+            issue_number,
+            f"<!-- pubroot:publish-retry-attempt-{attempt} -->\n"
+            f"Publication attempt {attempt} of 3..."
+        )
+    except Exception as e:
+        # Don't fail the whole publish if we can't record the attempt
+        print(f"Warning: Failed to record retry attempt: {e}")
+
+
+def _resolve_publication_paths(gh: "GitHubAPI", parsed: dict, paper_id: str) -> dict:
     """
     Compute journal/topic/slug and repo-relative paths for the SEO layout:
     papers/{journal}/{topic}/{slug}/index.md
@@ -210,7 +287,44 @@ def post_review_and_decide(
             )
 
             gh.add_labels(issue_number, ["accepted", "published"])
-            _remove_labels_if_present(gh, issue_number, ["review-error", "publish-failed"])
+            _remove_labels_if_present(gh, issue_number, ["review-error", "publish-failed", "pending-review", "awaiting-approval"])
+            
+            # Close accepted issues with a link to the published paper.
+            # This keeps the issue list clean and makes it clear the submission is complete.
+            #
+            # CORRECT URL PATTERN: https://pubroot.com/{journal}/{topic}/{slug}/
+            # Hugo's contentDir is "papers/", so papers/ is not part of the URL path.
+            # pubroot_site_paths.reader_url() already builds this correctly.
+            # 
+            # For legacy papers (papers/{paper_id}/article.md), use the Hugo alias
+            # at https://pubroot.com/{paper_id}/ which redirects to the canonical URL.
+            try:
+                # Resolve publication paths to get the reader_url
+                paths = _resolve_publication_paths(gh, parsed_submission, paper_id)
+                
+                # Check if this is a legacy paper (flat layout)
+                if gh.path_exists(f"papers/{paper_id}/article.md", "main"):
+                    # Use the legacy Hugo alias
+                    paper_url = f"{PUBROOT_SITE_BASE.rstrip('/')}/{paper_id}/"
+                else:
+                    # Use the reader_url from the SEO layout
+                    paper_url = paths["reader_url"]
+                
+                close_comment = (
+                    f"✅ **Accepted and Published**\n\n"
+                    f"Your submission has been published as paper **{paper_id}**.\n\n"
+                    f"View it at: {paper_url} (live within a few minutes)\n\n"
+                    f"Thank you for contributing to Pubroot!"
+                )
+                gh.post_comment(issue_number, close_comment)
+                gh.close_issue(issue_number)
+            except Exception as close_err:
+                # ITEM 3 (Bug B23): If close_issue fails (5xx after retries or network error),
+                # log the error but return success=True. The paper is already published and
+                # visible on the site, so we must NOT label it publish-failed (which would
+                # trigger a re-review). The issue stays open with accepted+published labels;
+                # no picker tier will choose it, so this is safe.
+                print("WARNING: Failed to close accepted issue: {}".format(close_err))
 
             return {
                 "success": True,
@@ -221,6 +335,11 @@ def post_review_and_decide(
         except Exception as e:
             err_txt = str(e)
             errors.append(f"Publication failed after review acceptance: {err_txt}")
+            if "retry cap reached" in err_txt.lower():
+                # Park the issue: every picker tier skips editorial-hold, so no more LLM calls.
+                # Keep publish-failed so that removing editorial-hold puts it back in tier 1.
+                gh.add_labels(issue_number, ["editorial-hold"])
+                return {"success": False, "action_taken": "error", "pr_number": None, "errors": errors}
             try:
                 gh.post_comment(
                     issue_number,
@@ -255,6 +374,7 @@ def post_review_and_decide(
         errors.append(f"Failed to update contributors.json: {str(e)}")
 
     gh.add_labels(issue_number, ["rejected"])
+    _remove_labels_if_present(gh, issue_number, ["pending-review", "awaiting-approval"])
     gh.close_issue(issue_number)
     
     return {
@@ -300,6 +420,19 @@ class GitHubAPI:
         resp.raise_for_status()
         return resp.json()
     
+    def get_issue_comments(self, issue_number: int) -> list:
+        """Get all comments on a GitHub Issue."""
+        url = f"{self.base_url}/issues/{issue_number}/comments"
+        comments, page = [], 1
+        while True:
+            resp = requests.get(url, headers=self.headers, params={"per_page": 100, "page": page}, timeout=30)
+            resp.raise_for_status()
+            batch = resp.json()
+            comments.extend(batch)
+            if len(batch) < 100:
+                return comments
+            page += 1
+    
     def add_labels(self, issue_number: int, labels: list):
         """Add labels to a GitHub Issue."""
         url = f"{self.base_url}/issues/{issue_number}/labels"
@@ -308,11 +441,53 @@ class GitHubAPI:
         return resp.json()
     
     def close_issue(self, issue_number: int):
-        """Close a GitHub Issue."""
+        """
+        Close a GitHub Issue.
+        
+        FIX (Bug B23 item 3): Retry on 5xx errors with bounded backoff.
+        A 5xx from GitHub should not silently skip the close step.
+        """
         url = f"{self.base_url}/issues/{issue_number}"
-        resp = requests.patch(url, headers=self.headers, json={"state": "closed"}, timeout=30)
-        resp.raise_for_status()
-        return resp.json()
+        max_retries = 3
+        backoff_delays = [2, 4, 8]  # seconds
+        
+        for attempt in range(max_retries):
+            try:
+                resp = requests.patch(url, headers=self.headers, json={"state": "closed"}, timeout=30)
+                resp.raise_for_status()
+                return resp.json()
+            except requests.HTTPError as e:
+                status_code = e.response.status_code if e.response is not None else 0
+                
+                # Retry on 5xx server errors
+                if 500 <= status_code < 600:
+                    if attempt < max_retries - 1:
+                        delay = backoff_delays[attempt]
+                        print(f"Warning: GitHub API returned {status_code} on close_issue. "
+                              f"Retrying in {delay}s (attempt {attempt + 1}/{max_retries})...")
+                        time.sleep(delay)
+                        continue
+                    else:
+                        # Max retries exhausted on 5xx
+                        raise Exception(
+                            f"Failed to close issue #{issue_number} after {max_retries} attempts. "
+                            f"GitHub API returned {status_code}. This is a server error, not a client error."
+                        ) from e
+                else:
+                    # Not a 5xx - raise immediately (4xx client errors, etc.)
+                    raise
+            except requests.RequestException as e:
+                # Network errors, timeouts, etc.
+                if attempt < max_retries - 1:
+                    delay = backoff_delays[attempt]
+                    print(f"Warning: Network error on close_issue: {e}. "
+                          f"Retrying in {delay}s (attempt {attempt + 1}/{max_retries})...")
+                    time.sleep(delay)
+                    continue
+                else:
+                    raise Exception(
+                        f"Failed to close issue #{issue_number} after {max_retries} attempts due to network error."
+                    ) from e
     
     def get_default_branch_sha(self) -> str:
         """Get the SHA of the HEAD commit on the default branch (main)."""
@@ -384,6 +559,36 @@ class GitHubAPI:
         resp.raise_for_status()
         return resp.json()
 
+    def create_or_update_file_with_sha(self, path: str, content: str, message: str, branch: str, sha: Optional[str]):
+        """
+        Create or update a file with an explicit SHA for optimistic locking.
+        
+        FIX (Root Cause B residual): This method uses the SHA from a previous read
+        to prevent lost updates. If the file changed between the read and the PUT,
+        GitHub returns 409/422 and the pipeline fails (cron will retry with fresh state).
+        
+        Args:
+            path: File path in the repo
+            content: File content (will be base64-encoded)
+            message: Commit message
+            branch: Target branch
+            sha: Blob SHA from a previous read, or None if creating a new file
+        """
+        url = f"{self.base_url}/contents/{path}"
+        encoded = base64.b64encode(content.encode("utf-8")).decode("ascii")
+        
+        data = {
+            "message": message,
+            "content": encoded,
+            "branch": branch,
+        }
+        if sha:
+            data["sha"] = sha
+        
+        resp = requests.put(url, headers=self.headers, json=data, timeout=30)
+        resp.raise_for_status()
+        return resp.json()
+
     def get_file_content(self, path: str, branch: str = "main") -> tuple[str, str]:
         """
         Fetch the current content and SHA of a file from the given branch via GitHub API.
@@ -405,6 +610,111 @@ class GitHubAPI:
         decoded = base64.b64decode(content_b64).decode("utf-8")
         return decoded, data.get("sha")
     
+    def create_blob(self, content: str) -> str:
+        """
+        Create a blob via Git Data API.
+        
+        Args:
+            content: File content
+        
+        Returns:
+            Blob SHA
+        """
+        url = f"{self.base_url}/git/blobs"
+        encoded = base64.b64encode(content.encode("utf-8")).decode("ascii")
+        resp = requests.post(url, headers=self.headers, json={
+            "content": encoded,
+            "encoding": "base64"
+        }, timeout=30)
+        resp.raise_for_status()
+        return resp.json()["sha"]
+    
+    def create_tree(self, base_tree_sha: str, tree_items: list) -> str:
+        """
+        Create a tree via Git Data API.
+        
+        Args:
+            base_tree_sha: SHA of the base tree (from the parent commit)
+            tree_items: List of dicts with keys: path, mode, type, sha
+        
+        Returns:
+            Tree SHA
+        """
+        url = f"{self.base_url}/git/trees"
+        resp = requests.post(url, headers=self.headers, json={
+            "base_tree": base_tree_sha,
+            "tree": tree_items
+        }, timeout=30)
+        resp.raise_for_status()
+        return resp.json()["sha"]
+    
+    def create_commit(self, message: str, tree_sha: str, parent_sha: str) -> str:
+        """
+        Create a commit via Git Data API.
+        
+        Args:
+            message: Commit message
+            tree_sha: SHA of the tree
+            parent_sha: SHA of the parent commit
+        
+        Returns:
+            Commit SHA
+        """
+        url = f"{self.base_url}/git/commits"
+        resp = requests.post(url, headers=self.headers, json={
+            "message": message,
+            "tree": tree_sha,
+            "parents": [parent_sha]
+        }, timeout=30)
+        resp.raise_for_status()
+        return resp.json()["sha"]
+    
+    def update_ref(self, ref: str, commit_sha: str, force: bool = False) -> None:
+        """
+        Update a ref via Git Data API.
+        
+        Args:
+            ref: Ref name (e.g., "heads/main")
+            commit_sha: SHA of the commit
+            force: Whether to force update (default False for safety)
+        """
+        url = f"{self.base_url}/git/refs/{ref}"
+        resp = requests.patch(url, headers=self.headers, json={
+            "sha": commit_sha,
+            "force": force
+        }, timeout=30)
+        resp.raise_for_status()
+    
+    def get_ref_sha(self, ref: str) -> str:
+        """
+        Get the SHA of a ref.
+        
+        Args:
+            ref: Ref name (e.g., "heads/main")
+        
+        Returns:
+            Commit SHA
+        """
+        url = f"{self.base_url}/git/refs/{ref}"
+        resp = requests.get(url, headers=self.headers, timeout=30)
+        resp.raise_for_status()
+        return resp.json()["object"]["sha"]
+    
+    def get_commit(self, commit_sha: str) -> dict:
+        """
+        Get commit details via Git Data API.
+        
+        Args:
+            commit_sha: Commit SHA
+        
+        Returns:
+            Commit data dict with tree SHA, parents, etc.
+        """
+        url = f"{self.base_url}/git/commits/{commit_sha}"
+        resp = requests.get(url, headers=self.headers, timeout=30)
+        resp.raise_for_status()
+        return resp.json()
+    
     def create_pull_request(self, title: str, body: str, head: str, base: str = "main") -> int:
         """Create a Pull Request. Returns the PR number."""
         url = f"{self.base_url}/pulls"
@@ -422,10 +732,28 @@ class GitHubAPI:
         return resp.json()
 
     def path_exists(self, path: str, ref: str = "main") -> bool:
-        """Return True if a file exists at path on the given ref (branch or SHA)."""
+        """
+        Return True if a file exists at path on the given ref (branch or SHA).
+        
+        Returns:
+            True if the file exists (HTTP 200)
+            False if the file does not exist (HTTP 404)
+        
+        Raises:
+            requests.HTTPError: If the API returns any other status code (5xx, rate limit, etc.)
+                                to prevent silently skipping collision checks.
+        """
         url = f"{self.base_url}/contents/{path}"
         resp = requests.get(url, headers=self.headers, params={"ref": ref}, timeout=30)
-        return resp.status_code == 200
+        
+        if resp.status_code == 200:
+            return True
+        elif resp.status_code == 404:
+            return False
+        else:
+            # FIX (Bug B20 part 4): Raise on 5xx, rate limits, etc. instead of returning False
+            # Returning False on 5xx would skip the collision check and allow an overwrite
+            resp.raise_for_status()
 
     def remove_label(self, issue_number: int, label_name: str) -> None:
         """Remove a label from an issue (404 if label not on issue is OK)."""
@@ -483,11 +811,17 @@ def _upload_publication_files_to_branch(
     Create or update all publication files on the given branch (feature branch
     or main). Idempotent: safe to call again after a failed PR step when
     retrying onto main.
+    
+    FIX (Bug B23 item 8): Use Git Data API to commit all files (paper files + both indexes)
+    in a SINGLE atomic commit. This prevents race conditions where agent-index.json is
+    updated but priorroot-index.json update fails, leaving indexes inconsistent.
 
     LAYOUT (Apr 2026): articles live under papers/{journal}/{topic}/{slug}/index.md
     for SEO-friendly URLs; legacy_aliases is only used by one-off migrations.
     """
     paths = _resolve_publication_paths(gh, parsed_submission, paper_id)
+    
+    # Build all file contents in memory first
     article_content = _build_article_md(
         parsed_submission,
         review,
@@ -498,63 +832,209 @@ def _upload_publication_files_to_branch(
     )
     
     # SECURITY (B1 second pass): Scrub the article content before publishing.
-    # The article includes LLM-generated fields (review summary, strengths, weaknesses)
-    # which could theoretically contain secrets if the LLM was compromised.
     article_content = scrub_all(article_content)
     
-    gh.create_or_update_file(
-        path=paths["article_index_path"],
-        content=article_content,
-        message=f"Publish article: {parsed_submission.get('title', paper_id)}",
-        branch=branch,
-    )
-
     manifest = _build_manifest(
         parsed_submission, review, repo_data, paper_id, now, novelty_results
     )
-    
-    # SECURITY (B1 second pass): Scrub the manifest JSON before committing.
-    # The manifest contains LLM-generated review metadata which could contain secrets.
     manifest_json_str = json.dumps(manifest, indent=2)
     manifest_json_str = scrub_all(manifest_json_str)
     
-    gh.create_or_update_file(
-        path=paths["manifest_path"],
-        content=manifest_json_str,
-        message=f"Add manifest for {paper_id}",
-        branch=branch,
-    )
-
     review_with_grounding = {**review, "grounding_metadata": grounding}
-    
-    # SECURITY (B1 second pass): Scrub the review JSON before committing it publicly.
-    # The LLM generates all fields in the review dict, so any of them could contain
-    # secrets if the LLM was tricked via prompt injection. Scrub the entire JSON.
     review_json_str = json.dumps(review_with_grounding, indent=2)
     review_json_str = scrub_all(review_json_str)
     
-    gh.create_or_update_file(
-        path=f"reviews/{paper_id}/review.json",
-        content=review_json_str,
-        message=f"Add review for {paper_id}",
+    # Commit paper files + both indexes in ONE commit; indexes are recomputed
+    # from the parent commit inside the retry loop.
+    _commit_files_atomically(
+        gh=gh,
         branch=branch,
+        files={
+            paths["article_index_path"]: article_content,
+            paths["manifest_path"]: manifest_json_str,
+            f"reviews/{paper_id}/review.json": review_json_str,
+        },
+        commit_message=f"Publish: {parsed_submission.get('title', paper_id)} ({paper_id})",
+        paper_id=paper_id,
+        compute_indexes=lambda parent_sha: _compute_updated_indexes(
+            gh=gh, branch=parent_sha, paper_id=paper_id, parsed_submission=parsed_submission,
+            review=review, repo_data=repo_data, now=now, paths=paths,
+        ),
     )
-
-    index_entry = _build_index_entry(
-        parsed_submission,
-        review,
-        repo_data,
-        paper_id,
-        now,
-        paths["article_index_path"],
-        paths["reader_url"],
-    )
-    _update_agent_index(gh, branch, repo_root, index_entry)
 
     # Note: contributors.json is no longer committed here because it's now
     # committed directly to main by _update_contributors() before the branch
     # is created. This prevents race conditions and ensures rejection stats
     # are also persisted (Bug B13 fix).
+
+
+def _compute_updated_indexes(
+    gh: GitHubAPI,
+    branch: str,
+    paper_id: str,
+    parsed_submission: dict,
+    review: dict,
+    repo_data: dict,
+    now: datetime,
+    paths: dict,
+) -> tuple[str, str]:
+    """
+    Compute the updated agent-index.json and priorroot-index.json contents.
+    
+    This is extracted from _update_indexes so we can compute both index contents
+    before committing anything (needed for atomic Git Data API commit).
+    
+    Returns:
+        tuple[str, str]: (agent_index_content, priorroot_index_content)
+    """
+    published_date = now.astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    
+    # Build scrubbed entry (same as _update_indexes)
+    scrubbed_title = scrub_all(str(parsed_submission.get("title", "Untitled")))
+    scrubbed_author = scrub_all(str(parsed_submission.get("author", "unknown")))
+    scrubbed_abstract = scrub_all(str(parsed_submission.get("abstract", "")))
+    scrubbed_supporting_repo = None
+    if parsed_submission.get("supporting_repo"):
+        scrubbed_supporting_repo = scrub_all(str(parsed_submission["supporting_repo"]))
+    scrubbed_ai_attr = None
+    if parsed_submission.get("ai_tooling_attribution"):
+        scrubbed_ai_attr = scrub_all(str(parsed_submission["ai_tooling_attribution"]))
+    
+    new_entry = build_index_entry_from_data(
+        paper_id=paper_id,
+        title=scrubbed_title,
+        author=scrubbed_author,
+        category=parsed_submission.get("category", "general-technical"),
+        abstract=scrubbed_abstract,
+        published_date=published_date,
+        review_score=review.get("score"),
+        badge=repo_data.get("badge_type", "text_only"),
+        article_path=paths["article_index_path"],
+        reader_url=paths["reader_url"],
+        review_path=f"reviews/{paper_id}/review.json",
+        supporting_repo=scrubbed_supporting_repo,
+        ai_tooling_attribution=scrubbed_ai_attr,
+    )
+    
+    # Fetch live indexes
+    is_priorart = new_entry["category"].startswith("prior-art/")
+    target_index_file = "priorroot-index.json" if is_priorart else "agent-index.json"
+    other_index_file = "agent-index.json" if is_priorart else "priorroot-index.json"
+    
+    target_index_json, _ = gh.get_file_content(target_index_file, branch=branch)
+    target_index = json.loads(target_index_json)
+    
+    other_index_json, _ = gh.get_file_content(other_index_file, branch=branch)
+    other_index = json.loads(other_index_json)
+    
+    # Merge new entry into target index
+    merge_entry_into_index(target_index, new_entry)
+    
+    # Apply selection and sort to both indexes
+    all_entries = target_index["papers"] + other_index["papers"]
+    apply_selection_and_sort(target_index, all_entries)
+    apply_selection_and_sort(other_index, all_entries)
+    
+    # Serialize both indexes
+    agent_index_content = serialize_index(target_index if not is_priorart else other_index)
+    priorroot_index_content = serialize_index(target_index if is_priorart else other_index)
+    
+    return agent_index_content, priorroot_index_content
+
+
+def _commit_files_atomically(
+    gh: GitHubAPI,
+    branch: str,
+    files: dict,
+    commit_message: str,
+    paper_id: str,
+    compute_indexes=None,
+) -> None:
+    """
+    Commit multiple files in a SINGLE atomic commit using Git Data API.
+    
+    FIX (Bug B23 item 8): This ensures all files (paper files + both indexes) land
+    in exactly one commit. If any file fails, the whole commit fails. Retries on
+    non-fast-forward with bounded backoff, then raises to trigger publish-failed.
+    
+    Args:
+        gh: GitHub API wrapper
+        branch: Target branch (e.g., "main" or "paper/2026-042")
+        files: Dict of {path: content} for all files to commit
+        commit_message: Commit message
+        paper_id: Paper ID (for error messages)
+    """
+    max_retries = 3
+    backoff_delays = [2, 4, 8]  # seconds
+    
+    for attempt in range(max_retries):
+        try:
+            # Get current branch state
+            ref = f"heads/{branch}"
+            parent_sha = gh.get_ref_sha(ref)
+            parent_commit = gh.get_commit(parent_sha)
+            base_tree_sha = parent_commit["tree"]["sha"]
+            
+            # Recompute both indexes from the commit we are about to parent on, so a
+            # retry after a non-fast-forward never writes a stale index (lost update).
+            all_files = dict(files)
+            if compute_indexes is not None:
+                all_files["agent-index.json"], all_files["priorroot-index.json"] = compute_indexes(parent_sha)
+
+            # Create blobs for all files
+            tree_items = []
+            for path, content in all_files.items():
+                blob_sha = gh.create_blob(content)
+                tree_items.append({
+                    "path": path,
+                    "mode": "100644",  # Regular file
+                    "type": "blob",
+                    "sha": blob_sha
+                })
+            
+            # Create tree with all files
+            tree_sha = gh.create_tree(base_tree_sha, tree_items)
+            
+            # Create commit
+            commit_sha = gh.create_commit(commit_message, tree_sha, parent_sha)
+            
+            # Update ref with force=false (fail on non-fast-forward)
+            gh.update_ref(ref, commit_sha, force=False)
+            
+            print("Successfully committed {} files in atomic commit {}".format(len(all_files), commit_sha[:7]))
+            return
+            
+        except requests.HTTPError as e:
+            # Check for non-fast-forward (409 Conflict or 422 Unprocessable Entity)
+            status_code = e.response.status_code if e.response is not None else 0
+            if status_code in (409, 422):
+                if attempt < max_retries - 1:
+                    delay = backoff_delays[attempt]
+                    print(f"Non-fast-forward on atomic commit (attempt {attempt + 1}/{max_retries}). "
+                          f"Retrying after {delay}s backoff...")
+                    time.sleep(delay)
+                    continue
+                else:
+                    # Max retries exhausted - fail into publish-failed
+                    raise Exception(
+                        f"Atomic commit failed after {max_retries} attempts due to conflicts. "
+                        f"Another writer modified the branch between read and write. "
+                        f"Paper {paper_id} will be retried by the cron job."
+                    ) from e
+            else:
+                # Other HTTP error - propagate immediately
+                raise
+        except Exception as e:
+            # Other errors (network, etc.) - retry with backoff
+            if attempt < max_retries - 1:
+                delay = backoff_delays[attempt]
+                print(f"Atomic commit error: {e}. Retrying after {delay}s (attempt {attempt + 1}/{max_retries})...")
+                time.sleep(delay)
+                continue
+            else:
+                raise Exception(
+                    f"Atomic commit failed after {max_retries} attempts: {e}"
+                ) from e
 
 
 def _handle_acceptance(
@@ -572,20 +1052,138 @@ def _handle_acceptance(
     Publish accepted work: bump contributor stats locally, upload files, then
     merge via PR. If the PR path fails (403, merge rules, etc.), fall back to
     committing the same files directly to main so the site still updates.
+    
+    FIX (Bug B20 part b): This function now verifies that files were actually
+    written and the index was updated. If the publish is a no-op (existing path,
+    slug collision, any silent failure), it raises an exception so stage 6 fails
+    loudly with a publish-failed label and a non-zero exit code.
+    
+    FIX (Bug B23 item 2): Check retry attempt count. If the paper file exists but
+    isn't in the index after 3 attempts, give up and leave for human review.
 
     Returns:
         PR number if merged via PR, or None if published via direct commits to main
         or if the article was already on main (idempotent retry).
+    
+    Raises:
+        Exception: If the publish step completes but no files were written or the
+                   index was not updated (indicates a silent collision or skip).
     """
     now = datetime.now(timezone.utc)
+    
+    # FIX (Bug B23 item 2): Check retry attempt count before starting
+    # Track retries via a comment marker "pubroot:publish-retry-attempt-N"
+    # If we've already tried 3 times, give up and leave for human review
+    MAX_RETRY_ATTEMPTS = 3
+    retry_attempt = _get_publish_retry_attempt(gh, issue_number)
+    
+    if retry_attempt >= MAX_RETRY_ATTEMPTS:
+        # Cap reached - post a comment and give up
+        gh.post_comment(
+            issue_number,
+            f"<!-- pubroot:publish-retry-cap -->\n# Publication Retry Cap Reached\n\n"
+            f"**Paper ID:** `{paper_id}`\n\n"
+            f"This issue has been retried {retry_attempt} times, but publication still fails. "
+            f"The paper may have a path collision, index conflict, or other issue that "
+            f"requires human intervention.\n\n"
+            f"A maintainer should investigate and either:\n"
+            f"1. Fix the underlying issue and remove the `editorial-hold` label to retry, or\n"
+            f"2. Close this issue with an explanation if it cannot be published.\n\n"
+            f"Automatic retries have been stopped to prevent infinite loops."
+        )
+        raise Exception(
+            f"Publication retry cap reached ({MAX_RETRY_ATTEMPTS} attempts). "
+            f"Leaving for human review."
+        )
+    
+    # Record this attempt (increment counter)
+    _record_publish_retry_attempt(gh, issue_number, retry_attempt + 1)
     branch_name = f"paper/{paper_id}"
 
-    # Idempotent retries (e.g. cron re-runs after a publish failure): if the article
-    # is already on main (new SEO path or legacy flat path), skip duplicate publish.
-    if gh.path_exists(f"papers/{paper_id}/article.md", "main"):
-        return None
+    #  FIX (Bug B20 root cause): Check if a file exists at the target path.
+    # If it does, read its frontmatter to extract the paper_id. If the paper_id
+    # matches this issue's paper_id, it's an idempotent retry (safe no-op).
+    # If the paper_id DIFFERS, it's a duplicate submission that resolved to the
+    # FIX (Bug B20 part 4): Check if target path exists AND extract its paper_id.
+    # If the file exists and has a DIFFERENT paper_id, this is a path collision
+    # (e.g., issue #60 vs 2026-067). RAISE directly to trigger publish-failed.
+    # The caller (post_review_and_decide) will post ONE comment and add the label.
+    # Don't post a comment here - that causes double failure comments.
+    # -------------------------------------------------------------------------------
     _paths_probe = _resolve_publication_paths(gh, parsed_submission, paper_id)
-    if gh.path_exists(_paths_probe["article_index_path"], "main"):
+    article_path = _paths_probe["article_index_path"]
+    
+    # Check for idempotent retry or path collision
+    if gh.path_exists(article_path, "main"):
+        # File exists — try to read it to check paper_id
+        print(f"WARNING: Target path exists: {article_path}. Checking paper_id...")
+        
+        try:
+            content_result = gh.get_file_content(article_path, "main")
+            # Handle case where get_file_content returns empty or malformed result
+            if not content_result or len(content_result) != 2:
+                # Cannot verify — treat as collision for safety
+                raise ValueError(f"get_file_content returned malformed result: {content_result}")
+            
+            article_content, _ = content_result
+            existing_paper_id = _extract_paper_id_from_frontmatter(article_content)
+            
+            if existing_paper_id == paper_id:
+                # Same paper_id: idempotent retry after successful publish
+                # FIX (Bug B23 item 9): Don't return early - re-run index update and
+                # verification to repair a half-failed publish (article exists but indexes
+                # may not be updated).
+                print("Idempotent retry detected: existing paper_id {} matches.".format(existing_paper_id))
+                print("Re-running index update and verification to repair any half-failed state...")
+                
+                # Re-run index update (safe to do multiple times - it's a merge operation)
+                _paths_probe = _resolve_publication_paths(gh, parsed_submission, paper_id)
+                _m = re.search(r'^date:\s*"?(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z)"?\s*$', article_content, re.M)
+                if not _m:
+                    raise ValueError("idempotent retry: existing article has no parseable date: frontmatter")
+                heal_now = datetime.strptime(_m.group(1), "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
+                _update_indexes(
+                    gh=gh,
+                    branch="main",
+                    paper_id=paper_id,
+                    parsed_submission=parsed_submission,
+                    review=review,
+                    repo_data=repo_data,
+                    now=heal_now,
+                    paths=_paths_probe,
+                )
+                
+                # Verify the publish succeeded (indexes updated, article exists)
+                _verify_publish_succeeded_with_retry(gh, _paths_probe, paper_id, "after idempotent retry")
+                
+                return None
+            elif existing_paper_id:
+                # Different paper_id: duplicate submission, same slug (Bug B20)
+                raise Exception(
+                    f"PUBLISH COLLISION: This submission resolves to the same path as "
+                    f"existing paper **{existing_paper_id}**, but has a different paper ID "
+                    f"({paper_id}). This indicates a duplicate or near-duplicate submission "
+                    f"that was not caught by the deduplication check. "
+                    f"Path: `{article_path}`"
+                )
+            else:
+                # existing_paper_id is None (can't extract) — fail safe, treat as collision
+                raise Exception(
+                    f"Path collision: {article_path} exists but paper_id cannot be extracted. "
+                    f"This issue is {paper_id}. Cannot safely overwrite."
+                )
+        except Exception as e:
+            # If we can't read the file or extract paper_id, fail safe
+            if "PUBLISH COLLISION" in str(e) or "Path collision" in str(e):
+                raise  # Re-raise our own collision exception
+            # Other errors (API failures, etc.) - fail safe, treat as collision
+            raise Exception(
+                f"Path collision: {article_path} exists but verification failed: {e}. "
+                f"Cannot safely overwrite."
+            )
+    
+    # Also check legacy flat path for idempotent retries
+    if gh.path_exists(f"papers/{paper_id}/article.md", "main"):
         return None
 
     # Contributor stats must be reflected in contributors.json before upload.
@@ -653,13 +1251,19 @@ def _handle_acceptance(
             repo_root,
             now,
         )
-
+    
     try:
-        return _try_pr_path()
+        pr_number = _try_pr_path()
     except Exception:
         gh.delete_branch_if_exists(branch_name)
         _direct_main_path()
-        return None
+        pr_number = None
+    
+    # FIX (Bug B20): Verify publish succeeded AFTER the final publish path,
+    # with retry for eventual consistency. Never write twice.
+    _verify_publish_succeeded_with_retry(gh, _paths_probe, paper_id, "after publish")
+    
+    return pr_number
 
 
 def _build_article_md(
@@ -748,7 +1352,12 @@ def _build_manifest(
     parsed: dict, review: dict, repo_data: dict,
     paper_id: str, now: datetime, novelty: dict
 ) -> dict:
-    """Build the manifest.json for a published paper."""
+    """
+    Build the manifest.json for a published paper.
+    
+    FIX (Root Cause C): Use second-precision Z format for published_date to match
+    the generator and prevent field drift.
+    """
     # Calculate valid_until: 12 months for humanities/philosophy topics,
     # 6 months for everything else. Humanities content has longer shelf life
     # because it deals with ideas that change more slowly than technical content.
@@ -761,19 +1370,32 @@ def _build_manifest(
     else:
         valid_until = now + timedelta(days=180)
 
+    # Normalize published_date to second precision Z (match generator)
+    published_date = now.astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    valid_until_str = valid_until.astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    
+    # Get supporting_repo, strip quotes
+    supporting_repo = parsed.get("supporting_repo")
+    if supporting_repo:
+        supporting_repo = str(supporting_repo).strip().strip('"').strip("'")
+        if not supporting_repo:
+            supporting_repo = None
+    else:
+        supporting_repo = None
+
     manifest = {
         "paper_id": paper_id,
         "title": parsed.get("title", "Untitled"),
         "author": parsed.get("author", "unknown"),
         "category": parsed.get("category", "general-technical"),
-        "published_date": now.isoformat(),
+        "published_date": published_date,
         "status": "current",
         "score": review.get("score"),
         "verdict": review.get("verdict"),
         "badge": repo_data.get("badge_type", "text_only"),
-        "supporting_repo": parsed.get("supporting_repo"),
+        "supporting_repo": supporting_repo,
         "commit_sha": parsed.get("commit_sha"),
-        "valid_until": valid_until.isoformat(),
+        "valid_until": valid_until_str,
         "supersedes": review.get("supersedes"),
         "superseded_by": None,
         "word_count": parsed.get("word_count_body", 0),
@@ -783,86 +1405,156 @@ def _build_manifest(
     return manifest
 
 
-def _build_index_entry(
-    parsed: dict,
+def _update_indexes(
+    gh: GitHubAPI,
+    branch: str,
+    paper_id: str,
+    parsed_submission: dict,
     review: dict,
     repo_data: dict,
-    paper_id: str,
     now: datetime,
-    article_index_path: str,
-    reader_url: str,
-) -> dict:
-    """Build an entry for agent-index.json."""
-    entry = {
-        "id": paper_id,
-        "title": parsed.get("title", "Untitled"),
-        "author": parsed.get("author", "unknown"),
-        "category": parsed.get("category", "general-technical"),
-        "abstract": parsed.get("abstract", "")[:500],
-        "published_date": now.isoformat(),
-        "review_score": review.get("score"),
-        "badge": repo_data.get("badge_type", "text_only"),
-        "status": "current",
-        "article_path": article_index_path,
-        "reader_url": reader_url,
-        "review_path": f"reviews/{paper_id}/review.json",
-        "supporting_repo": parsed.get("supporting_repo"),
-    }
-    if parsed.get("ai_tooling_attribution"):
-        entry["ai_tooling_attribution"] = parsed["ai_tooling_attribution"]
-    return entry
-
-
-def _update_agent_index(
-    gh: GitHubAPI, branch: str, repo_root: str, new_entry: dict
+    paths: dict,
 ):
     """
-    Add a new paper entry to agent-index.json and commit it.
+    Update both agent-index.json and priorroot-index.json with a new paper entry.
     
-    RACE CONDITION FIX (2026-10-24):
-        Previously, this read agent-index.json from the local checkout, which was
-        the main branch state at event time (when the issue was opened). When multiple
-        reviews ran concurrently, they all started with stale state and overwrote
-        each other's updates, causing lost entries (Bug B3).
+    FIX (Bug B22 - Oct 2026): Stage 6 now merges the new paper entry into live indexes
+    fetched from the target branch, ensuring byte-identical output with the regenerator.
+    
+    KEY INSIGHT:
+        Stage 6 runs in CI with an event-time checkout. The new paper's files are uploaded
+        via GitHub API, NOT written to disk. Therefore, we can't scan papers/ to build indexes.
+        Instead, we:
+        1. GET live indexes from target branch with their SHAs
+        2. Build new paper's entry from in-memory data (same data we're uploading)
+        3. Merge entry into live indexes
+        4. Apply shared selection, sort, last_updated logic
+        5. Commit with optimistic locking and retry on conflict (max 3 attempts)
+    
+    OPTIMISTIC LOCKING:
+        We fetch each index's content and SHA in the same API call. If another writer
+        modified the index between our read and write, GitHub returns 409/422. We retry
+        up to 3 times, then fail into publish-failed for cron retry.
         
-        Now we fetch the current agent-index.json from the target branch via GitHub API
-        right before updating. This ensures we always append to the latest state,
-        preventing lost-update races. The branch is typically "main" (fallback path)
-        or "paper/{paper-id}" (PR path). Both are safe because:
-        - main: always has the latest merged state
-        - paper/{paper-id}: branch was just created from main's HEAD in _handle_acceptance
-        
-        If a 409 conflict occurs (rare: two publishes hit the exact same millisecond),
-        the pipeline fails and the cron retry picks it up with fresh state.
+    Args:
+        gh: GitHub API client
+        branch: Target branch ("main" or "paper/{paper-id}")
+        paper_id: The paper ID being published
+        parsed_submission: Parsed submission data from Stage 1
+        review: Review data from Stage 5
+        repo_data: Repository data from Stage 3
+        now: Publication timestamp
+        paths: Publication paths dict (article_index_path, reader_url, etc.)
     """
-    try:
-        # Fetch fresh state from the target branch via GitHub API
-        index_json_str, _blob_sha = gh.get_file_content("agent-index.json", branch=branch)
-        index_data = json.loads(index_json_str)
-    except requests.HTTPError as e:
-        # If agent-index.json doesn't exist on the branch yet (shouldn't happen),
-        # fall back to the local checkout as a last resort
-        if e.response and e.response.status_code == 404:
-            index_path = os.path.join(repo_root, "agent-index.json")
-            with open(index_path, "r") as f:
-                index_data = json.load(f)
-        else:
-            raise
+    # Build the new paper's entry from in-memory data
+    # This is the same data we're uploading to manifest.json and frontmatter
+    published_date = now.astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     
-    # Append the new entry and update metadata
-    index_data["papers"].append(new_entry)
-    index_data["total_papers"] = len(index_data["papers"])
-    index_data["last_updated"] = datetime.now(timezone.utc).isoformat()
+    # SECURITY (Bug B22 secret scrubbing): Build the index entry from the EXACT
+    # scrubbed strings that get uploaded to the repo. This ensures the index entry
+    # is byte-identical to what the regenerator derives from the committed files.
+    # All text fields must be scrubbed before being passed to build_index_entry_from_data.
+    scrubbed_title = scrub_all(str(parsed_submission.get("title", "Untitled")))
+    scrubbed_author = scrub_all(str(parsed_submission.get("author", "unknown")))
+    scrubbed_abstract = scrub_all(str(parsed_submission.get("abstract", "")))
+    scrubbed_supporting_repo = None
+    if parsed_submission.get("supporting_repo"):
+        scrubbed_supporting_repo = scrub_all(str(parsed_submission["supporting_repo"]))
+    scrubbed_ai_attr = None
+    if parsed_submission.get("ai_tooling_attribution"):
+        scrubbed_ai_attr = scrub_all(str(parsed_submission["ai_tooling_attribution"]))
     
-    # Write back to the branch
-    # GitHub API handles conflicts automatically by requiring the blob SHA on updates,
-    # but we don't retry here - if it fails, the whole pipeline fails and cron retries
-    gh.create_or_update_file(
-        path="agent-index.json",
-        content=json.dumps(index_data, indent=2),
-        message=f"Update paper index: add {new_entry['id']}",
-        branch=branch,
+    new_entry = build_index_entry_from_data(
+        paper_id=paper_id,
+        title=scrubbed_title,
+        author=scrubbed_author,
+        category=parsed_submission.get("category", "general-technical"),
+        abstract=scrubbed_abstract,
+        published_date=published_date,
+        review_score=review.get("score"),
+        badge=repo_data.get("badge_type", "text_only"),
+        article_path=paths["article_index_path"],
+        reader_url=paths["reader_url"],
+        review_path=f"reviews/{paper_id}/review.json",
+        supporting_repo=scrubbed_supporting_repo,
+        ai_tooling_attribution=scrubbed_ai_attr,
     )
+    
+    # Determine which index to update based on category
+    is_priorart = new_entry["category"].startswith("prior-art/")
+    target_index_file = "priorroot-index.json" if is_priorart else "agent-index.json"
+    other_index_file = "agent-index.json" if is_priorart else "priorroot-index.json"
+    
+    # Retry loop for optimistic locking conflicts
+    # Backoff delays for retries (patchable in tests)
+    backoff_delays = [1, 2, 4]  # seconds: 1s, 2s, 4s
+    max_retries = 3
+    for attempt in range(max_retries):
+        try:
+            # Fetch live indexes with their SHAs (same API call)
+            target_index_json, target_sha = gh.get_file_content(target_index_file, branch=branch)
+            target_index = json.loads(target_index_json)
+            
+            other_index_json, other_sha = gh.get_file_content(other_index_file, branch=branch)
+            other_index = json.loads(other_index_json)
+            
+            # Merge new entry into target index
+            merge_entry_into_index(target_index, new_entry)
+            
+            # Apply selection (filter archived) and sort to both indexes.
+            # We need ALL entries for last_updated calculation (max published_date
+            # across both indexes ensures they stay in sync).
+            all_entries = target_index["papers"] + other_index["papers"]
+            apply_selection_and_sort(target_index, all_entries)
+            apply_selection_and_sort(other_index, all_entries)
+            
+            # Serialize with canonical formatting
+            target_content = serialize_index(target_index)
+            other_content = serialize_index(other_index)
+            
+            # Commit target index (the one with the new paper)
+            gh.create_or_update_file_with_sha(
+                path=target_index_file,
+                content=target_content,
+                message=f"Update {target_index_file}: add {paper_id}",
+                branch=branch,
+                sha=target_sha,
+            )
+            
+            # Only commit other index if it changed (last_updated update)
+            # Compare with fetched content to avoid redundant writes
+            if other_content != other_index_json:
+                gh.create_or_update_file_with_sha(
+                    path=other_index_file,
+                    content=other_content,
+                    message=f"Update {other_index_file}: last_updated after {paper_id}",
+                    branch=branch,
+                    sha=other_sha,
+                )
+            
+            # Success - exit retry loop
+            return
+            
+        except requests.HTTPError as e:
+            # Check for optimistic locking conflict (409 Conflict or 422 Unprocessable Entity)
+            if e.response is not None and e.response.status_code in (409, 422):
+                if attempt < max_retries - 1:
+                    # Retry with fresh state after backoff delay
+                    import time
+                    delay = backoff_delays[attempt]
+                    print(f"Index update conflict on attempt {attempt + 1}, retrying after {delay}s backoff...")
+                    time.sleep(delay)
+                    continue
+                else:
+                    # Max retries exhausted - fail into publish-failed
+                    raise Exception(
+                        f"Index update failed after {max_retries} attempts due to conflicts. "
+                        f"Another writer modified the index between read and write. "
+                        f"This paper will be retried by the cron job."
+                    )
+            else:
+                # Other HTTP error - propagate immediately
+                raise
 
 
 def _update_contributors(
@@ -895,15 +1587,12 @@ def _update_contributors(
     except requests.HTTPError as e:
         # If contributors.json doesn't exist on the branch yet (shouldn't happen),
         # fall back to the local checkout as a last resort
-        if e.response and e.response.status_code == 404:
+        if e.response is not None and e.response.status_code == 404:
             contributors_path = os.path.join(repo_root, "contributors.json")
             with open(contributors_path, "r") as f:
                 data = json.load(f)
         else:
             raise
-    
-    with open(contributors_path, "r") as f:
-        data = json.load(f)
     
     contributors = data.get("contributors", {})
     
@@ -1002,7 +1691,7 @@ def _format_review_comment(
         f"**Score:** {score}/10 {score_bar}",
         f"**Badge:** `{badge}`",
         "",
-        f"## Summary",
+        "## Summary",
         summary,
         "",
     ]
@@ -1110,3 +1799,151 @@ def _score_to_bar(score: float) -> str:
     filled = int(round(score))
     empty = 10 - filled
     return "[" + "|" * filled + "." * empty + "]"
+
+
+def _extract_paper_id_from_frontmatter(article_content: str) -> Optional[str]:
+    """
+    Extract the paper_id from Hugo frontmatter.
+    
+    FIX (Bug B20 root cause): Read the paper_id field from the existing file
+    to detect duplicate submissions that resolved to the same slug.
+    
+    Returns:
+        The paper_id string, or None if not found.
+    """
+    # Frontmatter is between --- delimiters
+    if not article_content.startswith("---"):
+        return None
+    
+    # Find the closing ---
+    end_pos = article_content.find("\n---\n", 4)
+    if end_pos == -1:
+        return None
+    
+    frontmatter = article_content[4:end_pos]
+    
+    # Look for paper_id: line
+    match = re.search(r'^paper_id:\s*["\']?([^"\'\n]+)["\']?', frontmatter, re.MULTILINE)
+    if match:
+        return match.group(1).strip()
+    
+    return None
+
+
+def _verify_publish_succeeded_with_retry(
+    gh: GitHubAPI,
+    paths: dict,
+    paper_id: str,
+    context: str,
+    max_retries: int = 3,
+) -> None:
+    """
+    Verify publication with retry for eventual consistency.
+    
+    FIX (Bug B20): GitHub API may have eventual consistency delays after PR merge.
+    Retry up to 3 times with exponential backoff before failing.
+    
+    Args:
+        gh: GitHub API wrapper
+        paths: Publication paths dict
+        paper_id: The paper ID
+        context: Description for error messages
+        max_retries: Maximum retry attempts (default 3)
+    
+    Raises:
+        Exception: If verification fails after all retries
+    """
+    import time
+    
+    for attempt in range(max_retries):
+        try:
+            _verify_publish_succeeded(gh, paths, paper_id, context)
+            return  # Success
+        except Exception as e:
+            if attempt < max_retries - 1:
+                wait_seconds = 2 ** attempt  # Exponential backoff: 1s, 2s, 4s
+                print(f"Verification attempt {attempt + 1} failed, retrying in {wait_seconds}s: {e}")
+                time.sleep(wait_seconds)
+            else:
+                # Final attempt failed
+                raise
+
+
+def _verify_publish_succeeded(
+    gh: GitHubAPI,
+    paths: dict,
+    paper_id: str,
+    context: str,
+) -> None:
+    """
+    Verify that publication actually wrote files and updated the index (Bug B20 fix).
+    
+    FIX HISTORY:
+        Issue #60 was a duplicate of 2026-067. Stage 6 ran _upload_publication_files_to_branch,
+        but the article path already existed, so the GitHub API silently skipped the write
+        (returning 200 OK with no content change). The PR merged, labels were added, issue
+        was closed, but NO new files were created and agent-index.json was NOT updated.
+        
+        This function detects that failure case by checking that:
+        1. The article file exists on main after the publish operation
+        2. The paper_id appears in agent-index.json or priorroot-index.json
+        
+        If either check fails, we raise an exception so the workflow run fails and the
+        issue gets labeled publish-failed (not published).
+    
+    Args:
+        gh: GitHub API wrapper
+        paths: Publication paths dict from _resolve_publication_paths
+        paper_id: The paper ID (e.g., "2026-060")
+        context: Description of when this check runs (for error message)
+    
+    Raises:
+        Exception: If verification fails (article path missing or paper not in index)
+    """
+    article_path = paths["article_index_path"]
+    
+    # CHECK 1: Article file exists on main
+    if not gh.path_exists(article_path, "main"):
+        raise Exception(
+            f"PUBLISH VERIFICATION FAILED {context}: "
+            f"Article file '{article_path}' does not exist on main. "
+            f"This indicates a silent collision or no-op write. "
+            f"The issue will be labeled publish-failed for retry."
+        )
+    
+    # CHECK 2: Paper appears in agent-index.json or priorroot-index.json
+    # Determine which index based on category
+    category = paths.get("journal", "")
+    is_priorart = category.startswith("prior-art")
+    index_name = "priorroot-index.json" if is_priorart else "agent-index.json"
+    
+    try:
+        index_json_str, _ = gh.get_file_content(index_name, branch="main")
+        try:
+            index_data = json.loads(index_json_str)
+        except (json.JSONDecodeError, ValueError) as json_err:
+            raise Exception(
+                f"PUBLISH VERIFICATION FAILED {context}: "
+                f"Could not parse {index_name} as JSON: {json_err}. "
+                f"The issue will be labeled publish-failed for retry."
+            )
+        
+        papers = index_data.get("papers", [])
+        
+        paper_ids = [p.get("id") for p in papers]
+        if paper_id not in paper_ids:
+            raise Exception(
+                f"PUBLISH VERIFICATION FAILED {context}: "
+                f"Paper {paper_id} was not added to {index_name}. "
+                f"Found {len(paper_ids)} papers, but {paper_id} is missing. "
+                f"This indicates the index update was skipped or failed. "
+                f"The issue will be labeled publish-failed for retry."
+            )
+    except requests.HTTPError as e:
+        # If we can't fetch the index, that's a real failure too
+        raise Exception(
+            f"PUBLISH VERIFICATION FAILED {context}: "
+            f"Could not fetch {index_name} from main to verify publication. "
+            f"HTTP {e.response.status_code if e.response is not None else 'error'}. "
+            f"The issue will be labeled publish-failed for retry."
+        )

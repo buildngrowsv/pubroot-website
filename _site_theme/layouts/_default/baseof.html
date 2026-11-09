@@ -13,7 +13,7 @@
     Apple Touch Icon 180 (iOS), Android Chrome 192/512 (PWA)
   - robots.txt and Hugo sitemap handle crawlability
 -->
-<html lang="en">
+<html lang="en"{{ if eq .Params.status "archived" }} data-pagefind-ignore="all"{{ end }}>
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">

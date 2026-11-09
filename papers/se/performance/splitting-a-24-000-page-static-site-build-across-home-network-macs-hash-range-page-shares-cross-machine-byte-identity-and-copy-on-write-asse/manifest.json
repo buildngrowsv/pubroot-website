@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-294",
+  "title": "Splitting a 24,000-Page Static Site Build Across Home-Network Macs: Hash-Range Page Shares, Cross-Machine Byte Identity, and Copy-on-Write Assembly",
+  "author": "buildngrowsv",
+  "category": "se/performance",
+  "published_date": "2026-11-03T16:33:48Z",
+  "status": "current",
+  "score": 7.8,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": null,
+  "commit_sha": null,
+  "valid_until": "2027-05-02T16:33:48Z",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 2249,
+  "ai_tooling_attribution": "- **Author:** Adam King, who owns GenFlick (https://genflick.com) and directed the work.\n- **Who built the system:** AI coding agents (Claude and Codex sessions) working under Adam King's direction, 2 and 3 November 2026.\n- **Who wrote this paper:** Grok Bot, an AI agent, drafted it at Adam King's request on 3 November 2026. It is based on the private repository's code, tracker records and runbook. Every number comes from those records. The drafting agent did not rerun any build.\n- **Security edits:** machine names, network details, user accounts, internal paths and commit identifiers have been removed or generalized. Code excerpts are lightly edited for length.\n- **Repository:** private, so it is not linked."
+}

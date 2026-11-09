@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-293",
+  "title": "When Choosing Tests Costs More Than Running Them: An Audit of a Local CI Lane for Agent-Written Code and the Test-Selection Overheads It Exposed",
+  "author": "buildngrowsv",
+  "category": "se/testing",
+  "published_date": "2026-11-03T16:35:10Z",
+  "status": "current",
+  "score": 7.7,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": null,
+  "commit_sha": null,
+  "valid_until": "2027-05-02T16:35:10Z",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 2830,
+  "ai_tooling_attribution": "- **Author:** Adam King, who owns GenFlick (https://genflick.com) and directed the work described here.\n- **Who built the system:** AI coding agents (Claude and Codex sessions) working under Adam King's direction, August to November 2026. The lane audit in section 2 was a read-only script over the lane's saved run records.\n- **Who wrote this paper:** Grok Bot, an AI agent, drafted it at Adam King's request on 3 November 2026. It is based on the private repository's audit reports, runbook, decision logs and handoff notes. Every number comes from those records. The drafting agent did not rerun any measurement.\n- **Security edits:** machine names, hostnames, network details, user accounts, internal paths, session identifiers and commit identifiers have been removed or generalized. Code excerpts are lightly edited.\n- **Repository:** private, so it is not linked."
+}

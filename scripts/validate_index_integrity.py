@@ -17,6 +17,7 @@ Usage:
 
 This can be added to CI to catch index drift early, or run manually to audit the indexes.
 Added as part of the Bug B3 fix (index lost-update race condition) on 2026-10-24.
+Updated for Bug B22 fix (Oct 2026) to use shared paper selection logic.
 """
 
 from __future__ import annotations
@@ -25,38 +26,41 @@ import json
 import sys
 from pathlib import Path
 
-import yaml
+# Add _review_agent to sys.path for index_builder import
+repo_root = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(repo_root / "_review_agent"))
 
-
-def _fm_and_body(path: Path) -> tuple[dict | None, str]:
-    """Extract YAML frontmatter and body from a Hugo markdown file."""
-    text = path.read_text(encoding="utf-8")
-    if not text.lstrip().startswith("---"):
-        return None, text
-    parts = text.split("---", 2)
-    if len(parts) < 3:
-        return None, text
-    try:
-        fm = yaml.safe_load(parts[1]) or {}
-    except yaml.YAMLError:
-        return None, text
-    return fm, parts[2]
+from index_builder import _fm_and_body, should_include_paper
 
 
 def main() -> int:
-    repo_root = Path(__file__).resolve().parents[1]
     papers_root = repo_root / "papers"
     reviews_root = repo_root / "reviews"
     
-    # Collect all paper IDs from disk
+    # Collect all paper IDs from disk using the shared should_include_paper logic
     disk_papers: dict[str, Path] = {}
-    for index_md in sorted(papers_root.rglob("index.md")):
-        rel_from_papers = index_md.relative_to(papers_root)
-        if rel_from_papers.parts and rel_from_papers.parts[0].startswith("_"):
-            continue
-        
+    non_current_papers: set[str] = set()  # Track archived/non-current papers
+    for index_md in sorted(papers_root.glob("*/*/*/index.md")):
         fm, _ = _fm_and_body(index_md)
-        if not fm or not fm.get("paper_id"):
+        
+        # Check for sibling manifest.json
+        manifest_path = index_md.parent / "manifest.json"
+        manifest = None
+        if manifest_path.exists():
+            try:
+                manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+            except (json.JSONDecodeError, OSError):
+                continue
+        
+        # Track non-current papers (archived, etc.) separately
+        if fm and fm.get("paper_id"):
+            pid = str(fm["paper_id"]).strip().strip('"').strip("'")
+            status = fm.get("status") or (manifest.get("status") if manifest else None)
+            if status and status != "current":
+                non_current_papers.add(pid)
+        
+        # Apply shared paper selection logic (includes archiving check)
+        if not should_include_paper(index_md, papers_root, fm, manifest):
             continue
         
         pid = str(fm["paper_id"]).strip().strip('"').strip("'")
@@ -125,7 +129,8 @@ def main() -> int:
         errors.append(f"Index entries with missing review.json files: {sorted(dangling_review_links)}")
     
     # Check 4: Review files without corresponding papers (orphaned reviews)
-    orphaned_reviews = disk_reviews - set(disk_papers.keys())
+    # Exclude non-current papers (archived, etc.) - they're expected to have reviews but no index entry
+    orphaned_reviews = disk_reviews - set(disk_papers.keys()) - non_current_papers
     if orphaned_reviews:
         warnings.append(f"Review files without corresponding papers: {sorted(orphaned_reviews)}")
     

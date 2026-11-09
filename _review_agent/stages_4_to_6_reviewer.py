@@ -4,19 +4,19 @@ Stages 4-6 Reviewer — Pubroot Security Hardening
 PURPOSE:
     This script runs ONLY stages 4-6 of the review pipeline (prompt building, LLM review,
     and publication) with FULL secrets in scope. It is called by the review-and-publish job
-    in review.yml, which has GEMINI_API_KEY and write permissions.
+    in review.yml, which has OPENROUTER_API_KEY and write permissions.
     
     This script consumes the JSON artifact produced by stages_1_to_3_analyzer.py and
     NEVER checks out, clones, or executes any code from the submitter's repository.
 
 SECURITY ARCHITECTURE:
     - Input: JSON artifact from job 1 (stages 1-3 output)
-    - Environment: GEMINI_API_KEY, GITHUB_TOKEN (write), GITHUB_REPOSITORY
+    - Environment: OPENROUTER_API_KEY, GITHUB_TOKEN (write), GITHUB_REPOSITORY
     - NO ACCESS TO: Submitter's repository (never cloned or checked out)
     - Output: Issue comment, review.json, published paper (all scrubbed by secret_scrubber)
     
     This architecture ensures that even if a malicious submitter corrupted the JSON artifact
-    (via a hypothetical bug in stages 1-3), they still cannot access GEMINI_API_KEY because
+    (via a hypothetical bug in stages 1-3), they still cannot access OPENROUTER_API_KEY because
     it was not in scope when they could execute code. The worst they could do is corrupt the
     structured data, and all outputs are scrubbed by secret_scrubber before posting.
 
@@ -30,11 +30,10 @@ USAGE:
 import json
 import os
 import sys
-from datetime import datetime, timezone
 
 # Import only the stages we need (4-6)
 from stage_4_build_review_prompt import build_review_prompt
-from stage_5_gemini_grounded_review import run_gemini_grounded_review
+from stage_5_gemini_grounded_review import run_openrouter_review
 from stage_6_post_review_and_decide import post_review_and_decide, GitHubAPI
 from reputation_calculator import update_all_reputations
 
@@ -67,16 +66,18 @@ def run_stages_4_to_6(analysis_data: dict) -> dict:
     """
     
     # Read environment (full secrets for LLM and publication)
-    gemini_api_key = os.environ.get("GEMINI_API_KEY", "")
+    openrouter_api_key = os.environ.get("OPENROUTER_API_KEY", "")
+    # Use 'or' pattern to handle empty string from unset GitHub secret
+    model_name = os.environ.get("PUBROOT_MODEL") or "google/gemini-3.8-flash"
     github_token = os.environ.get("GITHUB_TOKEN", "")
     github_repo = os.environ.get("GITHUB_REPOSITORY", "")
     github_workspace = os.environ.get("GITHUB_WORKSPACE", "")
     
-    if not gemini_api_key:
+    if not openrouter_api_key:
         return {
             "success": False,
             "action": "error",
-            "errors": ["GEMINI_API_KEY not set"],
+            "errors": ["OPENROUTER_API_KEY not set. Please add this secret to the repository settings."],
         }
     
     if not github_token:
@@ -99,30 +100,98 @@ def run_stages_4_to_6(analysis_data: dict) -> dict:
         return analysis_data
     
     action = analysis_data.get("action", "")
+    
+    # FIX (Bug B20 part 2): Handle 'filtered' action for duplicates and validation failures in CI.
+    # Stages 1-3 return action='filtered' for duplicates and validation failures.
+    # We need to label and comment on them before exiting.
+    if action == "filtered":
+        issue_number = analysis_data.get("issue_number")
+        if not issue_number:
+            # Fail loudly if issue_number is missing
+            raise ValueError(
+                f"Filtered analysis is missing issue_number. "
+                f"Cannot post comment or label. Analysis data: {analysis_data}"
+            )
+        
+        errors = analysis_data.get("errors", [])
+        is_duplicate = any(
+            "DUPLICATE DETECTED" in e or "SLUG COLLISION" in e or "NEAR-DUPLICATE DETECTED" in e
+            for e in errors
+        )
+        
+        gh = GitHubAPI(
+            owner=github_repo.split("/")[0],
+            repo=github_repo.split("/")[1],
+            token=github_token,
+        )
+        
+        if is_duplicate:
+            print("[Stage 4-6] Duplicate detected in stage 1. Labeling and commenting.")
+            
+            # Post duplicate comment
+            comment_body = (
+                "# Duplicate Submission Detected\n\n"
+                "Your submission appears to duplicate an existing published paper:\n\n"
+                + "\n".join(f"- {e}" for e in errors)
+                + "\n\n**Note**: If this is a genuine revision or update to the existing paper, "
+                "please follow the revision process by referencing the original paper's ID in "
+                "your submission and explaining what has changed."
+            )
+            
+            gh.post_comment(issue_number, comment_body)
+            gh.add_labels(issue_number, ["duplicate"])
+            gh.close_issue(issue_number)
+        else:
+            # Other validation failures (word count, format, etc.)
+            print("[Stage 4-6] Validation failed in stage 1. Labeling and commenting.")
+            
+            comment_body = (
+                "# Submission Validation Failed\n\n"
+                "Your submission could not be processed due to the following issues:\n\n"
+                + "\n".join(f"- {e}" for e in errors)
+                + "\n\nPlease fix these issues and resubmit."
+            )
+            
+            gh.post_comment(issue_number, comment_body)
+            gh.add_labels(issue_number, ["validation-failed"])
+            # Don't close validation failures (maintainer may want to help)
+        
+        return {
+            "success": True,
+            "action": "filtered",
+            "paper_id": analysis_data.get("paper_id"),
+            "score": None,
+            "errors": errors,
+        }
+    
     if action != "continue":
         print(f"[Stage 4-6] Analysis did not continue. Action: {action}")
         return analysis_data
     
     issue_number = analysis_data["issue_number"]
     paper_id = analysis_data["paper_id"]
-    parsed = analysis_data["parsed"]
+    # Extract the inner "parsed" dict which contains the actual submission fields
+    # The analyzer returns the full stage_1 output which has structure:
+    # {"valid": True, "errors": [], "warnings": [], "parsed": {actual_fields}}
+    parsed_wrapper = analysis_data["parsed"]
+    parsed_submission = parsed_wrapper.get("parsed", {})
     novelty = analysis_data["novelty"]
     repo_data = analysis_data["repo_data"]
-    priority_info = analysis_data["priority_info"]
     
     errors = analysis_data.get("errors", [])
     
     print(f"[Stage 4-6] Processing paper {paper_id} from issue #{issue_number}")
-    print(f"[Stage 4-6] Category: {parsed.get('category', 'unknown')}")
+    print(f"[Stage 4-6] Category: {parsed_submission.get('category', 'unknown')}")
     print(f"[Stage 4-6] Repo available: {repo_data.get('available', False)}")
     
     # Stage 4: Build review prompt
-    print(f"[Stage 4] Building review prompt...")
+    print("[Stage 4] Building review prompt...")
     prompt = build_review_prompt(
-        parsed_submission=parsed,
+        parsed_submission=parsed_submission,
         novelty_results=novelty,
         repo_data=repo_data,
-        calibration_dir=os.path.join(github_workspace, "_calibration"),
+        repo_root=github_workspace,
+        paper_id=paper_id,
     )
     
     if not prompt:
@@ -133,33 +202,34 @@ def run_stages_4_to_6(analysis_data: dict) -> dict:
             "errors": ["Failed to build review prompt"],
         }
     
-    print(f"[Stage 4] ✓ Prompt built ({len(prompt)} chars)")
+    print("[Stage 4] ✓ Prompt built ({} chars)".format(len(prompt)))
     
-    # Stage 5: Gemini grounded review
-    print(f"[Stage 5] Running Gemini grounded review...")
-    review_result = run_gemini_grounded_review(
-        prompt=prompt,
-        api_key=gemini_api_key,
-        submission_type=parsed.get("submission_type", "original-research"),
+    # Stage 5: OpenRouter LLM review with web search
+    print("[Stage 5] Running LLM review via OpenRouter (model: {})...".format(model_name))
+    review_result = run_openrouter_review(
+        review_prompt=prompt,
+        openrouter_api_key=openrouter_api_key,
+        model_name=model_name,
     )
     
     if not review_result.get("success", False):
-        review_errors = review_result.get("errors", ["Unknown error"])
-        print(f"[Stage 5] ✗ Review failed: {review_errors}")
+        review_errors = review_result.get("error", "Unknown error")
+        print("[Stage 5] ✗ Review failed: {}".format(review_errors))
         
         # Post error comment and label
-        gh = GitHubAPI(github_token, github_repo)
+        owner, repo = github_repo.split("/", 1)
+        # post_review_and_decide expects review_result (with success=False), not individual params
         post_review_and_decide(
-            gh=gh,
-            review=None,
-            grounding={},
-            parsed_submission=parsed,
+            review_result=review_result,  # Contains success=False and error message
+            parsed_submission=parsed_submission,
             novelty_results=novelty,
             repo_data=repo_data,
             paper_id=paper_id,
             issue_number=issue_number,
+            repo_owner=owner,
+            repo_name=repo,
+            github_token=github_token,
             repo_root=github_workspace,
-            priority_info=priority_info,
         )
         
         return {
@@ -170,30 +240,29 @@ def run_stages_4_to_6(analysis_data: dict) -> dict:
         }
     
     review = review_result["review"]
-    grounding = review_result["grounding"]
     
-    print(f"[Stage 5] ✓ Review complete. Score: {review.get('score', '?')}/10, Verdict: {review.get('verdict', '?')}")
+    print("[Stage 5] ✓ Review complete. Score: {}/10, Verdict: {}".format(review.get('score', '?'), review.get('verdict', '?')))
     
     # Stage 6: Post review and decide
-    print(f"[Stage 6] Posting review and deciding...")
-    gh = GitHubAPI(github_token, github_repo)
+    print("[Stage 6] Posting review and deciding...")
+    owner, repo = github_repo.split("/", 1)
     
     stage_6_result = post_review_and_decide(
-        gh=gh,
-        review=review,
-        grounding=grounding,
-        parsed_submission=parsed,
+        review_result=review_result,  # Contains success=True, review, and grounding_metadata
+        parsed_submission=parsed_submission,
         novelty_results=novelty,
         repo_data=repo_data,
         paper_id=paper_id,
         issue_number=issue_number,
+        repo_owner=owner,
+        repo_name=repo,
+        github_token=github_token,
         repo_root=github_workspace,
-        priority_info=priority_info,
     )
     
     if not stage_6_result.get("success", False):
         stage_6_errors = stage_6_result.get("errors", ["Unknown publication error"])
-        print(f"[Stage 6] ✗ Publication failed: {stage_6_errors}")
+        print("[Stage 6] ✗ Publication failed: {}".format(stage_6_errors))
         return {
             "success": False,
             "action": "publish_error",
@@ -202,12 +271,12 @@ def run_stages_4_to_6(analysis_data: dict) -> dict:
             "errors": errors + stage_6_errors,
         }
     
-    final_action = stage_6_result.get("action", "unknown")
-    print(f"[Stage 6] ✓ {final_action.upper()}")
+    final_action = stage_6_result.get("action_taken", "unknown")
+    print("[Stage 6] ✓ {}".format(final_action.upper()))
     
     # Update reputations (runs locally, commits in stage 6 if accepted)
     if final_action == "accepted":
-        print(f"[Reputation] Updating contributor reputations...")
+        print("[Reputation] Updating contributor reputations...")
         update_all_reputations(github_workspace)
     
     return {
@@ -226,11 +295,13 @@ def main():
     
     analysis_json_path = sys.argv[1]
     
-    print(f"=== Stages 4-6 Reviewer (LLM + Publication) ===")
-    print(f"Input: {analysis_json_path}")
-    print(f"Environment: GEMINI_API_KEY, GITHUB_TOKEN (write)")
-    print(f"SECURITY: This job NEVER touches the submitter's repository.")
-    print(f"          All repo data comes from the sanitized JSON artifact.")
+    model_name = os.environ.get("PUBROOT_MODEL", "google/gemini-3.8-flash")
+    print("=== Stages 4-6 Reviewer (LLM + Publication) ===")
+    print("Input: {}".format(analysis_json_path))
+    print("Environment: OPENROUTER_API_KEY, GITHUB_TOKEN (write)")
+    print("Model: {}".format(model_name))
+    print("SECURITY: This job NEVER touches the submitter's repository.")
+    print("          All repo data comes from the sanitized JSON artifact.")
     print()
     
     # Load the analysis from job 1
@@ -244,11 +315,11 @@ def main():
     result = run_stages_4_to_6(analysis_data)
     
     print()
-    print(f"✓ Pipeline complete.")
-    print(f"  Action: {result['action']}")
-    print(f"  Success: {result['success']}")
+    print("✓ Pipeline complete.")
+    print("  Action: {}".format(result['action']))
+    print("  Success: {}".format(result['success']))
     if result.get("score"):
-        print(f"  Score: {result['score']}/10")
+        print("  Score: {}/10".format(result['score']))
     
     # Exit with appropriate code
     if result["action"] in ["error", "review_error", "publish_error"]:

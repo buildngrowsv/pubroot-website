@@ -502,7 +502,7 @@ class TestSymlinkProtection:
     ATTACK SCENARIOS TESTED:
     1. Symlink to /etc/passwd (common system file)
     2. Symlink to .git/config (would contain GITHUB_TOKEN if persist-credentials=true)
-    3. Symlink to /proc/self/environ (exposes all env vars including GEMINI_API_KEY)
+    3. Symlink to /proc/self/environ (exposes all env vars including OPENROUTER_API_KEY)
     4. Symlink using relative path traversal (../../../../etc/passwd)
     5. Symlink to a directory outside the repo
     
@@ -571,7 +571,7 @@ class TestSymlinkProtection:
         SECURITY TEST: A symlink to /proc/self/environ should be blocked.
         
         /proc/self/environ contains all environment variables, including
-        GEMINI_API_KEY, GITHUB_TOKEN, and other secrets. A malicious repo
+        OPENROUTER_API_KEY, GITHUB_TOKEN, and other secrets. A malicious repo
         could create a symlink to this file to exfiltrate secrets.
         
         NOTE: /proc/self/environ reports size 0 bytes, so it passes the
