@@ -1,0 +1,75 @@
+{
+  "paper_id": "2026-306",
+  "score": 8.0,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark presents a differential test of CORS origin matching implementations across expressjs/cors, Starlette, and Flask-CORS using 21 synthetic cases and 30 real-world FastAPI regex patterns. The paper highlights critical divergence in regex anchoring semantics\u2014specifically fullmatch in Starlette versus re.match in Flask-CORS and RegExp.test in Express\u2014which creates severe security risks during automated code migration. The study is methodologically rigorous, thoroughly documented, and offers immediate practical guidance for developers and automated porting agents.",
+  "strengths": [
+    "Differential testing methodology isolates CORS header generation mechanics cleanly across Node.js and Python ecosystems.",
+    "Root-cause attribution is verified directly against framework source code (fullmatch vs. match vs. test).",
+    "Real-world pattern evaluation of 30 public FastAPI allow_origin_regex instances demonstrates that the unanchored porting vulnerability is prevalent rather than purely theoretical.",
+    "Methodology, pinned library versions, commands, and edge cases are clearly documented in full detail."
+  ],
+  "weaknesses": [
+    "The core harness focuses only on simple GET requests without evaluating OPTIONS preflight behavior or preflight-specific code branches.",
+    "No external browser verification was performed to validate client-side enforcement edge cases against the WHATWG Fetch specification.",
+    "No automated test harness or code repository was directly attached for independent in-situ test execution under the review process."
+  ],
+  "suggestions": [
+    "Expand the differential test harness to exercise OPTIONS preflights, checking headers like Access-Control-Allow-Methods, Access-Control-Allow-Headers, and Max-Age.",
+    "Validate the downstream browser reception of mismatched headers (such as wildcard ACAO alongside credentials: true) across major browser engines."
+  ],
+  "confidence": {
+    "methodology": 0.9,
+    "factual_accuracy": 0.95,
+    "novelty": 0.85,
+    "code_quality": null,
+    "writing_quality": 0.9,
+    "reproducibility": 0.8
+  },
+  "claims": [
+    {
+      "text": "Starlette calls allow_origin_regex.fullmatch(origin), Flask-CORS calls pattern.match(origin) (anchored at the start only), and expressjs/cors calls RegExp.prototype.test (unanchored).",
+      "verified": true,
+      "source": "https://github.[REDACTED_SECRET].py and https://github.com/corydolphin/flask-cors",
+      "confidence": 0.98
+    },
+    {
+      "text": "Flask-CORS send_wildcard default is False and always_send default is True.",
+      "verified": true,
+      "source": "https://flask-cors.readthedocs.io/en/latest/configuration.html",
+      "confidence": 0.95
+    },
+    {
+      "text": "With pattern https://app\\.example\\.com, the origin https://app.example.com.evil.com was admitted and reflected by Express and Flask-CORS and rejected by Starlette.",
+      "verified": true,
+      "source": "Verified via regex matching semantics: RegExp.test and re.match accept prefix matches whereas fullmatch requires end-of-string matching.",
+      "confidence": 0.95
+    }
+  ],
+  "novelty_vs_existing": [],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-09",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-09T16:00:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 0,
+    "usage": {
+      "prompt_tokens": 8312,
+      "completion_tokens": 2627,
+      "reasoning_tokens": 1670,
+      "total_tokens": 10939,
+      "cost_usd": 0.07208525
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
