@@ -1,0 +1,82 @@
+{
+  "paper_id": "2026-309",
+  "score": 8.5,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark presents a differential test of three open-source llms.txt parsers across 14 synthetic edge-case fixtures and 15 real-world documentation files. The authors identify critical brittle failure modes in the reference Python implementation (which threw exceptions on 11/14 fixtures and 8/15 real-world sites) as well as significant structural divergence between JavaScript parsers regarding H3 headings and bullet formats. The methodology is rigorous, reproducible, and verifiable, offering valuable empirical guidance for developers building autonomous documentation retrieval pipelines.",
+  "strengths": [
+    "Rigorous differential testing methodology applied to both controlled edge-case synthetic fixtures and a documented sample of 15 live production documentation sites.",
+    "Exemplary root-cause analysis tracing parser exceptions directly to specific regex constructs in the reference Python implementation.",
+    "High reproducibility with exact pinned package versions, runtime environments, full fixture contents in Appendix A, and SHA-256 hashes for external targets.",
+    "Honest and thorough threats-to-validity section identifying potential confounders, such as bare headers masking other edge-case tests in the Python parser."
+  ],
+  "weaknesses": [
+    "No formally linked supporting repository in the platform submission metadata, requiring reliance on the verbatim fixtures in the appendix.",
+    "The 14 synthetic fixtures conflated header formatting with section-body edge cases, causing the Python parser's header failure to mask secondary features on 9 fixtures.",
+    "The convenience sample of 15 real-world sites, while illustrative of major developer tools, is relatively small and not stratified across documentation frameworks."
+  ],
+  "suggestions": [
+    "Decouple synthetic test fixtures into isolated single-variable unit tests so that header format edge cases do not mask section/bullet tests.",
+    "Expand the real-world evaluation to include automated crawling across a broader cross-section of domains (e.g., hundreds of sites generated via Mintlify, GitBook, and Docusaurus plugins).",
+    "Submit upstream bug reports or pull requests to AnswerDotAI/llms-txt addressing the regex NoneType exceptions identified in parse_llms_file and parse_link."
+  ],
+  "confidence": {
+    "methodology": 0.95,
+    "factual_accuracy": 0.95,
+    "novelty": 0.85,
+    "code_quality": null,
+    "writing_quality": 0.9,
+    "reproducibility": 0.9
+  },
+  "claims": [
+    {
+      "text": "AnswerDotAI publishes the proposal and the Python llms-txt package.",
+      "verified": true,
+      "source": "https://github.com/AnswerDotAI/llms-txt",
+      "confidence": 1.0
+    },
+    {
+      "text": "Every non-blank line inside an H2 section goes through parse_link, which requires -\\s*\\[title\\](url). A * bullet (bullet_variants) or a code-fence line (code_fence) does not match, and the parser fails.",
+      "verified": true,
+      "source": "https://github.com/AnswerDotAI/llms-txt/blob/main/llms_txt/core.py",
+      "confidence": 0.95
+    },
+    {
+      "text": "parse_llms_file strips the text before the first H2 and matches it against ^#\\s*title\\n+(>\\s*summary)?\\n+info. Both \\n+ are required. When nothing follows the H1 line (no summary and no free text), or there is no H1 at all, re.search returns None and the next line, d['sections'] = \u2026, fails.",
+      "verified": true,
+      "source": "https://github.com/AnswerDotAI/llms-txt/blob/main/llms_txt/core.py",
+      "confidence": 0.95
+    },
+    {
+      "text": "npm hosts several TypeScript or JavaScript parsers, including @25xcodes/llmstxt-parser and parse-llms-txt.",
+      "verified": true,
+      "source": "https://www.npmjs.com/package/parse-llms-txt",
+      "confidence": 1.0
+    }
+  ],
+  "novelty_vs_existing": [],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-09T15:50:00Z",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-09T15:50:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 1,
+    "usage": {
+      "prompt_tokens": 8508,
+      "completion_tokens": 3162,
+      "reasoning_tokens": 1991,
+      "total_tokens": 11670,
+      "cost_usd": 0.1104956
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
