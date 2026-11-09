@@ -340,7 +340,7 @@ class TestFormatReviewComment:
 
     def test_grounding_footer_with_openrouter_web_search(self):
         """
-        FIX (Apr 2026): When grounding available=True, footer should mention OpenRouter web search.
+        FIX (Nov 2026): When grounding available=True, footer should mention OpenRouter web search.
         Uses main's grounding_actually_used logic (available flag).
         """
         grounding_with_web_search = {
@@ -359,7 +359,7 @@ class TestFormatReviewComment:
 
     def test_grounding_footer_without_web_search(self):
         """
-        FIX (Apr 2026): When grounding available=False, footer should say 'was requested but not used'.
+        FIX (Nov 2026): When grounding available=False, footer should say 'was requested but not used'.
         Uses main's grounding_actually_used logic (available flag).
         """
         grounding_without_web_search = {
@@ -1395,6 +1395,140 @@ class TestIssueCloseFailureHandling:
         # Verify: Exactly 2 calls to close_issue (first failed, second succeeded)
         assert len(close_calls) == 2
         assert close_calls == [503, 503]
+
+    @patch.object(GitHubAPI, "get_default_branch_sha")
+    @patch.object(GitHubAPI, "create_branch")
+    @patch.object(GitHubAPI, "path_exists")
+    @patch.object(GitHubAPI, "get_file_content")
+    @patch.object(GitHubAPI, "create_or_update_file")
+    @patch.object(GitHubAPI, "create_or_update_file_with_sha")
+    @patch.object(GitHubAPI, "create_pull_request")
+    @patch.object(GitHubAPI, "merge_pull_request")
+    @patch.object(GitHubAPI, "post_comment")
+    @patch.object(GitHubAPI, "add_labels")
+    @patch.object(GitHubAPI, "remove_label")
+    @patch.object(GitHubAPI, "close_issue")
+    def test_post_comment_succeeds_close_issue_503_then_succeeds(
+        self,
+        mock_close,
+        mock_remove_label,
+        mock_add_labels,
+        mock_comment,
+        mock_merge_pr,
+        mock_create_pr,
+        mock_create_update_sha,
+        mock_create_update,
+        mock_get_file,
+        mock_path_exists,
+        mock_create_branch,
+        mock_get_sha,
+        temp_repo_root,
+        git_data_commit,
+    ):
+        """
+        FIX (Nov 2026): When post_comment succeeds and close_issue fails with 503
+        then succeeds on retry, post_comment must be called exactly once (no duplicate),
+        close_issue twice, and there must be no failure marker.
+        """
+        # Setup mocks (same as success test)
+        mock_get_sha.return_value = "abc123sha"
+        
+        path_exists_calls = []
+        def path_exists_side_effect(path, ref="main"):
+            path_exists_calls.append((path, ref))
+            if len(path_exists_calls) <= 2:
+                return False
+            return True
+        mock_path_exists.side_effect = path_exists_side_effect
+        
+        def get_file_side_effect(path, branch="main"):
+            if path in git_data_commit["files"]:
+                return git_data_commit["files"][path], "committed-sha"
+            if path == "contributors.json":
+                return json.dumps(EMPTY_CONTRIBUTORS), "sha123"
+            elif path == "agent-index.json":
+                index_data = {
+                    "schema_version": "1.0",
+                    "api_version": "1.0",
+                    "description": "Test index",
+                    "search_endpoint": None,
+                    "total_papers": 1,
+                    "last_updated": "2026-01-01T00:00:00Z",
+                    "papers": [],
+                }
+                return json.dumps(index_data), "index_sha_456"
+            elif path == "priorroot-index.json":
+                return json.dumps({
+                    "schema_version": "1.0",
+                    "api_version": "1.0",
+                    "description": "Test priorroot index",
+                    "search_endpoint": None,
+                    "total_papers": 0,
+                    "last_updated": "2026-01-01T00:00:00Z",
+                    "papers": [],
+                }), "priorroot_sha_789"
+            else:
+                mock_response = MagicMock()
+                mock_response.status_code = 404
+                error = requests.HTTPError()
+                error.response = mock_response
+                raise error
+        
+        mock_get_file.side_effect = get_file_side_effect
+        mock_create_pr.return_value = 123
+        
+        # post_comment always succeeds
+        comment_calls = []
+        def comment_side_effect(issue_num, body):
+            comment_calls.append((issue_num, body))
+            return {}
+        mock_comment.side_effect = comment_side_effect
+        
+        # close_issue fails with 503 on first call, succeeds on second
+        close_calls = []
+        def close_side_effect(issue_num):
+            close_calls.append(issue_num)
+            if len(close_calls) == 1:
+                # First call: 503 Service Unavailable
+                mock_response = MagicMock()
+                mock_response.status_code = 503
+                error = requests.HTTPError()
+                error.response = mock_response
+                raise error
+            else:
+                # Second call: success
+                return {}
+        mock_close.side_effect = close_side_effect
+        
+        # Execute
+        result = post_review_and_decide(
+            review_result=SAMPLE_REVIEW_SUCCESS,
+            parsed_submission=SAMPLE_PARSED,
+            novelty_results=SAMPLE_NOVELTY,
+            repo_data=SAMPLE_REPO_DATA,
+            paper_id="2026-504",
+            issue_number=504,
+            repo_owner="pubroot",
+            repo_name="pubroot",
+            github_token="test_token",
+            repo_root=temp_repo_root,
+        )
+        
+        # Verify: Success with no issue close failure (retry succeeded)
+        assert result["success"] is True
+        assert result["action_taken"] == "accepted"
+        assert result["issue_close_failed"] is False
+        assert result["issue_close_error"] is None
+        
+        # Verify: post_comment called for "Accepted and Published" exactly ONCE (no duplicate comment)
+        # Note: There are other post_comment calls (review comment, retry marker), so filter for the close comment
+        close_comments = [c for c in comment_calls if "Accepted and Published" in c[1]]
+        assert len(close_comments) == 1, f"Expected 1 'Accepted and Published' comment, got {len(close_comments)}"
+        assert close_comments[0][0] == 504
+        
+        # Verify: close_issue called exactly TWICE (first failed 503, second succeeded)
+        assert len(close_calls) == 2
+        assert close_calls == [504, 504]
 
 
 # ---------------------------------------------------------------------------

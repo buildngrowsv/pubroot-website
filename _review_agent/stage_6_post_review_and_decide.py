@@ -301,60 +301,40 @@ def post_review_and_decide(
             issue_close_failed = False
             issue_close_error = None
             
-            # FIX (Bug B23 follow-up): Retry the close/comment sequence once on 5xx or network errors
-            max_close_attempts = 2
-            for close_attempt in range(max_close_attempts):
-                try:
-                    # Resolve publication paths to get the reader_url
-                    paths = _resolve_publication_paths(gh, parsed_submission, paper_id)
-                    
-                    # Check if this is a legacy paper (flat layout)
-                    if gh.path_exists(f"papers/{paper_id}/article.md", "main"):
-                        # Use the legacy Hugo alias
-                        paper_url = f"{PUBROOT_SITE_BASE.rstrip('/')}/{paper_id}/"
-                    else:
-                        # Use the reader_url from the SEO layout
-                        paper_url = paths["reader_url"]
-                    
-                    close_comment = (
-                        f"✅ **Accepted and Published**\n\n"
-                        f"Your submission has been published as paper **{paper_id}**.\n\n"
-                        f"View it at: {paper_url} (live within a few minutes)\n\n"
-                        f"Thank you for contributing to Pubroot!"
-                    )
-                    gh.post_comment(issue_number, close_comment)
-                    gh.close_issue(issue_number)
-                    # Success - break out of retry loop
-                    break
-                except Exception as close_err:
-                    # Check if this is a retryable error (5xx or network error)
-                    is_retryable = False
-                    if isinstance(close_err, requests.HTTPError) and close_err.response is not None:
-                        status_code = close_err.response.status_code
-                        if 500 <= status_code < 600:
-                            is_retryable = True
-                    elif isinstance(close_err, requests.RequestException):
-                        # Network errors, timeouts, etc.
-                        is_retryable = True
-                    
-                    # If retryable and not the last attempt, retry
-                    if is_retryable and close_attempt < max_close_attempts - 1:
-                        print(f"Warning: Issue close/comment failed (attempt {close_attempt + 1}/{max_close_attempts}): {close_err}. Retrying...")
-                        time.sleep(2)  # Brief delay before retry
-                        continue
-                    
-                    # Non-retryable error or max attempts exhausted - mark as failed
-                    # FIX (Bug B23 follow-up): Log clear error and set machine-readable marker
-                    # so the failure is visible in stage output and CI logs. The paper is already
-                    # published and visible on the site, so we must NOT label it publish-failed
-                    # (which would trigger a re-review). The issue stays open with accepted+published
-                    # labels; no picker tier will choose it, so this is safe.
-                    issue_close_failed = True
-                    issue_close_error = str(close_err)
-                    # Log with GitHub Actions warning annotation for visibility
-                    print("::warning file=_review_agent/stage_6_post_review_and_decide.py,line=320,title=Issue Close Failed::Failed to close issue #{} for paper {}: {}".format(issue_number, paper_id, close_err))
-                    errors.append(f"Failed to close issue #{issue_number}: {close_err}")
-                    break
+            # FIX (Nov 2026): Retry each API call individually to avoid duplicate comments
+            try:
+                # Resolve publication paths to get the reader_url
+                paths = _resolve_publication_paths(gh, parsed_submission, paper_id)
+                
+                # Check if this is a legacy paper (flat layout)
+                if gh.path_exists(f"papers/{paper_id}/article.md", "main"):
+                    # Use the legacy Hugo alias
+                    paper_url = f"{PUBROOT_SITE_BASE.rstrip('/')}/{paper_id}/"
+                else:
+                    # Use the reader_url from the SEO layout
+                    paper_url = paths["reader_url"]
+                
+                close_comment = (
+                    f"✅ **Accepted and Published**\n\n"
+                    f"Your submission has been published as paper **{paper_id}**.\n\n"
+                    f"View it at: {paper_url} (live within a few minutes)\n\n"
+                    f"Thank you for contributing to Pubroot!"
+                )
+                
+                # Retry post_comment and close_issue separately to avoid duplicate comments
+                _retry_on_5xx_or_network_error(gh.post_comment, issue_number, close_comment)
+                _retry_on_5xx_or_network_error(gh.close_issue, issue_number)
+            except Exception as close_err:
+                # FIX (Bug B23 follow-up): Log clear error and set machine-readable marker
+                # so the failure is visible in stage output and CI logs. The paper is already
+                # published and visible on the site, so we must NOT label it publish-failed
+                # (which would trigger a re-review). The issue stays open with accepted+published
+                # labels; no picker tier will choose it, so this is safe.
+                issue_close_failed = True
+                issue_close_error = str(close_err)
+                # Log with GitHub Actions warning annotation for visibility
+                print("::warning file=_review_agent/stage_6_post_review_and_decide.py,title=Issue Close Failed::Failed to close issue #{} for paper {}: {}".format(issue_number, paper_id, close_err))
+                errors.append(f"Failed to close issue #{issue_number}: {close_err}")
 
             return {
                 "success": True,
@@ -799,6 +779,48 @@ class GitHubAPI:
 # ---------------------------------------------------------------------------
 # PRIVATE HELPER FUNCTIONS
 # ---------------------------------------------------------------------------
+
+
+def _retry_on_5xx_or_network_error(func, *args, **kwargs):
+    """
+    Retry a function once on 5xx or network errors.
+    
+    FIX (Bug B23 follow-up): Helper to avoid duplicate API calls when retrying
+    close/comment operations. Tries the call once, and if it fails with a 5xx
+    or network error, retries after a 2-second delay.
+    
+    Args:
+        func: Function to call
+        *args, **kwargs: Arguments to pass to the function
+    
+    Returns:
+        The function's return value
+    
+    Raises:
+        Exception: If the function fails after both attempts
+    """
+    for attempt in range(2):
+        try:
+            return func(*args, **kwargs)
+        except Exception as e:
+            # Check if this is a retryable error
+            is_retryable = False
+            if isinstance(e, requests.HTTPError) and e.response is not None:
+                status_code = e.response.status_code
+                if 500 <= status_code < 600:
+                    is_retryable = True
+            elif isinstance(e, requests.RequestException):
+                # Network errors, timeouts, etc.
+                is_retryable = True
+            
+            # If retryable and not the last attempt, retry
+            if is_retryable and attempt < 1:
+                print(f"Warning: API call failed (attempt {attempt + 1}/2): {e}. Retrying...")
+                time.sleep(2)
+                continue
+            
+            # Non-retryable error or max attempts exhausted - re-raise
+            raise
 
 
 def _remove_labels_if_present(gh: GitHubAPI, issue_number: int, labels: list) -> None:
@@ -1816,7 +1838,7 @@ def _format_review_comment(
     # Footer
     lines.append("---")
     
-    # FIX (Apr 2026): Grounding now uses OpenRouter web search, not Google Search
+    # FIX (Nov 2026): Grounding now uses OpenRouter web search, not Google Search
     # Grounding status in footer (use main's grounding_actually_used logic)
     reviewer_name = review.get('review_metadata', {}).get('reviewer', 'Gemini')
     if grounding_actually_used:
