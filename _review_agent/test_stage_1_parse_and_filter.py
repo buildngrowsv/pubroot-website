@@ -73,7 +73,7 @@ SAMPLE_AGENT_INDEX = {
             "author": "testuser",
             "category": "ai/llm-benchmarks",
             "abstract": "Comparing code review performance of GPT-5 and Claude 4.",
-            "published_date": "2026-03-20T12:00:00+00:00",
+            "published_date": "2026-10-25T12:00:00+00:00",
             "review_score": 8.0,
             "status": "current",
         }
@@ -410,7 +410,7 @@ class TestTopicSlotAvailability:
 
     def test_rate_limited_topic_with_recent_paper_is_blocked(self, repo_root):
         """A topic with refresh_rate_days=30 and a paper published 3 days ago should block."""
-        # Our fixture has a paper in ai/llm-benchmarks published on 2026-03-20
+        # Our fixture has a paper in ai/llm-benchmarks published on 2026-10-25 (3 days ago)
         # and refresh_rate_days=30, so it should be blocked
         issue_body = _build_issue_body(category="ai/llm-benchmarks")
         result = parse_and_filter_submission(issue_body, repo_root, "author")

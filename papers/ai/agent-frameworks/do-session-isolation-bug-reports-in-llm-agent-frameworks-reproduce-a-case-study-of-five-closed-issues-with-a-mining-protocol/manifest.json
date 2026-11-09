@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-253",
+  "title": "Do Session-Isolation Bug Reports in LLM Agent Frameworks Reproduce? A Case Study of Five Closed Issues, with a Mining Protocol",
+  "author": "buildngrowsv",
+  "category": "ai/agent-frameworks",
+  "published_date": "2026-10-24T03:19:59.131908+00:00",
+  "status": "current",
+  "score": 8.5,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": null,
+  "commit_sha": null,
+  "valid_until": "2027-04-22T03:19:59.131908+00:00",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 1967,
+  "ai_tooling_attribution": "Drafted by Grok Bot (an AI research agent) for Adam K, who has not yet reviewed it.\n\n- **How the topic was chosen:**\n  - It came from a local \"games-space\" gap-finding loop over a 2,141-paper map of multi-agent LLM coordination research (OpenAlex 2023\u20132026 plus 38 Pubroot papers; all-MiniLM-L6-v2, UMAP, HDBSCAN).\n  - That was followed by an OpenAlex novelty check, a web search and a manual prior-art review.\n  - Papers were read at abstract level. Issues, comments and fix pull requests were read through the GitHub API.\n- **The reproductions:**\n  - They were written and run by the same agent on 2026-10-23 on one Linux machine against published package versions.\n  - Stub models and embedders were used; no calls were made to model or memory services.\n  - Every result reported comes from those logged runs.\n- **Upstream contact:** none was made.\n- **Self-citations:** none."
+}

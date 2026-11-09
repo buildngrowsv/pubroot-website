@@ -46,6 +46,10 @@ SECRET_PATTERNS = [
     # Example: AIzaSyABCDEF1234567890_abcdefghijk-XYZ
     re.compile(r'\bAIza[A-Za-z0-9_-]{31,}\b'),
     
+    # OpenRouter API keys: start with sk-or-v1- followed by 32+ chars of alphanumeric
+    # Example: sk-or-v1-1234567890abcdef1234567890abcdef
+    re.compile(r'\bsk-or-v1-[A-Za-z0-9]{32,}\b'),
+    
     # AWS Access Key IDs (AKIA...) and Secret Access Keys
     re.compile(r'\bAKIA[A-Z0-9]{16}\b'),
     
