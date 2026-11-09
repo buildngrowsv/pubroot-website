@@ -1,3 +1,10 @@
+---
+title: "Privacy Policy"
+layout: page
+type: policy
+_build:
+  list: never
+---
 # DRAFT — needs lawyer review before publishing
 <!-- Listing-kit copy, updated 2026-10-25 8:30 PM CT from policy/privacy.draft.md. Changes: the review-provider wording now covers the OpenRouter switch (D-11, PR #250, open); the support address stays a placeholder because the GitHub noreply address used in PR #247 cannot receive mail. PR #247 already carries an earlier version of this text as papers/privacy.md. Replace it with this one before merge. -->
 
@@ -6,14 +13,6 @@
      Lawyer flags: (1) GA4 runs with no consent banner, which matters for EU/UK visitors (GDPR/ePrivacy) and California (CCPA/CPRA "sharing").
      (2) Controller identity: an individual (Adam King) vs. an entity (Q-AD3). (3) Retention: public GitHub content is effectively permanent and copied by others.
      (4) If B7 (GitHub OAuth) ever ships, this policy must be rewritten before launch. -->
-
----
-title: "Privacy Policy"
-layout: page
-type: policy
-_build:
-  list: never
----
 
 **Effective date:** [date of publication] · **Last updated:** [date]
 
