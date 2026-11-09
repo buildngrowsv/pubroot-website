@@ -10,7 +10,7 @@ PURPOSE:
     2. Novelty Check — search academic databases for related work
     3. Read Linked Repo — clone and read the submitter's code
     4. Build Review Prompt — assemble the LLM prompt with all context
-    5. Gemini Grounded Review — call Gemini with Google Search grounding
+    5. LLM Review with Web Search — call LLM via OpenRouter with web search grounding
     6. Post Review & Decide — post comment, accept/reject, create PR
     
     It also calculates priority scores and updates contributor reputations.
