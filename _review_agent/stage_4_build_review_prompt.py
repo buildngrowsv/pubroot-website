@@ -2,10 +2,10 @@
 Stage 4: Build Review Prompt — Pubroot
 
 PURPOSE:
-    Assemble the complete system prompt that will be sent to Gemini (default: 
-    google/gemini-3.8-flash) with Google Search grounding. This is the most 
-    architecturally important stage because it determines review quality. The 
-    prompt includes:
+    Assemble the complete system prompt that will be sent to an LLM (default: 
+    google/gemini-3.8-flash via OpenRouter) with web search grounding. This is 
+    the most architecturally important stage because it determines review quality. 
+    The prompt includes:
     
     1. SYSTEM INSTRUCTIONS: How to behave as a reviewer, what schema to output
     2. CALIBRATION EXAMPLES: 2-3 "gold standard" reviews from _calibration/ that
@@ -24,17 +24,15 @@ DESIGN DECISIONS:
       the current submission's category. This anchors the LLM to our standards
       regardless of which model version is running.
     - The output schema is enforced in the prompt via explicit instructions and
-      a JSON example. We cannot use Gemini's response_mime_type="application/json"
-      because it's incompatible with Google Search grounding tools (returns 400).
-      Instead, we rely on strong prompt instructions ("start with {, end with }")
+      a JSON example. We rely on strong prompt instructions ("start with {, end with }")
       and the _parse_review_json() fallback in Stage 5 to extract JSON from
       responses that may include surrounding prose.
     - We deliberately sanitize the submission body before injecting it into the
       prompt to mitigate prompt injection. We wrap it in clear delimiters and
       instruct the LLM to treat it as DATA, not INSTRUCTIONS.
-    - The prompt is designed to work with Google Search grounding — we tell the
-      LLM to verify factual claims using web search. Gemini will autonomously
-      search Google and return groundingMetadata with source URLs.
+    - The prompt is designed to work with OpenRouter web search — we tell the
+      LLM to verify factual claims using web search. The LLM will autonomously
+      search the web and return grounding metadata with source URLs.
 
 COST:
     $0 — This stage is pure Python string assembly. No API calls.
@@ -53,11 +51,11 @@ def build_review_prompt(
     paper_id: str
 ) -> str:
     """
-    Assemble the complete review prompt for Gemini.
+    Assemble the complete review prompt for the LLM.
     
     This is the ONLY public function in this file. It takes the outputs from
     Stages 1-3 and combines them into a single prompt string that Stage 5
-    sends to Gemini with Google Search grounding.
+    sends to the LLM via OpenRouter with web search grounding.
     
     Args:
         parsed_submission: Output from Stage 1 — the 'parsed' dict with title,

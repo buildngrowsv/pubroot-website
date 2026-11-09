@@ -338,6 +338,46 @@ class TestFormatReviewComment:
         assert "Sources Used" in comment
         assert "arxiv.org" in comment
 
+    def test_grounding_footer_with_openrouter_web_search(self):
+        """
+        FIX (Apr 2026): When grounding available=True, footer should mention OpenRouter web search.
+        Uses main's grounding_actually_used logic (available flag).
+        """
+        grounding_with_web_search = {
+            "available": True,
+            "sources": [{"title": "ArXiv", "uri": "https://arxiv.org"}],
+        }
+        comment = _format_review_comment(
+            review=SAMPLE_REVIEW_SUCCESS["review"],
+            grounding=grounding_with_web_search,
+            paper_id="2026-042",
+            score=7.5,
+            verdict="ACCEPTED",
+        )
+        assert "OpenRouter web search" in comment or "with OpenRouter web search" in comment
+        assert "Google Search grounding" not in comment
+
+    def test_grounding_footer_without_web_search(self):
+        """
+        FIX (Apr 2026): When grounding available=False, footer should say 'was requested but not used'.
+        Uses main's grounding_actually_used logic (available flag).
+        """
+        grounding_without_web_search = {
+            "available": False,
+            "sources": [],
+        }
+        comment = _format_review_comment(
+            review=SAMPLE_REVIEW_SUCCESS["review"],
+            grounding=grounding_without_web_search,
+            paper_id="2026-042",
+            score=7.5,
+            verdict="ACCEPTED",
+        )
+        assert "was requested but not used" in comment
+        assert "Google Search grounding" not in comment
+        # Should mention OpenRouter in the "was requested but not used" text
+        assert "OpenRouter" in comment
+
 
 # ---------------------------------------------------------------------------
 # TESTS: _format_error_comment
@@ -904,6 +944,457 @@ class TestAcceptedPaperPublishPath:
         # Verify: The acceptance was labeled and issue closed
         mock_add_labels.assert_called()
         mock_close.assert_called_once_with(121)
+
+
+# ---------------------------------------------------------------------------
+# TESTS: Issue Close Failure Handling (Bug B23 follow-up)
+# ---------------------------------------------------------------------------
+
+
+class TestIssueCloseFailureHandling:
+    """
+    Tests for the Bug B23 follow-up fix: issue close failures should be logged
+    and marked in the stage output, but should NOT fail the publish since the
+    paper is already committed.
+    """
+
+    @patch.object(GitHubAPI, "get_default_branch_sha")
+    @patch.object(GitHubAPI, "create_branch")
+    @patch.object(GitHubAPI, "path_exists")
+    @patch.object(GitHubAPI, "get_file_content")
+    @patch.object(GitHubAPI, "create_or_update_file")
+    @patch.object(GitHubAPI, "create_or_update_file_with_sha")
+    @patch.object(GitHubAPI, "create_pull_request")
+    @patch.object(GitHubAPI, "merge_pull_request")
+    @patch.object(GitHubAPI, "post_comment")
+    @patch.object(GitHubAPI, "add_labels")
+    @patch.object(GitHubAPI, "remove_label")
+    @patch.object(GitHubAPI, "close_issue")
+    def test_issue_close_success_sets_no_failure_marker(
+        self,
+        mock_close,
+        mock_remove_label,
+        mock_add_labels,
+        mock_comment,
+        mock_merge_pr,
+        mock_create_pr,
+        mock_create_update_sha,
+        mock_create_update,
+        mock_get_file,
+        mock_path_exists,
+        mock_create_branch,
+        mock_get_sha,
+        temp_repo_root,
+        git_data_commit,
+    ):
+        """
+        When issue close succeeds, the result should have issue_close_failed=False.
+        """
+        # Setup mocks
+        mock_get_sha.return_value = "abc123sha"
+        
+        path_exists_calls = []
+        def path_exists_side_effect(path, ref="main"):
+            path_exists_calls.append((path, ref))
+            if len(path_exists_calls) <= 2:
+                return False
+            return True
+        mock_path_exists.side_effect = path_exists_side_effect
+        
+        def get_file_side_effect(path, branch="main"):
+            if path in git_data_commit["files"]:
+                return git_data_commit["files"][path], "committed-sha"
+            if path == "contributors.json":
+                return json.dumps(EMPTY_CONTRIBUTORS), "sha123"
+            elif path == "agent-index.json":
+                index_data = {
+                    "schema_version": "1.0",
+                    "api_version": "1.0",
+                    "description": "Test index",
+                    "search_endpoint": None,
+                    "total_papers": 1,
+                    "last_updated": "2026-01-01T00:00:00Z",
+                    "papers": [],
+                }
+                return json.dumps(index_data), "index_sha_456"
+            elif path == "priorroot-index.json":
+                return json.dumps({
+                    "schema_version": "1.0",
+                    "api_version": "1.0",
+                    "description": "Test priorroot index",
+                    "search_endpoint": None,
+                    "total_papers": 0,
+                    "last_updated": "2026-01-01T00:00:00Z",
+                    "papers": [],
+                }), "priorroot_sha_789"
+            else:
+                mock_response = MagicMock()
+                mock_response.status_code = 404
+                error = requests.HTTPError()
+                error.response = mock_response
+                raise error
+        
+        mock_get_file.side_effect = get_file_side_effect
+        mock_create_pr.return_value = 123
+        
+        # close_issue succeeds (no exception)
+        mock_close.return_value = {}
+        
+        # Execute
+        result = post_review_and_decide(
+            review_result=SAMPLE_REVIEW_SUCCESS,
+            parsed_submission=SAMPLE_PARSED,
+            novelty_results=SAMPLE_NOVELTY,
+            repo_data=SAMPLE_REPO_DATA,
+            paper_id="2026-500",
+            issue_number=500,
+            repo_owner="pubroot",
+            repo_name="pubroot",
+            github_token="test_token",
+            repo_root=temp_repo_root,
+        )
+        
+        # Verify: Success with no issue close failure
+        assert result["success"] is True
+        assert result["action_taken"] == "accepted"
+        assert result["issue_close_failed"] is False
+        assert result["issue_close_error"] is None
+        mock_close.assert_called_once_with(500)
+
+    @patch.object(GitHubAPI, "get_default_branch_sha")
+    @patch.object(GitHubAPI, "create_branch")
+    @patch.object(GitHubAPI, "path_exists")
+    @patch.object(GitHubAPI, "get_file_content")
+    @patch.object(GitHubAPI, "create_or_update_file")
+    @patch.object(GitHubAPI, "create_or_update_file_with_sha")
+    @patch.object(GitHubAPI, "create_pull_request")
+    @patch.object(GitHubAPI, "merge_pull_request")
+    @patch.object(GitHubAPI, "post_comment")
+    @patch.object(GitHubAPI, "add_labels")
+    @patch.object(GitHubAPI, "remove_label")
+    @patch.object(GitHubAPI, "close_issue")
+    def test_issue_close_failure_sets_marker_but_returns_success(
+        self,
+        mock_close,
+        mock_remove_label,
+        mock_add_labels,
+        mock_comment,
+        mock_merge_pr,
+        mock_create_pr,
+        mock_create_update_sha,
+        mock_create_update,
+        mock_get_file,
+        mock_path_exists,
+        mock_create_branch,
+        mock_get_sha,
+        temp_repo_root,
+        git_data_commit,
+    ):
+        """
+        When issue close fails (even after retries in close_issue), the result should
+        have issue_close_failed=True but success=True (publish succeeded).
+        """
+        # Setup mocks (same as success test)
+        mock_get_sha.return_value = "abc123sha"
+        
+        path_exists_calls = []
+        def path_exists_side_effect(path, ref="main"):
+            path_exists_calls.append((path, ref))
+            if len(path_exists_calls) <= 2:
+                return False
+            return True
+        mock_path_exists.side_effect = path_exists_side_effect
+        
+        def get_file_side_effect(path, branch="main"):
+            if path in git_data_commit["files"]:
+                return git_data_commit["files"][path], "committed-sha"
+            if path == "contributors.json":
+                return json.dumps(EMPTY_CONTRIBUTORS), "sha123"
+            elif path == "agent-index.json":
+                index_data = {
+                    "schema_version": "1.0",
+                    "api_version": "1.0",
+                    "description": "Test index",
+                    "search_endpoint": None,
+                    "total_papers": 1,
+                    "last_updated": "2026-01-01T00:00:00Z",
+                    "papers": [],
+                }
+                return json.dumps(index_data), "index_sha_456"
+            elif path == "priorroot-index.json":
+                return json.dumps({
+                    "schema_version": "1.0",
+                    "api_version": "1.0",
+                    "description": "Test priorroot index",
+                    "search_endpoint": None,
+                    "total_papers": 0,
+                    "last_updated": "2026-01-01T00:00:00Z",
+                    "papers": [],
+                }), "priorroot_sha_789"
+            else:
+                mock_response = MagicMock()
+                mock_response.status_code = 404
+                error = requests.HTTPError()
+                error.response = mock_response
+                raise error
+        
+        mock_get_file.side_effect = get_file_side_effect
+        mock_create_pr.return_value = 123
+        
+        # close_issue fails with an exception (simulating 5xx after retries)
+        mock_close.side_effect = Exception("Failed to close issue #501 after 3 attempts. GitHub API returned 503.")
+        
+        # Execute
+        result = post_review_and_decide(
+            review_result=SAMPLE_REVIEW_SUCCESS,
+            parsed_submission=SAMPLE_PARSED,
+            novelty_results=SAMPLE_NOVELTY,
+            repo_data=SAMPLE_REPO_DATA,
+            paper_id="2026-501",
+            issue_number=501,
+            repo_owner="pubroot",
+            repo_name="pubroot",
+            github_token="test_token",
+            repo_root=temp_repo_root,
+        )
+        
+        # Verify: Success=True (paper published), but issue_close_failed=True
+        assert result["success"] is True
+        assert result["action_taken"] == "accepted"
+        assert result["issue_close_failed"] is True
+        assert result["issue_close_error"] is not None
+        assert "503" in result["issue_close_error"] or "Failed to close issue" in result["issue_close_error"]
+        assert len(result["errors"]) > 0
+        assert any("Failed to close issue #501" in err for err in result["errors"])
+
+    @patch.object(GitHubAPI, "get_default_branch_sha")
+    @patch.object(GitHubAPI, "create_branch")
+    @patch.object(GitHubAPI, "path_exists")
+    @patch.object(GitHubAPI, "get_file_content")
+    @patch.object(GitHubAPI, "create_or_update_file")
+    @patch.object(GitHubAPI, "create_or_update_file_with_sha")
+    @patch.object(GitHubAPI, "create_pull_request")
+    @patch.object(GitHubAPI, "merge_pull_request")
+    @patch.object(GitHubAPI, "post_comment")
+    @patch.object(GitHubAPI, "add_labels")
+    @patch.object(GitHubAPI, "remove_label")
+    @patch.object(GitHubAPI, "close_issue")
+    def test_post_comment_failure_also_sets_marker(
+        self,
+        mock_close,
+        mock_remove_label,
+        mock_add_labels,
+        mock_comment,
+        mock_merge_pr,
+        mock_create_pr,
+        mock_create_update_sha,
+        mock_create_update,
+        mock_get_file,
+        mock_path_exists,
+        mock_create_branch,
+        mock_get_sha,
+        temp_repo_root,
+        git_data_commit,
+    ):
+        """
+        When post_comment fails before close_issue, the exception should also
+        be caught and marked.
+        """
+        # Setup mocks (same as success test)
+        mock_get_sha.return_value = "abc123sha"
+        
+        path_exists_calls = []
+        def path_exists_side_effect(path, ref="main"):
+            path_exists_calls.append((path, ref))
+            if len(path_exists_calls) <= 2:
+                return False
+            return True
+        mock_path_exists.side_effect = path_exists_side_effect
+        
+        def get_file_side_effect(path, branch="main"):
+            if path in git_data_commit["files"]:
+                return git_data_commit["files"][path], "committed-sha"
+            if path == "contributors.json":
+                return json.dumps(EMPTY_CONTRIBUTORS), "sha123"
+            elif path == "agent-index.json":
+                index_data = {
+                    "schema_version": "1.0",
+                    "api_version": "1.0",
+                    "description": "Test index",
+                    "search_endpoint": None,
+                    "total_papers": 1,
+                    "last_updated": "2026-01-01T00:00:00Z",
+                    "papers": [],
+                }
+                return json.dumps(index_data), "index_sha_456"
+            elif path == "priorroot-index.json":
+                return json.dumps({
+                    "schema_version": "1.0",
+                    "api_version": "1.0",
+                    "description": "Test priorroot index",
+                    "search_endpoint": None,
+                    "total_papers": 0,
+                    "last_updated": "2026-01-01T00:00:00Z",
+                    "papers": [],
+                }), "priorroot_sha_789"
+            else:
+                mock_response = MagicMock()
+                mock_response.status_code = 404
+                error = requests.HTTPError()
+                error.response = mock_response
+                raise error
+        
+        mock_get_file.side_effect = get_file_side_effect
+        mock_create_pr.return_value = 123
+        
+        # post_comment fails when posting the close comment
+        comment_calls = []
+        def comment_side_effect(issue_num, body):
+            comment_calls.append((issue_num, body))
+            if "Accepted and Published" in body:
+                raise Exception("GitHub API rate limit exceeded")
+            return {}
+        mock_comment.side_effect = comment_side_effect
+        
+        # Execute
+        result = post_review_and_decide(
+            review_result=SAMPLE_REVIEW_SUCCESS,
+            parsed_submission=SAMPLE_PARSED,
+            novelty_results=SAMPLE_NOVELTY,
+            repo_data=SAMPLE_REPO_DATA,
+            paper_id="2026-502",
+            issue_number=502,
+            repo_owner="pubroot",
+            repo_name="pubroot",
+            github_token="test_token",
+            repo_root=temp_repo_root,
+        )
+        
+        # Verify: Success=True (paper published), issue_close_failed=True
+        assert result["success"] is True
+        assert result["action_taken"] == "accepted"
+        assert result["issue_close_failed"] is True
+        assert "rate limit" in result["issue_close_error"].lower()
+
+    @patch.object(GitHubAPI, "get_default_branch_sha")
+    @patch.object(GitHubAPI, "create_branch")
+    @patch.object(GitHubAPI, "path_exists")
+    @patch.object(GitHubAPI, "get_file_content")
+    @patch.object(GitHubAPI, "create_or_update_file")
+    @patch.object(GitHubAPI, "create_or_update_file_with_sha")
+    @patch.object(GitHubAPI, "create_pull_request")
+    @patch.object(GitHubAPI, "merge_pull_request")
+    @patch.object(GitHubAPI, "post_comment")
+    @patch.object(GitHubAPI, "add_labels")
+    @patch.object(GitHubAPI, "remove_label")
+    @patch.object(GitHubAPI, "close_issue")
+    def test_5xx_error_retries_and_succeeds(
+        self,
+        mock_close,
+        mock_remove_label,
+        mock_add_labels,
+        mock_comment,
+        mock_merge_pr,
+        mock_create_pr,
+        mock_create_update_sha,
+        mock_create_update,
+        mock_get_file,
+        mock_path_exists,
+        mock_create_branch,
+        mock_get_sha,
+        temp_repo_root,
+        git_data_commit,
+    ):
+        """
+        FIX (Bug B23 follow-up): When close_issue returns 5xx on first attempt but
+        succeeds on retry, should set issue_close_failed=False and make exactly 2 calls.
+        """
+        # Setup mocks (same as success test)
+        mock_get_sha.return_value = "abc123sha"
+        
+        path_exists_calls = []
+        def path_exists_side_effect(path, ref="main"):
+            path_exists_calls.append((path, ref))
+            if len(path_exists_calls) <= 2:
+                return False
+            return True
+        mock_path_exists.side_effect = path_exists_side_effect
+        
+        def get_file_side_effect(path, branch="main"):
+            if path in git_data_commit["files"]:
+                return git_data_commit["files"][path], "committed-sha"
+            if path == "contributors.json":
+                return json.dumps(EMPTY_CONTRIBUTORS), "sha123"
+            elif path == "agent-index.json":
+                index_data = {
+                    "schema_version": "1.0",
+                    "api_version": "1.0",
+                    "description": "Test index",
+                    "search_endpoint": None,
+                    "total_papers": 1,
+                    "last_updated": "2026-01-01T00:00:00Z",
+                    "papers": [],
+                }
+                return json.dumps(index_data), "index_sha_456"
+            elif path == "priorroot-index.json":
+                return json.dumps({
+                    "schema_version": "1.0",
+                    "api_version": "1.0",
+                    "description": "Test priorroot index",
+                    "search_endpoint": None,
+                    "total_papers": 0,
+                    "last_updated": "2026-01-01T00:00:00Z",
+                    "papers": [],
+                }), "priorroot_sha_789"
+            else:
+                mock_response = MagicMock()
+                mock_response.status_code = 404
+                error = requests.HTTPError()
+                error.response = mock_response
+                raise error
+        
+        mock_get_file.side_effect = get_file_side_effect
+        mock_create_pr.return_value = 123
+        
+        # close_issue fails with 503 on first call, succeeds on second
+        close_calls = []
+        def close_side_effect(issue_num):
+            close_calls.append(issue_num)
+            if len(close_calls) == 1:
+                # First call: 503 Service Unavailable
+                mock_response = MagicMock()
+                mock_response.status_code = 503
+                error = requests.HTTPError()
+                error.response = mock_response
+                raise error
+            else:
+                # Second call: success
+                return {}
+        mock_close.side_effect = close_side_effect
+        
+        # Execute
+        result = post_review_and_decide(
+            review_result=SAMPLE_REVIEW_SUCCESS,
+            parsed_submission=SAMPLE_PARSED,
+            novelty_results=SAMPLE_NOVELTY,
+            repo_data=SAMPLE_REPO_DATA,
+            paper_id="2026-503",
+            issue_number=503,
+            repo_owner="pubroot",
+            repo_name="pubroot",
+            github_token="test_token",
+            repo_root=temp_repo_root,
+        )
+        
+        # Verify: Success with no issue close failure (retry succeeded)
+        assert result["success"] is True
+        assert result["action_taken"] == "accepted"
+        assert result["issue_close_failed"] is False
+        assert result["issue_close_error"] is None
+        
+        # Verify: Exactly 2 calls to close_issue (first failed, second succeeded)
+        assert len(close_calls) == 2
+        assert close_calls == [503, 503]
 
 
 # ---------------------------------------------------------------------------
