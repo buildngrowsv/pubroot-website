@@ -43,7 +43,8 @@ trace each line back to its evidence section.
 | 1 | **Ship the grounding-tier badge.** Add a `🟣 Grounded` tier awarded when ≥80% of extracted claims in `review.json` are marked `verified`, distinct from `verified_open` (which currently means *we read your code*). Update `_site_theme/static/css/main.css` badges, `agent-index.json` schema, MCP `search_papers` filter, and Editorial Guidelines copy. | `todo` | §4.1 |
 | 2 | **Split reputation into submitter / commenter.** Extend `contributors.json` schema to track external comment authors (today only the issue author accrues anything). Visually credit external commenters on the paper page next to the Gemini review. Write a one-page comment policy referenced from `pubroot guide --json` and `Editorial Guidelines`. The `m13v` thread on issues #34, #115, #26 is the proof case; the `Smscodehub` comment on #38 is the moderation edge-case. | `todo` | §4.2 |
 | 3 | **Add a `disclosure` submission type.** Seventh submission type (alongside the existing six), with criteria emphasising completeness and public-availability-of-prior-art rather than novelty-vs-literature. Update `submission.yml`, `stage_1_parse_and_filter.py` allowed-types list, `stage_4_build_review_prompt.py` per-type rubric, and Editorial Guidelines. Honest acknowledgement that 11 of 51 published papers already fit this shape. | `todo` | §4.3 |
-| 4 | **Freeze paid-acceleration, embeddings-v2, and the contributor leaderboard** until there is a second *submitter*. The infrastructure for those features is partially scaffolded; do not extend it. Status is intentionally `frozen` (not `cancelled`) so it can resume cleanly when contributor count is ≥2. | `frozen — gated on second submitter` | §4.2 |
+| 4a | Embeddings-v2 and contributor leaderboard: Adam authorized free local/static implementation. | `in-progress (unfrozen 2026-11-09, D-22)` | §4.2 |
+| 4b | Stripe paid-acceleration: payments need Adam’s explicit OK. | `frozen` | §4.2 |
 | 5 | **Server-side log counts for the agent endpoints.** Put Cloudflare in front of GitHub Pages for `agent-index.json`, `journals.json`, `contributors.json`, `/agents.txt`, `/llms.txt`, `/.well-known/agent.json`. Aggregate by user-agent (OpenAI, Anthropic, Perplexity, Cursor, etc.) and publish the totals alongside the next quarterly calibration number. | `todo` | §4.4 |
 | 6 | **Own `/agents.txt` and `/llms.txt` as landing surfaces.** Treat each as its own page (header, prose intro, link back to Editorial Guidelines and Submit). Publish a grounded article *about* the agent-discovery ecosystem — the GSC data shows we already rank for it (avg position 8.5–14.2 for `agents.txt` queries). Submit it under `ai/agent-frameworks` or `benchmarks/developer-tools`. | `todo` | §4.5 |
 | 7 | **Publish the retrospective on pubroot.com** and run the 90-day audit on **2026-07-15** with the same evidence shape (score distribution, claim-verification rate, contributor count, external-commenter count, GSC + GA4 totals, rejection rate). | **`complete (publish step)` / `pending (90-day audit)`** | §5–§6 |
@@ -147,13 +148,8 @@ of this roadmap committing).
 
 ## Tier C — Demand-debt freezes (carried from §6.4)
 
-Repeated here only so the freeze is searchable in this file too:
-**Stripe paid-acceleration, embeddings-v2 (vector search), and the
-contributor leaderboard** stay frozen until contributor count ≥ 2.
-That gate is owned by Tier B1 above. When it lifts, unfreeze Tier A
-item 4 first, then prioritise embeddings-v2 (if `papers/` count is
-≥ 200 by then) over the leaderboard (which only matters with
-multiple contributors).
+Stripe paid-acceleration stays frozen pending Adam’s explicit payments OK.
+Embeddings-v2 and contributor leaderboard are in-progress (unfrozen 2026-11-09, D-22): Adam authorized free local/static work; contributor and corpus count gates no longer apply.
 
 ---
 
