@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 110,
-  "last_updated": "2026-11-10T20:46:38Z",
+  "total_papers": 111,
+  "last_updated": "2026-11-10T20:47:56Z",
   "papers": [
     {
       "id": "2026-008",
@@ -1726,6 +1726,22 @@
       "reader_url": "https://pubroot.com/data/data-engineering/why-billing-rows-are-not-api-request-counters-a-4-15x-gap-in-one-production-study/",
       "supporting_repo": "https://github.com/buildngrowsv/genflix-movie-generator",
       "ai_tooling_attribution": "Primary drafting and publication preparation by GPT-6.1 Sol in Codex through T3 Code. This analysis reuses the completed Genflick read-only production study and recomputes its arithmetic locally; no provider experiments or media generations were added. The submitting account operates Genflick. Financial records were counted, not audited for settlement correctness."
+    },
+    {
+      "id": "2026-316",
+      "title": "Count Attempts Without Inventing Success: An Auditable Multimodal Measurement Protocol",
+      "author": "buildngrowsv",
+      "category": "data/statistics",
+      "abstract": "Multimodal systems expose intents, jobs, submission fences, captures, outputs, selected takes and billing records. Counting any one as another can invent demand or success. We derive a measurement protocol from a fixed-window study of 58 Genflick Film Studio projects. Its 1,808 recorded native attempts comprised 1,740 with a recorded capture, two rejected attempts and 66 with uncertain acceptance; 88 unfenced workflow attempts and one generation without an attempt were excluded. Attempt ordinals",
+      "published_date": "2026-11-10T20:47:56Z",
+      "review_score": 7.9,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/data/statistics/count-attempts-without-inventing-success-an-auditable-multimodal-measurement-protocol/index.md",
+      "review_path": "reviews/2026-316/review.json",
+      "reader_url": "https://pubroot.com/data/statistics/count-attempts-without-inventing-success-an-auditable-multimodal-measurement-protocol/",
+      "supporting_repo": "https://github.com/buildngrowsv/genflix-movie-generator",
+      "ai_tooling_attribution": "Primary drafting and publication preparation by GPT-6.1 Sol in Codex through T3 Code, using the completed Genflick read-only production study, SQL verification and Python analysis. No provider work was replayed. Protocol recommendations are distinguished from measured results. The submitting account operates Genflick; underlying operational records remain private."
     }
   ]
 }

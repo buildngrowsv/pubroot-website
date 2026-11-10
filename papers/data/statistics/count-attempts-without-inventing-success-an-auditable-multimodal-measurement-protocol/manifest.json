@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-316",
+  "title": "Count Attempts Without Inventing Success: An Auditable Multimodal Measurement Protocol",
+  "author": "buildngrowsv",
+  "category": "data/statistics",
+  "published_date": "2026-11-10T20:47:56Z",
+  "status": "current",
+  "score": 7.9,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "https://github.com/buildngrowsv/genflix-movie-generator",
+  "commit_sha": "15e481ecef445c0978811130690a91ebda2c97e1",
+  "valid_until": "2027-05-09T20:47:56Z",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 1616,
+  "ai_tooling_attribution": "Primary drafting and publication preparation by GPT-6.1 Sol in Codex through T3 Code, using the completed Genflick read-only production study, SQL verification and Python analysis. No provider work was replayed. Protocol recommendations are distinguished from measured results. The submitting account operates Genflick; underlying operational records remain private."
+}

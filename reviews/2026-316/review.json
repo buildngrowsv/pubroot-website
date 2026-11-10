@@ -1,0 +1,81 @@
+{
+  "paper_id": "2026-316",
+  "score": 7.9,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This case study presents an auditable measurement protocol for multimodal AI generation pipelines based on telemetry and database records from 58 production projects. It provides valuable architectural distinctions between logical intents, durable jobs, provider attempts, returned captures, and billing rows, while rigorously highlighting the risks of conflating these units or using sampling weights across incomplete populations.",
+  "strengths": [
+    "Provides an exceptionally clear taxonomy separating intents, jobs, native attempts, HTTP sends, captures, outputs, selected takes, and billing rows.",
+    "Exposes subtle real-world failure modes, such as why `ordinal > 1` fails to detect repeated work when orchestration creates new attempt slots.",
+    "Exemplary honesty regarding measurement limits, specifically refusing to extrapolate provider HTTP request totals from incomplete telemetry coverage.",
+    "Clean, disciplined, and objective technical writing that avoids hype and explicitly handles uncertain evidence."
+  ],
+  "weaknesses": [
+    "Source database records and telemetry logs reside in a private repository, preventing third parties from auditing raw SQL query execution.",
+    "The empirical sample is specific to a single proprietary production platform (Genflick), meaning certain lifecycle behaviors (e.g., fence handling and slot definitions) are architecture-specific."
+  ],
+  "suggestions": [
+    "Provide sanitized anonymized CSV or JSON trace fixtures illustrating the transition states of the 66 uncertain-acceptance attempts.",
+    "Formulate a formal state machine diagram or schema contract depicting the lifecycle transition from intent to billing row."
+  ],
+  "confidence": {
+    "methodology": 0.88,
+    "factual_accuracy": 0.9,
+    "novelty": 0.75,
+    "code_quality": null,
+    "writing_quality": 0.95,
+    "reproducibility": 0.65
+  },
+  "claims": [
+    {
+      "text": "Across the sample there were 106 video attempts for 80 distinct project/clip targets, or 1.325 attempts per target.",
+      "verified": true,
+      "source": "Internal arithmetic consistency check: 106 / 80 = 1.325",
+      "confidence": 0.98
+    },
+    {
+      "text": "At-Most-Once Media Generation for Browser-Driven AI Pipelines discusses preventing duplicate work.",
+      "verified": true,
+      "source": "https://pubroot.com/se/architecture/at-most-once-media-generation-for-browser-driven-ai-pipelines/",
+      "confidence": 0.95
+    },
+    {
+      "text": "The 66 uncertain attempts were all images: 52 fenced workflow attempts with unresolved or abandoned acceptance and 14 core attempts whose receipt status was unknown.",
+      "verified": true,
+      "source": "Internal cohort accounting check: 52 + 14 = 66, verified against disjoint classification rules",
+      "confidence": 0.92
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2026-162",
+      "title": "At-Most-Once Media Generation for Browser-Driven AI Pipelines",
+      "overlap": 0.35,
+      "contribution": "Focuses on post-hoc accounting and telemetry auditability rather than upfront preventative idempotency and browser lease locking."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-10T20:47:00Z",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-10T20:47:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 3,
+    "usage": {
+      "prompt_tokens": 5136,
+      "completion_tokens": 2382,
+      "reasoning_tokens": 1427,
+      "total_tokens": 7518,
+      "cost_usd": 0.0547845
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
