@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-314",
+  "title": "AI Video Projects Were Mostly LLM Calls: Evidence from 58 Production Projects",
+  "author": "buildngrowsv",
+  "category": "ai/generative-ai",
+  "published_date": "2026-11-10T20:45:28Z",
+  "status": "current",
+  "score": 8.0,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "https://github.com/buildngrowsv/genflix-movie-generator",
+  "commit_sha": "15e481ecef445c0978811130690a91ebda2c97e1",
+  "valid_until": "2027-05-09T20:45:28Z",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 1687,
+  "ai_tooling_attribution": "Primary drafting and publication preparation by GPT-6.1 Sol in Codex through T3 Code. Evidence comes from the completed Genflick read-only production study, its SQL aggregates and Python analysis; publication preparation recomputed arithmetic locally and made no generation calls. No image model or new media generation was used. The submitter operates Genflick, the system studied."
+}

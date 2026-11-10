@@ -1,0 +1,83 @@
+{
+  "paper_id": "2026-314",
+  "score": 8.0,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This case study analyzes 1,808 provider submission attempts across 58 production projects on the Genflick Film Studio platform during a two-week window. The authors empirically demonstrate that LLM calls dominate API activity (72.1%) in multi-stage generative video systems and illustrate how unfinished project pipelines skew naive workload averages. The work provides immediate practical value for architecture and capacity planning, backed by an embedded 58-row dataset and arithmetic verification script.",
+  "strengths": [
+    "High practical relevance for AI system architects and operators building multimodal generation pipelines, clearly illustrating request distribution and workload bottlenecks.",
+    "Exemplary transparency and methodological honesty regarding unfinished-work bias, distinguishing observed attempts from wire-level HTTP counts, and separating creator traffic from internal QA/admin usage.",
+    "Fully reproducible descriptive statistics enabled by the inclusion of the complete 58-row anonymized CSV extract and standard-library Python validation script directly within the text.",
+    "Nuanced treatment of denominators, demonstrating why authored durations or clip targets cannot be naively equated to API request volume or final export outputs."
+  ],
+  "weaknesses": [
+    "The primary supporting artifact repository is private, precluding independent inspection of raw operational traces or wire captures.",
+    "The sample of creator projects reaching actual video generation within the study window is very small (n=2), which limits broader statistical inferences regarding completed film production costs.",
+    "Request volumes are not correlated with token/byte counts, latency, or dollar expenditures, which restricts financial forecasting."
+  ],
+  "suggestions": [
+    "Incorporate token counts and latency distributions alongside raw request counts in future studies to evaluate whether LLM request predominance translates into cost or latency dominance.",
+    "Track an entry cohort over an extended longitudinal window until export completion to establish a statistically grounded profile of completed film generations.",
+    "Provide a sanitized open-source repository for the verification harness and descriptive analysis scripts rather than relying entirely on inline text extracts."
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.9,
+    "novelty": 0.8,
+    "code_quality": 0.85,
+    "writing_quality": 0.9,
+    "reproducibility": 0.85
+  },
+  "claims": [
+    {
+      "text": "In this sample, 72.1% of recorded provider submission attempts were LLM work.",
+      "verified": true,
+      "source": "Verified via arithmetic reproduction from the provided 58-project production CSV: 1,304 LLM attempts out of 1,808 total attempts equals 72.12%.",
+      "confidence": 0.95
+    },
+    {
+      "text": "The 21 creator projects created within the window recorded 591 attempts, for a mean of 28.142857, median 13, and P90 47.",
+      "verified": true,
+      "source": "Verified via execution of the dataset and quantile calculations: the 21 rows matching account='creator' and new=1 sum to 591 (mean 28.143), with a median of 13 and linear interpolation 90th percentile of 47.0.",
+      "confidence": 0.95
+    },
+    {
+      "text": "Genflick combines AI film planning, storyboards, video generation, and clip editing with separate workflows for episodic series and music videos.",
+      "verified": true,
+      "source": "https://aitoolsdirectory.com/tool/genflick",
+      "confidence": 0.9
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "pubroot/phased-planner-executor",
+      "title": "Phased Planner-Executor Architecture for Multimodal Movie Generation Agents",
+      "overlap": 0.35,
+      "contribution": "Provides empirical production telemetry measuring actual request distributions across real users, moving beyond theoretical or code-derived architectural plans."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-10T20:45:00Z",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-10T20:45:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 2,
+    "usage": {
+      "prompt_tokens": 7429,
+      "completion_tokens": 3547,
+      "reasoning_tokens": 2433,
+      "total_tokens": 10976,
+      "cost_usd": 0.046873
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
