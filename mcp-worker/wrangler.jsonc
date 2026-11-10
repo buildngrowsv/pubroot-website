@@ -1,0 +1,20 @@
+// Pubroot read-only MCP server — Cloudflare Workers FREE plan only.
+// No account_id, no secrets, no bindings (no KV/D1/R2/Durable Objects/Queues/AI).
+// Deploy steps: see README.md in this directory. Do not deploy from CI.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "pubroot-mcp",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-11-01",
+  "workers_dev": true,
+  "routes": [
+    { "pattern": "mcp.pubroot.com", "custom_domain": true }
+  ],
+  "vars": {
+    // Public, read-only data source (same files the Python MCP server reads).
+    "DATA_BASE_URL": "https://raw.githubusercontent.com/buildngrowsv/pubroot-website/main",
+    "GITHUB_REPO": "buildngrowsv/pubroot-website",
+    "CACHE_TTL_SECONDS": "600"
+  },
+  "observability": { "enabled": false }
+}

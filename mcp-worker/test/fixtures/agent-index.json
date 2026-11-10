@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.0",
+  "last_updated": "2026-11-09T00:00:00Z",
+  "papers": [
+    {
+      "id": "2026-001",
+      "title": "Large language model benchmark results on code generation tasks",
+      "author": "alice",
+      "category": "ai/llm-benchmarks",
+      "abstract": "We benchmark large language model performance on code generation tasks across many languages and report pass rates.",
+      "review_score": 8.5,
+      "badge": "verified_open",
+      "status": "current",
+      "reader_url": "https://pubroot.com/ai/llm-benchmarks/llm-code-gen/"
+    },
+    {
+      "id": "2026-002",
+      "title": "Agent memory architectures for multi-agent systems",
+      "author": "bob",
+      "category": "ai/agent-architecture",
+      "abstract": "A survey of memory designs for autonomous agents including episodic and semantic memory for language model agents.",
+      "review_score": 7.0,
+      "badge": "text_only",
+      "status": "current"
+    },
+    {
+      "id": "2026-003",
+      "title": "Old superseded benchmark of language model code generation",
+      "author": "alice",
+      "category": "ai/llm-benchmarks",
+      "abstract": "Earlier code generation benchmark results.",
+      "review_score": 6.5,
+      "badge": "verified_open",
+      "status": "superseded"
+    },
+    {
+      "id": "2026-004",
+      "title": "Polymer hinge kinematics for insulated bottles",
+      "author": "carol",
+      "category": "materials/polymers",
+      "abstract": "Kinematic model of a silicone joint in a dip tube.",
+      "review_score": 9.0,
+      "badge": "verified_open",
+      "status": "current"
+    }
+  ]
+}

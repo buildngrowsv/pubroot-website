@@ -1,0 +1,18 @@
+{
+  "schema_version": "1.0",
+  "contributors": {
+    "alice": {
+      "github_handle": "alice",
+      "first_seen": "2026-03-01T00:00:00Z",
+      "last_submission": "2026-11-01T00:00:00Z",
+      "total_submissions": 3,
+      "accepted": 2,
+      "rejected": 1,
+      "acceptance_rate": 0.667,
+      "average_score": 7.5,
+      "reputation_score": 0.45,
+      "reputation_tier": "established",
+      "categories": { "ai/llm-benchmarks": { "submissions": 2, "accepted": 2, "avg_score": 7.5 } }
+    }
+  }
+}

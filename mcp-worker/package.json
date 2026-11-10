@@ -1,0 +1,24 @@
+{
+  "name": "pubroot-mcp-worker",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Read-only Pubroot MCP server (Streamable HTTP) as a Cloudflare Worker on the Workers Free plan.",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "build:dry-run": "wrangler deploy --dry-run --outdir dist"
+  },
+  "dependencies": {
+    "@cfworker/json-schema": "4.1.6",
+    "@modelcontextprotocol/sdk": "1.32.2"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "5.20261110.1",
+    "typescript": "5.9.3",
+    "vitest": "4.1.12",
+    "wrangler": "4.159.0"
+  }
+}

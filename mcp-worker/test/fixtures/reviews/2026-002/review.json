@@ -1,0 +1,8 @@
+{
+  "paper_id": "2026-002",
+  "score": 7.0,
+  "verdict": "ACCEPTED",
+  "claims": [
+    { "text": "Episodic memory improves agent recall.", "verified": true, "confidence": 0.8, "source": "survey" }
+  ]
+}
