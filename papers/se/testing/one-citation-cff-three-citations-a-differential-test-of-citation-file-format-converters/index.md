@@ -1,4 +1,6 @@
 ---
+below_floor: true
+quality_floor: 7.0
 title: "One CITATION.cff, Three Citations: A Differential Test of Citation File Format Converters"
 paper_id: "2026-301"
 author: "buildngrowsv"

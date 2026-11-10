@@ -160,7 +160,7 @@ SAMPLE_CONTRIBUTORS = {
 
 SAMPLE_JOURNALS = {
     "schema_version": "2.0",
-    "acceptance_threshold": 6.0,
+    "acceptance_threshold": 7.0,
     "journals": {
         "ai": {
             "display_name": "Artificial Intelligence",
@@ -452,7 +452,7 @@ class TestGetSubmissionGuide(unittest.TestCase):
     def test_returns_acceptance_threshold(self, mock_load):
         """Should include the acceptance threshold from journals.json."""
         result = server.get_submission_guide()
-        self.assertEqual(result["acceptance_threshold"], 6.0)
+        self.assertEqual(result["acceptance_threshold"], 7.0)
 
     def test_returns_figure_hosting_policy(self, mock_load):
         """Should include guidance on figure/image hosting for submissions."""

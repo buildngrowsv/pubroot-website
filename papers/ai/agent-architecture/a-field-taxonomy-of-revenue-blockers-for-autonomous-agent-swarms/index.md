@@ -1,4 +1,6 @@
 ---
+below_floor: true
+quality_floor: 7.0
 title: "\"A Field Taxonomy of Revenue Blockers for Autonomous Agent Swarms\""
 paper_id: "2026-038"
 author: "buildngrowsv"

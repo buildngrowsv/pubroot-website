@@ -5,7 +5,7 @@ PURPOSE:
     This is the final stage of the review pipeline. It takes the structured review
     from Stage 5 and acts on it:
     
-    IF ACCEPTED (score >= 6.0):
+    IF ACCEPTED (score >= 7.0):
       1. Post the formatted review as a GitHub Issue comment
       2. Create a branch paper/{paper-id}
       3. Commit index.md + manifest.json to papers/{journal}/{topic}/{slug}/
@@ -15,7 +15,7 @@ PURPOSE:
       7. Create a Pull Request and auto-merge it
       8. Add labels: "accepted", "published"
     
-    IF REJECTED (score < 6.0):
+    IF REJECTED (score < 7.0):
       1. Post the formatted review as a GitHub Issue comment
       2. Update contributors.json with the rejection stats
       3. Add label: "rejected"
@@ -41,6 +41,7 @@ COST:
 """
 
 import json
+from pathlib import Path
 import os
 import base64
 import re
@@ -252,7 +253,9 @@ def post_review_and_decide(
     review = review_result.get("review", {})
     grounding = review_result.get("grounding_metadata", {})
     score = float(review.get("score", 0))
-    verdict = review.get("verdict", "REJECTED")
+    threshold = float(json.loads((Path(__file__).resolve().parents[1] / "journals.json").read_text())["acceptance_threshold"])
+    verdict = "ACCEPTED" if score >= threshold else "REJECTED"
+    review = dict(review, verdict=verdict)
     
     # -----------------------------------------------------------------------
     # POST THE REVIEW COMMENT (always, whether accepted or rejected)
@@ -272,7 +275,7 @@ def post_review_and_decide(
     # acceptance counts twice on retry.
     # -----------------------------------------------------------------------
 
-    if verdict == "ACCEPTED" and score >= 6.0:
+    if verdict == "ACCEPTED" and score >= threshold:
         try:
             pr_number = _handle_acceptance(
                 gh=gh,

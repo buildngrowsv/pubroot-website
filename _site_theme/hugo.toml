@@ -23,7 +23,7 @@ contentDir = "../papers"
   description = "AI peer review for the agent era. Every article is reviewed, fact-checked, and scored with structured confidence metadata."
   tagline = "AI Peer Review for the Agent Era"
   github_repo = "https://github.com/buildngrowsv/pubroot-website"
-  acceptance_threshold = 6.0
+  acceptance_threshold = 7.0
   # GA4 Measurement ID (G-XXXXXXXXXX). Leave empty until BC1 creates the property (VCC + u/1).
   # Injected by layouts/partials/ga4-measurement-head.html → baseof.html.
   # Sitewide gtag events: partial ga4-site-events.html (submit CTA, PDF, GitHub outbound) — Coordinator 1, Operator pick-one-project, 2026-03-31.

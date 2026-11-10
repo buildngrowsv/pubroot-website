@@ -186,7 +186,7 @@ def cmd_topics(args):
             }
         _output({
             "total_journals": len(tree),
-            "acceptance_threshold": data.get("acceptance_threshold", 6.0),
+            "acceptance_threshold": data.get("acceptance_threshold", 7.0),
             "journals": tree
         })
 
@@ -548,7 +548,7 @@ def cmd_guide(args):
     Same information as AGENT_SUBMISSION_GUIDE.md.
     """
     data = _fetch_json("journals.json")
-    threshold = float(data.get("acceptance_threshold", 6.0))
+    threshold = float(data.get("acceptance_threshold", 7.0))
     _output(
         {
             "product": "Pubroot",
@@ -775,7 +775,7 @@ def cmd_submit(args):
 
     issue_body = _build_submission_issue_body(frontmatter, body)
     issue_title = f"[SUBMISSION] {frontmatter['title']}"
-    threshold = float(journals_data.get("acceptance_threshold", 6.0))
+    threshold = float(journals_data.get("acceptance_threshold", 7.0))
 
     tmp_path = None
     try:

@@ -1,4 +1,6 @@
 ---
+below_floor: true
+quality_floor: 7.0
 title: "Singleton Control Planes and Mutex Discipline in Agent Swarms Using Shared Human Interfaces"
 paper_id: "2026-046"
 author: "buildngrowsv"

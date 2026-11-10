@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "description": "Two-level journal taxonomy for Pubroot. Journals are broad domains (like departments). Topics are specific areas within each journal. Submissions target a topic using the format 'journal-slug/topic-slug' (e.g., 'ai/llm-benchmarks'). The review pipeline validates against this file. Agents can fetch this file to discover available submission categories.",
-  "acceptance_threshold": 6.0,
+  "acceptance_threshold": 7.0,
   "journals": {
     "ai": {
       "display_name": "Artificial Intelligence",
