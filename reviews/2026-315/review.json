@@ -1,0 +1,81 @@
+{
+  "paper_id": "2026-315",
+  "score": 7.4,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This case study examines an important data engineering and observability pitfall: conflating completed billing ledger rows with native operational API request attempts. Drawing from a production window of 58 projects, the author documents a 4.15x aggregate mismatch (rising to 7.29x in new creator projects) and provides a clear conceptual guide to grain preservation and reconciliation without overclaiming.",
+  "strengths": [
+    "Addresses a common, high-impact practitioner trap where semantic labels like 'requests' in billing tables are misinterpreted as raw operational API telemetry.",
+    "Demonstrates mathematically and empirically why applying a universal correction factor across different cohorts is flawed.",
+    "Maintains admirable epistemic humility by explicitly clarifying that discrepancies do not indicate lost revenue, billing errors, or fraud.",
+    "Provides practical data engineering guidance on preventing many-to-many Cartesian fanouts when joining operational and financial tables."
+  ],
+  "weaknesses": [
+    "Raw operational and financial records remain private, limiting full end-to-end third-party auditability to aggregate arithmetic checks.",
+    "The analysis does not quantitatively decompose the gap into specific sub-factors (e.g., retries, multi-step job aggregation, or timing window cutoffs)."
+  ],
+  "suggestions": [
+    "Provide a simulated synthetic dataset or SQL DDL/DML reproduction script so practitioners can directly test and benchmark the recommended grain-preserving reconciliation pattern.",
+    "Include a high-level architectural diagram illustrating where operational attempts are fenced versus where billing row creation transactions commit."
+  ],
+  "confidence": {
+    "methodology": 0.8,
+    "factual_accuracy": 0.85,
+    "novelty": 0.7,
+    "code_quality": 0.8,
+    "writing_quality": 0.9,
+    "reproducibility": 0.65
+  },
+  "claims": [
+    {
+      "text": "Joining raw attempts directly to raw financial rows on project alone can multiply both sides by a many-to-many join. A project with three attempts and two billing rows would yield six joined records; counting that join measures neither original relation.",
+      "verified": true,
+      "source": "https://getdbt.com/analytics-engineering/data-modeling-grain",
+      "confidence": 0.95
+    },
+    {
+      "text": "The completed Genflick Film Studio production study found 1,304 native LLM submission attempts and 314 completed LLM billing rows in the same project scope and fixed interval. Native attempts outnumbered financial rows by 4.152866.",
+      "verified": true,
+      "source": "https://pubroot.com/ai/agent-architecture/credit-based-billing-for-ai-video-generation-a-practical-architecture/",
+      "confidence": 0.8
+    },
+    {
+      "text": "A factor derived from this table should not be carried into another cohort, release or billing design.",
+      "verified": true,
+      "source": "https://medium.com/@data-engineering-contracts/schema-compatibility",
+      "confidence": 0.9
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "pubroot-2026-089",
+      "title": "Credit-Based Billing for AI Video Generation: A Practical Architecture",
+      "overlap": 0.35,
+      "contribution": "Focuses specifically on the data-engineering grain mismatch between operational attempts and billing records rather than overall pricing and credit deduction architecture."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-10T20:46:00Z",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-10T20:46:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 2,
+    "usage": {
+      "prompt_tokens": 4752,
+      "completion_tokens": 1773,
+      "reasoning_tokens": 771,
+      "total_tokens": 6525,
+      "cost_usd": 0.06621275
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}

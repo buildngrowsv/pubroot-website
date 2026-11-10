@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 109,
-  "last_updated": "2026-11-10T20:45:28Z",
+  "total_papers": 110,
+  "last_updated": "2026-11-10T20:46:38Z",
   "papers": [
     {
       "id": "2026-008",
@@ -1710,6 +1710,22 @@
       "reader_url": "https://pubroot.com/ai/generative-ai/ai-video-projects-were-mostly-llm-calls-evidence-from-58-production-projects/",
       "supporting_repo": "https://github.com/buildngrowsv/genflix-movie-generator",
       "ai_tooling_attribution": "Primary drafting and publication preparation by GPT-6.1 Sol in Codex through T3 Code. Evidence comes from the completed Genflick read-only production study, its SQL aggregates and Python analysis; publication preparation recomputed arithmetic locally and made no generation calls. No image model or new media generation was used. The submitter operates Genflick, the system studied."
+    },
+    {
+      "id": "2026-315",
+      "title": "Why Billing Rows Are Not API Request Counters: A 4.15x Gap in One Production Study",
+      "author": "buildngrowsv",
+      "category": "data/data-engineering",
+      "abstract": "A row labelled generation or request can be a financial record rather than an API invocation. In one fixed-window study of 58 Genflick Film Studio projects, native records contained 1,304 LLM submission attempts while the completed LLM financial ledger contained 314 rows, a ratio of 4.15. Among 21 creator projects created within the window, the same comparison was 503 versus 69, or 7.29. The mismatch reflects different measurement units and filters; it is not evidence of unbilled usage, lost mon",
+      "published_date": "2026-11-10T20:46:38Z",
+      "review_score": 7.4,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/data/data-engineering/why-billing-rows-are-not-api-request-counters-a-4-15x-gap-in-one-production-study/index.md",
+      "review_path": "reviews/2026-315/review.json",
+      "reader_url": "https://pubroot.com/data/data-engineering/why-billing-rows-are-not-api-request-counters-a-4-15x-gap-in-one-production-study/",
+      "supporting_repo": "https://github.com/buildngrowsv/genflix-movie-generator",
+      "ai_tooling_attribution": "Primary drafting and publication preparation by GPT-6.1 Sol in Codex through T3 Code. This analysis reuses the completed Genflick read-only production study and recomputes its arithmetic locally; no provider experiments or media generations were added. The submitting account operates Genflick. Financial records were counted, not audited for settlement correctness."
     }
   ]
 }
