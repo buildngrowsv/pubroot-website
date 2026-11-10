@@ -1,4 +1,6 @@
 ---
+below_floor: true
+quality_floor: 7.0
 title: "Replacing a Qwen feed-forward block with a smaller pretrained expert"
 paper_id: "2026-333"
 author: "buildngrowsv"

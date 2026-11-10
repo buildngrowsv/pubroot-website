@@ -1,4 +1,6 @@
 ---
+below_floor: true
+quality_floor: 7.0
 title: "Inferring shifted fault boundaries rescued memory on an 884,736-cell grid"
 paper_id: "2026-499"
 author: "buildngrowsv"

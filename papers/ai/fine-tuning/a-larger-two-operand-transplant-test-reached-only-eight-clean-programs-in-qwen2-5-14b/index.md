@@ -1,4 +1,6 @@
 ---
+below_floor: true
+quality_floor: 7.0
 title: "A larger two-operand transplant test reached only eight clean programs in Qwen2.5-14B"
 paper_id: "2026-449"
 author: "buildngrowsv"

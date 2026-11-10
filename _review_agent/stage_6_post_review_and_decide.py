@@ -5,7 +5,7 @@ PURPOSE:
     This is the final stage of the review pipeline. It takes the structured review
     from Stage 5 and acts on it:
     
-    IF ACCEPTED (score >= 6.0):
+    IF ACCEPTED (verdict == ACCEPTED AND score >= 7.0):
       1. Post the formatted review as a GitHub Issue comment
       2. Create a branch paper/{paper-id}
       3. Commit index.md + manifest.json to papers/{journal}/{topic}/{slug}/
@@ -15,7 +15,7 @@ PURPOSE:
       7. Create a Pull Request and auto-merge it
       8. Add labels: "accepted", "published"
     
-    IF REJECTED (score < 6.0):
+    IF REJECTED (verdict != ACCEPTED OR score < 7.0):
       1. Post the formatted review as a GitHub Issue comment
       2. Update contributors.json with the rejection stats
       3. Add label: "rejected"
@@ -41,6 +41,7 @@ COST:
 """
 
 import json
+from pathlib import Path
 import os
 import base64
 import re
@@ -189,6 +190,19 @@ def _hugo_date_string_utc(now: datetime) -> str:
     return dt.strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
+
+DEFAULT_ACCEPTANCE_THRESHOLD = 7.0
+
+
+def _acceptance_threshold() -> float:
+    """Return journals.json acceptance_threshold, or 7.0 if it cannot be read."""
+    path = Path(__file__).resolve().parents[1] / "journals.json"
+    try:
+        return float(json.loads(path.read_text())["acceptance_threshold"])
+    except (OSError, KeyError, TypeError, ValueError, json.JSONDecodeError):
+        return DEFAULT_ACCEPTANCE_THRESHOLD
+
+
 def post_review_and_decide(
     review_result: dict,
     parsed_submission: dict,
@@ -253,13 +267,22 @@ def post_review_and_decide(
     grounding = review_result.get("grounding_metadata", {})
     score = float(review.get("score", 0))
     verdict = review.get("verdict", "REJECTED")
+    threshold = _acceptance_threshold()
 
     # D-26: promotional intent forces REJECTED regardless of score, even if
     # the model forgot rule 9 and returned ACCEPTED.
     if review.get("promotional_intent") is True and verdict != "REJECTED":
         print("[Stage 6] promotional_intent=true: forcing verdict REJECTED (D-26)")
         verdict = "REJECTED"
-        review["verdict"] = "REJECTED"
+
+    # D-21: a score below the floor forces REJECTED. A REJECTED verdict is
+    # never rewritten to ACCEPTED, even when the score is at or above the floor.
+    if score < threshold and verdict != "REJECTED":
+        print(f"[Stage 6] score {score} < floor {threshold}: forcing verdict REJECTED (D-21)")
+        verdict = "REJECTED"
+
+    if review.get("verdict") != verdict:
+        review = dict(review, verdict=verdict)
     
     # -----------------------------------------------------------------------
     # POST THE REVIEW COMMENT (always, whether accepted or rejected)
@@ -279,7 +302,7 @@ def post_review_and_decide(
     # acceptance counts twice on retry.
     # -----------------------------------------------------------------------
 
-    if verdict == "ACCEPTED" and score >= 6.0:
+    if verdict == "ACCEPTED" and score >= threshold:
         try:
             pr_number = _handle_acceptance(
                 gh=gh,

@@ -1,4 +1,6 @@
 ---
+below_floor: true
+quality_floor: 7.0
 title: "A 192-value fixed reference gave no held-out Python gain at 285M parameters"
 paper_id: "2026-412"
 author: "buildngrowsv"

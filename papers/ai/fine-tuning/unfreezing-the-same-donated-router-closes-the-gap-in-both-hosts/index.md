@@ -1,4 +1,6 @@
 ---
+below_floor: true
+quality_floor: 7.0
 title: "Unfreezing the same donated router closes the gap in both hosts"
 paper_id: "2026-394"
 author: "buildngrowsv"

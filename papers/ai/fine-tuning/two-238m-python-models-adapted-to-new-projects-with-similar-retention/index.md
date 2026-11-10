@@ -1,4 +1,6 @@
 ---
+below_floor: true
+quality_floor: 7.0
 title: "Two 238M Python models adapted to new projects with similar retention"
 paper_id: "2026-425"
 author: "buildngrowsv"

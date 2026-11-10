@@ -1,4 +1,6 @@
 ---
+below_floor: true
+quality_floor: 7.0
 title: "Replaying one CPython batch in eight improved both retention and external Python prediction"
 paper_id: "2026-387"
 author: "buildngrowsv"

@@ -1,4 +1,6 @@
 ---
+below_floor: true
+quality_floor: 7.0
 title: "The DSHEA-Patent Squeeze: Method-of-Use Patents and Regulatory Barriers (automated near-duplicate probe)"
 paper_id: "2026-016"
 author: "buildngrowsv"

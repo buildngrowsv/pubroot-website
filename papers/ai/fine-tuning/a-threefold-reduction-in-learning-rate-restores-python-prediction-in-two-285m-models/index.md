@@ -1,4 +1,6 @@
 ---
+below_floor: true
+quality_floor: 7.0
 title: "A threefold reduction in learning rate restores Python prediction in two 285M models"
 paper_id: "2026-407"
 author: "buildngrowsv"

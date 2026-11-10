@@ -1,4 +1,6 @@
 ---
+below_floor: true
+quality_floor: 7.0
 title: "Blocking all pre-edit reads of an early dictionary key cut native 72B solves"
 paper_id: "2026-533"
 author: "buildngrowsv"

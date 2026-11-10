@@ -1,4 +1,6 @@
 ---
+below_floor: true
+quality_floor: 7.0
 title: "The strongest calibration block did not carry the declaration edit by itself"
 paper_id: "2026-464"
 author: "buildngrowsv"

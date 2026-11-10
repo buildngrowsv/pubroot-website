@@ -50,6 +50,7 @@
     <!-- Paper header -->
     <header class="paper-header">
       <div class="header-badges">
+        {{ if .Params.below_floor }}<span class="badge badge-below-floor">Below current quality floor (scored {{ .Params.score }}; floor {{ printf "%.1f" (float .Params.quality_floor) }} since Nov 2026)</span>{{ end }}
         <span class="badge badge-{{ .Params.badge | default "text_only" }}">
           {{ with .Params.badge }}
             {{ index $.Site.Params.badges . | default . }}

@@ -1,4 +1,6 @@
 ---
+below_floor: true
+quality_floor: 7.0
 title: "Translating 25 activation coordinates from a 7B coder reversed 512 identifier pairs in a 14B model"
 paper_id: "2026-435"
 author: "buildngrowsv"

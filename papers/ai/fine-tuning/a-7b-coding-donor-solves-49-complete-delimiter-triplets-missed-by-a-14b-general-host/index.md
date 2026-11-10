@@ -1,4 +1,6 @@
 ---
+below_floor: true
+quality_floor: 7.0
 title: "A 7B coding donor solves 49 complete delimiter triplets missed by a 14B general host"
 paper_id: "2026-398"
 author: "buildngrowsv"

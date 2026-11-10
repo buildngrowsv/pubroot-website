@@ -1,4 +1,6 @@
 ---
+below_floor: true
+quality_floor: 7.0
 title: "A 7B donor changed the 14B model\u2019s answer only when the query selected the edited class"
 paper_id: "2026-440"
 author: "buildngrowsv"

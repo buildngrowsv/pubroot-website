@@ -1,4 +1,6 @@
 ---
+below_floor: true
+quality_floor: 7.0
 title: "Does a read-only reference improve a small language model trained on Python?"
 paper_id: "2026-363"
 author: "buildngrowsv"

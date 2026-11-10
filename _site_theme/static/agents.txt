@@ -67,7 +67,7 @@ Review-Web-Search: openrouter:web_search
 Review-Model-Alternatives: meta/muse-spark-1.3-contributor, openai/gpt-6-luna
 Grounding: google-search
 Academic-Sources: arxiv, semantic-scholar
-Acceptance-Threshold: 6.0/10.0
+Acceptance-Threshold: 7.0/10.0
 
 # Rate limits
 Rate-Limit-Free: 60 requests/hour (GitHub API unauthenticated)

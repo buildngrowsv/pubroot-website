@@ -270,7 +270,7 @@ class TestScoreToBar:
         assert result == "[||||||||..]"
 
     def test_score_6_is_six_filled(self):
-        """6.0 (acceptance threshold) should show 6 filled bars."""
+        """6.0 (score meter) should show 6 filled bars."""
         result = _score_to_bar(6.0)
         assert result == "[||||||....]"
 
@@ -2253,4 +2253,47 @@ class TestIndexUpdateWithStatefulAPI:
         finally:
             time.sleep = original_sleep
 
+
+
+@pytest.mark.parametrize('score', [6.9, 7.0])
+def test_d21_score_controls_publication(score, temp_repo_root):
+    from copy import deepcopy
+    review = deepcopy(SAMPLE_REVIEW_SUCCESS)
+    review['review']['score'] = score
+    review['review']['verdict'] = 'ACCEPTED'
+    with patch.object(GitHubAPI, 'post_comment'), patch.object(GitHubAPI, 'add_labels'), patch.object(GitHubAPI, 'close_issue'), patch('stage_6_post_review_and_decide._update_contributors'), patch('stage_6_post_review_and_decide._handle_acceptance', return_value=123) as publish, patch('stage_6_post_review_and_decide._remove_labels_if_present'):
+        result = post_review_and_decide(review, SAMPLE_PARSED, SAMPLE_NOVELTY, SAMPLE_REPO_DATA, '2026-042', 42, 'owner', 'repo', 'token', temp_repo_root)
+    assert publish.called == (score >= 7.0)
+    if score < 7.0:
+        assert result['action_taken'] == 'rejected'
+
+
+def test_d21_rejected_at_7_5_does_not_publish(temp_repo_root):
+    """A REJECTED review never publishes, even when the score is above the floor."""
+    from copy import deepcopy
+    review = deepcopy(SAMPLE_REVIEW_SUCCESS)
+    review['review']['score'] = 7.5
+    review['review']['verdict'] = 'REJECTED'
+    with patch.object(GitHubAPI, 'post_comment'), patch.object(GitHubAPI, 'add_labels'), patch.object(GitHubAPI, 'close_issue'), patch('stage_6_post_review_and_decide._update_contributors'), patch('stage_6_post_review_and_decide._handle_acceptance', return_value=123) as publish, patch('stage_6_post_review_and_decide._remove_labels_if_present'):
+        result = post_review_and_decide(review, SAMPLE_PARSED, SAMPLE_NOVELTY, SAMPLE_REPO_DATA, '2026-042', 42, 'owner', 'repo', 'token', temp_repo_root)
+    assert publish.called is False
+    assert result['action_taken'] == 'rejected'
+
+
+def test_d21_journals_json_fallback_when_unreadable():
+    from stage_6_post_review_and_decide import _acceptance_threshold, DEFAULT_ACCEPTANCE_THRESHOLD
+    with patch.object(Path, 'read_text', side_effect=FileNotFoundError('missing')):
+        assert _acceptance_threshold() == DEFAULT_ACCEPTANCE_THRESHOLD == 7.0
+
+
+def test_d21_journals_json_fallback_when_key_missing():
+    from stage_6_post_review_and_decide import _acceptance_threshold
+    with patch.object(Path, 'read_text', return_value='{"journals": []}'):
+        assert _acceptance_threshold() == 7.0
+
+
+def test_d21_journals_json_reads_configured_threshold():
+    from stage_6_post_review_and_decide import _acceptance_threshold
+    with patch.object(Path, 'read_text', return_value='{"acceptance_threshold": 8.5}'):
+        assert _acceptance_threshold() == 8.5
 

@@ -18,7 +18,7 @@
   <img src="https://img.shields.io/badge/cost-$0%20fixed-00B4A0?style=flat-square" alt="$0 Fixed Cost">
   <img src="https://img.shields.io/badge/journals-18-00B4A0?style=flat-square" alt="18 Journals">
   <img src="https://img.shields.io/badge/topics-100+-00B4A0?style=flat-square" alt="100+ Topics">
-  <img src="https://img.shields.io/badge/threshold-6.0%2F10-00B4A0?style=flat-square" alt="Threshold 6.0">
+  <img src="https://img.shields.io/badge/threshold-7.0%2F10-00B4A0?style=flat-square" alt="Threshold 7.0">
 </p>
 
 ---
@@ -57,7 +57,7 @@ Human/Agent → GitHub Issue (submission form) → 6-Stage AI Review Pipeline �
 | 1. **Submit** | Open a [GitHub Issue](https://github.com/buildngrowsv/pubroot-website/issues/new?template=submission.yml) using the structured form template | Free |
 | 2. **Queue** | Priority calculated from contributor reputation + optional pay-to-accelerate | Free |
 | 3. **Review** | 6-stage AI pipeline (details below) | Low cost via OpenRouter (see cost model below) |
-| 4. **Decide** | Score ≥ 6.0/10 → **ACCEPTED** and auto-published. Below → **REJECTED** with detailed feedback | Free |
+| 4. **Decide** | Score ≥ 7.0/10 → **ACCEPTED** and auto-published. Below → **REJECTED** with detailed feedback | Free |
 | 5. **Publish** | Article + review + manifest committed, Hugo site rebuilt, search index updated | Free (GitHub Pages) |
 
 ### The 6-Stage Review Pipeline
@@ -111,13 +111,13 @@ Every submission is scored **0.0 to 10.0** across six dimensions:
 | **Writing Quality** (0.0–1.0) | Clarity, structure, grammar |
 | **Reproducibility** (0.0–1.0) | Steps documented, dependencies pinned, data available |
 
-**Acceptance threshold: 6.0/10.0** — Objective, transparent, consistent.
+**Acceptance threshold: 7.0/10.0** — Objective, transparent, consistent.
 
 | Score | Rating | Outcome |
 |-------|--------|---------|
 | 9.0–10.0 | Exceptional | ✅ Accepted |
 | 7.0–8.9 | Good | ✅ Accepted |
-| 6.0–6.9 | Acceptable | ✅ Accepted |
+| 6.0–6.9 | Below current quality floor | ❌ Rejected |
 | 4.0–5.9 | Below Average | ❌ Rejected with feedback |
 | 2.0–3.9 | Poor | ❌ Rejected |
 | 0.0–1.9 | Reject | ❌ Spam/gibberish |
