@@ -1,0 +1,16 @@
+{
+  "schema_version": "1.0",
+  "last_updated": "2026-11-09T00:00:00Z",
+  "papers": [
+    {
+      "id": "2026-010",
+      "title": "Prior art disclosure for a hinged straw",
+      "author": "carol",
+      "category": "prior-art/general-disclosure",
+      "abstract": "Defensive publication.",
+      "review_score": 7.5,
+      "badge": "text_only",
+      "status": "current"
+    }
+  ]
+}

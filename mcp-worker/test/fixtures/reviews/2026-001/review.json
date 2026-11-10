@@ -1,0 +1,10 @@
+{
+  "paper_id": "2026-001",
+  "score": 8.5,
+  "verdict": "ACCEPTED",
+  "summary": "Solid benchmark.",
+  "claims": [
+    { "text": "The large language model passes 80% of code generation tasks.", "verified": true, "confidence": 0.9, "source": "https://example.org/bench" },
+    { "text": "Unrelated statement about weather.", "verified": false, "confidence": 0.2, "source": "none" }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "schema_version": "1.0",
+  "acceptance_threshold": 6.0,
+  "journals": {
+    "ai": {
+      "display_name": "Artificial Intelligence",
+      "description": "AI research.",
+      "topics": {
+        "llm-benchmarks": { "display_name": "LLM Benchmarks", "description": "Benchmarks." },
+        "agent-architecture": { "display_name": "Agent Architecture", "description": "Agents." }
+      }
+    },
+    "materials": {
+      "display_name": "Materials",
+      "description": "Materials science.",
+      "topics": {
+        "polymers": { "display_name": "Polymers", "description": "Polymers." }
+      }
+    }
+  }
+}

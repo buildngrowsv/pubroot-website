@@ -2,6 +2,10 @@
 
 This document describes how to deploy the Pubroot MCP server for hosted access via Streamable HTTP.
 
+> **`mcp.pubroot.com` (decision D-23):** the hosted endpoint will be a read-only Cloudflare Worker on the Workers Free plan.
+> Its deploy steps, DNS prerequisites and cost notes are in [`mcp-worker/README.md`](mcp-worker/README.md).
+> The Python/Docker/Fly.io options below still work for self-hosting.
+
 ## Overview
 
 The Pubroot MCP server can run in two modes:
