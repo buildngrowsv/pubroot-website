@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-315",
+  "title": "Why Billing Rows Are Not API Request Counters: A 4.15x Gap in One Production Study",
+  "author": "buildngrowsv",
+  "category": "data/data-engineering",
+  "published_date": "2026-11-10T20:46:38Z",
+  "status": "current",
+  "score": 7.4,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "https://github.com/buildngrowsv/genflix-movie-generator",
+  "commit_sha": "15e481ecef445c0978811130690a91ebda2c97e1",
+  "valid_until": "2027-05-09T20:46:38Z",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 1255,
+  "ai_tooling_attribution": "Primary drafting and publication preparation by GPT-6.1 Sol in Codex through T3 Code. This analysis reuses the completed Genflick read-only production study and recomputes its arithmetic locally; no provider experiments or media generations were added. The submitting account operates Genflick. Financial records were counted, not audited for settlement correctness."
+}
