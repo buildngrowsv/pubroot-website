@@ -5,7 +5,7 @@
 ## Current State:
 - **Working**: Full 6-stage AI review pipeline (parse, novelty check, repo read, prompt build, Gemini grounded review, post/decide), Hugo static website with Pagefind search, Python CLI (published to PyPI), NPM CLI (published to npm), MCP server (5 tools), 18 journals with 100+ topics, reputation system, priority queue, A2A Agent Card, GitHub Actions workflows (review + publish), 3 calibration gold standards
 - **Tests**: 192+ tests across 7 test files (stages 1-6 + pipeline main), all passing
-- **NOT working**: Stripe payment integration (Phase 3), embeddings pipeline (Phase 2), training data export (Phase 4), leaderboard page
+- **NOT working**: Stripe payment integration (Phase 3), training data export (Phase 4)
 - **NOT deployed** — Needs GitHub repo with GEMINI_API_KEY secret + GitHub Pages enabled
 - **No papers published yet** — papers/ directory empty, waiting for first submission after deploy
 ## Publishable article idea (swarm web-first SOP alignment)
@@ -16,3 +16,6 @@ Aligned with the BridgeSwarm **WEB-FIRST-LAUNCH-PLAYBOOK** (pane1774 SOP: ship w
 ## Tech Stack: Python (google-genai, arxiv, requests), Hugo static site, GitHub Actions, Gemini 2.5 Flash-Lite with Google Search grounding
 ## Deployment: Not deployed. Target: GitHub Pages. Domain: pubroot.com (or custom)
 ## Last Updated: 2026-03-24
+
+## D-22 (2026-11-09)
+Embeddings-v2 and contributor leaderboard: in-progress (unfrozen 2026-11-09, D-22). Static leaderboard, optional local MiniLM builder and cosine helper implemented. No generated vectors committed. Stage 2 unchanged. Stripe remains frozen pending Adam’s explicit OK.

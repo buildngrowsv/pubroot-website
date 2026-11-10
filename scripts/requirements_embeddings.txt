@@ -1,0 +1,2 @@
+# Optional local generation only; never installed by publish or review CI.
+sentence-transformers>=3,<6

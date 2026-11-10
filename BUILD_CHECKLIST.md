@@ -74,7 +74,7 @@ Human/Agent → GitHub Issue (template) → GitHub Action triggers review.yml
 
 - [x] **W.1** `.github/workflows/review.yml` — Triggers on issue:opened + cron every 15min, installs Python deps, runs review pipeline, priority queue processing
 - [x] **W.2** `.github/workflows/publish.yml` — Triggers on PR merge when papers/ changes, Hugo build + Pagefind index, deploy to GitHub Pages
-- [ ] **W.3** `.github/workflows/index.yml` — (Deferred to Phase 2) Triggers on merge, updates embeddings with all-MiniLM-L6-v2
+- [ ] **W.3** `.github/workflows/index.yml` — Not scheduled under D-22; optional local builder replaces automated generation for now
 
 ### Priority 4: MCP Server
 
@@ -96,7 +96,7 @@ Human/Agent → GitHub Issue (template) → GitHub Action triggers review.yml
 - [x] **7.1** Hugo site configuration (`hugo.toml`, layouts, theme)
 - [x] **7.2** Paper listing page with filters (category, score, badge, date)
 - [x] **7.3** Individual paper page (article + review side by side)
-- [ ] **7.4** Contributor leaderboard page (deferred)
+- [x] **7.4** Contributor leaderboard page (D-22: static Hugo)
 - [x] **7.5** Pagefind search integration
 - [x] **7.6** Marketing-polished responsive design (dark theme, Inter + JetBrains Mono)
 
@@ -106,7 +106,7 @@ Human/Agent → GitHub Issue (template) → GitHub Action triggers review.yml
 - [ ] **8.2** Cloudflare Worker webhook receiver → adds `priority:paid` label
 - [ ] **8.3** Reputation-scaled pricing logic
 
-### Priority 9: Embeddings Pipeline (Deferred)
+### Priority 9: Embeddings Pipeline (in-progress, unfrozen 2026-11-09, D-22)
 
 - [ ] **9.1** GitHub Action runs all-MiniLM-L6-v2 on new articles
 - [ ] **9.2** `_data/embeddings.json` stores vectors in repo
@@ -227,9 +227,11 @@ Gemini free tier: 1,500 grounded requests/day = 45,000/month at $0.
 
 **Remaining (deferred items):**
 - Leaderboard page (Hugo template)
-- Embeddings pipeline (Phase 2 — when >100 articles)
+- Embeddings artifact and stage 2 integration (local builder complete, D-22)
 - Stripe integration (Phase 3 — first revenue)
 - Training data export (Phase 4 — long-term monetization)
 - Paid MCP tier (requires Cloudflare Worker)
 
 **Next operator milestone (not deferred):** Follow **Next actions: GEMINI_API_KEY + first live submission** above for the first end-to-end run on GitHub (secret + Pages source + one template-compliant issue).
+
+- [x] **9.local** Local builder and cosine helper with fake-embedder tests. Install `scripts/requirements_embeddings.txt`; run `python scripts/build_embeddings.py`. No generated vectors committed; stage 2 unchanged.

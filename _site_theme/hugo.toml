@@ -65,3 +65,14 @@ contentDir = "../papers"
   disableCSS = false
   disableHTML = false
   disableJS = false
+
+[module]
+ [[module.mounts]]
+ source = "../papers"
+ target = "content"
+ [[module.mounts]]
+ source = "content"
+ target = "content"
+ [[module.mounts]]
+ source = "../contributors.json"
+ target = "data/contributors.json"
