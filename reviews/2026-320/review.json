@@ -1,0 +1,95 @@
+{
+  "paper_id": "2026-320",
+  "score": 8.6,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark presents a rigorous differential analysis of HTTP Range request handling across seven widely used static-file server implementations, evaluating 58 test cases against RFC 9110 specifications. The findings reveal substantial divergence in behavior across servers, including non-compliant suffix handling, malformed Content-Range responses in Go, and an npm packaging discrepancy in range-parser. The methodology is well-isolated and thorough, providing actionable insights for HTTP client and server developers.",
+  "strengths": [
+    "Systematic and reproducible differential testing methodology applying 58 raw byte-level test vectors across seven distinct web server/framework implementations.",
+    "Careful mapping to RFC 9110 specification requirements, categorizing responses rigorously into prescribed, permitted, lenient, rejected, and non-compliant behaviors.",
+    "Discovery of concrete edge-case defects and discrepancies, notably the npm packaging mismatch in range-parser 1.3.0 (PR #66) and Go's invalid Content-Range generation on zero-length ranges.",
+    "Comprehensive tabular breakdown in the appendix providing clear, granular visibility into server disagreement patterns."
+  ],
+  "weaknesses": [
+    "Testing is limited to a single 100-byte file and an empty file over GET requests, leaving out large multi-megabyte files, conditional headers (If-Range), and HEAD requests.",
+    "Evaluation tests only a single pinned version per ecosystem without evaluating how intermediate reverse proxies or CDNs might alter the headers before reaching the framework handler.",
+    "No external standalone server daemons (e.g., Nginx, Apache HTTP Server, Caddy) were included alongside the application framework handlers."
+  ],
+  "suggestions": [
+    "Expand test cases to include If-Range and precondition interaction, as clients often pair Range headers with validators.",
+    "Include standalone web servers (e.g., Nginx, Caddy, Apache httpd) to compare framework static-file helpers against production reverse-proxy baselines.",
+    "Submit upstream bug reports for verified non-conformance issues, particularly Go's malformed Content-Range values and range-parser's npm release mismatch."
+  ],
+  "confidence": {
+    "methodology": 0.95,
+    "factual_accuracy": 0.95,
+    "novelty": 0.85,
+    "code_quality": null,
+    "writing_quality": 0.9,
+    "reproducibility": 0.85
+  },
+  "claims": [
+    {
+      "text": "RFC 9110 Section 14: a server MUST ignore an unknown range unit",
+      "verified": true,
+      "source": "https://www.rfc-editor.org/rfc/rfc9110#section-14.2",
+      "confidence": 1.0
+    },
+    {
+      "text": "A suffix longer than the file selects the whole file [per RFC 9110 Section 14.1.2]",
+      "verified": true,
+      "source": "https://www.rfc-editor.org/rfc/rfc9110#section-14.1.2",
+      "confidence": 1.0
+    },
+    {
+      "text": "Git tag v1.3.0 points to the merge of #66, 'Clamp a suffix whose length exceeds the representation' (2026-06-25), whose index.js uses Math.max(size - end, 0). The npm tarball of range-parser 1.3.0 records gitHead 855f5b1f",
+      "verified": true,
+      "source": "https://github.com/jshttp/range-parser/pull/66 and https://registry.npmjs.org/range-parser/-/range-parser-1.3.0.tgz",
+      "confidence": 0.95
+    },
+    {
+      "text": "Go's httpservecontentmaxranges GODEBUG setting has an old value of 1 for modules declaring a Go version before 1.26",
+      "verified": true,
+      "source": "https://go.dev/doc/godebug",
+      "confidence": 0.95
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "arXiv:2405.17737",
+      "title": "The HTTP Garden: Discovering Parsing Vulnerabilities in HTTP/1.1 Implementations by Differential Fuzzing of Request Streams",
+      "overlap": 0.25,
+      "contribution": "While HTTP Garden applied differential testing to HTTP framing and chunked transfer parsing, this submission targets HTTP Range request parsing and byte-window semantics across application frameworks."
+    },
+    {
+      "id": "10.1145/3634737.3637678",
+      "title": "Who's Breaking the Rules? Studying Conformance to the HTTP Specifications and its Security Impact",
+      "overlap": 0.2,
+      "contribution": "Rautenstrauch & Stock checked conformance against high-level RFC rules with minimal probe variants, whereas this benchmark explores a dense 58-probe matrix specifically exercising Range boundary conditions, suffixes, and numeral parsing."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-11",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-11T15:24:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 2,
+    "usage": {
+      "prompt_tokens": 10916,
+      "completion_tokens": 2991,
+      "reasoning_tokens": 1619,
+      "total_tokens": 13907,
+      "cost_usd": 0.125998525
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
