@@ -1723,3 +1723,5 @@ body, .site-header, .site-footer, .hero, .how-it-works,
 .agent-ecosystem, .feature-banner, .agent-category-card {
   transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
+
+.badge-below-floor { background: #fff0c2; color: #513700; border: 1px solid #805900; }

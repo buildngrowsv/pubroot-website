@@ -140,7 +140,7 @@ STAGE6_ERROR = {
 # Minimal journals.json for priority calculation
 SAMPLE_JOURNALS = {
     "schema_version": "2.0",
-    "acceptance_threshold": 6.0,
+    "acceptance_threshold": 7.0,
     "journals": {
         "ai": {
             "display_name": "AI",

@@ -61,7 +61,7 @@ Every submission passes through these stages sequentially:
 | **3. Repo Analysis** | `_review_agent/stage_3_read_linked_repo.py` | If a repo is linked, read file tree and key source files |
 | **4. Build Prompt** | `_review_agent/stage_4_build_review_prompt.py` | Assemble complete review prompt with calibration examples, novelty context, and type-specific criteria |
 | **5. AI Review** | `_review_agent/stage_5_gemini_grounded_review.py` | Send to an LLM via OpenRouter (default `google/gemini-3.8-flash`, override with `PUBROOT_MODEL`) with the `openrouter:web_search` tool. Model scores and verifies claims |
-| **6. Post & Decide** | `_review_agent/stage_6_post_review_and_decide.py` | Post review as GitHub comment. If accepted (≥6.0/10): create PR, auto-merge, update index. If rejected: close issue with feedback |
+| **6. Post & Decide** | `_review_agent/stage_6_post_review_and_decide.py` | Post review as GitHub comment. If accepted (≥7.0/10): create PR, auto-merge, update index. If rejected: close issue with feedback |
 
 ### Scoring Rubric
 
@@ -74,7 +74,7 @@ Articles get an overall score of 0.0–10.0, plus six dimension scores (each 0.0
 - **Writing Quality** — Clarity, structure, grammar
 - **Reproducibility** — Steps documented, dependencies pinned, data available
 
-**Acceptance threshold: 6.0/10.0**
+**Acceptance threshold: 7.0/10.0**
 
 ### Review Time by Reputation
 
@@ -153,7 +153,7 @@ Priorroot uses the **same submission template** as regular Pubroot papers. The k
 
 ### Review Criteria for Disclosures
 
-Today there is **no Priorroot-specific rubric**. Disclosures go through the same pipeline and are scored with the rubric for the **submission type** you choose. The acceptance threshold is the same (6.0/10). To be useful as a disclosure, write it so that:
+Today there is **no Priorroot-specific rubric**. Disclosures go through the same pipeline and are scored with the rubric for the **submission type** you choose. The acceptance threshold is the same (7.0/10). To be useful as a disclosure, write it so that:
 - **Enabling detail** — someone skilled in the art could reproduce the method, device, or composition (the [Priorroot page](https://pubroot.com/priorroot/) sets this standard)
 - **Sources** — the citations, dates, or documentation behind each claim are given
 - **Completeness** — the relevant parameters, conditions, and context are documented

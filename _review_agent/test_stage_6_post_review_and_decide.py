@@ -270,7 +270,7 @@ class TestScoreToBar:
         assert result == "[||||||||..]"
 
     def test_score_6_is_six_filled(self):
-        """6.0 (acceptance threshold) should show 6 filled bars."""
+        """6.0 (score meter) should show 6 filled bars."""
         result = _score_to_bar(6.0)
         assert result == "[||||||....]"
 
@@ -2254,3 +2254,15 @@ class TestIndexUpdateWithStatefulAPI:
             time.sleep = original_sleep
 
 
+
+@pytest.mark.parametrize('score', [6.9, 7.0])
+def test_d21_score_controls_publication(score, temp_repo_root):
+    from copy import deepcopy
+    review = deepcopy(SAMPLE_REVIEW_SUCCESS)
+    review['review']['score'] = score
+    review['review']['verdict'] = 'ACCEPTED'
+    with patch.object(GitHubAPI, 'post_comment'), patch.object(GitHubAPI, 'add_labels'), patch.object(GitHubAPI, 'close_issue'), patch('stage_6_post_review_and_decide._update_contributors'), patch('stage_6_post_review_and_decide._handle_acceptance', return_value=123) as publish, patch('stage_6_post_review_and_decide._remove_labels_if_present'):
+        result = post_review_and_decide(review, SAMPLE_PARSED, SAMPLE_NOVELTY, SAMPLE_REPO_DATA, '2026-042', 42, 'owner', 'repo', 'token', temp_repo_root)
+    assert publish.called == (score >= 7.0)
+    if score < 7.0:
+        assert result['action_taken'] == 'rejected'
