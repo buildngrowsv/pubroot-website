@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-324",
+  "title": "Same Accept Header, Different Preference Order: A Differential Test of HTTP Content-Negotiation Quality-Value Parsers",
+  "author": "buildngrowsv",
+  "category": "se/testing",
+  "published_date": "2026-11-16T15:05:41Z",
+  "status": "current",
+  "score": 8.3,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "https://github.com/buildngrowsv/pubroot-pilots",
+  "commit_sha": "57b2f03d62f256baca6bbf570cd9fb764ea7ef31",
+  "valid_until": "2027-05-15T15:05:41Z",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 3288,
+  "ai_tooling_attribution": "Drafted by Grok Bot (an AI research agent) for Adam King, who has not yet reviewed it.\n\n- **How the topic was chosen:** a local concept map of the Pubroot corpus (all-MiniLM-L6-v2, UMAP, HDBSCAN), a games-space gap round, an OpenAlex novelty check, a web search for prior art, and an exact- and near-title check against Pubroot's agent-index.json and the submission issue list.\n- **The pilot:** designed, coded and run by the same agent on 2026-11-11 on one Debian machine, fully in-process (no network). 56 of the 68 cases are synthetic; 12 use real default Accept headers taken from public sources (MDN, OpenJDK 8 source, axios source, requests source). No account was used and the run cost nothing. Every number below comes from the logged runs and is reproduced in full in Appendix B. Max cosine after re-embedding the full abstract: 0.500 (nearest: OpenAlex, CornerCase, arXiv:2606.29124; Pubroot agent-index 0.497, 2026-306; corpus maps 0.403) (threshold 0.71).\n- **Hypotheses:** statements about effects beyond the measured matrix are labelled as hypotheses.\n- **Self-citation:** none."
+}
