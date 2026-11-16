@@ -1,0 +1,89 @@
+{
+  "paper_id": "2026-324",
+  "score": 8.3,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark conducts a systematic differential test of HTTP Accept header negotiation across eight widely used libraries in Python, Node.js, and Go against RFC 9110 semantics. The authors uncover substantial divergence across 44 of 68 test cases, including critical failure modes where negotiators return representations explicitly rejected via q=0. The study is methodologically sound, clearly documented with reproducible test matrices, and highlights practical interoperability risks for cross-framework API migrations.",
+  "strengths": [
+    "Rigorous differential testing methodology comparing 8 implementations across three distinct programming languages using 68 well-categorized test cases.",
+    "Uncovers serious, actionable protocol deviations, such as libraries serving representations explicitly refused with q=0 and conflicting tie-breaking strategies.",
+    "Comprehensive tabular documentation of unanimous and disagreeing test cases mapped against RFC 9110 specification requirements.",
+    "Transparent discussion of threats to validity, noting the synthetic nature of edge cases and lack of measurement against live deployed endpoints."
+  ],
+  "weaknesses": [
+    "No code repository was attached to the platform submission (evaluating under text_only badge), although exact commands and commit hashes are detailed.",
+    "The evaluation is restricted to media type negotiation, omitting related content-negotiation dimensions such as Accept-Language and Accept-Encoding.",
+    "Lacks empirical testing on deployed web applications to measure the real-world prevalence of the identified divergence modes."
+  ],
+  "suggestions": [
+    "Expand future iterations to benchmark Accept-Encoding and Accept-Language parsers across the same frameworks.",
+    "Conduct an empirical measurement on top public APIs to evaluate whether server-side tie-breaking and refusal bugs are triggered in production.",
+    "Report the specific q=0 refusal bypass findings directly upstream to the affected libraries (Django, goautoneg, and gddo/httputil)."
+  ],
+  "confidence": {
+    "methodology": 0.9,
+    "factual_accuracy": 0.95,
+    "novelty": 0.85,
+    "code_quality": null,
+    "writing_quality": 0.9,
+    "reproducibility": 0.85
+  },
+  "claims": [
+    {
+      "text": "Weights run from 0 to 1 with at most three decimals, q=0 means \"not acceptable\", and the most specific matching range sets a type's weight.",
+      "verified": true,
+      "source": "https://www.rfc-editor.org/rfc/rfc9110#section-12.4.2",
+      "confidence": 1.0
+    },
+    {
+      "text": "Django fixed its preferred-type ordering [9], and a Django REST framework discussion and open pull request concern q=0 in renderer selection [10].",
+      "verified": true,
+      "source": "https://github.com/django/django/pull/19553 and https://github.com/encode/django-rest-framework/pull/9988",
+      "confidence": 0.95
+    },
+    {
+      "text": "The goautoneg tracker has an open issue that ParseAccept does not enforce q\u22641, but none on q=0 [11].",
+      "verified": true,
+      "source": "https://github.com/munnerz/goautoneg/issues/7",
+      "confidence": 0.95
+    },
+    {
+      "text": "JDK 8 HttpURLConnection (OpenJDK 8 source: text/html, image/gif, image/jpeg, *; q=.2, */*; q=.2)",
+      "verified": true,
+      "source": "https://developer.mozilla.org/en-[REDACTED_SECRET]",
+      "confidence": 0.9
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "arXiv:2204.10097",
+      "title": "Content negotiation on the Web: State of the art",
+      "overlap": 0.3,
+      "contribution": "Provides an empirical, cross-ecosystem differential benchmark evaluating specific parser implementations against RFC 9110 rules, whereas prior work surveyed mechanisms theoretically."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-16",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-16T15:05:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 3,
+    "usage": {
+      "prompt_tokens": 9424,
+      "completion_tokens": 4110,
+      "reasoning_tokens": 2952,
+      "total_tokens": 13534,
+      "cost_usd": 0.12909535
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
