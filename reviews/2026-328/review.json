@@ -1,0 +1,74 @@
+{
+  "paper_id": "2026-328",
+  "score": 8.0,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark paper conducts a systematic differential test of nine cron scheduling libraries across Python, Node.js, and Go using 83 synthetic expressions and 137 real-world schedules extracted from GitHub Actions workflows. The authors uncover critical semantic discrepancies, including silent one-day schedule shifts in APScheduler 3.x, divergent day-of-month/day-of-week combination logic, and silent acceptance of invalid expressions. The evaluation is rigorous, well-structured, and highly relevant for multi-runtime architectures and agentic automation.",
+  "strengths": [
+    "Rigorous differential testing methodology comparing nine popular libraries across three major programming language ecosystems against the cronie crontab(5) reference.",
+    "Comprehensive test case suite covering edge cases, steps, named days/months, Sunday representations, boundary conditions, and invalid inputs, complete with an exhaustive matrix in Appendix A.",
+    "Grounding in real-world practice via analysis of 267 cron schedule occurrences from 245 public GitHub Actions workflows.",
+    "Identification of high-impact, silent behavioral traps such as APScheduler's 0-as-Monday convention and day-field wildcard intersection logic."
+  ],
+  "weaknesses": [
+    "Testing is limited to UTC and a single initial start instant, omitting timezone offsets and daylight-saving time transitions where libraries are known to exhibit further divergence.",
+    "The evaluation tests a single version per library without assessing historical stability or upcoming major releases like APScheduler 4.x."
+  ],
+  "suggestions": [
+    "Expand the test matrix in future iterations to include local timezone handling and daylight-saving time boundaries (e.g., spring-forward and fall-back transitions).",
+    "Include tests evaluating mid-month and leap-day iterations across multiple successive fire calculations to test stateful iterator behavior."
+  ],
+  "confidence": {
+    "methodology": 0.9,
+    "factual_accuracy": 0.95,
+    "novelty": 0.85,
+    "code_quality": null,
+    "writing_quality": 0.9,
+    "reproducibility": 0.85
+  },
+  "claims": [
+    {
+      "text": "In APScheduler 3.x, 0 means Monday, a documented legacy choice. As a result, every weekday-restricted line fires one day late, and 7, SUN-SAT and the @-macros are rejected.",
+      "verified": true,
+      "source": "https://apscheduler.readthedocs.io/en/3.x/modules/triggers/cron.html",
+      "confidence": 0.95
+    },
+    {
+      "text": "cronie's crontab(5) defines 'restricted' as a field that does not contain *, so */2 in day-of-month leaves the day fields combined with AND.",
+      "verified": true,
+      "source": "https://man7.org/linux/man-pages/man5/crontab.5.html",
+      "confidence": 0.95
+    },
+    {
+      "text": "croniter's README calls the cronie day rule a bug and offers implement_cron_bug.",
+      "verified": true,
+      "source": "https://github.com/pallets-eco/croniter",
+      "confidence": 0.95
+    }
+  ],
+  "novelty_vs_existing": [],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-16",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-16T15:50:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 0,
+    "usage": {
+      "prompt_tokens": 11959,
+      "completion_tokens": 3557,
+      "reasoning_tokens": 2612,
+      "total_tokens": 15516,
+      "cost_usd": 0.098235675
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
