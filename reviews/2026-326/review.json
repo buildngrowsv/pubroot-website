@@ -1,0 +1,89 @@
+{
+  "paper_id": "2026-326",
+  "score": 8.5,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark presents a thorough differential test of six SPDX license expression parsers across JavaScript, Python, Go, and Rust against Annex B of the SPDX specification. Using 91 targeted test cases and an empirical sample of 453 package license fields, the authors discover significant acceptance and normalization divergence across implementations while confirming operator precedence consistency. The methodology is rigorous and well-isolated, providing valuable actionable insights for package registries, SBOM generators, and automated compliance tooling.",
+  "strengths": [
+    "Rigorous differential testing methodology isolating lexical, grammatical, and canonicalization differences across four major programming language ecosystems.",
+    "Comprehensive test suite covering operator casing, identifier case sensitivity, deprecated identifiers, prefix handling, and whitespace/token boundary edge cases.",
+    "Complements synthetic boundary testing with empirical validation against 453 license strings from the top 300 PyPI and npm packages.",
+    "Detailed reporting in Appendix A with clear outcome taxonomy (A/N/T/R/L) and exact command-line steps and tool versions documented for independent replication."
+  ],
+  "weaknesses": [
+    "Evaluates only default strict API configurations, omitting potentially relevant non-strict/lax modes that downstream tools frequently toggle in practice.",
+    "Does not benchmark Java/JVM implementations (e.g., the official spdx-tools-java), which are standard reference tools in enterprise SBOM pipelines.",
+    "A supporting code repository was not directly integrated into the review submission, restricting verification to public external references."
+  ],
+  "suggestions": [
+    "Extend the benchmark suite to include Java implementations such as the official SPDX Java libraries used in Maven and CycloneDX tooling.",
+    "Provide a secondary comparison matrix documenting parser behavior when lax or non-validating modes are enabled.",
+    "Publish the 91 test expressions as an independent, machine-readable conformance test suite (e.g., JSON/YAML test vectors) for parser maintainers."
+  ],
+  "confidence": {
+    "methodology": 0.95,
+    "factual_accuracy": 0.95,
+    "novelty": 0.9,
+    "code_quality": null,
+    "writing_quality": 0.95,
+    "reproducibility": 0.85
+  },
+  "claims": [
+    {
+      "text": "Annex B of the SPDX Specification defines the grammar in ABNF and adds prose rules. Operators may be written all upper case or all lower case. License identifiers match case-insensitively, but the LicenseRef- prefix does not.",
+      "verified": true,
+      "source": "https://spdx.github.io/spdx-spec/v3.0.1/annexes/spdx-license-expressions/",
+      "confidence": 0.98
+    },
+    {
+      "text": "the Rust spdx crate 0.13.6 (used by cargo-deny), Expression::parse (strict mode), with its postfix iter() for the tree and evaluate for probes.",
+      "verified": true,
+      "source": "https://docs.rs/spdx/0.13.6/spdx/expression/struct.Expression.html",
+      "confidence": 0.95
+    },
+    {
+      "text": "packaging 26.3, packaging.licenses.canonicalize_license_expression, the PEP 639 normaliser used by Python build back ends.",
+      "verified": true,
+      "source": "https://packaging.pypa.io/en/latest/licenses.html",
+      "confidence": 0.95
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "10.1145/3788692",
+      "title": "A Large Scale Empirical Analysis on the Adherence Gap between Standards and Tools in SBOM",
+      "overlap": 0.25,
+      "contribution": "While Wang et al. analyze end-to-end SBOM generators, this benchmark isolates the underlying expression parser layer and systematically classifies semantic and syntactic disagreements on exact SPDX strings."
+    },
+    {
+      "id": "arXiv:2609.19920",
+      "title": "Mind the Gap: How SBOM Specification Ambiguities Lead to Divergent Software Bills of Materials. An Empirical Tool Study.",
+      "overlap": 0.2,
+      "contribution": "Directly evaluates cross-language expression parsing discrepancies across standardized Annex B test cases rather than broad document-level field discrepancies."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-16T15:50:00Z",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-16T15:50:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 2,
+    "usage": {
+      "prompt_tokens": 10079,
+      "completion_tokens": 2508,
+      "reasoning_tokens": 1303,
+      "total_tokens": 12587,
+      "cost_usd": 0.066160925
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
