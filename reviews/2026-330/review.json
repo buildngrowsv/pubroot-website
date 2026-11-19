@@ -1,0 +1,89 @@
+{
+  "paper_id": "2026-330",
+  "score": 6.8,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "The paper investigates whether providing an immutable, read-only activation reference improves tracking and restoration performance across sequential board edits in a feed-forward residual network. Through a carefully balanced evaluation protocol and counterfactual activation patching, the author demonstrates that while the model does attend to the reference, freezing it confers no statistically meaningful advantage over a writable reference or standard residual connections.",
+  "strengths": [
+    "Rigorous experimental design that actively identified and corrected an 86.6% shortcut bias in the initial benchmark data.",
+    "Transparent reporting of null results, accompanied by paired seed comparisons and 10,000-draw bootstrap confidence intervals.",
+    "Use of causal activation patching to empirically verify whether the network actively utilizes the protected activations.",
+    "Clear, concise, and objective writing that candidly acknowledges architectural constraints and scope limitations."
+  ],
+  "weaknesses": [
+    "No supporting repository artifact was supplied directly with the submission, restricting the evaluation to text-only verification.",
+    "Evaluated on a single toy synthetic task (8-square board, 4 colors, 6 edits) with a fixed width of 64, leaving open whether the findings generalize to complex or scaled settings.",
+    "Small sample size of training seeds (five seeds), resulting in wide confidence intervals (-1.77 to +1.19 percentage points)."
+  ],
+  "suggestions": [
+    "Verify the implementation with an open-source artifact containing reproducible test harness scripts and fixed dataset seeds.",
+    "Expand the parameter sweep across multiple widths, block depths, and sequence lengths to establish scaling boundaries for the immutable reference inductive bias.",
+    "Report exact training convergence curves and compute wall-clock overhead across the four architectural variants."
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.9,
+    "novelty": 0.7,
+    "code_quality": null,
+    "writing_quality": 0.9,
+    "reproducibility": 0.6
+  },
+  "claims": [
+    {
+      "text": "DenseNet established a precedent for forward reuse of earlier features.",
+      "verified": true,
+      "source": "https://arxiv.org/abs/1608.06993",
+      "confidence": 0.98
+    },
+    {
+      "text": "Synthetic recall research likewise illustrates the importance of defining what a correct output actually tests.",
+      "verified": true,
+      "source": "https://arxiv.org/abs/2312.04927",
+      "confidence": 0.95
+    },
+    {
+      "text": "Activation-patching studies describe how intervention choices affect interpretation.",
+      "verified": true,
+      "source": "https://arxiv.org/abs/2309.16042",
+      "confidence": 0.95
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "arXiv:1608.06993",
+      "title": "Densely Connected Convolutional Networks",
+      "overlap": 0.25,
+      "contribution": "While DenseNet concatenates all preceding layer representations throughout deep blocks, this benchmark specifically isolates a fixed read-only input reference against writable state tracking across sequential edit operations."
+    },
+    {
+      "id": "arXiv:2309.16042",
+      "title": "Towards Best Practices of Activation Patching in Language Models: Metrics and Methods",
+      "overlap": 0.2,
+      "contribution": "Applies activation patching methodologies as a diagnostic tool to verify functional reliance on protected intermediate slots within a synthetic board-editing feed-forward network."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-19T14:40:00Z",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-19T14:40:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 3,
+    "usage": {
+      "prompt_tokens": 4077,
+      "completion_tokens": 3079,
+      "reasoning_tokens": 2040,
+      "total_tokens": 7156,
+      "cost_usd": 0.056604
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}

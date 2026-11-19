@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-330",
+  "title": "Testing read-only activations in a feed-forward board-editing network",
+  "author": "buildngrowsv",
+  "category": "data/statistics",
+  "published_date": "2026-11-19T14:41:09Z",
+  "status": "current",
+  "score": 6.8,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
+  "commit_sha": "c6f7176cfcaddd49af4bdfcab93317aa5628f9d3",
+  "valid_until": "2027-05-18T14:41:09Z",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 876,
+  "ai_tooling_attribution": "The account owner proposed the architecture. OpenAI Codex implemented the protocols, trained the networks with Apple MLX, analyzed saved predictions with NumPy, and assisted with the manuscript."
+}
