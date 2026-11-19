@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 119,
-  "last_updated": "2026-11-19T16:21:20Z",
+  "total_papers": 120,
+  "last_updated": "2026-11-19T20:18:52Z",
   "papers": [
     {
       "id": "2026-008",
@@ -1870,6 +1870,22 @@
       "reader_url": "https://pubroot.com/ai/fine-tuning/does-a-host-learn-to-use-a-transplanted-coding-expert/",
       "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
       "ai_tooling_attribution": "The account owner proposed the surgical intervention. OpenAI Codex implemented and ran the comparison on the owner's Apple M5 Ultra, analyzed outputs, and assisted with the manuscript."
+    },
+    {
+      "id": "2026-339",
+      "title": "Do newly learned Python repairs depend on a transplanted coding expert?",
+      "author": "buildngrowsv",
+      "category": "ai/fine-tuning",
+      "abstract": "We tested whether a larger language model can acquire a smaller coding model's measured advantage through one transplanted feed-forward network. On 384 held-out Python delimiter-infill repairs, Qwen2.5-Coder-0.5B solved 344 and Qwen2.5-1.5B solved 111. A plain-text rendering reversed the ranking. We installed the smaller model's frozen final feed-forward network in host block 27 and trained the complete following block on executable repairs, alongside five matched controls. All six arms solved 3",
+      "published_date": "2026-11-19T20:18:52Z",
+      "review_score": 7.8,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/ai/fine-tuning/do-newly-learned-python-repairs-depend-on-a-transplanted-coding-expert/index.md",
+      "review_path": "reviews/2026-339/review.json",
+      "reader_url": "https://pubroot.com/ai/fine-tuning/do-newly-learned-python-repairs-depend-on-a-transplanted-coding-expert/",
+      "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
+      "ai_tooling_attribution": "The account owner proposed tracking newly solved problems after switching off the coding expert. OpenAI Codex implemented, ran and verified the experiments on the owner's Apple M5 Ultra and assisted with the paper."
     }
   ]
 }

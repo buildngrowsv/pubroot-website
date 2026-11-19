@@ -1,0 +1,89 @@
+{
+  "paper_id": "2026-339",
+  "score": 7.8,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark paper investigates whether transplanting a frozen feed-forward layer from a coding specialist (Qwen2.5-Coder-0.5B) into a larger general host (Qwen2.5-1.5B) induces functional dependence during downstream task adaptation. Through rigorous ablation controls across multiple minibatch-order seeds, the author demonstrates that all newly acquired Python delimiter repairs persist even when the transplanted expert is ablated or shuffled, revealing that task adaptation in block 28 learned a syntax shortcut independently of the donor module. The study is exceptionally well-documented and transparent about negative screening results, though its findings are inherently constrained by the ceiling effect on a narrow four-choice delimiter repair task.",
+  "strengths": [
+    "Exemplary experimental controls including six matched surgical conditions (native host, removed FFN, affine map, neuron-shuffled donor, general-purpose donor, intact donor) across three distinct order seeds.",
+    "Transparent reporting of negative qualification screens (bit operations, list reduction, and SQLite aggregates) that failed pre-experimental criteria.",
+    "Sound statistical methodology utilizing paired bootstrap confidence intervals and exact tests for discordant outcomes.",
+    "Candid and accurate discussion of experimental limitations, specifically highlighting the deterministic syntax shortcut and task ceiling effects."
+  ],
+  "weaknesses": [
+    "Severe ceiling effect on the evaluation task, where all six training conditions achieved 384/384 test solves, obscuring potential subtle donor contributions beyond binary accuracy.",
+    "Narrow benchmark scope restricted to single-token delimiter completions across four fixed options, limiting generalization to multi-token semantic code repairs.",
+    "Lack of directly verified execution logs in an attached executable environment under the text_only review tier."
+  ],
+  "suggestions": [
+    "Extend the benchmark to multi-token infilling or complex semantic bug repairs where candidate solutions compile but differ on hidden functional test suites to break the 100% accuracy ceiling.",
+    "Evaluate intermediate checkpoints with continuous metrics (e.g., cross-entropy validation loss or top-k margin) as primary endpoints rather than solely relying on saturated binary solve rates.",
+    "Test grafting at multiple host depths rather than exclusively placing the graft at block 27 of 28 to determine whether earlier layer transplants create structural dependence."
+  ],
+  "confidence": {
+    "methodology": 0.88,
+    "factual_accuracy": 0.92,
+    "novelty": 0.85,
+    "code_quality": null,
+    "writing_quality": 0.92,
+    "reproducibility": 0.78
+  },
+  "claims": [
+    {
+      "text": "Fill-in-the-middle pretraining explicitly teaches a model to condition on both sides of a gap.",
+      "verified": true,
+      "source": "https://arxiv.org/abs/2207.14255",
+      "confidence": 0.98
+    },
+    {
+      "text": "The 28-block Qwen host",
+      "verified": true,
+      "source": "https://huggingface.co/Qwen/Qwen2.5-1.5B",
+      "confidence": 0.99
+    },
+    {
+      "text": "Model stitching motivates using fitted interfaces between pretrained representations.",
+      "verified": true,
+      "source": "https://arxiv.org/abs/2106.07682",
+      "confidence": 0.95
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "arXiv:2106.07682",
+      "title": "Revisiting Model Stitching to Compare Neural Representations",
+      "overlap": 0.35,
+      "contribution": "Applies model stitching principles specifically to cross-specialization parameter grafting between code-specialist and generalist LLMs, testing functional dependence via post-training ablation."
+    },
+    {
+      "id": "arXiv:2207.14255",
+      "title": "Efficient Training of Language Models to Fill in the Middle",
+      "overlap": 0.25,
+      "contribution": "Uses fill-in-the-middle evaluation formats to test whether grafted modules transfer domain-specific infilling capabilities."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-19T20:18:00Z",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-19T20:18:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 4,
+    "usage": {
+      "prompt_tokens": 5136,
+      "completion_tokens": 2244,
+      "reasoning_tokens": 1083,
+      "total_tokens": 7380,
+      "cost_usd": 0.068267
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}

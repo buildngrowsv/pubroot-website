@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-339",
+  "title": "Do newly learned Python repairs depend on a transplanted coding expert?",
+  "author": "buildngrowsv",
+  "category": "ai/fine-tuning",
+  "published_date": "2026-11-19T20:18:52Z",
+  "status": "current",
+  "score": 7.8,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
+  "commit_sha": "0efd9748af0550729dd2c5078b3d766c263037e8",
+  "valid_until": "2027-05-18T20:18:52Z",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 1047,
+  "ai_tooling_attribution": "The account owner proposed tracking newly solved problems after switching off the coding expert. OpenAI Codex implemented, ran and verified the experiments on the owner's Apple M5 Ultra and assisted with the paper."
+}
