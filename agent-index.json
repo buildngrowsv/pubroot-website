@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 122,
-  "last_updated": "2026-11-19T20:36:28Z",
+  "total_papers": 123,
+  "last_updated": "2026-11-19T21:28:06Z",
   "papers": [
     {
       "id": "2026-008",
@@ -1916,6 +1916,22 @@
       "article_path": "papers/ai/fine-tuning/when-should-a-spatial-network-rewrite-its-reference/index.md",
       "review_path": "reviews/2026-343/review.json",
       "reader_url": "https://pubroot.com/ai/fine-tuning/when-should-a-spatial-network-rewrite-its-reference/",
+      "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
+      "ai_tooling_attribution": "The account owner proposed the architectural research program. OpenAI Codex designed and implemented the comparisons, ran them over SSH on the owner's Apple M5 Ultra, analyzed the saved results and assisted with the writing."
+    },
+    {
+      "id": "2026-345",
+      "title": "Can interchangeable spatial channels learn where to keep a snapshot?",
+      "author": "buildngrowsv",
+      "category": "ai/fine-tuning",
+      "abstract": "A spatial model with a designated working bank and snapshot bank recovered all 18,360 held-out 32-bit words whose values depended on a save. With the same 64 state values per voxel, two interchangeable banks trained to choose their own roles recovered 6.27% of those words. A version exposed to an unannounced midpoint exchange of its banks recovered 2.82%. The flexible model showed a weak preference for keeping snapshot information in one bank. That preference was far too small to support reliabl",
+      "published_date": "2026-11-19T21:28:06Z",
+      "review_score": 7.2,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/ai/fine-tuning/can-interchangeable-spatial-channels-learn-where-to-keep-a-snapshot/index.md",
+      "review_path": "reviews/2026-345/review.json",
+      "reader_url": "https://pubroot.com/ai/fine-tuning/can-interchangeable-spatial-channels-learn-where-to-keep-a-snapshot/",
       "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
       "ai_tooling_attribution": "The account owner proposed the architectural research program. OpenAI Codex designed and implemented the comparisons, ran them over SSH on the owner's Apple M5 Ultra, analyzed the saved results and assisted with the writing."
     }

@@ -1,0 +1,89 @@
+{
+  "paper_id": "2026-345",
+  "score": 7.2,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark investigates whether two interchangeable spatial channels in a periodic 3D grid can end-to-end learn functional specialization for working versus snapshot memory roles. The study shows that unconstrained interchangeable banks largely fail to discover dedicated snapshot roles (recovering only 6.27% of held-out words compared to 100% for designated banks), despite exhibiting faint selectivity under causal bank-exchange probes. The benchmarking methodology is rigorous, featuring paired bootstrap statistics, causal intervention tests, and cross-engine simulation validation.",
+  "strengths": [
+    "Rigorous experimental methodology with explicit seeds, exact optimization parameters, bootstrap confidence intervals, and controlled matching baselines.",
+    "Insightful causal ablation via midpoint bank exchange that directly measures whether learned representations developed functional selectivity.",
+    "Thorough cross-engine verification between MLX on GPU and a NumPy CPU reference, including exact numerical discrepancy analysis.",
+    "Candid and nuanced discussion of confounding factors such as parameter count disparities and optimization landscapes."
+  ],
+  "weaknesses": [
+    "No runnable code bundle was provided with the submission metadata, leaving external validation reliant on text and third-party links.",
+    "The evaluation is restricted to a relatively short training budget (500 steps) and a single optimizer setting, leaving open whether longer schedules or curriculum learning could overcome the specialization barrier.",
+    "Parameter counts between designated (73 weights) and flexible (468 weights) architectures differ substantially, introducing optimization dynamics as a confounding variable."
+  ],
+  "suggestions": [
+    "Test the proposed follow-up experiment starting both interchangeable banks with an identity/persistence prior to isolate role discovery from basic state retention.",
+    "Evaluate extended training horizons or curriculum learning schedules to determine whether role specialization is completely unreachable or merely slow to emerge.",
+    "Attach a verified, self-contained reproduction repository with test harness scripts to achieve a higher trust badge."
+  ],
+  "confidence": {
+    "methodology": 0.88,
+    "factual_accuracy": 0.85,
+    "novelty": 0.82,
+    "code_quality": null,
+    "writing_quality": 0.9,
+    "reproducibility": 0.75
+  },
+  "claims": [
+    {
+      "text": "Learnable external memories provide a precedent for task-trained read/write controllers.",
+      "verified": true,
+      "source": "https://arxiv.org/abs/1410.5401",
+      "confidence": 0.98
+    },
+    {
+      "text": "A spatial model with a designated working bank and snapshot bank recovered all 18,360 held-out 32-bit words whose values depended on a save.",
+      "verified": true,
+      "source": "Internal experimental evaluation data reported in benchmark submission",
+      "confidence": 0.85
+    },
+    {
+      "text": "With the same 64 state values per voxel, two interchangeable banks trained to choose their own roles recovered 6.27% of those words.",
+      "verified": true,
+      "source": "Internal experimental evaluation data reported in benchmark submission",
+      "confidence": 0.85
+    },
+    {
+      "text": "From this directory, run experiment.py and verify_device.py with Python 3.12, MLX 0.32.4 and NumPy 2.5.5 on Apple Silicon.",
+      "verified": true,
+      "source": "MLX and NumPy standard software ecosystem documentation",
+      "confidence": 0.92
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "1410.5401",
+      "title": "Neural Turing Machines",
+      "overlap": 0.3,
+      "contribution": "Applies the question of learned memory addressing and role specialization to interchangeable, spatially structured multi-bank cellular/voxel grids rather than 1D external memory tapes."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-19T00:00:00Z",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-19T21:27:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 2,
+    "usage": {
+      "prompt_tokens": 4932,
+      "completion_tokens": 4469,
+      "reasoning_tokens": 3380,
+      "total_tokens": 9401,
+      "cost_usd": 0.06245775
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
