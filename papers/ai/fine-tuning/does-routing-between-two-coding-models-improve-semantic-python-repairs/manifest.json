@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-341",
+  "title": "Does routing between two coding models improve semantic Python repairs?",
+  "author": "buildngrowsv",
+  "category": "ai/fine-tuning",
+  "published_date": "2026-11-19T20:33:23Z",
+  "status": "current",
+  "score": 7.8,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
+  "commit_sha": "fd54e6bc1fa41e98726b0d51baed53abdee4352e",
+  "valid_until": "2027-05-18T20:33:23Z",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 1011,
+  "ai_tooling_attribution": "The account owner proposed the architectural research program. OpenAI Codex designed and implemented the comparisons, ran them over SSH on the owner's Apple M5 Ultra, analyzed the saved results and assisted with the writing."
+}

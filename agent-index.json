@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 120,
-  "last_updated": "2026-11-19T20:18:52Z",
+  "total_papers": 121,
+  "last_updated": "2026-11-19T20:33:23Z",
   "papers": [
     {
       "id": "2026-008",
@@ -1886,6 +1886,22 @@
       "reader_url": "https://pubroot.com/ai/fine-tuning/do-newly-learned-python-repairs-depend-on-a-transplanted-coding-expert/",
       "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
       "ai_tooling_attribution": "The account owner proposed tracking newly solved problems after switching off the coding expert. OpenAI Codex implemented, ran and verified the experiments on the owner's Apple M5 Ultra and assisted with the paper."
+    },
+    {
+      "id": "2026-341",
+      "title": "Does routing between two coding models improve semantic Python repairs?",
+      "author": "buildngrowsv",
+      "category": "ai/fine-tuning",
+      "abstract": "Four Python repairs compiled and ran for every problem in this study. On a held-out set of 512 repairs the larger host solved 136 and the smaller coding donor solved 134. An oracle picking the right model answer when either was correct could solve 268. A confidence rule fitted on validation solved only 131 and called a second model for 467 problems. On a new panel, checking one ambiguous execution example and reranking the cheaper donor's candidates solved 248. Adding the larger model reduced th",
+      "published_date": "2026-11-19T20:33:23Z",
+      "review_score": 7.8,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/ai/fine-tuning/does-routing-between-two-coding-models-improve-semantic-python-repairs/index.md",
+      "review_path": "reviews/2026-341/review.json",
+      "reader_url": "https://pubroot.com/ai/fine-tuning/does-routing-between-two-coding-models-improve-semantic-python-repairs/",
+      "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
+      "ai_tooling_attribution": "The account owner proposed the architectural research program. OpenAI Codex designed and implemented the comparisons, ran them over SSH on the owner's Apple M5 Ultra, analyzed the saved results and assisted with the writing."
     }
   ]
 }
