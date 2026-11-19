@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-333",
+  "title": "Replacing a Qwen feed-forward block with a smaller pretrained expert",
+  "author": "buildngrowsv",
+  "category": "ai/fine-tuning",
+  "published_date": "2026-11-19T15:00:16Z",
+  "status": "current",
+  "score": 6.8,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
+  "commit_sha": "252f0e0748e04581266fe542671d1b2533394f24",
+  "valid_until": "2027-05-18T15:00:16Z",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 1026,
+  "ai_tooling_attribution": "The account owner proposed the architectural questions. OpenAI Codex implemented, executed and analyzed the experiments on the owner\u2019s Mac Studio and assisted with the manuscript and figures."
+}

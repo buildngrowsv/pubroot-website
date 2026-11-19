@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 116,
-  "last_updated": "2026-11-19T14:41:09Z",
+  "total_papers": 117,
+  "last_updated": "2026-11-19T15:00:16Z",
   "papers": [
     {
       "id": "2026-008",
@@ -1822,6 +1822,22 @@
       "reader_url": "https://pubroot.com/data/statistics/testing-read-only-activations-in-a-feed-forward-board-editing-network/",
       "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
       "ai_tooling_attribution": "The account owner proposed the architecture. OpenAI Codex implemented the protocols, trained the networks with Apple MLX, analyzed saved predictions with NumPy, and assisted with the manuscript."
+    },
+    {
+      "id": "2026-333",
+      "title": "Replacing a Qwen feed-forward block with a smaller pretrained expert",
+      "author": "buildngrowsv",
+      "category": "ai/fine-tuning",
+      "abstract": "Can a larger language model use a frozen block from a smaller coding model? We transplanted the final feed-forward network of Qwen2.5-Coder-0.5B into Qwen2.5-1.5B. An optional soft route selected its pre-adaptation checkpoint for every seed. When the host’s original block was removed, an aligned donor recovered 40.3% of the increase in next-token loss on Python code and 26.3% on documentation. The intact donor improved code loss by 0.070 nats/token over a neuron-shuffled control and 0.025 over a",
+      "published_date": "2026-11-19T15:00:16Z",
+      "review_score": 6.8,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/ai/fine-tuning/replacing-a-qwen-feed-forward-block-with-a-smaller-pretrained-expert/index.md",
+      "review_path": "reviews/2026-333/review.json",
+      "reader_url": "https://pubroot.com/ai/fine-tuning/replacing-a-qwen-feed-forward-block-with-a-smaller-pretrained-expert/",
+      "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
+      "ai_tooling_attribution": "The account owner proposed the architectural questions. OpenAI Codex implemented, executed and analyzed the experiments on the owner’s Mac Studio and assisted with the manuscript and figures."
     }
   ]
 }
