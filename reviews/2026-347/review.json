@@ -1,0 +1,95 @@
+{
+  "paper_id": "2026-347",
+  "score": 7.4,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "The paper introduces a synthetic benchmark designed to isolate depth recovery from horizontal parallax by eliminating single-view depth cues through a 4-world ambiguous quartet design. Evaluating a minimal 641-parameter neural matcher against a fixed patch-difference baseline, the study demonstrates that the handcrafted baseline matches or outperforms the learned model and isolates the critical contribution of candidate disparity shortlists. The methodology is exceptionally rigorous with paired bootstrap intervals and numerical audits, though the benchmark is restricted to an idealized synthetic domain.",
+  "strengths": [
+    "Elegant experimental design using 4-world quartets with identical first images to enforce a strict 25% single-view upper bound, cleanly isolating parallax information.",
+    "Rigorous statistical reporting, including paired 95% bootstrap confidence intervals over 5,000 draws, occlusion subsets, and explicit tie-breaking analyses.",
+    "Fair and transparent baseline comparison showing that a classical zero-parameter fixed patch-difference rule outperforms the trained neural matcher (92.99% vs 92.51%).",
+    "Detailed reproducibility specifications including exact parameter calculations (641 parameters), software versions (MLX 0.32.4, NumPy 2.5.5, Python 3.12.16), and execution timings."
+  ],
+  "weaknesses": [
+    "Evaluations are restricted entirely to synthetic planar fronto-parallel geometry at 56x30 resolution with four discrete inverse depths, limiting direct transferability to natural scenes.",
+    "Only three random seeds were evaluated, which the author acknowledges provides limited empirical precision regarding training variance.",
+    "No formally uploaded repository in the submission platform, categorizing the submission under text_only evaluation."
+  ],
+  "suggestions": [
+    "Extend the benchmark to continuous depth ranges and slanted non-planar surfaces to evaluate how the patch-difference rule scales under perspective distortion.",
+    "Increase the number of random training seeds from 3 to at least 10 to provide tighter variance estimates on optimization stability.",
+    "Benchmark against modern semi-global matching (SGM) or small convolutional cost-volume architectures to bridge the toy setup to real-world stereo pipelines."
+  ],
+  "confidence": {
+    "methodology": 0.95,
+    "factual_accuracy": 0.95,
+    "novelty": 0.8,
+    "code_quality": null,
+    "writing_quality": 0.9,
+    "reproducibility": 0.85
+  },
+  "claims": [
+    {
+      "text": "Earlier work used view synthesis for training from stereo pairs or monocular video, while learned stereo architectures have aggregated matching costs over candidate disparities.",
+      "verified": true,
+      "source": "https://arxiv.org/abs/1609.03677, https://arxiv.org/abs/1704.07813, https://arxiv.org/abs/1703.04309",
+      "confidence": 0.98
+    },
+    {
+      "text": "A shared 18\u219232\u21921 network scores candidate pairs; a softmax turns scores into weights.",
+      "verified": true,
+      "source": "Architectural calculation: (18 * 32 + 32) + (32 * 1 + 1) = 608 + 33 = 641 trainable parameters.",
+      "confidence": 0.99
+    },
+    {
+      "text": "This yields an exact 25% bound for any predictor that must use the same first image alone, regardless of its capacity.",
+      "verified": true,
+      "source": "Mathematical confirmation: four equiprobable depth assignments rendered under identical first-view appearance bounds single-view expected accuracy to 1/4 = 25%.",
+      "confidence": 0.99
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "1609.03677",
+      "title": "Unsupervised Monocular Depth Estimation with Left-Right Consistency",
+      "overlap": 0.35,
+      "contribution": "While Godard et al. train deep monocular networks using stereo photometric reconstruction losses on natural images, this work isolates parallax from monocular semantic cues using an ambiguous synthetic quartet."
+    },
+    {
+      "id": "1704.07813",
+      "title": "Unsupervised Learning of Depth and Ego-Motion from Video",
+      "overlap": 0.3,
+      "contribution": "Zhou et al. simultaneously optimize monocular depth and ego-motion from video sequences; this benchmark holds camera motion known and separates search space geometry from learned matching."
+    },
+    {
+      "id": "1703.04309",
+      "title": "End-to-End Learning of Geometry and Context for Deep Stereo Regression",
+      "overlap": 0.3,
+      "contribution": "Kendall et al. introduced 3D convolutions over disparity cost volumes; this paper ablates disparity candidate shortlists in a minimal 641-parameter setting."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-19T22:21:00Z",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-19T22:21:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 3,
+    "usage": {
+      "prompt_tokens": 5114,
+      "completion_tokens": 3302,
+      "reasoning_tokens": 1954,
+      "total_tokens": 8416,
+      "cost_usd": 0.072218
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}

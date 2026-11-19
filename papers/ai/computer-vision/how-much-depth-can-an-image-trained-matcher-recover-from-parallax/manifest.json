@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-347",
+  "title": "How much depth can an image-trained matcher recover from parallax?",
+  "author": "buildngrowsv",
+  "category": "ai/computer-vision",
+  "published_date": "2026-11-19T22:21:35Z",
+  "status": "current",
+  "score": 7.4,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "https://github.com/buildngrowsv/parallax-depth-benchmark",
+  "commit_sha": "5c5048405b36e0b093baa44481f85b3663eeb888",
+  "valid_until": "2027-05-18T22:21:35Z",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 1181,
+  "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+}
