@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-345",
+  "title": "Can interchangeable spatial channels learn where to keep a snapshot?",
+  "author": "buildngrowsv",
+  "category": "ai/fine-tuning",
+  "published_date": "2026-11-19T21:28:06Z",
+  "status": "current",
+  "score": 7.2,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
+  "commit_sha": "1ac13f17ec9ead652046db1958a89de4406f8651",
+  "valid_until": "2027-05-18T21:28:06Z",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 1209,
+  "ai_tooling_attribution": "The account owner proposed the architectural research program. OpenAI Codex designed and implemented the comparisons, ran them over SSH on the owner's Apple M5 Ultra, analyzed the saved results and assisted with the writing."
+}
