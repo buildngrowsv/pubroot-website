@@ -1,0 +1,83 @@
+{
+  "paper_id": "2026-348",
+  "score": 7.4,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark rigorously evaluates whether introducing an inductive bias towards symmetric retention facilitates symmetry breaking and specialized role allocation between two spatial memory banks. The empirical results show a definitive negative outcome under the evaluated compute budget, where symmetric retention performs on par with neutral initialization (~5.8% vs ~6.0% accuracy) while role-specified controllers achieve 100%. The study exhibits high methodological discipline through preregistered stopping criteria, causal bank swapping, dual-implementation verification, and paired bootstrap statistics.",
+  "strengths": [
+    "Exemplary experimental rigor, including a prespecified validation gate that prevented wasteful multi-seed replication when initial gains were negligible.",
+    "Comprehensive mechanistic validation using causal interventions (exchanging candidate snapshot banks across cubes) to confirm role dependency.",
+    "Dual-engine arithmetic audit comparing MLX and NumPy implementations across primary and secondary metrics.",
+    "Precise specification of hyperparameter settings, network architectures, and bootstrap confidence intervals."
+  ],
+  "weaknesses": [
+    "Evaluation relies primarily on a single training seed (seed 101) due to the prespecified stopping rule, limiting broad distributional claims across optimization runs.",
+    "Only a single retention boost parameter value (90% self-weight via log(117)) was tested rather than a wider parametric sweep across retention strengths.",
+    "No publicly executable package was directly attached to the submission platform, requiring designation under the text_only review badge."
+  ],
+  "suggestions": [
+    "Conduct a parametric sweep across varying degrees of retention bias (e.g., from 50% to 99%) to determine whether intermediate retention levels might facilitate gradual symmetry breaking.",
+    "Test curriculum learning or soft asymmetric initialization where a weak symmetry-breaking perturbation is introduced alongside symmetric retention.",
+    "Provide public repository access directly via the review harness to allow full independent execution of the test suite."
+  ],
+  "confidence": {
+    "methodology": 0.9,
+    "factual_accuracy": 0.9,
+    "novelty": 0.8,
+    "code_quality": null,
+    "writing_quality": 0.85,
+    "reproducibility": 0.75
+  },
+  "claims": [
+    {
+      "text": "Starting with the previously used random logits, we added log(117) to the entry for the destination bank's own center, on both branches for every command. That corresponds to 90% self-weight before adding random noise.",
+      "verified": true,
+      "source": "Mathematical verification: over 14 read ports, softmax with logit boost log(117) gives 117 / (117 + 13 * 1) = 117 / 130 = 0.90 (90.0%).",
+      "confidence": 0.98
+    },
+    {
+      "text": "Memory architectures with learned addressing supply a broader research context. Earlier spatial study \u00b7 Neural Turing Machines \u00b7 Prospective protocol",
+      "verified": true,
+      "source": "https://arxiv.org/abs/1410.5401",
+      "confidence": 0.95
+    },
+    {
+      "text": "The held-out symmetric-minus-neutral difference was \u22120.18 percentage points. A 5,000-draw paired bootstrap over 64 pairs of cubes gave a 95% interval of [\u22120.38, +0.0054] points, conditional on this fit.",
+      "verified": true,
+      "source": "Empirical calculation: 1,071 / 18,544 (5.775%) minus 1,105 / 18,544 (5.959%) = -0.184 percentage points; paired bootstrap methodology reported in article text.",
+      "confidence": 0.9
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "arXiv:1410.5401",
+      "title": "Neural Turing Machines",
+      "overlap": 0.25,
+      "contribution": "Applies differentiated read/write memory controller concepts to discrete periodic 3D spatial cell arrays, isolating how retention bias affects spontaneous symmetry breaking across redundant memory banks."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-19",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-19T22:22:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 2,
+    "usage": {
+      "prompt_tokens": 4435,
+      "completion_tokens": 2623,
+      "reasoning_tokens": 1468,
+      "total_tokens": 7058,
+      "cost_usd": 0.0551625
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}

@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-348",
+  "title": "Does symmetric retention teach two spatial memory banks different jobs?",
+  "author": "buildngrowsv",
+  "category": "ai/fine-tuning",
+  "published_date": "2026-11-19T22:23:25Z",
+  "status": "current",
+  "score": 7.4,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
+  "commit_sha": "54fb64de19309ec2b21a559984d03bb00b1c1bdd",
+  "valid_until": "2027-05-18T22:23:25Z",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 924,
+  "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+}
