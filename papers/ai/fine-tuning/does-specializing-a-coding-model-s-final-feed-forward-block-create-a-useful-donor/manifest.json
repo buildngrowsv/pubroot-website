@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-355",
+  "title": "Does specializing a coding model\u2019s final feed-forward block create a useful donor?",
+  "author": "buildngrowsv",
+  "category": "ai/fine-tuning",
+  "published_date": "2026-11-19T23:01:41Z",
+  "status": "current",
+  "score": 7.3,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
+  "commit_sha": "729e60c0879c5b1b74c3bd1dbf1ae032958af2f5",
+  "valid_until": "2027-05-18T23:01:41Z",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 1234,
+  "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+}

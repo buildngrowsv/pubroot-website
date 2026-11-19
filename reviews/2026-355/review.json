@@ -1,0 +1,89 @@
+{
+  "paper_id": "2026-355",
+  "score": 7.3,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark paper investigates whether fine-tuning the final feed-forward layer of Qwen2.5-Coder-0.5B produces a competent donor module for transplantation into a larger host model. Employing pre-declared qualification criteria, bootstrap confidence intervals, and a counterfactual weight-exchange intervention, the author demonstrates that apparent gains are driven by generic indentation bias rather than semantic repair reasoning. The submission offers a transparent, methodologically rigorous negative result, though its scope is confined to a synthetic indentation task and no repository was directly attached to the platform.",
+  "strengths": [
+    "Exemplary experimental methodology with pre-registered qualification criteria and paired bootstrap confidence intervals (5,000 resamples) across problem families.",
+    "A clever counterfactual intervention (swapping learned changes between requests within the same program) that conclusively exposes the model's reliance on superficial indentation preference (+0.06% delta) rather than genuine repair reasoning.",
+    "Precise architectural accounting and hardware documentation, matching the exact 13,074,432 parameters of Qwen2.5-Coder-0.5B's feed-forward layer.",
+    "Transparent reporting and publication of a rigorous negative result, establishing valuable empirical boundaries for modular model stitching."
+  ],
+  "weaknesses": [
+    "The evaluation benchmark is restricted to synthetic Python indentation variations across three nested blocks, limiting the breadth of findings for broader code-synthesis tasks.",
+    "A small sample size of three training orders and twelve final test families results in relatively wide confidence intervals.",
+    "No code repository was attached directly within the submission harness, restricting verification to the provided text and self-contained links."
+  ],
+  "suggestions": [
+    "Broaden the benchmark to include multi-line code repair and variable-scoping benchmarks beyond purely indentation-based multiple choice.",
+    "Investigate the hypothesis that training both attention and feed-forward layers within the donor block is required to preserve cross-prompt contextual routing.",
+    "Bundle reproduction scripts and pinned MLX environment requirements into a verified open repository alongside the submission."
+  ],
+  "confidence": {
+    "methodology": 0.95,
+    "factual_accuracy": 0.95,
+    "novelty": 0.85,
+    "code_quality": null,
+    "writing_quality": 0.9,
+    "reproducibility": 0.75
+  },
+  "claims": [
+    {
+      "text": "We fine-tuned Qwen2.5-Coder-0.5B's last feed-forward module, in block 24, leaving all other parameters fixed. Its 13,074,432 trainable weights are precisely the module proposed for transfer.",
+      "verified": true,
+      "source": "https://huggingface.co/Qwen/Qwen2.5-Coder-0.5B (hidden_size=896, intermediate_size=4864; 3 * 896 * 4864 = 13,074,432 MLP parameters)",
+      "confidence": 1.0
+    },
+    {
+      "text": "Model stitching motivates asking which representations an interface can connect.",
+      "verified": true,
+      "source": "https://arxiv.org/abs/2106.07682",
+      "confidence": 0.98
+    },
+    {
+      "text": "The models use Qwen's native fill-in-the-middle format, with identical tokens for the host and donor.",
+      "verified": true,
+      "source": "https://arxiv.org/abs/2409.12186 and https://arxiv.org/abs/2207.14255",
+      "confidence": 0.95
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "arXiv:2106.07682",
+      "title": "Revisiting Model Stitching to Compare Neural Representations",
+      "overlap": 0.35,
+      "contribution": "Translates model stitching diagnostics to modern decoder-only coding models, establishing a pre-qualification test harness before cross-model module transplantation."
+    },
+    {
+      "id": "arXiv:2409.12186",
+      "title": "Qwen2.5-Coder Technical Report",
+      "overlap": 0.25,
+      "contribution": "Provides an empirical ablation of isolated layer specialization and behavioral bias shifts under single-module fine-tuning on Qwen2.5-Coder architectures."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-19",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-19T23:05:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 3,
+    "usage": {
+      "prompt_tokens": 5384,
+      "completion_tokens": 4161,
+      "reasoning_tokens": 2931,
+      "total_tokens": 9545,
+      "cost_usd": 0.07564175
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}

@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 127,
-  "last_updated": "2026-11-19T22:51:56Z",
+  "total_papers": 128,
+  "last_updated": "2026-11-19T23:01:41Z",
   "papers": [
     {
       "id": "2026-008",
@@ -1996,6 +1996,22 @@
       "article_path": "papers/ai/llm-benchmarks/do-coding-models-track-indentation-when-all-four-repairs-are-executable/index.md",
       "review_path": "reviews/2026-353/review.json",
       "reader_url": "https://pubroot.com/ai/llm-benchmarks/do-coding-models-track-indentation-when-all-four-repairs-are-executable/",
+      "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
+      "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+    },
+    {
+      "id": "2026-355",
+      "title": "Does specializing a coding model’s final feed-forward block create a useful donor?",
+      "author": "buildngrowsv",
+      "category": "ai/fine-tuning",
+      "abstract": "Training only the smaller coding model's final feed-forward block made 99 previously missed Python repairs correct in one run. Restoring the original block erased every one of those gains. The same training also broke 93 earlier solves. Across three training orders the specialized donor solved 96–102 of 384 previously unseen repairs, compared with 137–141 for the larger host given the same labeled examples and optimizer steps. Swapping the learned contribution between different requested repairs",
+      "published_date": "2026-11-19T23:01:41Z",
+      "review_score": 7.3,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/ai/fine-tuning/does-specializing-a-coding-model-s-final-feed-forward-block-create-a-useful-donor/index.md",
+      "review_path": "reviews/2026-355/review.json",
+      "reader_url": "https://pubroot.com/ai/fine-tuning/does-specializing-a-coding-model-s-final-feed-forward-block-create-a-useful-donor/",
       "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
       "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
     }
