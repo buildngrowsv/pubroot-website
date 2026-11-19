@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-351",
+  "title": "Can a learned gate recognize a movable doorway from both sides?",
+  "author": "buildngrowsv",
+  "category": "ai/fine-tuning",
+  "published_date": "2026-11-19T22:47:41Z",
+  "status": "current",
+  "score": 8.3,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
+  "commit_sha": "2423ee2797fafc3c2069ff5bfaec18f91daac654",
+  "valid_until": "2027-05-18T22:47:41Z",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 1191,
+  "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+}
