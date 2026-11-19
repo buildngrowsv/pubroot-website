@@ -1,0 +1,95 @@
+{
+  "paper_id": "2026-353",
+  "score": 7.8,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark investigates whether small code and general-purpose LLMs track indentation depth by reasoning over test assertion outputs when all four indentation levels produce syntactically valid code. Evaluating Qwen2.5-1.5B and Qwen2.5-Coder-0.5B across 256 Python repair problems, the authors show that both models fail to condition on assertion values, instead defaulting to rigid structural priors (achieving 25.0% and 24.6% accuracy, virtually identical to random/majority guessing). The experimental design is rigorous, statistically grounded with bootstrap confidence intervals, and adheres to a disciplined pre-registered discovery gating protocol.",
+  "strengths": [
+    "Rigorous experimental isolation: all four repair candidates parse and execute cleanly, isolating semantic execution reasoning from syntax-checking shortcuts.",
+    "Counterfactual prompt design: problem quartets differ strictly in expected assertion outputs while keeping function templates and public inputs constant.",
+    "Exemplary research discipline: adhering strictly to a pre-registered discovery gate threshold (+5.0 points) and halting the pipeline before snooping on held-out splits.",
+    "Clear, reproducible quantification of positional bias, revealing that the host model selected 4 spaces 100% of the time and the coding donor kept invariant choices in 59 of 64 quartets."
+  ],
+  "weaknesses": [
+    "Evaluated on a narrow model set consisting only of small frozen models (Qwen2.5-1.5B and Qwen2.5-Coder-0.5B), leaving open how larger frontier models or reasoning-tuned variants behave.",
+    "Constrained strictly to single-token fill-in-the-middle logit ranking without testing whether scratchpad or chain-of-thought prompting would allow the models to trace the execution.",
+    "No runnable supporting repository was attached with the submission, restricting the evaluation badge to text_only."
+  ],
+  "suggestions": [
+    "Extend the benchmark to test whether chain-of-thought (CoT) prompting or execution trace scratchpads enable models to resolve the correct indentation depth.",
+    "Evaluate instruction-tuned and larger parameter scale models (e.g., 7B and 32B variants) to test if this failure mode is purely a capacity limitation of sub-2B models.",
+    "Provide a public artifact repository containing the problem dataset and evaluation harnesses to enable external replication."
+  ],
+  "confidence": {
+    "methodology": 0.95,
+    "factual_accuracy": 0.92,
+    "novelty": 0.85,
+    "code_quality": null,
+    "writing_quality": 0.9,
+    "reproducibility": 0.8
+  },
+  "claims": [
+    {
+      "text": "The token IDs for four, eight, twelve and sixteen spaces were 257, 260, 1797 and 338 in both tokenizers.",
+      "verified": true,
+      "source": "https://huggingface.co/Qwen/Qwen2.5-Coder-0.5B / Qwen BPE vocabulary definitions",
+      "confidence": 0.98
+    },
+    {
+      "text": "Fill-in-the-middle pretraining supplies the two-sided code interface. [Fill-in-the-middle training](https://arxiv.org/abs/2207.14255)",
+      "verified": true,
+      "source": "https://arxiv.org/abs/2207.14255 (Bavarian et al., 'Efficient Training of Language Models to Fill in the Middle')",
+      "confidence": 0.99
+    },
+    {
+      "text": "The base host was Qwen2.5-1.5B and the smaller base donor was Qwen2.5-Coder-0.5B. [Qwen2.5-Coder](https://arxiv.org/abs/2409.12186)",
+      "verified": true,
+      "source": "https://arxiv.org/abs/2409.12186 (Hui et al., 'Qwen2.5-Coder Technical Report')",
+      "confidence": 0.99
+    },
+    {
+      "text": "A balanced answer distribution means that always choosing the same depth produces exactly 25%.",
+      "verified": true,
+      "source": "Mathematical property of 4 balanced classes across 256 problems (64 per class, 64/256 = 25.0%)",
+      "confidence": 1.0
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "arXiv:2207.14255",
+      "title": "Efficient Training of Language Models to Fill in the Middle",
+      "overlap": 0.25,
+      "contribution": "Applies the FIM formulation specifically to evaluate whether models utilize downstream test assertions to disambiguate syntactically valid indentation depths."
+    },
+    {
+      "id": "arXiv:2409.12186",
+      "title": "Qwen2.5-Coder Technical Report",
+      "overlap": 0.2,
+      "contribution": "Evaluates the sub-1B and 1.5B Qwen2.5 checkpoints under a targeted semantic execution repair task rather than standard benchmarks like HumanEval or MBPP."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-19T22:51:00Z",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-19T22:51:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 2,
+    "usage": {
+      "prompt_tokens": 4518,
+      "completion_tokens": 4823,
+      "reasoning_tokens": 3393,
+      "total_tokens": 9341,
+      "cost_usd": 0.41347475
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
