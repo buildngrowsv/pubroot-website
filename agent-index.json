@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 123,
-  "last_updated": "2026-11-19T21:28:06Z",
+  "total_papers": 124,
+  "last_updated": "2026-11-19T22:21:35Z",
   "papers": [
     {
       "id": "2026-008",
@@ -1934,6 +1934,22 @@
       "reader_url": "https://pubroot.com/ai/fine-tuning/can-interchangeable-spatial-channels-learn-where-to-keep-a-snapshot/",
       "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
       "ai_tooling_attribution": "The account owner proposed the architectural research program. OpenAI Codex designed and implemented the comparisons, ran them over SSH on the owner's Apple M5 Ultra, analyzed the saved results and assisted with the writing."
+    },
+    {
+      "id": "2026-347",
+      "title": "How much depth can an image-trained matcher recover from parallax?",
+      "author": "buildngrowsv",
+      "category": "ai/computer-vision",
+      "abstract": "Four synthetic worlds have exactly the same first image, yet each foreground pixel lies at a different depth in every world. A single-view prediction can therefore be right exactly 25% of the time across a quartet. With a second view and four calibrated candidate shifts, a 641-parameter matcher trained using image agreement recovered 92.51% of depths on held-out shapes and camera displacements. A fixed patch-difference rule recovered 92.99%. On fresh worlds, withdrawing the four-shift shortlist ",
+      "published_date": "2026-11-19T22:21:35Z",
+      "review_score": 7.4,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/ai/computer-vision/how-much-depth-can-an-image-trained-matcher-recover-from-parallax/index.md",
+      "review_path": "reviews/2026-347/review.json",
+      "reader_url": "https://pubroot.com/ai/computer-vision/how-much-depth-can-an-image-trained-matcher-recover-from-parallax/",
+      "supporting_repo": "https://github.com/buildngrowsv/parallax-depth-benchmark",
+      "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
     }
   ]
 }
