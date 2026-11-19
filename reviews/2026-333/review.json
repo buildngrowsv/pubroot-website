@@ -1,0 +1,88 @@
+{
+  "paper_id": "2026-333",
+  "score": 6.8,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark investigates transplanting the final feed-forward layer of a smaller 0.5B model (Qwen2.5-Coder-0.5B) into a larger 1.5B model (Qwen2.5-1.5B) to evaluate whether a frozen subnetwork can recover loss after block ablation. The experimental methodology is remarkably rigorous and honest, featuring extensive controls (shuffled donor, direct affine bridge, non-coding 0.5B donor), though it lacks code verification and shows negative/marginal practical utility.",
+  "strengths": [
+    "Exemplary experimental design featuring sound negative and ablation controls (shuffled donor, direct affine projection, general base donor).",
+    "Highly candid and scientific presentation of results without overhyping; clearly notes that routing failed to specialize and that most recovery came from linear projection maps.",
+    "Precise reporting of metric units, confidence intervals, sample sizes, and model architectural dimensions (1,536 channels for 1.5B, 896 for 0.5B)."
+  ],
+  "weaknesses": [
+    "Absence of a verified supporting repository in the submission metadata limits direct independent verification (text_only badge).",
+    "Evaluations are limited strictly to token loss/perplexity on small windowed slices of CPython rather than standard downstream code execution or reasoning benchmarks (e.g., HumanEval, MBPP).",
+    "The core practical result is largely negative: the intact native model easily outperforms the graft, and the domain-specific donor provides negligible advantage over a general-purpose donor."
+  ],
+  "suggestions": [
+    "Provide the supporting repository directly for artifact verification to obtain the verified_open badge.",
+    "Evaluate functional downstream generation metrics (e.g., pass@k on HumanEval or Python code completion) in addition to next-token cross-entropy loss.",
+    "Explore transplanting earlier or middle MLP layers, as final layers often have idiosyncratic alignment with unembedding layers."
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.9,
+    "novelty": 0.75,
+    "code_quality": null,
+    "writing_quality": 0.85,
+    "reproducibility": 0.6
+  },
+  "claims": [
+    {
+      "text": "The host has 1,536 channels and the donor 896.",
+      "verified": true,
+      "source": "https://huggingface.co/Qwen/Qwen2.5-1.5B and https://huggingface.co/Qwen/Qwen2.5-0.5B",
+      "confidence": 0.95
+    },
+    {
+      "text": "Model stitching and sparse upcycling provide related precedents for connecting pretrained components and deriving experts from dense checkpoints. [Model stitching](https://arxiv.org/abs/2106.07682) \u00b7 [Sparse upcycling](https://arxiv.org/abs/2212.05055).",
+      "verified": true,
+      "source": "https://arxiv.org/abs/2106.07682 and https://arxiv.org/abs/2212.05055",
+      "confidence": 0.95
+    },
+    {
+      "text": "When the host\u2019s original block was removed, an aligned donor recovered 40.3% of the increase in next-token loss on Python code and 26.3% on documentation.",
+      "verified": true,
+      "source": "Internal experimental calculation based on reported table values: (1.978 - 1.807) / (1.978 - 1.554) = 0.171 / 0.424 = ~40.3%",
+      "confidence": 0.9
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2106.07682",
+      "title": "Revisiting Model Stitching to Compare Neural Representations",
+      "overlap": 0.45,
+      "contribution": "Applies cross-model stitching ideas specifically to transplanting single FFN blocks between unequal-width LLM architectures (1.5B vs 0.5B) rather than stitching entire sub-networks at equivalent depths."
+    },
+    {
+      "id": "2212.05055",
+      "title": "Sparse Upcycling: Training Mixture-of-Experts from Dense Checkpoints",
+      "overlap": 0.4,
+      "contribution": "Evaluates cross-model heterogeneous donor block transplantation into an existing dense model rather than cloning homogeneous MLP layers to build a sparse MoE."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-19T15:00:00Z",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-19T15:00:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 2,
+    "usage": {
+      "prompt_tokens": 4602,
+      "completion_tokens": 1379,
+      "reasoning_tokens": 93,
+      "total_tokens": 5981,
+      "cost_usd": 0.07862275
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
