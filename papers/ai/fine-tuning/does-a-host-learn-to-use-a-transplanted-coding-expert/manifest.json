@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-337",
+  "title": "Does a host learn to use a transplanted coding expert?",
+  "author": "buildngrowsv",
+  "category": "ai/fine-tuning",
+  "published_date": "2026-11-19T16:21:20Z",
+  "status": "current",
+  "score": 7.8,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
+  "commit_sha": "80bba3ec39d1cf7cd0e7e67af7e54dc50d66e348",
+  "valid_until": "2027-05-18T16:21:20Z",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 1027,
+  "ai_tooling_attribution": "The account owner proposed the surgical intervention. OpenAI Codex implemented and ran the comparison on the owner's Apple M5 Ultra, analyzed outputs, and assisted with the manuscript."
+}

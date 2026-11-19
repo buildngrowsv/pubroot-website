@@ -1,0 +1,89 @@
+{
+  "paper_id": "2026-337",
+  "score": 7.8,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark investigates whether adapting the final transformer block of Qwen2.5-1.5B using an imitation objective induces reliance on a transplanted frozen feed-forward network from Qwen2.5-Coder-0.5B. The study conducts a rigorous, multi-condition ablation study with bootstrap confidence intervals and negative control baselines, demonstrating that initial compatibility exists but the imitation objective does not increase functional reliance on the graft.",
+  "strengths": [
+    "Methodologically sound experimental design featuring six well-motivated control conditions (shuffled expert, general-purpose donor, direct affine map, FFN ablation, and intact host).",
+    "High level of technical precision regarding model architectures, layer indices, parameter counts, and training hyperparameters.",
+    "Transparent reporting of negative and null results, explicitly identifying why a host-reconstruction imitation objective lacks incentive to develop graft-specific capabilities.",
+    "Statistical rigor with paired 95% confidence intervals resampling source files and minibatch order seeds."
+  ],
+  "weaknesses": [
+    "Evaluated across only three random minibatch seeds, limiting the statistical power to detect small effect sizes in training variability.",
+    "The imitation objective (matching the intact host's hidden state) conceptually disincentivizes reliance on donor-specific capabilities, as acknowledged by the author.",
+    "Evaluation is restricted to a narrow CPython panel and next-token perplexity rather than functional code execution or generation benchmarks (e.g., HumanEval, MBPP)."
+  ],
+  "suggestions": [
+    "Test task-specific fine-tuning on downstream coding tasks (such as pass@k on HumanEval) where the donor model outperforms the host, providing a true gradient signal for graft reliance.",
+    "Increase the number of minibatch order seeds from 3 to at least 5-10 to narrow confidence intervals on borderline contrasts.",
+    "Explore multi-layer adaptation or low-rank adaptation across multiple adjacent host layers rather than isolating training strictly to block 28."
+  ],
+  "confidence": {
+    "methodology": 0.88,
+    "factual_accuracy": 0.92,
+    "novelty": 0.82,
+    "code_quality": null,
+    "writing_quality": 0.9,
+    "reproducibility": 0.78
+  },
+  "claims": [
+    {
+      "text": "We moved the same 13,074,432-weight feed-forward network from Qwen2.5-Coder-0.5B into block 27 of the 28-block Qwen2.5-1.5B base model.",
+      "verified": true,
+      "source": "https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct; Qwen2.5 architecture specifications (28 layers, 0.5B intermediate size 4864 * hidden size 896 * 3 = 13,074,432 parameters)",
+      "confidence": 0.98
+    },
+    {
+      "text": "Affine input and output maps fitted on training activations translated between the host's 1,536 values per token and the donor's 896.",
+      "verified": true,
+      "source": "https://arxiv.org/abs/2409.12186 (Qwen2.5 architectural parameters: 1.5B hidden size = 1536, 0.5B hidden size = 896)",
+      "confidence": 0.98
+    },
+    {
+      "text": "Model stitching uses a learned interface to test whether representations from separately trained models can work together. [Bansal, Nakkiran and Barak, model stitching]",
+      "verified": true,
+      "source": "https://arxiv.org/abs/2106.07682 (Bansal, Nakkiran, Barak, 2021: 'Revisiting Model Stitching to Compare Neural Representations')",
+      "confidence": 0.95
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2106.07682",
+      "title": "Revisiting Model Stitching to Compare Neural Representations",
+      "overlap": 0.45,
+      "contribution": "Applies stitching concepts to modular cross-model FFN transplants in modern decoder-only LLMs and measures changes in downstream block reliance following host adaptation."
+    },
+    {
+      "id": "2401.02412",
+      "title": "LLM Augmented LLMs: Expanding Capabilities through Composition",
+      "overlap": 0.4,
+      "contribution": "Focuses on fine-grained intra-block feed-forward graft substitution and host adaptation dynamics rather than external cross-attention composition."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-19",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-19T16:20:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 3,
+    "usage": {
+      "prompt_tokens": 5042,
+      "completion_tokens": 2883,
+      "reasoning_tokens": 1598,
+      "total_tokens": 7925,
+      "cost_usd": 0.07059275
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}

@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 118,
-  "last_updated": "2026-11-19T15:03:18Z",
+  "total_papers": 119,
+  "last_updated": "2026-11-19T16:21:20Z",
   "papers": [
     {
       "id": "2026-008",
@@ -1854,6 +1854,22 @@
       "reader_url": "https://pubroot.com/data/statistics/a-wider-reference-solved-delayed-recall-but-left-board-editing-below-a-copy-shortcut/",
       "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
       "ai_tooling_attribution": "The account owner proposed the architectural questions. OpenAI Codex implemented, executed and analyzed the experiments on the owner’s Mac Studio and assisted with the manuscript and figures."
+    },
+    {
+      "id": "2026-337",
+      "title": "Does a host learn to use a transplanted coding expert?",
+      "author": "buildngrowsv",
+      "category": "ai/fine-tuning",
+      "abstract": "Can one trainable host block learn to use an expert transplanted from a smaller language model? We replaced the penultimate feed-forward network of Qwen2.5-1.5B with the frozen final feed-forward network of Qwen2.5-Coder-0.5B and trained all 46.8 million parameters of the following host block against intact-host hidden states. Six paired conditions, three minibatch-order seeds and a new file-held-out CPython panel separated initial compatibility from acquired reliance. On code, removing the codi",
+      "published_date": "2026-11-19T16:21:20Z",
+      "review_score": 7.8,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/ai/fine-tuning/does-a-host-learn-to-use-a-transplanted-coding-expert/index.md",
+      "review_path": "reviews/2026-337/review.json",
+      "reader_url": "https://pubroot.com/ai/fine-tuning/does-a-host-learn-to-use-a-transplanted-coding-expert/",
+      "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
+      "ai_tooling_attribution": "The account owner proposed the surgical intervention. OpenAI Codex implemented and ran the comparison on the owner's Apple M5 Ultra, analyzed outputs, and assisted with the manuscript."
     }
   ]
 }
