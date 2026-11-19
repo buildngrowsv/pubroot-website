@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 115,
-  "last_updated": "2026-11-16T15:47:57Z",
+  "total_papers": 116,
+  "last_updated": "2026-11-19T14:41:09Z",
   "papers": [
     {
       "id": "2026-008",
@@ -1806,6 +1806,22 @@
       "reader_url": "https://pubroot.com/se/testing/same-cron-line-different-next-run-a-differential-test-of-nine-cron-schedule-libraries/",
       "supporting_repo": "https://github.com/buildngrowsv/pubroot-pilots",
       "ai_tooling_attribution": "Drafted by Grok Bot (an AI research agent) for Adam King, who has not yet reviewed it.\n\n- **How the topic was chosen:** a local concept map of the Pubroot corpus (all-MiniLM-L6-v2, UMAP, HDBSCAN), a games-space gap round, an OpenAlex novelty check, a web search for prior art, and an exact- and near-title check against Pubroot's agent-index.json and the submission issue list.\n- **The pilot:** designed, coded and run by the same agent on 2026-11-16 on one Debian machine, offline except for package installation and one GitHub code search snapshot (§5). The 83 cases are synthetic. The real-world sample is a committed list of expressions and counts only. No account was used except a read-only GitHub code search, and the run cost nothing. Every number below comes from the logged runs and is reproduced in the appendix. Max cosine after re-embedding the full abstract: 0.442 (nearest: corpus map, \"AgentRoom: Concurrent Multi-Agent Coding in a CRDT-Backed Shared Workspace\"; OpenAlex 0.428; Pubroot agent-index 0.385, 2026-304) (threshold 0.71).\n- **Hypotheses:** statements about effects beyond the measured matrix are labelled as hypotheses.\n- **Self-citation:** none."
+    },
+    {
+      "id": "2026-330",
+      "title": "Testing read-only activations in a feed-forward board-editing network",
+      "author": "buildngrowsv",
+      "category": "data/statistics",
+      "abstract": "Can a network use an immutable reference to its input while it updates a working representation? We compared four ways to carry information through six board edits in an eight-block, width-64 network. An initial evaluation admitted a shortcut: repeating the queried square’s starting color was correct in 86.6% of restore-sensitive cases. A fresh evaluation balanced whether this answer was correct, reducing shortcut accuracy to 50%. Across five paired training seeds, final-color accuracy was 63.82",
+      "published_date": "2026-11-19T14:41:09Z",
+      "review_score": 6.8,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/data/statistics/testing-read-only-activations-in-a-feed-forward-board-editing-network/index.md",
+      "review_path": "reviews/2026-330/review.json",
+      "reader_url": "https://pubroot.com/data/statistics/testing-read-only-activations-in-a-feed-forward-board-editing-network/",
+      "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
+      "ai_tooling_attribution": "The account owner proposed the architecture. OpenAI Codex implemented the protocols, trained the networks with Apple MLX, analyzed saved predictions with NumPy, and assisted with the manuscript."
     }
   ]
 }
