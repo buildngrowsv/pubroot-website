@@ -1,0 +1,100 @@
+{
+  "paper_id": "2026-343",
+  "score": 7.8,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark investigates memory retention and update policies in spatial neural networks operating over toroidal 2D grids and 3D voxel lattices. Through rigorous counterfactual ablations and paired seed interventions, the author demonstrates that long-depth degradation in writable memory stems from unconstrained signed updates rather than rewritability itself, which is resolved by bounded convex interpolation. The study is methodologically sound and meticulously documented, though evaluated strictly on synthetic algorithmic tasks.",
+  "strengths": [
+    "Rigorous counterfactual ablation design, including gate suppression, sensor input substitution, and source-bank swapping to isolate causal mechanisms.",
+    "Precise identification and resolution of memory degradation over long computation depths by contrasting signed displacement updates with bounded convex gating.",
+    "Comprehensive statistical reporting with exact qualifying cell counts, paired 95% confidence intervals, and 5,000-draw bootstrap resampling.",
+    "Clear scaling evaluations spanning both depth (8 to 24 steps) and spatial geometry (2D toroidal grids to 3D voxel lattices with geometric obstacles)."
+  ],
+  "weaknesses": [
+    "Evaluations are confined to synthetic 32-bit word transport tasks, leaving open questions regarding applicability to standard deep learning architectures and real-world reasoning tasks.",
+    "The 3D lattice experiment jointly scales both lattice size (4x4x4 to 6x6x6) and depth (8 to 16 steps), confounding spatial scaling with depth scaling.",
+    "Code is referenced via GitHub commit links in the text rather than bundled through the verified repository system, requiring text_only badge assignment."
+  ],
+  "suggestions": [
+    "Disentangle spatial dimensions from computational depth in the 3D scaling experiment by evaluating varying step lengths on fixed lattice sizes.",
+    "Test the proposed bounded convex write gate on established algorithmic reasoning benchmarks such as the CLRS benchmark suite to validate broader utility."
+  ],
+  "confidence": {
+    "methodology": 0.9,
+    "factual_accuracy": 0.9,
+    "novelty": 0.8,
+    "code_quality": null,
+    "writing_quality": 0.9,
+    "reproducibility": 0.85
+  },
+  "claims": [
+    {
+      "text": "Shared local update rules have precedents in neural cellular automata.",
+      "verified": true,
+      "source": "https://distill.pub/2020/growing-ca/",
+      "confidence": 0.98
+    },
+    {
+      "text": "Neural algorithm execution studies test whether such local rules can generalize across problem sizes.",
+      "verified": true,
+      "source": "https://openreview.net/forum?id=S1gRO34Kvr",
+      "confidence": 0.95
+    },
+    {
+      "text": "Differentiable external memory and learned write controls also have a substantial history.",
+      "verified": true,
+      "source": "https://arxiv.org/abs/1410.5401",
+      "confidence": 0.98
+    },
+    {
+      "text": "Use Python 3.12 with MLX 0.32.4 and NumPy 2.5.5 on Apple Silicon.",
+      "verified": true,
+      "source": "https://pypi.org/project/numpy/2.5.5/",
+      "confidence": 0.95
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "1410.5401",
+      "title": "Neural Turing Machines",
+      "overlap": 0.35,
+      "contribution": "While NTMs introduced differentiable external memory read/write mechanisms, this work isolates the dynamic stability of local write update formulations across spatial cellular architectures over extended computational depth."
+    },
+    {
+      "id": "distill.00023",
+      "title": "Growing Neural Cellular Automata",
+      "overlap": 0.4,
+      "contribution": "Applies neural cellular automata concepts to exact algorithmic multi-bit register preservation, selective saves, and spatial obstacle routing rather than biological morphological pattern formation."
+    },
+    {
+      "id": "1910.10593",
+      "title": "Neural Execution of Graph Algorithms",
+      "overlap": 0.3,
+      "contribution": "Focuses on internal memory slot gating and the stability differences between signed displacement versus convex combination updates during step-wise execution."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-19",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-19T20:35:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 3,
+    "usage": {
+      "prompt_tokens": 5366,
+      "completion_tokens": 3817,
+      "reasoning_tokens": 2618,
+      "total_tokens": 9183,
+      "cost_usd": 0.10233825
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
