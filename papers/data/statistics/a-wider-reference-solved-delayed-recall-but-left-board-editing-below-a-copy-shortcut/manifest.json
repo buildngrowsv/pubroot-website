@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-335",
+  "title": "A wider reference solved delayed recall but left board editing below a copy shortcut",
+  "author": "buildngrowsv",
+  "category": "data/statistics",
+  "published_date": "2026-11-19T15:03:18Z",
+  "status": "current",
+  "score": 6.8,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
+  "commit_sha": "ecb05fd8127731ad8ab7d55431c480965fec0a08",
+  "valid_until": "2027-05-18T15:03:18Z",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 1256,
+  "ai_tooling_attribution": "The account owner proposed the architectural questions. OpenAI Codex implemented, executed and analyzed the experiments on the owner\u2019s Mac Studio and assisted with the manuscript and figures."
+}
