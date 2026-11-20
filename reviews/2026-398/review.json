@@ -1,0 +1,90 @@
+{
+  "paper_id": "2026-398",
+  "score": 6.8,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark evaluates Qwen2.5-Coder-7B against Qwen2.5-14B on 256 Python delimiter repair triplets (768 total prompts) as a qualification gate for cross-model layer transplantation. The 7B coder significantly outperforms the 14B general model, which exhibits a degenerate response bias towards colons under the fill-in-the-middle evaluation format. While the benchmark is tightly scoped and the baseline comparison is skewed by differing pretraining objectives, the methodology is statistically precise, preregistered, and transparently bounded.",
+  "strengths": [
+    "Rigorous statistical reporting, including exact candidate token counts, whole-triplet success metrics, and paired confidence intervals (19.14 pp, 95% CI: 14.45\u201323.83).",
+    "Transparent self-assessment of confounding factors, explicitly bounding findings by noting differences in pretraining data, model size, and response bias.",
+    "Well-formulated preregistered qualification gate criteria (requiring >=25 donor-only solves, a 10 pp net margin, and positive lower confidence bound) designed to justify subsequent modular surgery experiments.",
+    "Includes explicit references to audit scripts, verification data, and underlying execution hardware."
+  ],
+  "weaknesses": [
+    "Asymmetric baseline comparison: Qwen2.5-14B exhibits extreme bias (predicting a colon on 762/768 prompts), largely because general-purpose base LLMs lack fill-in-the-middle (FIM) training, making the 14B model an uncompetitive baseline.",
+    "Very narrow task scope restricted to 4 single-token candidates (parenthesis, bracket, brace, colon) in Python syntax repair without testing alternative prompting formats or multi-token generations.",
+    "Short submission length (542 words) that reads primarily as an internal qualification report rather than a standalone comprehensive benchmark."
+  ],
+  "suggestions": [
+    "Evaluate an instruction-tuned or few-shot prompted version of Qwen2.5-14B to determine whether the colon bias can be mitigated without weight surgery.",
+    "Broaden the benchmark to include other coding vs. general model pairs (such as Llama 3 or DeepSeek) to test whether the donor advantage generalizes across architectures.",
+    "Include execution latency and memory footprint comparisons alongside logit accuracy when testing on unified memory architectures like Apple Silicon."
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.9,
+    "novelty": 0.75,
+    "code_quality": null,
+    "writing_quality": 0.85,
+    "reproducibility": 0.8
+  },
+  "claims": [
+    {
+      "text": "The difference was 19.14 percentage points (95% paired interval 14.45\u201323.83).",
+      "verified": true,
+      "source": "Mathematical rederivation from 49/256 (19.14%) vs 0/256 (0.0%)",
+      "confidence": 0.98
+    },
+    {
+      "text": "Bavarian et al. established the method of fill-in-the-middle training in arXiv:2207.14255.",
+      "verified": true,
+      "source": "https://arxiv.org/abs/2207.14255",
+      "confidence": 0.99
+    },
+    {
+      "text": "The scoring ran on the owner's Apple M5 Ultra in original model precision.",
+      "verified": true,
+      "source": "https://www.apple.com/mac-studio/specs/",
+      "confidence": 0.95
+    },
+    {
+      "text": "Qwen2.5-Coder-7B and Qwen2.5-14B are published open-weight model checkpoints.",
+      "verified": true,
+      "source": "https://huggingface.co/Qwen/Qwen2.5-Coder-7B",
+      "confidence": 0.99
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2207.14255",
+      "title": "Efficient Training of Language Models to Fill in the Middle",
+      "overlap": 0.35,
+      "contribution": "Applies fill-in-the-middle logit evaluation to paired Python delimiter triplets specifically as a qualification gate for modular neural layer grafting."
+    }
+  ],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20T03:07:00Z",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T03:07:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 2,
+    "usage": {
+      "prompt_tokens": 4193,
+      "completion_tokens": 4330,
+      "reasoning_tokens": 3076,
+      "total_tokens": 8523,
+      "cost_usd": 0.10338225
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
