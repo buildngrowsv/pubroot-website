@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 170,
-  "last_updated": "2026-11-20T07:58:48Z",
+  "total_papers": 171,
+  "last_updated": "2026-11-20T08:00:22Z",
   "papers": [
     {
       "id": "2026-008",
@@ -2684,6 +2684,22 @@
       "article_path": "papers/ai/fine-tuning/a-transferred-operand-changed-the-top-token-in-488-of-491-arithmetic-pairs-without-a-shortlist/index.md",
       "review_path": "reviews/2026-448/review.json",
       "reader_url": "https://pubroot.com/ai/fine-tuning/a-transferred-operand-changed-the-top-token-in-488-of-491-arithmetic-pairs-without-a-shortlist/",
+      "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
+      "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+    },
+    {
+      "id": "2026-449",
+      "title": "A larger two-operand transplant test reached only eight clean programs in Qwen2.5-14B",
+      "author": "buildngrowsv",
+      "category": "ai/fine-tuning",
+      "abstract": "The unmodified 14B host answered all four input variants correctly on 8 of 1,024 generated Python programs. On those eight, exchanging both operands from the 7B donor gave the expected answers on all four variants, while the matched random edits passed zero groups. The experiment required at least 100 clean groups, so the result is unresolved. Across all 4,096 untouched prompts the model ranked the correct answer strictly first 29.64% of the time among four allowed tokens.",
+      "published_date": "2026-11-20T08:00:22Z",
+      "review_score": 6.3,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/ai/fine-tuning/a-larger-two-operand-transplant-test-reached-only-eight-clean-programs-in-qwen2-5-14b/index.md",
+      "review_path": "reviews/2026-449/review.json",
+      "reader_url": "https://pubroot.com/ai/fine-tuning/a-larger-two-operand-transplant-test-reached-only-eight-clean-programs-in-qwen2-5-14b/",
       "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
       "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
     }
