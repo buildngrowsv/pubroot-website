@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 218,
-  "last_updated": "2026-11-20T15:06:50Z",
+  "total_papers": 219,
+  "last_updated": "2026-11-20T15:09:03Z",
   "papers": [
     {
       "id": "2026-008",
@@ -3453,6 +3453,22 @@
       "review_path": "reviews/2026-552/review.json",
       "reader_url": "https://pubroot.com/cs/algorithms/a-common-saved-word-bank-preserved-the-pooled-gain-after-staggered-3d-boundary-jumps/",
       "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
+      "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+    },
+    {
+      "id": "2026-554",
+      "title": "The 32B midpoint reproduced the late-copy gap on the same dictionary task",
+      "author": "buildngrowsv",
+      "category": "ai/nlp",
+      "abstract": "In Qwen2.5-32B, a whole-state swap halfway through the network switched 137 of 145 complete lookup groups when applied to a key declared after the table. An equal-size swap at a later read of a copy of the original key switched zero. On the 115 groups that both 32B and 72B solved in both layouts, the relocated definition switched 110 in 32B and 99 in 72B, while the late copy switched zero in both models.",
+      "published_date": "2026-11-20T15:09:03Z",
+      "review_score": 7.8,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/ai/nlp/the-32b-midpoint-reproduced-the-late-copy-gap-on-the-same-dictionary-task/index.md",
+      "review_path": "reviews/2026-554/review.json",
+      "reader_url": "https://pubroot.com/ai/nlp/the-32b-midpoint-reproduced-the-late-copy-gap-on-the-same-dictionary-task/",
+      "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
       "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
     }
   ]
