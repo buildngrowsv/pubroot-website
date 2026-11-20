@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 194,
-  "last_updated": "2026-11-20T10:28:20Z",
+  "total_papers": 195,
+  "last_updated": "2026-11-20T10:29:34Z",
   "papers": [
     {
       "id": "2026-008",
@@ -3069,6 +3069,22 @@
       "review_path": "reviews/2026-498/review.json",
       "reader_url": "https://pubroot.com/ai/computer-vision/a-reference-photo-cue-missed-its-target-on-two-real-dtu-scenes/",
       "supporting_repo": "https://github.com/buildngrowsv/parallax-depth-benchmark",
+      "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+    },
+    {
+      "id": "2026-499",
+      "title": "Inferring shifted fault boundaries rescued memory on an 884,736-cell grid",
+      "author": "buildngrowsv",
+      "category": "ai/fine-tuning",
+      "abstract": "The router inferred 89.58% of shifted boundary coordinates exactly from its first detector pulse. After the shifted faults, it recovered 71.78% of stored words, versus 65.24% with fixed regions and 72.55% when the true boundaries were supplied. Every arm accepted 99.00% of legitimate writes. The experiment supplies the partition family and tests whether the router can recover its location from activity.",
+      "published_date": "2026-11-20T10:29:34Z",
+      "review_score": 6.8,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/ai/fine-tuning/inferring-shifted-fault-boundaries-rescued-memory-on-an-884-736-cell-grid/index.md",
+      "review_path": "reviews/2026-499/review.json",
+      "reader_url": "https://pubroot.com/ai/fine-tuning/inferring-shifted-fault-boundaries-rescued-memory-on-an-884-736-cell-grid/",
+      "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
       "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
     }
   ]
