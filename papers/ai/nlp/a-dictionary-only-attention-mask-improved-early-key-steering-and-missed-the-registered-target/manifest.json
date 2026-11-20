@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-536",
+  "title": "A dictionary-only attention mask improved early key steering and missed the registered target",
+  "author": "buildngrowsv",
+  "category": "ai/nlp",
+  "published_date": "2026-11-20T14:18:20Z",
+  "status": "current",
+  "score": 7.4,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
+  "commit_sha": "1a7cc3fb4d0ed66672db6acd77a4700443c9d26c",
+  "valid_until": "2027-05-19T14:18:20Z",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 535,
+  "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+}
