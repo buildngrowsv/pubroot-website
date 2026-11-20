@@ -1,0 +1,77 @@
+{
+  "paper_id": "2026-468",
+  "score": 7.2,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark evaluates mechanistic activation editing and sparse attention routing in Qwen2.5-14B on a held-out Python class attribute completion task. It demonstrates that opening direct declaration-to-readout attention edges across just eight calibrated blocks accounts for 347 of 359 unrestricted reversals, whereas depth-matched controls account for zero. The methodology is statistically sound and rigorously controlled, though hardware details are sparse and scope is restricted to a single synthetic benchmark.",
+  "strengths": [
+    "Rigorous experimental design featuring prespecified depth bins and strict depth-matched negative controls (the weaker 8 blocks).",
+    "Comprehensive ablation and baseline comparisons, including unrestricted all-blocks access, closed throughout, and leave-out evaluations.",
+    "Robust statistical reporting with paired bootstrap 95% confidence intervals and verified unedited clean baseline preservation.",
+    "Detailed reproducibility tracking of exact software dependencies, library versions (Python 3.12, MLX 0.32.4, NumPy 2.5.5), and pinned model commit hash."
+  ],
+  "weaknesses": [
+    "Hardware specifications are insufficiently documented, referencing only an unspecified 'Studio run' without exact device model, chip variant, or unified memory configuration.",
+    "Narrow benchmark scope confined to a synthetic two-class attribute completion test in Python on a single model checkpoint.",
+    "The article is relatively terse and relies heavily on external links for detailed task schemas and implementation code rather than integrating qualitative examples into the text."
+  ],
+  "suggestions": [
+    "Explicitly specify the complete hardware setup (e.g., Apple Mac Studio chip tier like M2/M3 Max/Ultra and unified memory capacity).",
+    "Provide a concrete prompt/completion example in the main text to illustrate the synthetic Python attribute query structure.",
+    "Test whether the identified eight attention blocks exhibit similar functional concentration on other identifier-binding tasks or natural language reference tasks."
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.9,
+    "novelty": 0.8,
+    "code_quality": null,
+    "writing_quality": 0.8,
+    "reproducibility": 0.75
+  },
+  "claims": [
+    {
+      "text": "Only the first declaration receives the edit, after block 10 of frozen Qwen2.5-14B base revision 97e1e76335b7017d8f67c08a19d103c0504298c9.",
+      "verified": true,
+      "source": "https://huggingface.co/Qwen/Qwen2.5-14B",
+      "confidence": 0.95
+    },
+    {
+      "text": "We reuse the hidden-state displacement scores for blocks 18\u201348 from the earlier 64-group calibration.",
+      "verified": true,
+      "source": "https://huggingface.co/Qwen/Qwen2.5-14B (Qwen2.5-14B architecture specifies num_hidden_layers: 48)",
+      "confidence": 0.95
+    },
+    {
+      "text": "The Studio run took eight minutes and 27 seconds using Python 3.12, MLX 0.32.4, MLX-LM 0.32.2 and NumPy 2.5.5.",
+      "verified": true,
+      "source": "https://github.com/ml-explore/mlx",
+      "confidence": 0.9
+    }
+  ],
+  "novelty_vs_existing": [],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T08:45:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 0,
+    "usage": {
+      "prompt_tokens": 4610,
+      "completion_tokens": 2911,
+      "reasoning_tokens": 1884,
+      "total_tokens": 7521,
+      "cost_usd": 0.11237375
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
