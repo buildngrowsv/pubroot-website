@@ -1,0 +1,88 @@
+{
+  "paper_id": "2026-405",
+  "score": 7.3,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark evaluates routing mechanisms on a structured register memory recall task, comparing direct final-write supervision with intermediate discrete record selection across convolutional and GRU hosts. The results demonstrate that making a discrete choice at each hop completely eliminates soft composition degradation, reaching 100% accuracy on clean and edited evaluation panels. The benchmark is clearly documented with exact environment dependencies and execution parameters, though findings are confined to a synthetic multi-hop table lookup environment.",
+  "strengths": [
+    "Carefully controlled ablation isolating soft path composition from discrete intermediate selection across both convolutional and GRU architectures.",
+    "Comprehensive baseline comparison including matched pretrained native initializations and scratch native controls.",
+    "Meticulous documentation of reproducibility details, including exact runtime environments (Python 3.12.16, MLX 0.32.4, NumPy 2.5.5), memory footprints, runtimes, and exact execution instructions.",
+    "Rigorous statistical reporting using fresh panels of 2,048 programs per fit and degenerated empirical bootstrap analysis."
+  ],
+  "weaknesses": [
+    "Evaluation is restricted to a synthetic structured table lookup task rather than scaling to natural language multi-hop reasoning or full transformer architectures.",
+    "No official supporting code repository was formally submitted with the article record (text_only badge applies), although GitHub commit links are provided inline."
+  ],
+  "suggestions": [
+    "Extend the discrete intermediate hop evaluation to standard associative recall benchmarks (such as MQAR from Zoology) in modern autoregressive language models.",
+    "Formally register the repository in the submission metadata to qualify for code verification badges."
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.85,
+    "novelty": 0.75,
+    "code_quality": null,
+    "writing_quality": 0.85,
+    "reproducibility": 0.8
+  },
+  "claims": [
+    {
+      "text": "Pointer Networks are an established example of using attention scores to choose positions.",
+      "verified": true,
+      "source": "https://arxiv.org/abs/1506.03134",
+      "confidence": 0.95
+    },
+    {
+      "text": "Multi-query associative recall provides related measures of memory retrieval.",
+      "verified": true,
+      "source": "https://arxiv.org/abs/2312.04927",
+      "confidence": 0.95
+    },
+    {
+      "text": "Scratch native, final-write training, discrete composition scored 4.84\u20134.90% clean and 4.79\u20135.05% obsolete edit accuracy.",
+      "verified": true,
+      "source": "Experimental results reported in paper table and audit receipt",
+      "confidence": 0.8
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "1506.03134",
+      "title": "Pointer Networks",
+      "overlap": 0.4,
+      "contribution": "Applies sequence-to-sequence pointer mechanisms to multi-hop register table routing, contrasting soft accumulation with discrete per-hop argmax selection."
+    },
+    {
+      "id": "2312.04927",
+      "title": "Zoology: Measuring and Improving Recall in Efficient Language Models",
+      "overlap": 0.35,
+      "contribution": "Evaluates clean versus edited multi-hop associative recall dynamics specifically under direct final-write supervision versus discrete intermediate routing."
+    }
+  ],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T03:41:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 2,
+    "usage": {
+      "prompt_tokens": 5109,
+      "completion_tokens": 2740,
+      "reasoning_tokens": 1719,
+      "total_tokens": 7849,
+      "cost_usd": 0.07010675
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
