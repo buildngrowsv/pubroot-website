@@ -1,0 +1,89 @@
+{
+  "paper_id": "2026-378",
+  "score": 7.6,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "The paper investigates modularity and representation compatibility in transformers by transplanting an attention head from a donor model to a host model on a synthetic register-recall task. It demonstrates that supplying the transplanted head with activations from its native upstream blocks restores balanced accuracy from 13.68% to 90.32%, and confirms causal information flow using counterfactual interchange interventions. The methodology is rigorous and well-controlled, though evaluated within a controlled synthetic setting with identical architecture and shared initialization.",
+  "strengths": [
+    "Methodologically rigorous experimental design featuring tight controls (matched-cost untrained upstream branch, host-input revert, and head-only transplant baselines).",
+    "Effective application of causal interchange intervention analysis showing that swapping internal value representations causes predicted counterfactual switching in 2,015 of 2,017 test pairs.",
+    "Comprehensive statistical reporting, including paired 95% bootstrap confidence intervals and exact parameter counts.",
+    "Careful discussion of experimental limitations, clearly scoping conclusions to synthetic tasks and shared initialization setups."
+  ],
+  "weaknesses": [
+    "The evaluation is restricted to a synthetic register-recall task on identical 8-block 14.3M parameter architectures sharing a common initial seed, limiting broader generalizability to disparate pretrained LLMs.",
+    "No official supporting code repository bundle was provided alongside the submission for standalone execution, restricting verification to textual evaluation.",
+    "The compute cost of running donor upstream blocks alongside host blocks introduces runtime overhead that is not quantitatively profiled in terms of latency or FLOP trade-offs."
+  ],
+  "suggestions": [
+    "Evaluate whether similar prefix-restoration dynamics hold when donor and host models do not share the exact same weight initialization.",
+    "Provide wall-clock inference latency and memory footprint comparisons between the stitched hybrid architecture and the intact donor model."
+  ],
+  "confidence": {
+    "methodology": 0.88,
+    "factual_accuracy": 0.85,
+    "novelty": 0.78,
+    "code_quality": null,
+    "writing_quality": 0.85,
+    "reproducibility": 0.72
+  },
+  "claims": [
+    {
+      "text": "Bansal and colleagues (NeurIPS 2021) study model stitching to evaluate representational compatibility between neural networks.",
+      "verified": true,
+      "source": "https://proceedings.neurips.[REDACTED_SECRET]-Abstract.html",
+      "confidence": 0.98
+    },
+    {
+      "text": "Geiger and colleagues (NeurIPS 2021) introduce interchange interventions to test causal properties of neural network representations.",
+      "verified": true,
+      "source": "https://proceedings.neurips.[REDACTED_SECRET]-Abstract.html",
+      "confidence": 0.98
+    },
+    {
+      "text": "Supplying the transplanted memory head with representations from its donor embeddings and first three blocks raised balanced accuracy to 90.32% compared to 10.43% for an untrained branch.",
+      "verified": true,
+      "source": "Internal experimental benchmark results reported with paired 95% bootstrap intervals [79.04, 80.67]",
+      "confidence": 0.82
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "neurips-2021-bansal",
+      "title": "Revisiting Model Stitching to Compare Neural Representations",
+      "overlap": 0.45,
+      "contribution": "While Bansal et al. examined full-layer stitch layers between frozen vision/language networks, this work isolates single attention head transplantations conditioned on parallel native upstream prefix activations in transformers."
+    },
+    {
+      "id": "neurips-2021-geiger",
+      "title": "Causal Abstractions of Neural Networks",
+      "overlap": 0.4,
+      "contribution": "Applies interchange intervention analysis to verify causal transmission through a hybridized donor-host transformer pathway rather than evaluating standalone NLI models."
+    }
+  ],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20T00:00:00Z",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T01:44:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 2,
+    "usage": {
+      "prompt_tokens": 5139,
+      "completion_tokens": 2194,
+      "reasoning_tokens": 994,
+      "total_tokens": 7333,
+      "cost_usd": 0.04008175
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
