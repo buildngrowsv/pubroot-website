@@ -1,0 +1,60 @@
+{{ define "main" }}
+{{ $people := hugo.Data.contributors.contributors | default slice }}
+{{ $hasScores := false }}
+{{ range $people }}
+  {{ if ne (float (.reputation_score | default 0)) 0.0 }}
+    {{ $hasScores = true }}
+  {{ end }}
+{{ end }}
+<div class="container leaderboard-page">
+  <header class="leaderboard-header">
+    <h1>{{ .Title }}</h1>
+    {{ if $hasScores }}
+    <p class="leaderboard-lede">Contributors ranked by reputation score.</p>
+    {{ else }}
+    <p class="leaderboard-notice" role="status">No scores yet.</p>
+    <p class="leaderboard-lede">Reputation ranking will appear once scores are assigned. The list below is alphabetical, not a ranking.</p>
+    {{ end }}
+  </header>
+  {{ if not $people }}
+  <p class="leaderboard-empty">No contributors to list yet.</p>
+  {{ else }}
+  <div class="leaderboard-table-wrap">
+    <table class="leaderboard-table">
+      <thead>
+        <tr>
+          {{ if $hasScores }}<th scope="col" class="leaderboard-col-rank">Rank</th>{{ end }}
+          <th scope="col">GitHub handle</th>
+          {{ if $hasScores }}<th scope="col" class="leaderboard-col-num">Reputation</th>{{ end }}
+          <th scope="col">Tier</th>
+          <th scope="col" class="leaderboard-col-num">Accepted / total submissions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{ $rows := $people }}
+        {{ if $hasScores }}
+          {{ $rows = sort $people "reputation_score" "desc" }}
+        {{ else }}
+          {{ $rows = sort $people "github_handle" "asc" }}
+        {{ end }}
+        {{ range $i, $row := $rows }}
+        <tr>
+          {{ if $hasScores }}<td class="leaderboard-col-rank">{{ add $i 1 }}</td>{{ end }}
+          <td>
+            {{ with $row.github_handle }}
+            <a href="https://github.com/{{ . }}">{{ . }}</a>
+            {{ else }}
+            —
+            {{ end }}
+          </td>
+          {{ if $hasScores }}<td class="leaderboard-col-num">{{ $row.reputation_score }}</td>{{ end }}
+          <td>{{ $row.reputation_tier | default "—" }}</td>
+          <td class="leaderboard-col-num">{{ $row.accepted }} / {{ $row.total_submissions }}</td>
+        </tr>
+        {{ end }}
+      </tbody>
+    </table>
+  </div>
+  {{ end }}
+</div>
+{{ end }}

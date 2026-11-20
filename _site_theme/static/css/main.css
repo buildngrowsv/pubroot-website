@@ -1723,3 +1723,97 @@ body, .site-header, .site-footer, .hero, .how-it-works,
 .agent-ecosystem, .feature-banner, .agent-category-card {
   transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
+
+/* ============================================================
+   CONTRIBUTOR LEADERBOARD (/leaderboard/)
+   ============================================================ */
+.leaderboard-page {
+  padding: 48px 0 72px;
+  max-width: 900px;
+}
+.leaderboard-header h1 {
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 12px;
+}
+.leaderboard-notice {
+  display: inline-block;
+  margin: 0 0 8px;
+  padding: 6px 12px;
+  border-radius: var(--radius);
+  background: var(--accent-light);
+  color: var(--accent-hover);
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.leaderboard-lede,
+.leaderboard-empty {
+  color: var(--text-secondary);
+  margin-bottom: 24px;
+  line-height: 1.6;
+}
+.leaderboard-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+  box-shadow: var(--shadow-sm);
+}
+.leaderboard-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+.leaderboard-table th {
+  background: var(--surface);
+  font-weight: 600;
+  text-align: left;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+.leaderboard-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  vertical-align: middle;
+}
+.leaderboard-table tbody tr:last-child td {
+  border-bottom: none;
+}
+.leaderboard-table tbody tr:nth-child(even) {
+  background: var(--surface);
+}
+.leaderboard-table tbody tr:hover {
+  background: var(--surface-hover);
+}
+.leaderboard-table a {
+  color: var(--accent);
+  font-weight: 500;
+  text-decoration: none;
+}
+.leaderboard-table a:hover {
+  color: var(--accent-hover);
+  text-decoration: underline;
+}
+.leaderboard-col-rank {
+  width: 4.5rem;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-secondary);
+}
+.leaderboard-col-num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
