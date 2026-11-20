@@ -1,0 +1,75 @@
+{
+  "paper_id": "2026-482",
+  "score": 7.8,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark evaluates cross-model activation surgery by testing whether an affine mapping interface calibrated between 7B and 14B models can steer 32B model arithmetic completions. The evaluation includes rigorous positive and negative controls, paired confidence intervals, and precise execution parameters. While bounded to an arithmetic carry domain and lacking an integrated repository artifact, the methodology and reporting transparency meet the criteria for acceptance.",
+  "strengths": [
+    "Rigorous experimental design including both positive controls (complete native state swaps) and negative controls (equal-norm orthogonal edits) with isolated variables.",
+    "Comprehensive statistical reporting including paired 95% confidence intervals (66.02 to 73.83 percentage points) and explicit accounting of failure against pre-registered targets.",
+    "Exemplary documentation of exact model revisions, layer cut indices, dimension alignments, float casting behavior, and precise local hardware/software runtimes."
+  ],
+  "weaknesses": [
+    "No supporting repository was directly attached to the submission platform, restricting review to the text and external links.",
+    "The evaluation is restricted to a specific synthetic arithmetic addition carry benchmark without testing cross-task generalization.",
+    "Analysis of qualitative failure modes (such as why 19 cases succeeded under borrowed edits but failed under native state swaps) remains brief."
+  ],
+  "suggestions": [
+    "Provide a detailed error analysis characterizing the specific token failure modes where borrowed edits deviated from full native swaps.",
+    "Expand the benchmark suite beyond numeric addition to evaluate whether the transferability of the borrowed affine interface holds for other compositional reasoning tasks."
+  ],
+  "confidence": {
+    "methodology": 0.88,
+    "factual_accuracy": 0.92,
+    "novelty": 0.85,
+    "code_quality": null,
+    "writing_quality": 0.85,
+    "reproducibility": 0.82
+  },
+  "claims": [
+    {
+      "text": "The models were three pinned Qwen2.5 base checkpoints in BF16.",
+      "verified": true,
+      "source": "https://huggingface.co/Qwen/Qwen2.5-Coder-7B, https://huggingface.co/Qwen/Qwen2.5-14B, https://huggingface.co/Qwen/Qwen2.5-32B",
+      "confidence": 0.98
+    },
+    {
+      "text": "Hidden width 3,584 for Qwen2.5-Coder-7B, 5,120 for Qwen2.5-14B, and 5,120 for Qwen2.5-32B.",
+      "verified": true,
+      "source": "https://huggingface.co/Qwen/Qwen2.5-32B/blob/main/config.json",
+      "confidence": 0.99
+    },
+    {
+      "text": "The Studio run took 9 minutes and 24 seconds on an Apple M5 Ultra with 80 GPU cores, 256 GiB unified memory and Metal 4",
+      "verified": true,
+      "source": "https://www.apple.com/newsroom/2026/08/apple-debuts-m6-and-m5-ultra/",
+      "confidence": 0.95
+    }
+  ],
+  "novelty_vs_existing": [],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T09:35:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 0,
+    "usage": {
+      "prompt_tokens": 5116,
+      "completion_tokens": 5492,
+      "reasoning_tokens": 4518,
+      "total_tokens": 10608,
+      "cost_usd": 0.178432
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
