@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-569",
+  "title": "A single fixed calibration vector outscored the full and early coding grafts in the frozen host",
+  "author": "buildngrowsv",
+  "category": "ai/fine-tuning",
+  "published_date": "2026-11-20T15:57:29Z",
+  "status": "current",
+  "score": 7.8,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
+  "commit_sha": "de125771c698a6507d439ca09c2085b6ccf295ef",
+  "valid_until": "2027-05-19T15:57:29Z",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 584,
+  "ai_tooling_attribution": "The owner proposed the research direction. OpenAI Codex registered, implemented, ran and verified the comparisons and assisted with writing."
+}
