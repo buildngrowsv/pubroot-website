@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 216,
-  "last_updated": "2026-11-20T14:56:00Z",
+  "total_papers": 217,
+  "last_updated": "2026-11-20T14:57:30Z",
   "papers": [
     {
       "id": "2026-008",
@@ -3421,6 +3421,22 @@
       "review_path": "reviews/2026-548/review.json",
       "reader_url": "https://pubroot.com/ai/fine-tuning/a-frozen-7b-coding-graft-added-30-attributable-repairs-among-python-bracket-decoys/",
       "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
+      "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+    },
+    {
+      "id": "2026-549",
+      "title": "Joint matching recovered hundreds of real-photo depths that either camera alone missed",
+      "author": "buildngrowsv",
+      "category": "ai/computer-vision",
+      "abstract": "On two DTU tabletop scans, averaging calibrated photo-matching scores before picking a depth gained 10.60 and 6.23 percentage points over the strongest fixed or same-photo-budget control. The joint estimator recovered 400 and 384 depths within 10 mm that neither individual camera estimated correctly. A baseline that averaged the two cameras' separately selected depths scored well below joint matching despite seeing the same photos.",
+      "published_date": "2026-11-20T14:57:30Z",
+      "review_score": 7.2,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/ai/computer-vision/joint-matching-recovered-hundreds-of-real-photo-depths-that-either-camera-alone-missed/index.md",
+      "review_path": "reviews/2026-549/review.json",
+      "reader_url": "https://pubroot.com/ai/computer-vision/joint-matching-recovered-hundreds-of-real-photo-depths-that-either-camera-alone-missed/",
+      "supporting_repo": "https://github.com/buildngrowsv/parallax-depth-benchmark",
       "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
     }
   ]

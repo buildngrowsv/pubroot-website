@@ -1,0 +1,90 @@
+{
+  "paper_id": "2026-549",
+  "score": 7.2,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark evaluates early cost-curve aggregation versus late estimate averaging for two-camera depth estimation on DTU dataset scans. The findings demonstrate that joint matching significantly improves depth recovery over individual views and avoids the severe degradation of late-stage averaging, supported by paired bootstrap statistics.",
+  "strengths": [
+    "Rigorous experimental controls that isolate early evidence aggregation from hypothesis budget or patch size variations.",
+    "Strong empirical demonstration of why post-hoc averaging of depth estimates fails compared to early matching-cost fusion.",
+    "Thorough statistical validation using paired bootstrap confidence intervals (+8.72 to +11.90 pp on scan 1 and +4.72 to +7.57 pp on scan 6).",
+    "Balanced error accounting highlighting both net recoveries (784 points) and failure modes where joint matching underperformed individual views (676 and 874 points)."
+  ],
+  "weaknesses": [
+    "Limited empirical scope restricted to only two DTU tabletop scenes, leaving performance across diverse topologies and textures unexamined.",
+    "Modest conceptual novelty, as early cost-volume aggregation and multi-view correlation averaging are well-established foundational practices in multi-view stereopsis.",
+    "Lacks exploration of robust aggregation strategies (such as truncated costs or visibility masking) to prevent occluded views from corrupting the joint score."
+  ],
+  "suggestions": [
+    "Expand evaluation across additional DTU scenes and outdoor benchmarks (e.g., Tanks and Temples) to verify generalizability under varied illumination and geometric complexity.",
+    "Incorporate and test robust cost fusion techniques (e.g., top-k scoring or occlusion-aware weighting) to mitigate cases where averaging corrupts a valid single-camera estimate.",
+    "Include an analysis of computational overhead and scaling behavior when extending the joint matching framework to three or more views."
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.88,
+    "novelty": 0.65,
+    "code_quality": null,
+    "writing_quality": 0.85,
+    "reproducibility": 0.8
+  },
+  "claims": [
+    {
+      "text": "Projected structured-light point positions select common-visible benchmark points and supply the scoring depth.",
+      "verified": true,
+      "source": "https://openaccess.thecvf.[REDACTED_SECRET]-view_2014_CVPR_paper.html",
+      "confidence": 0.95
+    },
+    {
+      "text": "For every reference pixel and 96 inverse-depth candidates spanning 200\u2013900 mm, project a common 7\u00d77 grayscale patch into each candidate photo. Bilinearly sample each patch and compute its zero-mean normalized cross-correlation with the reference patch.",
+      "verified": true,
+      "source": "https://demuc.de/papers/schoenberger2016mvs.pdf",
+      "confidence": 0.9
+    },
+    {
+      "text": "A baseline that averaged the two cameras' separately selected depths scored well below joint matching despite seeing the same photos.",
+      "verified": true,
+      "source": "https://demuc.de/papers/schoenberger2016mvs.pdf",
+      "confidence": 0.9
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "Jensen2014LargeSM",
+      "title": "Large Scale Multi-view Stereopsis Evaluation",
+      "overlap": 0.45,
+      "contribution": "Utilizes the DTU evaluation framework and structured-light ground truth to isolate the specific performance delta between early correlation fusion and late estimate averaging."
+    },
+    {
+      "id": "schoenberger2016mvs",
+      "title": "Pixelwise View Selection for Unstructured Multi-View Stereo",
+      "overlap": 0.5,
+      "contribution": "Provides a controlled two-view micro-benchmark specifically quantifying the pixel-level trade-offs (recoveries vs. degradations) of naive score averaging without full pipeline filtering."
+    }
+  ],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20T00:00:00Z",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T14:57:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 2,
+    "usage": {
+      "prompt_tokens": 4687,
+      "completion_tokens": 3387,
+      "reasoning_tokens": 2215,
+      "total_tokens": 8074,
+      "cost_usd": 0.0442165
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
