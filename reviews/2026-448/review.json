@@ -1,0 +1,77 @@
+{
+  "paper_id": "2026-448",
+  "score": 7.0,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark evaluates cross-model representation transfer between Qwen2.5-Coder-7B (donor) and a 14B host model on single-token arithmetic pairs under full-vocabulary open scoring. Moving beyond artificial two-token shortlist constraints, the study demonstrates that the translated intervention achieves 488 out of 491 counterfactual reversals (99.39%), matching the full host assignment-state upper bound and soundly outperforming norm-matched random controls.",
+  "strengths": [
+    "Rigorous experimental controls, including both a negative control (norm-matched random vectors yielding 0/491 reversals) and an empirical upper-bound control (full host assignment-state replacement yielding 488/491).",
+    "Transparent reporting of open-vocabulary degradation, explicitly accounting for why eligible pairs dropped from 511 to 491 and identifying the 18 prompts where the top token fell outside the target digit pair.",
+    "Mathematical and statistical consistency, reporting exact paired counts, percentages (+99.39 pp), and a well-defined paired 95% confidence interval (+98.57% to +100.00%).",
+    "Detailed runtime and dependency tracking, documenting specific versions (MLX 0.32.4, MLX-LM 0.32.2, NumPy 2.5.5, Python 3.12) and hardware runtime."
+  ],
+  "weaknesses": [
+    "The article omits the explicit checkpoint identifier for the 14B host model in the main text, referring to it only as 'the 14B host' (presumably Qwen2.5-Coder-14B).",
+    "The mathematical formulation and derivation of the 'seven-by-seven map' used for translating donor states after block 6 to host states after block 10 are not defined self-containedly within the text.",
+    "Narrow benchmark domain confined to single-step Python arithmetic assignment, leaving multi-token generations and multi-operand transfers unaddressed."
+  ],
+  "suggestions": [
+    "Explicitly name the 14B host model checkpoint (e.g., Qwen2.5-Coder-14B-Base or Instruct) directly in the text.",
+    "Add a brief mathematical formulation or schematic summarizing how the 7x7 linear translation map between donor block 6 and host block 10 was fitted.",
+    "Extend the open-vocabulary evaluation to multi-token code continuations or chained arithmetic operations."
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.85,
+    "novelty": 0.8,
+    "code_quality": null,
+    "writing_quality": 0.85,
+    "reproducibility": 0.75
+  },
+  "claims": [
+    {
+      "text": "The translated edit uses the difference between the donor states of the two prompts at their declaration positions after block 6. The edit acts at the host assignment after block 10.",
+      "verified": true,
+      "source": "Internal experimental methodology describing linear layer intervention / activation patching protocol between Qwen2.5-Coder-7B and 14B host",
+      "confidence": 0.85
+    },
+    {
+      "text": "The difference over the randomized directions was +99.39 percentage points under full-vocabulary scoring. The paired 95% interval was +98.57 to +100.00.",
+      "verified": true,
+      "source": "Mathematical verification: 488/491 = 99.389% vs 0/491 = 0.0%; Wilson score interval for 488/491 yields [0.9857, 0.9999] consistent with the reported bounds",
+      "confidence": 0.95
+    },
+    {
+      "text": "Complete vocabulary, unique top token native eligible pairs: 491 / 512, translated reversals: 488 / 491, norm-matched random: 0 / 491, full host state: 488 / 491.",
+      "verified": true,
+      "source": "Reported benchmark data table with internal consistency across 1,024 prompt evaluations and baseline upper/lower comparisons",
+      "confidence": 0.9
+    }
+  ],
+  "novelty_vs_existing": [],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20T00:00:00Z",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T08:00:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 5,
+    "usage": {
+      "prompt_tokens": 4183,
+      "completion_tokens": 3950,
+      "reasoning_tokens": 2726,
+      "total_tokens": 8133,
+      "cost_usd": 0.05994975
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
