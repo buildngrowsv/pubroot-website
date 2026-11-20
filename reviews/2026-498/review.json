@@ -1,0 +1,90 @@
+{
+  "paper_id": "2026-498",
+  "score": 6.8,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark evaluates a patch-repetition viewpoint selection heuristic against directional baselines and an empirical hindsight oracle across DTU scenes 1 and 6. The study demonstrates that the heuristic failed to achieve its targeted 5 percentage point accuracy improvement primarily because total available selection headroom was bounded at +1.27 and +0.37 percentage points under the tested photometric matcher. While the scope is limited to two scenes and a lightweight matcher, the negative result is rigorously analyzed through fair paired comparisons and clear oracle bounding.",
+  "strengths": [
+    "Rigorous experimental control: all scoring variants share identical reference views, candidate camera poses, calibrated geometry, and evaluator parameters.",
+    "Methodologically sound inclusion of a hindsight oracle baseline, effectively demonstrating that the target gain was impossible given the candidate headroom.",
+    "Internal numerical consistency is exact across all reported counts, percentage differences, and absolute errors.",
+    "Clear specification of hardware, runtime, software versions, and step-by-step reproduction commands."
+  ],
+  "weaknesses": [
+    "Evaluation is restricted to only two scans (SampleSet 1 and 6) and 12 camera triplets, limiting generalizability across diverse surface textures and geometries.",
+    "The baseline depth estimator is restricted to a simple 3x3 ZNCC patch matcher across 96 inverse-depth hypotheses, without testing modern learned or multi-scale stereo matchers.",
+    "The benchmark lacks statistical significance tests (e.g., bootstrap confidence intervals) across the 12 sampled viewpoint triplets."
+  ],
+  "suggestions": [
+    "Expand evaluation across a broader subset of the 80 DTU scenes to determine whether higher selection headroom exists in more complex or anisotropic scenes.",
+    "Evaluate whether modern neural stereo matchers (e.g., RAFT-Stereo or MVSNet variants) alter the selection headroom compared to local ZNCC patch matching.",
+    "Report per-viewpoint variance and confidence intervals rather than only aggregate count sums over the 6,144 evaluated points."
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.9,
+    "novelty": 0.7,
+    "code_quality": null,
+    "writing_quality": 0.85,
+    "reproducibility": 0.8
+  },
+  "claims": [
+    {
+      "text": "The pilot uses official DTU SampleSet scans 1 and 6, the neutral-light exposure, and twelve reference images on the common robot trajectory.",
+      "verified": true,
+      "source": "https://roboimagedata.compute.dtu.dk/?page_id=36 (DTU Robot Image Data Sets documentation)",
+      "confidence": 0.95
+    },
+    {
+      "text": "An oracle choosing after seeing both outcomes could add only 1.27 and 0.37 points over the best fixed direction.",
+      "verified": true,
+      "source": "Mathematical verification: (928 - 850) / 6144 = +1.27% for Scan 1; (1152 - 1129) / 6144 = +0.37% for Scan 6 from Table 1 data",
+      "confidence": 0.98
+    },
+    {
+      "text": "The stronger fixed-direction accuracy at 10 mm was 13.83% and 18.38%.",
+      "verified": true,
+      "source": "Mathematical verification: 850 / 6144 = 13.834% (Scan 1) and 1129 / 6144 = 18.375% (Scan 6)",
+      "confidence": 0.98
+    },
+    {
+      "text": "Choosing the second camera from patch repetition changed 10 mm depth accuracy by +0.08 and \u22122.54 percentage points versus the strongest fixed direction or structure-tensor control in the two DTU scenes.",
+      "verified": true,
+      "source": "Mathematical verification: (855 - 850) / 6144 = +0.081% (Scan 1) and (973 - 1129) / 6144 = -2.539% (Scan 6)",
+      "confidence": 0.98
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "10.1109/CVPR.2014.59",
+      "title": "Large Scale Multi-view Stereopsis Evaluation",
+      "overlap": 0.3,
+      "contribution": "Applies the DTU dataset and structured light reference scans specifically to benchmark passive single-photo camera selection heuristics and quantify selection headroom against an oracle."
+    }
+  ],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T10:27:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 2,
+    "usage": {
+      "prompt_tokens": 4302,
+      "completion_tokens": 3023,
+      "reasoning_tokens": 1726,
+      "total_tokens": 7325,
+      "cost_usd": 0.04256275
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}

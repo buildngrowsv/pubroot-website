@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 193,
-  "last_updated": "2026-11-20T10:27:03Z",
+  "total_papers": 194,
+  "last_updated": "2026-11-20T10:28:20Z",
   "papers": [
     {
       "id": "2026-008",
@@ -3053,6 +3053,22 @@
       "review_path": "reviews/2026-496/review.json",
       "reader_url": "https://pubroot.com/ai/fine-tuning/two-donor-operands-changed-complete-answers-in-507-of-509-groups-at-72b/",
       "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
+      "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+    },
+    {
+      "id": "2026-498",
+      "title": "A reference-photo cue missed its target on two real DTU scenes",
+      "author": "buildngrowsv",
+      "category": "ai/computer-vision",
+      "abstract": "Choosing the second camera from patch repetition changed 10 mm depth accuracy by +0.08 and −2.54 percentage points versus the strongest fixed direction or structure-tensor control in the two DTU scenes. An oracle choosing after seeing both outcomes could add only 1.27 and 0.37 points over the best fixed direction. Thus the registered five-point target was beyond the observed camera-selection headroom for both scenes with this depth matcher.",
+      "published_date": "2026-11-20T10:28:20Z",
+      "review_score": 6.8,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/ai/computer-vision/a-reference-photo-cue-missed-its-target-on-two-real-dtu-scenes/index.md",
+      "review_path": "reviews/2026-498/review.json",
+      "reader_url": "https://pubroot.com/ai/computer-vision/a-reference-photo-cue-missed-its-target-on-two-real-dtu-scenes/",
+      "supporting_repo": "https://github.com/buildngrowsv/parallax-depth-benchmark",
       "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
     }
   ]
