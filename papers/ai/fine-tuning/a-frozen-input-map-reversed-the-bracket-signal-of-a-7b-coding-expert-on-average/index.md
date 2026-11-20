@@ -1,0 +1,43 @@
+---
+title: "A frozen input map reversed the bracket signal of a 7B coding expert on average"
+paper_id: "2026-414"
+author: "buildngrowsv"
+category: "ai/fine-tuning"
+date: "2026-11-20T05:18:44Z"
+abstract: "The Qwen2.5-Coder-7B base model\u2019s final feed-forward module contributed a positive 2.043 log-odds signal for the matching closing bracket when it read its own model\u2019s state. When the same module read the Qwen2.5-14B base model through the original affine input map, the mean contribution was \u22120.242. We kept the 7B model\u2019s residual stream and vocabulary readout in place. The effect therefore arose before the transplanted output could reach the 14B receiver. The result identifies one failure point in this interface."
+score: 7.8
+verdict: "ACCEPTED"
+badge: "text_only"
+ai_tooling_attribution: "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+---
+
+The Qwen2.5-Coder-7B base model’s final feed-forward module contributed a positive 2.043 log-odds signal for the matching closing bracket when it read its own model’s state. When the same module read the Qwen2.5-14B base model through the original affine input map, the mean contribution was −0.242. We kept the 7B model’s residual stream and vocabulary readout in place. The effect therefore arose before the transplanted output could reach the 14B receiver. The result identifies one failure point in this interface.
+
+![Native and translated opener signals across all three bracket pairs](https://raw.githubusercontent.com/buildngrowsv/routed-expert-[REDACTED_SECRET]-input.png)
+
+## Cross the input source and destination
+
+
+The frozen donor was **Qwen/Qwen2.5-Coder-7B**, revision `0396a76181e127dfc13e5c5ec48a8cee09938b02`. The frozen host was **Qwen/Qwen2.5-14B**, revision `97e1e76335b7017d8f67c08a19d103c0504298c9`. The donor has 28 blocks of width 3,584 and the host has 48 blocks of width 5,120. We fed the 7B block-28 feed-forward module with translated inputs to the 14B block-27 feed-forward module, after each model’s attention and corresponding normalization. [Donor revision](https://huggingface.co/Qwen/Qwen2.5-Coder-7B/tree/0396a76181e127dfc13e5c5ec48a8cee09938b02) · [Host revision](https://huggingface.co/Qwen/Qwen2.5-14B/tree/97e1e76335b7017d8f67c08a19d103c0504298c9)
+
+The original affine map has 5,120 input coordinates, 3,584 output coordinates and an intercept. It used 768 Python implementation windows and 768 documentation windows from CPython commit `60403a5409ff2c3f3b07dd2ca91a7a3e096839c7`. Files were assigned to splits before sampling. The code retained windows with matched tokenization and verified them against the saved hash manifest. For each 65-token window we extracted four input states at zero-based positions 31, 39, 47 and 55. Centering the resulting 6,144 rows gives matrices X and Y. The fit solves `(X.T @ X + lambda * I) W = X.T @ Y`, with lambda equal to 0.02 times the mean diagonal entry of X.T @ X. The intercept maps the host mean to the donor mean. Only CPython training rows enter this solve. [Sampling and ridge fit](https://github.com/buildngrowsv/routed-expert-[REDACTED_SECRET].py) · [State extraction and calibration](https://github.com/buildngrowsv/routed-expert-[REDACTED_SECRET].py) · [Window identities and hashes](https://github.com/buildngrowsv/routed-expert-[REDACTED_SECRET].json)
+
+The earlier transplanted module yielded zero complete repair groups in the 14B host, while the full 7B coder on the same panel solved 54. An intervention in that coder found a strong effect in one bracket direction. Here we used a fresh 256-group panel. Within each group a program changed only one opening bracket, requiring a different closing token. Each prompt put a cursor after a nested expression and offered the next token as a choice among a closing parenthesis, square bracket, brace and colon. The prefix contains the changing opener. The suffix starts with the next line and remains identical across the group. We independently parsed all four completions for each prompt. For each of the three destinations we applied the same module with each of the three source inputs. Its input either came from the native 7B state or from the 14B model’s block-27 state passed through the exact frozen input map used earlier. Everything outside that final module in the receiving 7B model retained the destination prompt’s native state. We measured four candidate logits per combination. Native matched-source scores agreed with the standard forward calculation on the eight preflight prompts. [Registered design](https://github.com/buildngrowsv/routed-expert-[REDACTED_SECRET].md) · [Prior splice](https://github.com/buildngrowsv/routed-expert-[REDACTED_SECRET].md) · [Code](https://github.com/buildngrowsv/routed-expert-[REDACTED_SECRET].py)
+
+We held the destination constant. For a pair of candidate closing tokens A and B, we measured how much switching the input source from B to A moved the log odds of A versus B. This cancels any constant preference for one token. We averaged across the three destinations and bracket pairs and resampled whole program groups for 95% paired intervals. The native mean was +2.043 (1.984 to 2.102). The translated mean was −0.242 (−0.270 to −0.215). The translated mean minus half the native mean was −1.263 (−1.301 to −1.226), passing the prespecified criterion for attenuation.
+
+| Opening characters contrasted | Native input | Translated host input |
+|---|---:|---:|
+| Parenthesis and square bracket | +1.488 | −0.020 |
+| Parenthesis and brace | +2.231 | −0.564 |
+| Square bracket and brace | +2.409 | −0.142 |
+
+Matching each source to its destination, the original model solved 46 of 256 complete groups. Translated input solved 25 and zeroing the contribution solved 20. The destination still contains its own native residual information. These complete-group counts include that information. The crossed contrast measures which opener the module’s contribution favors. [Four-candidate scores, prompts and receipt](https://github.com/buildngrowsv/routed-expert-[REDACTED_SECRET]) · [Independent reconstruction](https://github.com/buildngrowsv/routed-expert-[REDACTED_SECRET].py) · [Recomputed effects](https://github.com/buildngrowsv/routed-expert-[REDACTED_SECRET].json)
+
+The experiment tests one affine calibration on one pair of pretrained models. The mapped input combines the host’s state and the frozen map, so the result leaves open whether the host state contains a recoverable signal and whether the output map also loses information. The next discriminating test fits input maps on independent matched code examples and compares the original and recalibrated maps before retraining any receiver. The owner proposed the transplant and causal tests. OpenAI Codex implemented and ran the experiment on the owner’s Apple M5 Ultra, audited its archives and assisted with writing.
+
+## Reproduction
+
+The source, data and audit are public. The results directory contains all 768 prompt rows with labels, a NumPy archive of all four logits for each crossing, the result schema and a versioned Studio receipt. Running `python nested_surgery/bridge_input_study/verify.py` from the repository reconstructs the labels, score contrasts and bootstrap intervals without loading either model. The original experiment used Python 3.12, MLX 0.32.4, MLX-LM 0.32.2, Tokenizers 0.23.3, NumPy 2.5.5 and Hugging Face Hub 2.4.0. To rerun model inference, rebuild the original graft’s affine inputs using the calibration procedure above, then run the input-map diagnostic with the same pinned module, fresh generator indices 40000–40255 and original archived interface. The reported SHA-256 binds the exact interface file used in this study. [Complete public result directory and instructions](https://github.com/buildngrowsv/routed-expert-[REDACTED_SECRET]) · [Raw score archive](https://github.com/buildngrowsv/routed-expert-[REDACTED_SECRET]-scores.npz) · [Recalibration protocol](https://github.com/buildngrowsv/routed-expert-[REDACTED_SECRET].md)
+
+The initial automated review requested model identities and detailed calibration methods in the article. This version includes them and links directly to the already released audit and raw data. [Initial Pubroot review](https://github.com/buildngrowsv/pubroot-website/issues/411)
