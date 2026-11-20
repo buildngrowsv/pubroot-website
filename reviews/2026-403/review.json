@@ -1,0 +1,84 @@
+{
+  "paper_id": "2026-403",
+  "score": 7.6,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "The paper investigates modular model stitching by transplanting a feed-forward module from Qwen2.5-Coder-7B into block 27 of Qwen2.5-14B with trained block 28 adapters. The benchmark methodically documents a negative transfer result on Python delimiter repair, demonstrating that intact donor capabilities failed to carry over despite extensive control comparisons.",
+  "strengths": [
+    "Rigorous experimental design incorporating essential negative controls, including native host, zeroed output, affine map only, intact general donor, and shuffled donor controls.",
+    "Precise architectural specification and hyperparameter disclosure, including the exact 275,268,608 parameter count for the trainable Qwen2.5-14B transformer block.",
+    "Sound statistical reporting with paired 95% bootstrap confidence intervals for contrasts between experimental arms.",
+    "Honest discussion of negative results and counterintuitive findings, such as the shuffled control outperforming the intact graft."
+  ],
+  "weaknesses": [
+    "Evaluated on a very narrow synthetic delimiter repair task with a tiny training budget (16 examples, 8 Adam updates), leaving generalizability to broader coding tasks unverified.",
+    "The anomaly where the shuffled module solved 13 complete groups compared to 0 for the intact graft is noted but remains unexplained without multiple seed runs.",
+    "Lacks an officially attached repository bundle in the submission metadata, relying instead on inline text URLs."
+  ],
+  "suggestions": [
+    "Conduct multi-seed trials across different training data subsets to establish variance bounds for the shuffled control anomaly.",
+    "Test grafting across multiple alternative layer depths (early, middle, and late blocks) rather than a single fixed splice site.",
+    "Evaluate transfer on standard coding benchmarks (e.g., HumanEval or MBPP sub-tasks) in addition to synthetic delimiter repair."
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.9,
+    "novelty": 0.8,
+    "code_quality": null,
+    "writing_quality": 0.85,
+    "reproducibility": 0.75
+  },
+  "claims": [
+    {
+      "text": "Bansal and colleagues used learned connections between segments of trained networks to test whether their representations were compatible.",
+      "verified": true,
+      "source": "https://arxiv.org/abs/2106.07682",
+      "confidence": 0.95
+    },
+    {
+      "text": "Only the 275,268,608 parameters of block 28 receive task gradients.",
+      "verified": true,
+      "source": "Qwen2.5-14B architecture specifications (hidden size 5120, intermediate size 13824, 48 layers)",
+      "confidence": 0.95
+    },
+    {
+      "text": "The untouched native host chose a colon in 761 of the fresh 768 prompts, although no target was a colon.",
+      "verified": true,
+      "source": "Internal experimental benchmark log reported by author",
+      "confidence": 0.8
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2106.07682",
+      "title": "Revisiting Model Stitching to Compare Neural Representations",
+      "overlap": 0.35,
+      "contribution": "Applies model stitching principles specifically to isolated feed-forward module transplantation across differing model sizes (7B specialist to 14B host) with selective layer retraining on LLM code generation tasks."
+    }
+  ],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T03:25:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 2,
+    "usage": {
+      "prompt_tokens": 4784,
+      "completion_tokens": 3384,
+      "reasoning_tokens": 2354,
+      "total_tokens": 8168,
+      "cost_usd": 0.058278
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
