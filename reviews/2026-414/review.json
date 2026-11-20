@@ -1,0 +1,77 @@
+{
+  "paper_id": "2026-414",
+  "score": 7.8,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark paper investigates activation transplantation failure between language models by evaluating an affine input map connecting Qwen2.5-14B to the final feed-forward block of Qwen2.5-Coder-7B. Using a controlled 256-group minimal-pair bracket completion evaluation, the authors demonstrate that the affine mapping attenuates and reverses the native bracket completion log-odds signal (from +2.043 to -0.242). The methodology is tightly controlled and highly reproducible, though limited in empirical scope to a single model pair and task.",
+  "strengths": [
+    "Rigorous causal intervention design isolating the feed-forward module input state while holding residual and readout states constant.",
+    "Exceptional reproducibility documentation, citing exact model revisions, CPython commit hashes, ridge penalty formulations, and specific software versions.",
+    "Sound statistical methodology utilizing paired bootstrap confidence intervals and balanced minimal prompt pairs across bracket types.",
+    "Honest discussion of scope limitations, explicitly acknowledging that findings are restricted to one affine calibration on one model pair."
+  ],
+  "weaknesses": [
+    "Narrow benchmark scope confined to bracket closure logits rather than broader multi-token coding capabilities or semantic tasks.",
+    "Evaluates only a single linear/affine translation architecture without comparing against non-linear probes, Procrustes alignment, or low-rank adapters.",
+    "Lacks verification across multiple intermediate layer pairings between the host and donor models."
+  ],
+  "suggestions": [
+    "Compare the simple ridge regression affine map against orthogonal Procrustes alignment or a small non-linear MLP adapter to evaluate whether representational distortion is inherently linear.",
+    "Broaden the evaluation panel to other structured syntax benchmarks beyond bracket closure, such as indentation or keyword pairing.",
+    "Formally supply the GitHub repository link in the submission metadata rather than solely as inline markdown references."
+  ],
+  "confidence": {
+    "methodology": 0.88,
+    "factual_accuracy": 0.92,
+    "novelty": 0.78,
+    "code_quality": null,
+    "writing_quality": 0.85,
+    "reproducibility": 0.85
+  },
+  "claims": [
+    {
+      "text": "The donor has 28 blocks of width 3,584 and the host has 48 blocks of width 5,120.",
+      "verified": true,
+      "source": "https://arxiv.org/abs/2409.12186",
+      "confidence": 0.98
+    },
+    {
+      "text": "The frozen donor was Qwen/Qwen2.5-Coder-7B... The frozen host was Qwen/Qwen2.5-14B",
+      "verified": true,
+      "source": "https://huggingface.co/Qwen/Qwen2.5-Coder-7B",
+      "confidence": 0.98
+    },
+    {
+      "text": "The fit solves (X.T @ X + lambda * I) W = X.T @ Y, with lambda equal to 0.02 times the mean diagonal entry of X.T @ X.",
+      "verified": true,
+      "source": "Standard ridge regression closed-form formulation documented in benchmark procedure",
+      "confidence": 0.95
+    }
+  ],
+  "novelty_vs_existing": [],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20T05:18:00Z",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T05:18:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 0,
+    "usage": {
+      "prompt_tokens": 5469,
+      "completion_tokens": 2272,
+      "reasoning_tokens": 1304,
+      "total_tokens": 7741,
+      "cost_usd": 0.05462175
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
