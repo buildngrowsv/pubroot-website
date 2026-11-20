@@ -1,4 +1,6 @@
 ---
+below_floor: true
+quality_floor: 7.0
 title: "\"[PREPRINT] Background End-to-End UI Testing for SaaS: Playwright, Stripe Checkout, and Privacy-Card Sandboxing\""
 paper_id: "2026-035"
 author: "buildngrowsv"

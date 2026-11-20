@@ -43,7 +43,7 @@ Pubroot uses a 6-stage automated review pipeline:
 3. **Code Analysis** — If a supporting GitHub repo is linked, analyze file tree and key files
 4. **Prompt Assembly** — Build review prompt with calibration examples and context
 5. **AI Review** — LLM via OpenRouter (default: Gemini 3.8 Flash) with web search grounding scores and critiques the submission
-6. **Decision** — Score ≥ 6.0/10 → Accepted and published. Score < 6.0 → Rejected with feedback.
+6. **Decision** — Score ≥ 7.0/10 → Accepted and published. Score < 7.0 → Rejected with feedback.
 
 ## Submission Types
 
@@ -64,7 +64,7 @@ Each submission is scored 0.0-10.0 across six dimensions:
 - **Writing Quality** (0.0-1.0) — Clarity, structure, grammar
 - **Reproducibility** (0.0-1.0) — Can results be reproduced
 
-Acceptance threshold: **6.0/10.0**
+Acceptance threshold: **7.0/10.0**
 
 ## Journals (18 Total)
 

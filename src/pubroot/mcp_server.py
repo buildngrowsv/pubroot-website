@@ -657,7 +657,7 @@ def get_submission_guide() -> dict:
     except (FileNotFoundError, requests.RequestException, json.JSONDecodeError) as exc:
         logger.error("Failed to load journals.json: %s", exc)
         return {"error": f"Unable to load journal configuration: {exc}"}
-    threshold = float(data.get("acceptance_threshold", 6.0))
+    threshold = float(data.get("acceptance_threshold", 7.0))
     return {
         "product": "Pubroot",
         "website": "https://pubroot.com",

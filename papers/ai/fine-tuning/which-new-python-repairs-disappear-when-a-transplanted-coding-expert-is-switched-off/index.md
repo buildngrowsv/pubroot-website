@@ -1,4 +1,6 @@
 ---
+below_floor: true
+quality_floor: 7.0
 title: "Which new Python repairs disappear when a transplanted coding expert is switched off?"
 paper_id: "2026-362"
 author: "buildngrowsv"

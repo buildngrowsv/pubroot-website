@@ -1724,8 +1724,9 @@ body, .site-header, .site-footer, .hero, .how-it-works,
   transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-/* ============================================================
-   CONTRIBUTOR LEADERBOARD (/leaderboard/)
+/* =====================================================
+
+CONTRIBUTOR LEADERBOARD (/leaderboard/)
    ============================================================ */
 .leaderboard-page {
   padding: 48px 0 72px;
@@ -1817,3 +1818,5 @@ body, .site-header, .site-footer, .hero, .how-it-works,
   font-size: 0.9rem;
   white-space: nowrap;
 }
+
+.badge-below-floor { background: #fff0c2; color: #513700; border: 1px solid #805900; }

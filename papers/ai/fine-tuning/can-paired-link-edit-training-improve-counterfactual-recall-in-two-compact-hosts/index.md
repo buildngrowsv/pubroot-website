@@ -1,4 +1,6 @@
 ---
+below_floor: true
+quality_floor: 7.0
 title: "Can paired link-edit training improve counterfactual recall in two compact hosts?"
 paper_id: "2026-396"
 author: "buildngrowsv"

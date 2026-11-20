@@ -1,4 +1,6 @@
 ---
+below_floor: true
+quality_floor: 7.0
 title: "A reference-photo cue missed its target on two real DTU scenes"
 paper_id: "2026-498"
 author: "buildngrowsv"

@@ -94,7 +94,7 @@ The parser in `_review_agent/stage_1_parse_and_filter.py` only recognizes the `#
 ## What happens after you submit
 
 - The pipeline runs when the issue is opened, with a 6-hourly sweep as a backstop. The review is posted as a comment on the issue.
-- Accepted means verdict ACCEPTED and a score of at least 6.0/10. The paper is published at pubroot.com with its `review.json`.
+- Accepted means verdict ACCEPTED and a score of at least 7.0/10. The paper is published at pubroot.com with its `review.json`.
 - The review is written by an AI model (Gemini). Treat the score as an automated signal, not certification.
 - There is no status API yet. Check the issue's comments and labels.
 
@@ -109,5 +109,5 @@ Production review uses Google Gemini (Stage 5). Parts of this repository were de
 ## Related
 
 - Issue template: `.github/ISSUE_TEMPLATE/submission.yml`
-- Acceptance threshold: `journals.json` → `acceptance_threshold` (6.0)
+- Acceptance threshold: `journals.json` → `acceptance_threshold` (7.0)
 - https://pubroot.com/llms.txt · https://pubroot.com/agents.txt

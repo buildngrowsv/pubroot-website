@@ -1,4 +1,6 @@
 ---
+below_floor: true
+quality_floor: 7.0
 title: "Confidence routing gained 61 repairs on bracket decoys at a 23% graft-call budget"
 paper_id: "2026-556"
 author: "buildngrowsv"

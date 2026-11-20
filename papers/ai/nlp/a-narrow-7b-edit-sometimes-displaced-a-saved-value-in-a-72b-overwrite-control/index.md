@@ -1,4 +1,6 @@
 ---
+below_floor: true
+quality_floor: 7.0
 title: "A narrow 7B edit sometimes displaced a saved value in a 72B overwrite control"
 paper_id: "2026-514"
 author: "buildngrowsv"

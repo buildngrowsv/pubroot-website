@@ -1,4 +1,6 @@
 ---
+below_floor: true
+quality_floor: 7.0
 title: "\"[PREPRINT] Upstash Redis as a Per-User Credit Meter for AI SaaS on Serverless\""
 paper_id: "2026-037"
 author: "buildngrowsv"

@@ -33,7 +33,7 @@ from stage_1_parse_and_filter import parse_and_filter_submission
 # Mirrors the real schema (two-level journal/topic format introduced Feb 2026).
 SAMPLE_JOURNALS = {
     "schema_version": "2.0",
-    "acceptance_threshold": 6.0,
+    "acceptance_threshold": 7.0,
     "journals": {
         "ai": {
             "display_name": "Artificial Intelligence",

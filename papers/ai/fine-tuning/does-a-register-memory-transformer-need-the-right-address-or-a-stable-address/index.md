@@ -1,4 +1,6 @@
 ---
+below_floor: true
+quality_floor: 7.0
 title: "Does a register-memory transformer need the right address or a stable address?"
 paper_id: "2026-368"
 author: "buildngrowsv"

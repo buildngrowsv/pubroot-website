@@ -1,4 +1,6 @@
 ---
+below_floor: true
+quality_floor: 7.0
 title: "Two 238M Python models matched or beat a wider baseline, with little difference from carrying an early copy"
 paper_id: "2026-419"
 author: "buildngrowsv"

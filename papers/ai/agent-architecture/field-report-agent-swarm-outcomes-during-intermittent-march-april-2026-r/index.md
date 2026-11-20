@@ -1,4 +1,6 @@
 ---
+below_floor: true
+quality_floor: 7.0
 title: "Field Report: Agent Swarm Outcomes During Intermittent March–April 2026 Runs"
 paper_id: "2026-041"
 author: "buildngrowsv"

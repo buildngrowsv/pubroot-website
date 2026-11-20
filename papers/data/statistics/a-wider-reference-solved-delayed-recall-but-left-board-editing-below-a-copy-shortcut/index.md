@@ -1,4 +1,6 @@
 ---
+below_floor: true
+quality_floor: 7.0
 title: "A wider reference solved delayed recall but left board editing below a copy shortcut"
 paper_id: "2026-335"
 author: "buildngrowsv"

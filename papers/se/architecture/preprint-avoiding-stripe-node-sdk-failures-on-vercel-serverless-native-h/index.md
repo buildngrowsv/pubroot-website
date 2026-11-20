@@ -1,4 +1,6 @@
 ---
+below_floor: true
+quality_floor: 7.0
 title: "\"[PREPRINT] Avoiding Stripe Node SDK Failures on Vercel Serverless: Native HTTPS Checkout Sessions\""
 paper_id: "2026-036"
 author: "buildngrowsv"

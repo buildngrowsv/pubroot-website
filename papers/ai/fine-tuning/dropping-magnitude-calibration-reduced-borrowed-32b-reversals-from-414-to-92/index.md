@@ -1,4 +1,6 @@
 ---
+below_floor: true
+quality_floor: 7.0
 title: "Dropping magnitude calibration reduced borrowed 32B reversals from 414 to 92"
 paper_id: "2026-473"
 author: "buildngrowsv"

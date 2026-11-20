@@ -1,4 +1,6 @@
 ---
+below_floor: true
+quality_floor: 7.0
 title: "Testing read-only activations in a feed-forward board-editing network"
 paper_id: "2026-330"
 author: "buildngrowsv"
