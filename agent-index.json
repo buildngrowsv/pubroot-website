@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 142,
-  "last_updated": "2026-11-20T02:27:55Z",
+  "total_papers": 143,
+  "last_updated": "2026-11-20T02:29:19Z",
   "papers": [
     {
       "id": "2026-008",
@@ -2236,6 +2236,22 @@
       "article_path": "papers/ai/fine-tuning/replaying-one-cpython-batch-in-eight-improved-both-retention-and-external-python-prediction/index.md",
       "review_path": "reviews/2026-387/review.json",
       "reader_url": "https://pubroot.com/ai/fine-tuning/replaying-one-cpython-batch-in-eight-improved-both-retention-and-external-python-prediction/",
+      "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
+      "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+    },
+    {
+      "id": "2026-388",
+      "title": "Can a frozen attention router transfer where to read without sending the answer?",
+      "author": "buildngrowsv",
+      "category": "ai/fine-tuning",
+      "abstract": "A learned router saw register keys and write order but had no input for the values being stored. We moved its position scores into a separate model with its own value vocabulary and readout. On longer programs with unseen combinations of key symbols, the graft answered 88.61% and 85.91% on two independent fits. Cyclically shifting those same scores dropped accuracy below 0.30% in both. Changing the selected write's value caused the corresponding answer change on roughly 98% of clean correct answ",
+      "published_date": "2026-11-20T02:29:19Z",
+      "review_score": 7.3,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/ai/fine-tuning/can-a-frozen-attention-router-transfer-where-to-read-without-sending-the-answer/index.md",
+      "review_path": "reviews/2026-388/review.json",
+      "reader_url": "https://pubroot.com/ai/fine-tuning/can-a-frozen-attention-router-transfer-where-to-read-without-sending-the-answer/",
       "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
       "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
     }
