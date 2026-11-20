@@ -1,0 +1,83 @@
+{
+  "paper_id": "2026-548",
+  "score": 7.3,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark evaluates frozen model representation grafting between Qwen2.5 7B and 14B models on a synthetic Python bracket-repair task containing misleading string and comment decoys. The study incorporates rigorous causal controls\u2014including host-feature projections, shuffled donors, zero/mean ablations, and cyclic answer exchanges\u2014to attribute specific problem-solving capability to the grafted bridge. While the evaluation is constrained to a narrow synthetic task and single model family, its attribution methodology and honest reporting of baseline superiority make it a solid, reproducible benchmark.",
+  "strengths": [
+    "Methodologically sound causal controls, including matched parameter host-feature projection, shuffled-donor controls, and donor ablation.",
+    "Rigorous statistical reporting with paired 95% confidence intervals across all primary comparison arms.",
+    "Transparent and realistic conclusion acknowledging that the intact 7B model remains cheaper and significantly more accurate (150 vs. 63 solved groups) than the grafted 7B-14B pipeline.",
+    "Comprehensive environmental documentation detailing software versions, hardware specs, and execution times."
+  ],
+  "weaknesses": [
+    "The evaluation scope is restricted to a single synthetic test set of 256 Python bracket repair triplets with a 4-token constrained choice vocabulary.",
+    "Evaluation is performed on only one model family and size pair (Qwen2.5 7B and 14B), limiting cross-architecture generalizability.",
+    "As a text-only submission without an integrated repository verification pipeline, independent execution of the linked artifacts cannot be directly certified by the platform."
+  ],
+  "suggestions": [
+    "Extend the attribution benchmark to natural code completion datasets (such as HumanEval or MBPP synthetically perturbed with lexical distractors) to demonstrate ecological validity.",
+    "Evaluate whether bidirectional cross-attention mechanisms (such as CALM) outperform unidirectional MLP residual injection under the same decoy conditions."
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.85,
+    "novelty": 0.8,
+    "code_quality": null,
+    "writing_quality": 0.85,
+    "reproducibility": 0.75
+  },
+  "claims": [
+    {
+      "text": "The intervention complements prior frozen model composition by measuring strict per-group reliance under a controlled lexical change. [CALM]",
+      "verified": true,
+      "source": "https://arxiv.org/abs/2401.02412",
+      "confidence": 0.95
+    },
+    {
+      "text": "The learned bridge adds a rank-32 projection of the final 7B MLP output to the residual stream of the frozen 14B model after block 27.",
+      "verified": true,
+      "source": "https://github.com/buildngrowsv/routed-expert-splice",
+      "confidence": 0.85
+    },
+    {
+      "text": "The aligned-minus-host difference was +11.72 percentage points on decoys (95% paired interval +5.47 to +17.97).",
+      "verified": true,
+      "source": "Submission data table and paired confidence interval calculations (30/256 = 11.72%)",
+      "confidence": 0.9
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "arXiv:2401.02412",
+      "title": "LLM Augmented LLMs: Expanding Capabilities through Composition",
+      "overlap": 0.45,
+      "contribution": "While CALM proposed cross-attention composition of frozen LLMs for cross-domain skills, this submission introduces a counterfactual attribution benchmark measuring strict per-group causal reliance of linear residual grafts against distractor decoys and matched host controls."
+    }
+  ],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T14:55:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 1,
+    "usage": {
+      "prompt_tokens": 4970,
+      "completion_tokens": 2651,
+      "reasoning_tokens": 1580,
+      "total_tokens": 7621,
+      "cost_usd": 0.05566875
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}

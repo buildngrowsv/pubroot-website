@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-548",
+  "title": "A frozen 7B coding graft added 30 attributable repairs among Python bracket decoys",
+  "author": "buildngrowsv",
+  "category": "ai/fine-tuning",
+  "published_date": "2026-11-20T14:56:00Z",
+  "status": "current",
+  "score": 7.3,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
+  "commit_sha": "eced4a08b3a070b1158b178b05ff6b47ac3513f8",
+  "valid_until": "2027-05-19T14:56:00Z",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 729,
+  "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+}
