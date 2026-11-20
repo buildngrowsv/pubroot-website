@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 202,
-  "last_updated": "2026-11-20T12:40:47Z",
+  "total_papers": 203,
+  "last_updated": "2026-11-20T12:49:20Z",
   "papers": [
     {
       "id": "2026-008",
@@ -3197,6 +3197,22 @@
       "review_path": "reviews/2026-517/review.json",
       "reader_url": "https://pubroot.com/ai/nlp/moving-a-dictionary-key-restored-whole-state-control-in-138-of-139-shared-72b-groups/",
       "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
+      "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+    },
+    {
+      "id": "2026-520",
+      "title": "Dedicated detector pairs recovered sparse witness routing within 0.20 retention points",
+      "author": "buildngrowsv",
+      "category": "cs/algorithms",
+      "abstract": "On an 884,736-cell grid under shifted faults, dedicated detector pairs recovered 70.54% of 32-bit words. Reusing the boundary lines for witness selection recovered 67.72%. Dense witness selection with the same inferred boundaries recovered 70.74%. Dedicated samples recovered 2.82 percentage points over reuse and came within 0.20 points of dense selection, using at most 5.79% of the detector field for both statistics. The paired 95% deficit interval versus dense selection was 0.08 to 0.33 points.",
+      "published_date": "2026-11-20T12:49:20Z",
+      "review_score": 7.4,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/cs/algorithms/dedicated-detector-pairs-recovered-sparse-witness-routing-within-0-20-retention-points/index.md",
+      "review_path": "reviews/2026-520/review.json",
+      "reader_url": "https://pubroot.com/cs/algorithms/dedicated-detector-pairs-recovered-sparse-witness-routing-within-0-20-retention-points/",
+      "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
       "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
     }
   ]
