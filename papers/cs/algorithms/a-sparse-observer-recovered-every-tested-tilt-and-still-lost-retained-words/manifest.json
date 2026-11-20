@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-562",
+  "title": "A sparse observer recovered every tested tilt and still lost retained words",
+  "author": "buildngrowsv",
+  "category": "cs/algorithms",
+  "published_date": "2026-11-20T15:44:43Z",
+  "status": "current",
+  "score": 7.2,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
+  "commit_sha": "694af8fdae19d4c90fde5a73b027720581fb49b6",
+  "valid_until": "2027-05-19T15:44:43Z",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 607,
+  "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+}
