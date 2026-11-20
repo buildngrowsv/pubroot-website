@@ -1,0 +1,90 @@
+{
+  "paper_id": "2026-423",
+  "score": 7.3,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark investigates the dissociation between linear probe decodability and causal activation patching in Qwen2.5-Coder-7B and Qwen2.5-14B. The authors demonstrate that while 1/8-width activation slices at early-middle layers allow 100% linear recovery of variable identifier tokens, intervening on these slices produces zero answer flips, contrasting sharply with full-token swaps. The benchmark provides concrete experimental parameters and positive controls, making it a valuable empirical interpretability contribution despite a narrow synthetic task scope.",
+  "strengths": [
+    "Rigorous experimental controls, including full-token swap positive controls and whole-sequence margin checks.",
+    "Precise specification of hyperparameters, software dependencies (MLX, MLX-LM, NumPy, Tokenizers), and exact model commit revisions.",
+    "Highlights an important methodological caveat in mechanistic interpretability regarding the gap between probe decodability and causal efficacy.",
+    "Clear separation between calibration (1,024 instances) and evaluation sets (512 paired programs)."
+  ],
+  "weaknesses": [
+    "Task scope is restricted to a single synthetic Python variable declaration and return pattern.",
+    "Interventions are evaluated on only two contiguous 1/8-width slices at a single depth layer (approx. 1/5 depth) per model, without testing varied positions or distributed coordinate subsets.",
+    "No external repository was ingested via the review submission interface, limiting verification to the manuscript text."
+  ],
+  "suggestions": [
+    "Extend the benchmark to test whether non-contiguous or sparse linear probe directions show causal efficacy when patched, rather than only contiguous coordinate blocks.",
+    "Evaluate intervention effects across multiple layers (e.g., late layers vs. early layers) to chart where causal control over identifier resolution emerges.",
+    "Test more diverse variable identifier tasks and natural code completion setups beyond synthetic arithmetic return scripts."
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.9,
+    "novelty": 0.75,
+    "code_quality": null,
+    "writing_quality": 0.85,
+    "reproducibility": 0.8
+  },
+  "claims": [
+    {
+      "text": "Qwen/Qwen2.5-Coder-7B base revision 0396a76181e127dfc13e5c5ec48a8cee09938b02 with hidden width 3,584 and 28 blocks.",
+      "verified": true,
+      "source": "https://huggingface.co/Qwen/Qwen2.5-Coder-7B",
+      "confidence": 0.95
+    },
+    {
+      "text": "Qwen/Qwen2.5-14B base revision 97e1e76335b7017d8f67c08a19d103c0504298c9 with width 5,120 and 48 blocks.",
+      "verified": true,
+      "source": "https://huggingface.co/Qwen/Qwen2.5-14B",
+      "confidence": 0.95
+    },
+    {
+      "text": "Earlier work uses interchange interventions to connect neural representations to a causal description and examines how patch locations and metrics affect interpretation.",
+      "verified": true,
+      "source": "https://proceedings.neurips.[REDACTED_SECRET]-Abstract.html (Geiger et al., NeurIPS 2021) and arXiv:2309.16042 (Zhang & Nanda, 2023)",
+      "confidence": 0.95
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "Geiger et al., 2021",
+      "title": "Causal Abstractions of Neural Networks",
+      "overlap": 0.45,
+      "contribution": "Applies interchange intervention concepts specifically to sub-slice representations within large open-weight production models (Qwen2.5) to contrast linear probe readouts with behavioral causality."
+    },
+    {
+      "id": "arXiv:2309.16042",
+      "title": "Towards Best Practices of Activation Patching in Language Models: Metrics and Methods",
+      "overlap": 0.5,
+      "contribution": "Evaluates the specific empirical effect of contiguous sub-coordinate slice swapping on token-level causal attribution in coding and base LLMs."
+    }
+  ],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T06:55:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 2,
+    "usage": {
+      "prompt_tokens": 5065,
+      "completion_tokens": 4438,
+      "reasoning_tokens": 3162,
+      "total_tokens": 9503,
+      "cost_usd": 0.10444125
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
