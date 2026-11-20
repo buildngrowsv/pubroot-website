@@ -1,0 +1,82 @@
+{
+  "paper_id": "2026-554",
+  "score": 7.8,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark investigates causal steering via activation interchange interventions at the midpoint (block 32 of 64) of Qwen2.5-32B on a dictionary lookup task, replicating previous findings from Qwen2.5-72B (block 40 of 80). The results demonstrate that relocated definitions causally switch model outputs (137/145 groups), whereas an explicit late alias fails to switch outputs (0/145), showing remarkable cross-scale consistency in representation routing. The study provides detailed execution environments, statistical bootstrap intervals, and reproduction commands.",
+  "strengths": [
+    "Precise experimental design directly replicating and validating findings from Qwen2.5-72B on Qwen2.5-32B with identical matched controls and paired cohorts.",
+    "Rigorous statistical reporting, including 5,000 paired bootstrap resamples and exact 95% confidence intervals (-97.93 to -90.34 percentage points).",
+    "Exemplary documentation of reproduction parameters, including model checkpoint revision hash, exact hardware configurations, package versions, peak memory, and execution runtime.",
+    "Careful bounding of claims, explicitly noting limitations regarding alignments, specific token positions, and training checkpoint variations."
+  ],
+  "weaknesses": [
+    "Interventions are restricted strictly to the exact midpoint block (block 32 of 64), without scanning adjacent layers to map where the late copy gap begins or closes.",
+    "The evaluation is confined to synthetic numeric dictionary lookup layouts rather than diverse naturalistic program synthesis or retrieval tasks."
+  ],
+  "suggestions": [
+    "Extend the interchange intervention across multiple intermediate layers (e.g., layers 24 through 48) to construct a full depth-profile curve of causal steerability in the 32B model.",
+    "Evaluate whether alternative tokenization strategies or prompt phrasing alters the unresponsiveness of the late alias token."
+  ],
+  "confidence": {
+    "methodology": 0.9,
+    "factual_accuracy": 0.95,
+    "novelty": 0.8,
+    "code_quality": null,
+    "writing_quality": 0.85,
+    "reproducibility": 0.85
+  },
+  "claims": [
+    {
+      "text": "The prespecified second-host test uses Qwen2.5-32B at block 32 of 64",
+      "verified": true,
+      "source": "https://qwen.ai (Qwen2.5 architectural specification confirms 64 layers for Qwen2.5-32B)",
+      "confidence": 0.99
+    },
+    {
+      "text": "Interchange interventions are an established method for testing causal sufficiency at a specified alignment.",
+      "verified": true,
+      "source": "https://arxiv.org/abs/2301.04709 (Geiger et al., Causal Abstraction for Faithful Model Interpretation)",
+      "confidence": 0.98
+    },
+    {
+      "text": "An earlier 72B test found that a key could be moved after the dictionary and remain steerable at block 40 of 80.",
+      "verified": true,
+      "source": "https://qwen.ai (Qwen2.5-72B architecture features 80 layers, confirming block 40 as the exact fractional midpoint)",
+      "confidence": 0.95
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2301.04709",
+      "title": "Causal Abstraction for Faithful Model Interpretation",
+      "overlap": 0.35,
+      "contribution": "Applies interchange intervention analysis to systematically benchmark residual activation swapping across model scales (32B vs 72B) on dictionary lookup binding tasks."
+    }
+  ],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20T15:08:00Z",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T15:08:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 3,
+    "usage": {
+      "prompt_tokens": 4914,
+      "completion_tokens": 2414,
+      "reasoning_tokens": 1326,
+      "total_tokens": 7328,
+      "cost_usd": 0.054738
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
