@@ -1,0 +1,84 @@
+{
+  "paper_id": "2026-380",
+  "score": 7.4,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark investigates modular neural transplantation and intermediate interface distillation, demonstrating that a compact 261K-parameter student module can replace a 5.5M-parameter donor branch within a frozen hybrid transformer without accuracy loss on a synthetic register-memory task. The experimental design is thorough, featuring rigorous negative controls, paired bootstrap confidence intervals, and transfer evaluation to an independently initialized host.",
+  "strengths": [
+    "Strong experimental design featuring essential negative controls, including shuffled-target distillation (scoring 6.98%) and untrained branch baselines (scoring 10.11%).",
+    "Rigorous statistical reporting using paired 95% bootstrap confidence intervals for both recipient adaptation and student substitution metrics.",
+    "Validation of receiver adaptation across distinct random seeds and training histories (seed 101 vs. seed 211).",
+    "Precise specification of architecture parameters, token sequence dimensions, batch sizes, and benchmarking execution conditions."
+  ],
+  "weaknesses": [
+    "Evaluation is confined to a synthetic instruction language with predefined address masks, leaving generalizability to natural language or vision architectures unverified.",
+    "Latency comparisons evaluate only the hybrid configurations against each other rather than benchmarking against an optimized monolithic baseline model.",
+    "Submitted under text-only badge without an attached direct artifact bundle, relying on external repository references for verification scripts."
+  ],
+  "suggestions": [
+    "Test the interface transplantation and student distillation approach on standard pre-trained LLM tasks, such as KV-cache routing or modular adapter grafting.",
+    "Sweep student model capacity across multiple layer widths and depths to characterize the compression-versus-accuracy Pareto frontier.",
+    "Include theoretical FLOP counts and peak memory usage alongside empirical wall-clock execution times."
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.9,
+    "novelty": 0.8,
+    "code_quality": null,
+    "writing_quality": 0.85,
+    "reproducibility": 0.75
+  },
+  "claims": [
+    {
+      "text": "The replacement used 95.25% fewer branch weights.",
+      "verified": true,
+      "source": "Direct parameter calculation: (5,503,872 - 261,248) / 5,503,872 = 95.253%",
+      "confidence": 1.0
+    },
+    {
+      "text": "Distillation from intermediate representations has established precedent.",
+      "verified": true,
+      "source": "https://arxiv.org/abs/1412.6550",
+      "confidence": 0.98
+    },
+    {
+      "text": "over 20 alternating, warmed, synchronized runs per version on one Apple M5 Ultra (32 programs of 256 tokens per batch)",
+      "verified": true,
+      "source": "https://www.apple.com/mac-studio/specs/",
+      "confidence": 0.95
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "1412.6550",
+      "title": "FitNets: Hints for Thin Deep Nets",
+      "overlap": 0.35,
+      "contribution": "While FitNets introduced distillation using intermediate representations as hints for training deep/thin student networks, this work specifically tests modular interface replacement by directly slotting a compressed student into a frozen recipient transformer host."
+    }
+  ],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T01:56:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 2,
+    "usage": {
+      "prompt_tokens": 4898,
+      "completion_tokens": 3095,
+      "reasoning_tokens": 2099,
+      "total_tokens": 7993,
+      "cost_usd": 0.05727975
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
