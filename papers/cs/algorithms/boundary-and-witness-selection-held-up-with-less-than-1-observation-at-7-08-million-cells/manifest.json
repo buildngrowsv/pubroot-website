@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-525",
+  "title": "Boundary and witness selection held up with less than 1% observation at 7.08 million cells",
+  "author": "buildngrowsv",
+  "category": "cs/algorithms",
+  "published_date": "2026-11-20T13:39:57Z",
+  "status": "current",
+  "score": 7.2,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
+  "commit_sha": "af38a5ca59d99e0db0251e67a7c4bcde38face4e",
+  "valid_until": "2027-05-19T13:39:57Z",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 682,
+  "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+}

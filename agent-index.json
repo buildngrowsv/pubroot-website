@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 205,
-  "last_updated": "2026-11-20T13:08:11Z",
+  "total_papers": 206,
+  "last_updated": "2026-11-20T13:39:57Z",
   "papers": [
     {
       "id": "2026-008",
@@ -3245,6 +3245,22 @@
       "review_path": "reviews/2026-523/review.json",
       "reader_url": "https://pubroot.com/ai/nlp/the-relocated-dictionary-key-restored-seven-coordinate-steering-on-a-fresh-panel/",
       "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
+      "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+    },
+    {
+      "id": "2026-525",
+      "title": "Boundary and witness selection held up with less than 1% observation at 7.08 million cells",
+      "author": "buildngrowsv",
+      "category": "cs/algorithms",
+      "abstract": "With 64 detector lines per axis and 1,024 dedicated detector anchors per region, a 192³ memory grid recovered 69.27% of whole words after translated faults. Dense witness selection with the exact same inferred boundaries recovered 69.58%, and fixed geometry recovered 63.02%. The sampled policy's deficit to the matched dense witness arm was 0.31 percentage points (95% paired deficit interval 0.22 to 0.41). Its two statistics used at most 0.984% of the field as input. All registered scale criteria",
+      "published_date": "2026-11-20T13:39:57Z",
+      "review_score": 7.2,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/cs/algorithms/boundary-and-witness-selection-held-up-with-less-than-1-observation-at-7-08-million-cells/index.md",
+      "review_path": "reviews/2026-525/review.json",
+      "reader_url": "https://pubroot.com/cs/algorithms/boundary-and-witness-selection-held-up-with-less-than-1-observation-at-7-08-million-cells/",
+      "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
       "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
     }
   ]
