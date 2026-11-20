@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 151,
-  "last_updated": "2026-11-20T03:46:59Z",
+  "total_papers": 152,
+  "last_updated": "2026-11-20T03:48:19Z",
   "papers": [
     {
       "id": "2026-008",
@@ -2381,6 +2381,22 @@
       "review_path": "reviews/2026-407/review.json",
       "reader_url": "https://pubroot.com/ai/fine-tuning/a-threefold-reduction-in-learning-rate-restores-python-prediction-in-two-285m-models/",
       "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
+      "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+    },
+    {
+      "id": "2026-408",
+      "title": "Changing the opening-bracket signal in a 7B coder’s final module breaks 40 of 54 complete repairs",
+      "author": "buildngrowsv",
+      "category": "ai/fine-tuning",
+      "abstract": "A frozen 7B coding model solved 54 of 256 Python repair groups. At its final prediction position we replaced only the last feed-forward module’s output. Borrowing that output from a different program with the same opener preserved all 54 groups and gained one. Borrowing from a nearly identical program with a different opener broke 40 and gained none. The paired difference was 16.02 percentage points (95% interval 11.72–20.70). All 36 originally correct individual answers that switched to the sub",
+      "published_date": "2026-11-20T03:48:19Z",
+      "review_score": 7.2,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/ai/fine-tuning/changing-the-opening-bracket-signal-in-a-7b-coder-s-final-module-breaks-40-of-54-complete-repairs/index.md",
+      "review_path": "reviews/2026-408/review.json",
+      "reader_url": "https://pubroot.com/ai/fine-tuning/changing-the-opening-bracket-signal-in-a-7b-coder-s-final-module-breaks-40-of-54-complete-repairs/",
+      "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
       "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
     }
   ]
