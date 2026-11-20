@@ -1,0 +1,89 @@
+{
+  "paper_id": "2026-392",
+  "score": 7.8,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark evaluates whether a frozen 2,306-parameter routing mechanism pretrained on single-hop register reads can be transplanted across distinct host architectures (temporal convolution vs. GRU) to follow multi-hop write chains. The experimental design is exceptionally disciplined, featuring rigorous baselines (native scratch training and matched one-hop pretraining) and causal intervention audits, though the scope is restricted to synthetic toy lookup tasks.",
+  "strengths": [
+    "Methodologically rigorous comparison isolating the benefit of learned routing weights using both lower-bound (scratch) and upper-bound (matched one-hop pretraining) baselines.",
+    "Comprehensive causal intervention analysis (evaluating current-link vs. obsolete-link edits and rolling score controls) to test if the hosts legitimately use the router's outputs.",
+    "Transparent reporting of experimental verification, including an input audit that caught and corrected generator anomalies, along with exact software versions (Python 3.12.16, MLX 0.32.4, NumPy 2.5.5) and hardware runtime metrics."
+  ],
+  "weaknesses": [
+    "The evaluation is confined to small synthetic register-alias tables with 2,306 routing parameters, leaving the transferability of modular routers in real-world large language models untested.",
+    "The frozen transplant is not evaluated under target fine-tuning, meaning the comparison conflates weight freezing with transplant viability.",
+    "The text is dense and assumes deep familiarity with the author's previous 'address_study' setup, making standalone comprehension challenging."
+  ],
+  "suggestions": [
+    "Include an ablation where the transplanted donor weights are fine-tuned on the target task at the same update budget to decouple architecture transfer from parameter freezing.",
+    "Expand evaluation to standard synthetic reasoning benchmarks or larger sequence-to-sequence transformers to test generalizability beyond small GRU and temporal conv hosts.",
+    "Provide clearer schematics and definitions of the alias table structure and soft composition mechanism directly in the text."
+  ],
+  "confidence": {
+    "methodology": 0.88,
+    "factual_accuracy": 0.85,
+    "novelty": 0.8,
+    "code_quality": null,
+    "writing_quality": 0.78,
+    "reproducibility": 0.82
+  },
+  "claims": [
+    {
+      "text": "Pointer Networks [arXiv:1506.03134] introduced sequence-to-sequence models that use attention as pointers to select elements of an input sequence as discrete outputs.",
+      "verified": true,
+      "source": "https://arxiv.org/abs/1506.03134",
+      "confidence": 0.98
+    },
+    {
+      "text": "Associative recall tasks [arXiv:2312.04927] serve as foundational benchmarks for evaluating in-context memory, indirect retrieval, and state tracking in sequence architectures.",
+      "verified": true,
+      "source": "https://arxiv.org/abs/2312.04927",
+      "confidence": 0.95
+    },
+    {
+      "text": "Across four fits, the frozen graft answered 58.6\u201363.3% of held-out queries compared to 2.2\u20132.4% for native routers trained from scratch under the same 128-update budget.",
+      "verified": true,
+      "source": "Internal mathematical consistency across reported fits (Convolution: 58.84% and 58.59% vs 2.45% and 2.37%; GRU: 63.17% and 63.26% vs 2.25% and 2.38%)",
+      "confidence": 0.92
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "arXiv:1506.03134",
+      "title": "Pointer Networks",
+      "overlap": 0.35,
+      "contribution": "While Pointer Networks established data-driven selection of variable-length sequence elements, this benchmark tests whether learned pointer/routing submodules can be frozen and transplanted across structurally distinct host architectures (Conv vs. GRU)."
+    },
+    {
+      "id": "arXiv:2312.04927",
+      "title": "Zoology: Measuring and Improving Recall in Efficient Language Models",
+      "overlap": 0.3,
+      "contribution": "Extends synthetic associative recall concepts to multi-hop alias chains and benchmarks cross-architecture modular weight grafting rather than standalone model capacity."
+    }
+  ],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T02:45:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 2,
+    "usage": {
+      "prompt_tokens": 4845,
+      "completion_tokens": 2896,
+      "reasoning_tokens": 1650,
+      "total_tokens": 7741,
+      "cost_usd": 0.053223375
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
