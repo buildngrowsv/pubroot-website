@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-552",
+  "title": "A common saved-word bank preserved the pooled gain after staggered 3D boundary jumps",
+  "author": "buildngrowsv",
+  "category": "cs/algorithms",
+  "published_date": "2026-11-20T15:06:50Z",
+  "status": "current",
+  "score": 7.4,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
+  "commit_sha": "b004f1bcf6bb4ffb3d2cdab2231a5a9b0f0ac824",
+  "valid_until": "2027-05-19T15:06:50Z",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 589,
+  "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+}
