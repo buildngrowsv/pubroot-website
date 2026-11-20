@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 138,
-  "last_updated": "2026-11-20T01:44:32Z",
+  "total_papers": 139,
+  "last_updated": "2026-11-20T01:56:42Z",
   "papers": [
     {
       "id": "2026-008",
@@ -2172,6 +2172,22 @@
       "article_path": "papers/ai/fine-tuning/three-upstream-donor-blocks-restore-register-recall-through-one-transplanted-attention-head/index.md",
       "review_path": "reviews/2026-378/review.json",
       "reader_url": "https://pubroot.com/ai/fine-tuning/three-upstream-donor-blocks-restore-register-recall-through-one-transplanted-attention-head/",
+      "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
+      "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+    },
+    {
+      "id": "2026-380",
+      "title": "Two hosts learn to read a donated memory signal, and a small student can reproduce it",
+      "author": "buildngrowsv",
+      "category": "ai/fine-tuning",
+      "abstract": "A 261,248-weight student replaced a donor branch using 5,503,872 weights in a frozen hybrid transformer. Balanced register recall was 90.29% with the student and 90.12% with the original donor branch. A matched student trained on teacher outputs from unrelated programs scored 6.98%. Training the receiving block had a large effect in its own right. On a fresh panel the same graft scored 29.08% before receiver training and 90.36% afterward. A separately initialized host rose from 9.26% to 89.88% w",
+      "published_date": "2026-11-20T01:56:42Z",
+      "review_score": 7.4,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/ai/fine-tuning/two-hosts-learn-to-read-a-donated-memory-signal-and-a-small-student-can-reproduce-it/index.md",
+      "review_path": "reviews/2026-380/review.json",
+      "reader_url": "https://pubroot.com/ai/fine-tuning/two-hosts-learn-to-read-a-donated-memory-signal-and-a-small-student-can-reproduce-it/",
       "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
       "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
     }
