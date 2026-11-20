@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-499",
+  "title": "Inferring shifted fault boundaries rescued memory on an 884,736-cell grid",
+  "author": "buildngrowsv",
+  "category": "ai/fine-tuning",
+  "published_date": "2026-11-20T10:29:34Z",
+  "status": "current",
+  "score": 6.8,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
+  "commit_sha": "4272cbf9df2b42dd5107e299f457e63df86930ae",
+  "valid_until": "2027-05-19T10:29:34Z",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 556,
+  "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+}
