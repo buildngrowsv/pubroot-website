@@ -1,0 +1,83 @@
+{
+  "paper_id": "2026-408",
+  "score": 7.2,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "The paper investigates the mechanistic localization of bracket-matching signals in Qwen2.5-Coder-7B by substituting the final feed-forward module output at the final token position. The diagnostic demonstrates that swapping the opening bracket signal between matched repair groups breaks 40 of 54 complete triplet repairs, with sound control design and rigorous statistical reporting.",
+  "strengths": [
+    "Carefully constructed controls (same-opener from another program matched by length vs. changed-opener from the same group vs. zero-ablation).",
+    "Pre-registered acceptance criteria with clear paired bootstrap confidence intervals (16.02 percentage points, 95% CI: 11.72\u201320.70).",
+    "Mechanistic tracking of error modes showing that 36 of 62 broken individual repairs switched specifically to the substituted member's target token.",
+    "Candid and precise discussion of scope limitations, including unidirectional cyclic rotation and single-generator dataset limits."
+  ],
+  "weaknesses": [
+    "Evaluates only unidirectional cyclic substitution between delimiter types, preventing verification of whether effect sizes are symmetric across all bracket types.",
+    "Tested on a single model checkpoint (Qwen2.5-Coder-7B) without cross-architecture or cross-scale generalization.",
+    "While internal GitHub URLs and commit hashes are cited in the body, no dedicated supporting repository attachment was validated in the submission package."
+  ],
+  "suggestions": [
+    "Run bidirectional permutations across all three delimiter pairings (parentheses, square brackets, curly braces) to eliminate directional bias.",
+    "Extend the diagnostic across multiple model sizes (e.g., Qwen2.5-Coder-1.5B and 14B) to confirm whether late-layer feed-forward localization is scale-invariant."
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.9,
+    "novelty": 0.75,
+    "code_quality": null,
+    "writing_quality": 0.85,
+    "reproducibility": 0.7
+  },
+  "claims": [
+    {
+      "text": "In the last of the coder\u2019s 28 blocks we kept the destination prompt\u2019s state after attention.",
+      "verified": true,
+      "source": "https://arxiv.org/abs/2409.12186 (Qwen2.5-Coder series technical documentation confirms Qwen2.5-Coder-7B architecture has 28 transformer layers)",
+      "confidence": 0.95
+    },
+    {
+      "text": "Prior work on activation patching describes the sensitivity of causal estimates to the intervention and scoring rule. [Zhang and Nanda]",
+      "verified": true,
+      "source": "https://arxiv.org/abs/2309.16042 (Zhang & Nanda, 'Towards Best Practices of Activation Patching in Language Models: Metrics and Methods', ICLR 2024)",
+      "confidence": 0.98
+    },
+    {
+      "text": "The paired difference was 16.02 percentage points (95% interval 11.72\u201320.70).",
+      "verified": true,
+      "source": "Internal mathematical consistency verification: (55 solved groups - 14 solved groups) / 256 groups = 41 / 256 = 16.0156% (rounds to 16.02%)",
+      "confidence": 0.95
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2309.16042",
+      "title": "Towards Best Practices of Activation Patching in Language Models: Metrics and Methods",
+      "overlap": 0.35,
+      "contribution": "Applies targeted activation patching to the final feed-forward layer of a code generation model to locate delimiter-matching state, rather than evaluating general patching metrics on indirect object identification or factual recall."
+    }
+  ],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T03:48:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 2,
+    "usage": {
+      "prompt_tokens": 4945,
+      "completion_tokens": 3195,
+      "reasoning_tokens": 2078,
+      "total_tokens": 8140,
+      "cost_usd": 0.07169
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
