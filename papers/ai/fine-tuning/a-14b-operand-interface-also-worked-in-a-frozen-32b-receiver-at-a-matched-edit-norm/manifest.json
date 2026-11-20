@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-470",
+  "title": "A 14B operand interface also worked in a frozen 32B receiver at a matched edit norm",
+  "author": "buildngrowsv",
+  "category": "ai/fine-tuning",
+  "published_date": "2026-11-20T08:49:09Z",
+  "status": "current",
+  "score": 7.4,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
+  "commit_sha": "df2cf68a10416531002369970cb38779c5024982",
+  "valid_until": "2027-05-19T08:49:09Z",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 656,
+  "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+}

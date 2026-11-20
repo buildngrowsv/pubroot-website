@@ -1,0 +1,83 @@
+{
+  "paper_id": "2026-470",
+  "score": 7.4,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "The submission reports an activation surgery benchmark transferring operand edits from a frozen Qwen2.5-Coder-7B donor into frozen Qwen2.5-14B and Qwen2.5-32B receivers. Because both 14B and 32B share a hidden dimension of 5,120, the authors test reusing 14B interface directions in the 32B receiver with matched edit norms, demonstrating that the borrowed direction achieves near-parity (414 vs 420 reversals out of 507 pairs) with a fitted 32B interface. The methodology includes sound baseline controls (random directions, paired donor, full state exchanges), though evaluation is confined to a synthetic single-digit arithmetic task.",
+  "strengths": [
+    "Rigorous experimental controls, including equal-norm random direction controls (yielding 0 reversals), paired donor controls, and full host assignment state exchanges.",
+    "Precise specification of experimental parameters, including exact model commit SHAs, layer depths (block 10/48 vs block 13/64), prompt index ranges, and paired confidence intervals.",
+    "Clever exploitation of architectural parity (both Qwen2.5-14B and Qwen2.5-32B share a residual stream width of 5,120) to probe cross-model geometric transferability.",
+    "Provides an informative exploratory diagnostic showing substantial subspace overlap (singular values between 0.74 and 0.84) between independently fitted host bases."
+  ],
+  "weaknesses": [
+    "Narrow benchmark scope confined solely to single-digit Python variable assignment and arithmetic evaluations, leaving generalization to multi-step or non-numeric reasoning unverified.",
+    "Terse presentation with minimal qualitative intuition or conceptual framing explaining why representation geometry aligns so closely across disparate parameter counts beyond shared hidden dimensions.",
+    "Evaluated under text-only status as no standalone repository was submitted via the benchmark intake metadata."
+  ],
+  "suggestions": [
+    "Expand testing beyond single-digit synthetic arithmetic to multi-token semantic binding tasks to verify whether cross-scale interface borrowing holds more broadly.",
+    "Include an ablation across different layer depths to map how interface compatibility varies with relative network depth between 14B and 32B architectures.",
+    "Provide visualization and expanded analysis of the principal angles between the 14B and 32B activation manifolds."
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.95,
+    "novelty": 0.8,
+    "code_quality": null,
+    "writing_quality": 0.75,
+    "reproducibility": 0.7
+  },
+  "claims": [
+    {
+      "text": "Both widths are 5,120, so the vectors fit directly in the same coordinate dimension.",
+      "verified": true,
+      "source": "https://huggingface.co/Qwen/Qwen2.5-14B/raw/main/config.json and https://huggingface.co/Qwen/Qwen2.5-32B/raw/main/config.json",
+      "confidence": 1.0
+    },
+    {
+      "text": "The donor is frozen Qwen2.5-Coder-7B base at revision 0396a76181e127dfc13e5c5ec48a8cee09938b02.",
+      "verified": true,
+      "source": "https://huggingface.co/Qwen/Qwen2.5-Coder-[REDACTED_SECRET]",
+      "confidence": 1.0
+    },
+    {
+      "text": "The smaller receiver is Qwen2.5-14B base at 97e1e76335b7017d8f67c08a19d103c0504298c9 and the larger receiver is Qwen2.5-32B base at 1818d35814b8319459f4bd55ed1ac8709630f003.",
+      "verified": true,
+      "source": "https://huggingface.co/Qwen/Qwen2.5-[REDACTED_SECRET] and https://huggingface.co/Qwen/Qwen2.5-[REDACTED_SECRET]",
+      "confidence": 1.0
+    },
+    {
+      "text": "The 14B receiver uses its saved seven-coordinate affine map after block 10 of 48. For the 32B model, fit seven directions and an affine map after block 13 of 64",
+      "verified": true,
+      "source": "Qwen2.5 architecture configurations (Qwen2.5-14B num_hidden_layers=48; Qwen2.5-32B num_hidden_layers=64)",
+      "confidence": 1.0
+    }
+  ],
+  "novelty_vs_existing": [],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T08:50:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 4,
+    "usage": {
+      "prompt_tokens": 4897,
+      "completion_tokens": 3894,
+      "reasoning_tokens": 2420,
+      "total_tokens": 8791,
+      "cost_usd": 0.14427525
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
