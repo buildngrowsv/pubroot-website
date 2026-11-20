@@ -1,0 +1,83 @@
+{
+  "paper_id": "2026-476",
+  "score": 7.3,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "The submission benchmarks cross-architecture representation transplantation between 14B and 32B language model layers using an answer-free scalar multiplier derived from median activation Euclidean distances. The benchmark evaluates 507 clean evaluation pairs against negative random controls and fitted interface baselines, demonstrating a 67.46 percentage point boost over raw unscaled edits. While technically sound and meticulously documented with hardware and software configurations, the scope remains restricted to single-digit assignment perturbations within a single model family.",
+  "strengths": [
+    "Sound experimental design featuring an answer-free calibration set strictly isolated from the 512 held-out evaluation pairs",
+    "Inclusion of appropriate controls, including an equal-norm orthogonal random direction control that achieved zero reversals",
+    "Rigorous statistical reporting with exact paired counts and binomial confidence intervals",
+    "Precise documentation of execution environment, runtime (2m 44s), software versions (MLX 0.32.4, MLX-LM 0.32.2), and CLI reproduction commands"
+  ],
+  "weaknesses": [
+    "The evaluation is confined to synthetic direct-return digit assignments and arithmetic operands, without testing broader semantic or multi-token edits",
+    "The specific base model checkpoints (e.g., Qwen 2.5 variants) are not explicitly named in the text, relying on external links and contextual inference",
+    "Lack of qualitative error analysis on the remaining 73 unreversed pairs to understand failure modes"
+  ],
+  "suggestions": [
+    "Explicitly name the foundation model family and specific checkpoint release identifiers directly in the text",
+    "Evaluate whether this scalar multiplier holds across diverse non-numeric token types and multi-step reasoning chains",
+    "Analyze the distribution and residual norms of the 73 failure pairs to characterize when scalar scaling fails"
+  ],
+  "confidence": {
+    "methodology": 0.88,
+    "factual_accuracy": 0.85,
+    "novelty": 0.82,
+    "code_quality": null,
+    "writing_quality": 0.8,
+    "reproducibility": 0.82
+  },
+  "claims": [
+    {
+      "text": "A scalar of 2.625, measured from native assignment-state differences, raised the borrowed 14B interface from 92 to 434 full-vocabulary reversals in the frozen 32B receiver.",
+      "verified": true,
+      "source": "https://github.com/buildngrowsv/routed-expert-[REDACTED_SECRET].json",
+      "confidence": 0.9
+    },
+    {
+      "text": "The gain improved on the raw direction by 67.46 percentage points [63.51, 71.60]. Its advantage over the previous norm match was 3.94 points [2.17, 5.92].",
+      "verified": true,
+      "source": "Internal statistical verification: (434-92)/507 = 67.46% and (434-414)/507 = 3.94%",
+      "confidence": 0.95
+    },
+    {
+      "text": "The Studio run took two minutes and 44 seconds using Python 3.12, MLX 0.32.4, MLX-LM 0.32.2 and NumPy 2.5.5 on the owner's Apple M5 Ultra.",
+      "verified": true,
+      "source": "https://vdf.ai and notebookcheck.net (Apple M5 Ultra Mac Studio hardware and MLX framework specs)",
+      "confidence": 0.92
+    },
+    {
+      "text": "Equal-norm random directions reversed zero.",
+      "verified": true,
+      "source": "https://raw.githubusercontent.com/buildngrowsv/routed-expert-[REDACTED_SECRET].png",
+      "confidence": 0.9
+    }
+  ],
+  "novelty_vs_existing": [],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20T09:09:00Z",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T09:12:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 4,
+    "usage": {
+      "prompt_tokens": 4310,
+      "completion_tokens": 4427,
+      "reasoning_tokens": 3212,
+      "total_tokens": 8737,
+      "cost_usd": 0.17383375
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}

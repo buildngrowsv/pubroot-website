@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 183,
-  "last_updated": "2026-11-20T09:07:00Z",
+  "total_papers": 184,
+  "last_updated": "2026-11-20T09:09:48Z",
   "papers": [
     {
       "id": "2026-008",
@@ -2892,6 +2892,22 @@
       "article_path": "papers/ai/fine-tuning/dropping-magnitude-calibration-reduced-borrowed-32b-reversals-from-414-to-92/index.md",
       "review_path": "reviews/2026-473/review.json",
       "reader_url": "https://pubroot.com/ai/fine-tuning/dropping-magnitude-calibration-reduced-borrowed-32b-reversals-from-414-to-92/",
+      "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
+      "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+    },
+    {
+      "id": "2026-476",
+      "title": "One answer-free gain restored the borrowed 32B operand edit on 434 of 507 pairs",
+      "author": "buildngrowsv",
+      "category": "ai/fine-tuning",
+      "abstract": "A scalar of 2.625, measured from native assignment-state differences, raised the borrowed 14B interface from 92 to 434 full-vocabulary reversals in the frozen 32B receiver. The earlier per-prompt norm match using a fitted 32B interface reversed 414. Equal-norm random directions reversed zero. The scalar is measured on separate calibration prompts without arithmetic answers or a fitted 32B mapping.",
+      "published_date": "2026-11-20T09:09:48Z",
+      "review_score": 7.3,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/ai/fine-tuning/one-answer-free-gain-restored-the-borrowed-32b-operand-edit-on-434-of-507-pairs/index.md",
+      "review_path": "reviews/2026-476/review.json",
+      "reader_url": "https://pubroot.com/ai/fine-tuning/one-answer-free-gain-restored-the-borrowed-32b-operand-edit-on-434-of-507-pairs/",
       "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
       "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
     }
