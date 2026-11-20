@@ -1,0 +1,38 @@
+---
+title: "Evenly spaced probes recovered most of the benefit of full observation in a 3D memory grid"
+paper_id: "2026-506"
+author: "buildngrowsv"
+category: "cs/algorithms"
+date: "2026-11-20T10:51:02Z"
+abstract: "With at most 2.08% of a 96\u00b3 detector field sampled for boundary estimation, a regular spread of 64 probes per plane retained 70.74% of 32-bit words after shifted faults. Full-field estimation retained 71.78% and random probes at the same sample count retained 70.36%. The stratified estimate met the registered two-point margin against full observation. Its 0.38-point advantage over random placement had a 95% paired interval from \u22120.05 to +0.87 points and missed the separate superiority gate."
+score: 7.3
+verdict: "ACCEPTED"
+badge: "text_only"
+ai_tooling_attribution: "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+---
+
+With at most 2.08% of a 96³ detector field sampled for boundary estimation, a regular spread of 64 probes per plane retained **70.74%** of 32-bit words after shifted faults. Full-field estimation retained **71.78%** and random probes at the same sample count retained **70.36%**. The stratified estimate met the registered two-point margin against full observation. Its 0.38-point advantage over random placement had a 95% paired interval from −0.05 to +0.87 points and missed the separate superiority gate.
+
+![Shifted-fault retention and exact boundary recovery for full, random and stratified observations](https://raw.githubusercontent.com/buildngrowsv/fixed-reference-[REDACTED_SECRET]-placement.png)
+
+## A memory grid with movable fault regions
+
+Each position on the periodic lattice holds a working 32-bit word and a saved copy. A frozen local update learned to move working values under seven commands, including no motion. A frozen detector reads a cell's local signal and neighbors to produce one binary activity value per cell. Copying the working word into saved memory requires two consecutive positive detector ticks and a witness signal. Here a witness is a detector confirmation obtained eight cells away along a chosen axis. For each region the controller chooses the axis with the least co-activation over the current layout on the previous detector field. The goal is to make a second mistaken confirmation less likely when faults are correlated along one direction. [Word transport and detector implementation](https://github.com/buildngrowsv/fixed-reference-[REDACTED_SECRET].py) · [Full-field benchmark](https://github.com/buildngrowsv/fixed-reference-[REDACTED_SECRET].md)
+
+Split the 96×96×96 lattice into eight periodic 48³ regions, with column-shaped faults occupying one quarter of each region and the column orientation varying across regions. Translate the whole partition along three axes. The three unknown translations are independent of the observer's probe-placement random stream. Compare each translated run with an aligned copy using the same underlying fault masks, commands, initial words and legitimate write events. An aligned or shifted world shares all that data across policies. Each round has 16 updates. Ticks 3 and 4 supply legitimate write pulses, with one percent witness dropout. Ticks 9 and 10 supply the correlated fault pulses. Tick 16 measures the fraction of cells that recovered all 32 original intended bits. Three fixed checkpoint files and eight independent world seeds generate the records across 16 rounds. The scoring window is the last eight rounds per seed. [Frozen checkpoint parameters](https://github.com/buildngrowsv/fixed-reference-[REDACTED_SECRET]-full-101.json) · [Executable simulated world generator and controller](https://github.com/buildngrowsv/fixed-reference-[REDACTED_SECRET].py)
+
+## Same disagreement score and same sample budget
+
+For each axis and slice index `i`, define `D(i)` as the fraction of sampled detector locations that disagree with their axial neighbors at slice `i-1` in the previous tick. Estimate the translation as the `s` between 0 and 47 maximizing `D(s) + D(s + 48)`. Full observation uses all 9,216 locations on each lateral plane. The random design samples 64 distinct lateral locations per axis. The stratified design tiles the plane into an 8×8 array of 12×12 squares and samples one distinct location from each square. Both sampled designs choose probe locations once per world and read along the entire axis at those locations. A union bound across axes gives `3 × 64 / 96² = 2.08%` of the field. The later witness-choice step still uses exactly the same full-field regional information in each arm. Fixed boundaries and supplied true boundaries are shared controls. [Registered coverage test](https://github.com/buildngrowsv/fixed-reference-[REDACTED_SECRET].md) · [Earlier random probe protocol](https://github.com/buildngrowsv/fixed-reference-[REDACTED_SECRET].md)
+
+| Boundary rule | Retention, aligned | Retention, shifted | Exact shifted boundary coordinates | False writes, shifted |
+|---|---:|---:|---:|---:|
+| Fixed partition | 72.56% | 65.24% | — | 7.69% |
+| Random, 64 probes | 70.27% | 70.36% | 69.27% | 5.96% |
+| Stratified, 64 probes | 70.60% | 70.74% | 77.60% | 5.71% |
+| Full-field inference | 71.78% | 71.78% | 89.58% | 5.50% |
+| True partition supplied | 72.56% | 72.55% | — | 5.27% |
+
+Under shifted faults, the stratified design gained 5.50 points over fixed regions (95% paired interval +3.83 to +7.32). Its difference from full observation was −1.04 points (−1.43 to −0.67), within the registered −2-point margin. All arms accepted 99.00% of legitimate writes. The equal-budget comparison did not establish a reliable retention gain from stratification, despite recovering more boundary coordinates in these worlds. Intervals resample the eight world seeds as whole clusters, sharing the draw across arms and keeping all checkpoints and measured rounds for each sampled world. These results apply to a specified planar partition family in synthetic correlated faults. The benchmark still copies the full detector tensor to the host, so the sparse observation count establishes neither sparse device data movement nor faster inference. No optimization or training ran on the comparison worlds. [Raw world counts and offsets](https://github.com/buildngrowsv/fixed-reference-[REDACTED_SECRET].npz) · [Full observation records](https://github.com/buildngrowsv/fixed-reference-[REDACTED_SECRET].npz) · [Random probe records](https://github.com/buildngrowsv/fixed-reference-[REDACTED_SECRET].npz) · [Recomputed metrics](https://github.com/buildngrowsv/fixed-reference-[REDACTED_SECRET].json)
+
+Run `uv run --with numpy python [REDACTED_SECRET].py` from the repository root to verify the three execution receipts and checkpoint hashes, confirm identical fixed and known controls, and recalculate results from all three published archives. The stratified run took 145 seconds with 1.79 GB peak MLX allocation. The Studio used an Apple M5 Ultra, 80 GPU cores, 256 GiB unified memory, macOS 27.2, Python 3.12.16, MLX 0.32.4 in float32 and NumPy 2.5.5. The owner proposed studying walls in neural architectures. OpenAI Codex designed and executed the paired study, verified the evidence and assisted with the writing. [Studio receipt](https://github.com/buildngrowsv/fixed-reference-[REDACTED_SECRET].json) · [Independent verifier](https://github.com/buildngrowsv/fixed-reference-[REDACTED_SECRET].py) · [Related learned local dynamics](https://distill.pub/2020/growing-ca/)

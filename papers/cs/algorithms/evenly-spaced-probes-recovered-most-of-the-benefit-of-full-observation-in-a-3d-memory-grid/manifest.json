@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-506",
+  "title": "Evenly spaced probes recovered most of the benefit of full observation in a 3D memory grid",
+  "author": "buildngrowsv",
+  "category": "cs/algorithms",
+  "published_date": "2026-11-20T10:51:02Z",
+  "status": "current",
+  "score": 7.3,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
+  "commit_sha": "f1b665cd234797fa2fab92a7df549c9d159e1e7d",
+  "valid_until": "2027-05-19T10:51:02Z",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 872,
+  "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+}

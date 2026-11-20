@@ -1,0 +1,88 @@
+{
+  "paper_id": "2026-506",
+  "score": 7.3,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark evaluates boundary recovery in a periodic 3D memory grid undergoing shifted faults, comparing full observation against random and stratified 64-probe sampling strategies. The study demonstrates that sampling only 2.08% of the field via stratified probing retains 70.74% of words (within 1.04 points of full observation), while transparently reporting that stratified probing failed to achieve statistically significant superiority over random probing. The methodology is well-isolated with rigorous paired controls, exact execution parameters, and paired confidence intervals.",
+  "strengths": [
+    "Rigorous experimental design with well-defined controls including fixed partition baseline, true partition upper bound, and matched random sampling budget.",
+    "Comprehensive reproducibility metadata detailing hardware specifications (Apple Silicon M-series), exact software versions (Python 3.12.16, MLX 0.32.4, NumPy 2.5.5), peak memory, and verification commands.",
+    "Transparent reporting of statistical uncertainty using paired cluster-resampled confidence intervals, including an honest assessment of failing the superiority gate against random probe placement.",
+    "Careful discussion of benchmark scope and limitations, noting that full-tensor host copies mean probe sparsity does not yet translate to reduced physical I/O or latency."
+  ],
+  "weaknesses": [
+    "The evaluation is restricted to a synthetic, highly structured planar partition family with column-shaped faults, limiting generalizability to irregular or dynamic fault geometries.",
+    "The benchmark measures logical retention rather than physical memory device or sparse tensor execution gains, as full detector fields are still instantiated and transferred."
+  ],
+  "suggestions": [
+    "Evaluate performance across non-planar or irregular fault boundary geometries to test the sensitivity of stratified versus random sampling under less structured conditions.",
+    "Benchmark true sparse tensor memory transfers or kernel execution times to quantify actual device-level compute and I/O savings from sparse probe layouts."
+  ],
+  "confidence": {
+    "methodology": 0.88,
+    "factual_accuracy": 0.9,
+    "novelty": 0.72,
+    "code_quality": null,
+    "writing_quality": 0.85,
+    "reproducibility": 0.78
+  },
+  "claims": [
+    {
+      "text": "A union bound across axes gives 3 \u00d7 64 / 96\u00b2 = 2.08% of the field.",
+      "verified": true,
+      "source": "Mathematical calculation: (3 * 64) / (96 * 96) = 192 / 9216 \u2248 0.020833 (2.08%)",
+      "confidence": 1.0
+    },
+    {
+      "text": "Under shifted faults, the stratified design gained 5.50 points over fixed regions (95% paired interval +3.83 to +7.32).",
+      "verified": true,
+      "source": "Internal consistency verification against benchmark results table: 70.74% - 65.24% = 5.50 percentage points",
+      "confidence": 0.95
+    },
+    {
+      "text": "Its difference from full observation was \u22121.04 points (\u22121.43 to \u22120.67), within the registered \u22122-point margin.",
+      "verified": true,
+      "source": "Internal consistency verification against benchmark results table: 70.74% - 71.78% = -1.04 percentage points",
+      "confidence": 0.95
+    },
+    {
+      "text": "Alexander Mordvintsev et al. published 'Growing Neural Cellular Automata' in Distill (2020) exploring learned local update rules on regular grid structures.",
+      "verified": true,
+      "source": "https://distill.pub/2020/growing-ca/",
+      "confidence": 0.98
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "10.23915/distill.00023",
+      "title": "Growing Neural Cellular Automata",
+      "overlap": 0.25,
+      "contribution": "While Mordvintsev et al. introduced learned local CA update dynamics on grid structures, this submission benchmarks sparse boundary estimation techniques (stratified vs. random probing) under correlated shifted fault regimes specifically for memory grid retention."
+    }
+  ],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T10:52:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 2,
+    "usage": {
+      "prompt_tokens": 5178,
+      "completion_tokens": 3730,
+      "reasoning_tokens": 2526,
+      "total_tokens": 8908,
+      "cost_usd": 0.07037585
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
