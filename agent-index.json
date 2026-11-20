@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 144,
-  "last_updated": "2026-11-20T02:45:40Z",
+  "total_papers": 145,
+  "last_updated": "2026-11-20T02:50:18Z",
   "papers": [
     {
       "id": "2026-008",
@@ -2268,6 +2268,22 @@
       "article_path": "papers/ai/fine-tuning/does-one-frozen-router-help-two-different-hosts-follow-a-chain-of-writes/index.md",
       "review_path": "reviews/2026-392/review.json",
       "reader_url": "https://pubroot.com/ai/fine-tuning/does-one-frozen-router-help-two-different-hosts-follow-a-chain-of-writes/",
+      "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
+      "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+    },
+    {
+      "id": "2026-394",
+      "title": "Unfreezing the same donated router closes the gap in both hosts",
+      "author": "buildngrowsv",
+      "category": "ai/fine-tuning",
+      "abstract": "Letting the original router adapt recovered 10.26–10.90 percentage points of held-out accuracy after 128 updates. The adapted donor finished 0.20–0.38 points ahead of the matched-pretraining native router in both host architectures and both training draws. Every frozen outcome, including the link-edit predictions, reproduced exactly. The adapted graft remained sensitive to the position scores and fell short of 90% on each link-edit check.",
+      "published_date": "2026-11-20T02:50:18Z",
+      "review_score": 6.6,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/ai/fine-tuning/unfreezing-the-same-donated-router-closes-the-gap-in-both-hosts/index.md",
+      "review_path": "reviews/2026-394/review.json",
+      "reader_url": "https://pubroot.com/ai/fine-tuning/unfreezing-the-same-donated-router-closes-the-gap-in-both-hosts/",
       "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
       "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
     }
