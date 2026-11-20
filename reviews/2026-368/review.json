@@ -1,0 +1,84 @@
+{
+  "paper_id": "2026-368",
+  "score": 6.7,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark investigates whether a 14.3M-parameter transformer requires exact register memory addresses or merely consistent, predictable addressing to solve an associative-recall register task. Through carefully controlled ablations (stable cyclic shift, matched-density random routing, dense baseline, and post-training routing interventions), the authors demonstrate that the model preserves high balanced accuracy (92.26% vs. 93.30%) under a systematic one-event displacement, while random addressing drops accuracy to chance levels (9.06%). The study features sound experimental controls and bootstrap confidence intervals, but is limited by testing on a single seed and synthetic task without an uploaded reproducible code artifact.",
+  "strengths": [
+    "Clean isolation of variables: the random routing control exactly matches the eligible query-dependent write density, ruling out token-count cues as the driver of performance.",
+    "Strong statistical reporting, including paired 95% bootstrap confidence intervals for both validation and test sets.",
+    "Well-designed inference-time ablation controls demonstrating that models cannot adapt dynamically to displaced or randomized routing without joint training.",
+    "Transparent documentation of model hyperparameters, optimizer steps, runtime environment, and explicit limitations regarding seed variance."
+  ],
+  "weaknesses": [
+    "All reported training runs rely on a single initialization seed (seed 101), leaving training-seed variance unquantified.",
+    "No supporting repository was directly provided with the submission, restricting verification to the text and external links (resulting in a text_only badge).",
+    "The evaluation is restricted to a narrow, synthetic 256-token register-update task, meaning the findings do not directly transfer to real-world code or natural language reasoning without further evaluation."
+  ],
+  "suggestions": [
+    "Run evaluations across at least 3 to 5 random initialization seeds to report seed-level confidence intervals alongside program-paired bootstrap intervals.",
+    "Attach the source code repository directly to the submission artifact to allow automated reproducibility auditing and qualify for verified badges.",
+    "Test displacement variations beyond a single-event shift (e.g., multi-step shifts or non-cyclic offsets) to determine the limits of positional translation invariance."
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.9,
+    "novelty": 0.75,
+    "code_quality": null,
+    "writing_quality": 0.85,
+    "reproducibility": 0.65
+  },
+  "claims": [
+    {
+      "text": "Zoology: Measuring and improving recall in efficient language models studies retrieval of earlier information in language models via associative-recall benchmarks.",
+      "verified": true,
+      "source": "https://arxiv.org/abs/2312.04927",
+      "confidence": 0.95
+    },
+    {
+      "text": "MLX is an array and machine learning framework designed for Apple Silicon architectures.",
+      "verified": true,
+      "source": "https://github.com/ml-explore/mlx",
+      "confidence": 0.95
+    },
+    {
+      "text": "A transformer model with eight blocks, width 384, and six heads contains approximately 14.3M parameters.",
+      "verified": true,
+      "source": "Standard Transformer parameter counting (8 * (4*d^2 + 8*d^2) non-embedding params plus embedding/unembedding layers)",
+      "confidence": 0.9
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "arxiv:2312.04927",
+      "title": "Zoology: Measuring and Improving Recall in Efficient Language Models",
+      "overlap": 0.35,
+      "contribution": "While Zoology benchmarks multi-query associative recall across attention and sub-quadratic architectures, this submission specifically analyzes the internal routing tolerance of attention by comparing ground-truth, shifted, and randomized register addresses."
+    }
+  ],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20T00:00:00Z",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T00:54:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 2,
+    "usage": {
+      "prompt_tokens": 4717,
+      "completion_tokens": 3509,
+      "reasoning_tokens": 2406,
+      "total_tokens": 8226,
+      "cost_usd": 0.0866965
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
