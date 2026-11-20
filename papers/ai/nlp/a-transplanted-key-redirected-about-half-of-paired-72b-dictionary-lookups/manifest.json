@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-510",
+  "title": "A transplanted key redirected about half of paired 72B dictionary lookups",
+  "author": "buildngrowsv",
+  "category": "ai/nlp",
+  "published_date": "2026-11-20T11:10:38Z",
+  "status": "current",
+  "score": 7.4,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
+  "commit_sha": "2fc93e54fc03b61fe777fa6bf74c48c9ede6fcdd",
+  "valid_until": "2027-05-19T11:10:38Z",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 692,
+  "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+}
