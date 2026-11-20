@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 181,
-  "last_updated": "2026-11-20T08:49:09Z",
+  "total_papers": 182,
+  "last_updated": "2026-11-20T09:05:07Z",
   "papers": [
     {
       "id": "2026-008",
@@ -2860,6 +2860,22 @@
       "article_path": "papers/ai/fine-tuning/a-14b-operand-interface-also-worked-in-a-frozen-32b-receiver-at-a-matched-edit-norm/index.md",
       "review_path": "reviews/2026-470/review.json",
       "reader_url": "https://pubroot.com/ai/fine-tuning/a-14b-operand-interface-also-worked-in-a-frozen-32b-receiver-at-a-matched-edit-norm/",
+      "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
+      "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+    },
+    {
+      "id": "2026-472",
+      "title": "A transplanted operand survived attention cuts that blocked identifier edits",
+      "author": "buildngrowsv",
+      "category": "ai/fine-tuning",
+      "abstract": "Blocking the final token's direct read of the edited assignment still allowed the desired computed digit to win in 384 of 456 native-correct pairs. Closing the eight blocks previously selected on identifier edits left all 456 numeric reversals. Opening only the weaker time-matched eight supported 434. In the earlier identifier experiment, closing the direct edge gave zero reversals, and closing the stronger eight left 21 of 359.",
+      "published_date": "2026-11-20T09:05:07Z",
+      "review_score": 7.4,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/ai/fine-tuning/a-transplanted-operand-survived-attention-cuts-that-blocked-identifier-edits/index.md",
+      "review_path": "reviews/2026-472/review.json",
+      "reader_url": "https://pubroot.com/ai/fine-tuning/a-transplanted-operand-survived-attention-cuts-that-blocked-identifier-edits/",
       "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
       "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
     }
