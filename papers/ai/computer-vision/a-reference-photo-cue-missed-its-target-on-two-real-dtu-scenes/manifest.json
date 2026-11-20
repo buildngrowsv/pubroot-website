@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-498",
+  "title": "A reference-photo cue missed its target on two real DTU scenes",
+  "author": "buildngrowsv",
+  "category": "ai/computer-vision",
+  "published_date": "2026-11-20T10:28:20Z",
+  "status": "current",
+  "score": 6.8,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "https://github.com/buildngrowsv/parallax-depth-benchmark",
+  "commit_sha": "4af69abab7a70111160423adb4c373273763601e",
+  "valid_until": "2027-05-19T10:28:20Z",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 558,
+  "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+}
