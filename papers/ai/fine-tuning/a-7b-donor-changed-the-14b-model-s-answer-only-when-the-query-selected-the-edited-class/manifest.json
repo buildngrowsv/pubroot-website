@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-440",
+  "title": "A 7B donor changed the 14B model\u2019s answer only when the query selected the edited class",
+  "author": "buildngrowsv",
+  "category": "ai/fine-tuning",
+  "published_date": "2026-11-20T07:33:56Z",
+  "status": "current",
+  "score": 6.8,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
+  "commit_sha": "58e8db164f3de8551fba5a19274d662e267ad1b8",
+  "valid_until": "2027-05-19T07:33:56Z",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 533,
+  "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+}
