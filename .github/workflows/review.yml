@@ -460,7 +460,7 @@ jobs:
       GH_REPO: ${{ github.repository }}
     
     steps:
-      # No checkout, no Python setup, no secrets - only comment posting
+      # No submitter code and no LLM secrets. Checks out THIS repo only to run the D-26 SEO-gaming screen (GitHub API reads + label/close writes).
       
       # ---------------------------------------------------------------
       # Step 1: Ensure pipeline labels exist
@@ -478,9 +478,43 @@ jobs:
           gh label create "approved-for-review" --color "0e8a16" --description "Maintainer-approved submission ready for AI review" 2>/dev/null || true
           gh label create "editorial-hold" --color "b60205" --description "Submission on hold pending editorial decision" 2>/dev/null || true
           gh label create "awaiting-approval" --color "fbca04" --description "Submission awaiting maintainer approval" 2>/dev/null || true
+          gh label create "rejected" --color "d73a4a" --description "Submission rejected" 2>/dev/null || true
+          gh label create "seo-gaming" --color "b60205" --description "Closed at screening: likely SEO/reputation gaming (D-26)" 2>/dev/null || true
+          gh label create "seo-gaming-flag" --color "fbca04" --description "One SEO/reputation-gaming signal; reviewer should check (D-26)" 2>/dev/null || true
       
       # ---------------------------------------------------------------
-      # Step 2: Post gating comment (idempotent)
+      # Step 2: Checkout repository
+      # ---------------------------------------------------------------
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+      
+      # ---------------------------------------------------------------
+      # Step 3: Set up Python
+      # ---------------------------------------------------------------
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      
+      # ---------------------------------------------------------------
+      # Step 4: Run SEO-gaming screen
+      # ---------------------------------------------------------------
+      - name: Run SEO-gaming screen
+        id: screen
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_WORKSPACE: ${{ github.workspace }}
+          ISSUE: ${{ needs.analyze-submission.outputs.issue_number }}
+        run: |
+          pip install --quiet requests || true
+          python _review_agent/seo_gaming_screen.py screen "$ISSUE" --apply || echo "decision=error" >> "$GITHUB_OUTPUT"
+      
+      # ---------------------------------------------------------------
+      # Step 5: Post gating comment (idempotent)
       # ---------------------------------------------------------------
       # Only post if:
       # - No github-actions[bot] comment contains "pubroot:pending-approval"
@@ -490,6 +524,7 @@ jobs:
       #   creation, so keying on it would suppress the notice for every submission)
       # ---------------------------------------------------------------
       - name: Post gating comment
+        if: steps.screen.outputs.decision != 'reject'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ISSUE: ${{ needs.analyze-submission.outputs.issue_number }}
