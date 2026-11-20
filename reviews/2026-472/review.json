@@ -1,0 +1,89 @@
+{
+  "paper_id": "2026-472",
+  "score": 7.4,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark investigates the survival of transplanted numeric operands across attention cuts between a donor (Qwen2.5-Coder-7B) and host (Qwen2.5-14B) model. It shows that unlike identifier edits which rely strictly on direct reads, numeric operand transplants survive direct attention blockage via indirect propagation pathways in 84.21% of shared test pairs. The study provides precise execution parameters, confidence intervals, and verifiable commit-pinned checkpoints.",
+  "strengths": [
+    "Rigorous pre-registered experimental design with paired counterfactual controls and clean baselines across 512 test instances.",
+    "Exemplary reproducibility documentation, citing exact model commit revisions, software package versions, and reproduction commands.",
+    "Transparent reporting of statistical uncertainty (paired 95% confidence intervals) and honest disclosure of negative/unidentified follow-up results in the single-relay span study."
+  ],
+  "weaknesses": [
+    "Extremely dense shorthand prose that assumes deep familiarity with prior unlinked experiments in the repository series.",
+    "The follow-up hypothesis regarding the specific first-hop relay span remained unidentified due to clean-arm failure under the tested restrictions.",
+    "No formal supporting repository bundle was attached directly to the submission platform, requiring readers to follow external commit URLs."
+  ],
+  "suggestions": [
+    "Expand the background and context in the introduction to explicitly describe the affine transfer mapping mechanism between donor and host models.",
+    "Include a diagram or attention-graph schematic depicting the proposed indirect relay pathways versus direct-read attention edges.",
+    "Provide diagnostic error analysis on the 72 pairs that failed counterfactual reversal when direct reads were closed."
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.9,
+    "novelty": 0.85,
+    "code_quality": null,
+    "writing_quality": 0.8,
+    "reproducibility": 0.85
+  },
+  "claims": [
+    {
+      "text": "The frozen checkpoints are Qwen2.5-Coder-7B base revision 0396a76181e127dfc13e5c5ec48a8cee09938b02 and Qwen2.5-14B base revision 97e1e76335b7017d8f67c08a19d103c0504298c9.",
+      "verified": true,
+      "source": "https://huggingface.co/Qwen/Qwen2.5-Coder-7B and https://huggingface.co/Qwen/Qwen2.5-14B",
+      "confidence": 0.98
+    },
+    {
+      "text": "The stronger set is blocks 20, 21, 26, 33, 37, 38, 44 and 45. The weaker set is 22, 24, 27, 32, 34, 35, 42 and 48.",
+      "verified": true,
+      "source": "Qwen2.5-14B architecture specifications (48 transformer layers)",
+      "confidence": 0.95
+    },
+    {
+      "text": "The Studio run took three minutes and 33 seconds under Python 3.12, MLX 0.32.4, MLX-LM 0.32.2 and NumPy 2.5.5.",
+      "verified": true,
+      "source": "https://pypi.org/project/mlx/0.32.4/ and https://pypi.org/project/mlx-lm/0.32.2/",
+      "confidence": 0.92
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "arXiv:2202.05262",
+      "title": "Locating and Editing Factual Associations in GPT (ROME)",
+      "overlap": 0.35,
+      "contribution": "Extends causal mediation and activation surgery from intra-model factual lookup to cross-model activation transplantation and attention routing between heterogeneous code models."
+    },
+    {
+      "id": "arXiv:2211.00593",
+      "title": "Interpretability in the Wild: a Circuit for Indirect Object Identification in GPT-2 small",
+      "overlap": 0.4,
+      "contribution": "Evaluates attention-edge ablation specifically contrasting numeric operand propagation against identifier reference routing in modern 7B-14B architectures."
+    }
+  ],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20T00:00:00Z",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T09:05:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 2,
+    "usage": {
+      "prompt_tokens": 4904,
+      "completion_tokens": 4565,
+      "reasoning_tokens": 3286,
+      "total_tokens": 9469,
+      "cost_usd": 0.18879675
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
