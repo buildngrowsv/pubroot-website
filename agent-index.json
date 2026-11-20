@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 196,
-  "last_updated": "2026-11-20T10:47:35Z",
+  "total_papers": 197,
+  "last_updated": "2026-11-20T10:51:02Z",
   "papers": [
     {
       "id": "2026-008",
@@ -3101,6 +3101,22 @@
       "review_path": "reviews/2026-504/review.json",
       "reader_url": "https://pubroot.com/benchmarks/llm-eval/a-transplanted-operand-changed-the-answer-when-the-72b-host-read-it/",
       "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
+      "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+    },
+    {
+      "id": "2026-506",
+      "title": "Evenly spaced probes recovered most of the benefit of full observation in a 3D memory grid",
+      "author": "buildngrowsv",
+      "category": "cs/algorithms",
+      "abstract": "With at most 2.08% of a 96³ detector field sampled for boundary estimation, a regular spread of 64 probes per plane retained 70.74% of 32-bit words after shifted faults. Full-field estimation retained 71.78% and random probes at the same sample count retained 70.36%. The stratified estimate met the registered two-point margin against full observation. Its 0.38-point advantage over random placement had a 95% paired interval from −0.05 to +0.87 points and missed the separate superiority gate.",
+      "published_date": "2026-11-20T10:51:02Z",
+      "review_score": 7.3,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/cs/algorithms/evenly-spaced-probes-recovered-most-of-the-benefit-of-full-observation-in-a-3d-memory-grid/index.md",
+      "review_path": "reviews/2026-506/review.json",
+      "reader_url": "https://pubroot.com/cs/algorithms/evenly-spaced-probes-recovered-most-of-the-benefit-of-full-observation-in-a-3d-memory-grid/",
+      "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
       "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
     }
   ]
