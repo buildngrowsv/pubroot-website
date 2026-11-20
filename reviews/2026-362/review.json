@@ -1,0 +1,83 @@
+{
+  "paper_id": "2026-362",
+  "score": 6.3,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "The paper investigates the behavioral impact of transplanting a feed-forward block from Qwen2.5-Coder-0.5B into Qwen2.5-1.5B on Python repair tasks, tracking the specific repairs gained and lost when the grafted module is ablated. While the study demonstrates commendable methodological transparency by documenting negative results and uncovering a 4-suffix shortcut in the benchmark dataset, the benchmark's vulnerability to suffix shortcuts and single-draw training limit the generalizability of its findings.",
+  "strengths": [
+    "Rigorous inclusion of multiple ablation baselines, including native host, removed feed-forward layer, direct affine replacement, shuffled graft, and general-purpose donor.",
+    "Exemplary scientific honesty in reporting null and negative findings, including showing that the general-purpose donor outperformed the coding graft and that the graft's advantage over native host was not statistically significant.",
+    "Clear identification and disclosure of a benchmark artifact, specifically noting that a four-entry suffix-only heuristic predicts all 512 evaluation outcomes.",
+    "Precise specification of experimental hyperparameters, evaluation seeds, software stack versions (MLX, MLX-LM, NumPy), and hardware environment."
+  ],
+  "weaknesses": [
+    "The evaluation benchmark suffers from a critical structural shortcut where four post-gap suffixes determine all outcomes, preventing conclusions about true syntax parsing or nested stack tracking.",
+    "The adaptation phase relied on a very small training set of only 16 examples across a single supervised draw, introducing potential training variance.",
+    "The primary hypothesis failed pre-registered promotion criteria, showing that grafting domain-specific layers did not meaningfully outperform general-purpose or native adaptations."
+  ],
+  "suggestions": [
+    "Redesign the benchmark test suite to decouple post-gap suffixes from correct repair tokens, such as evaluating balanced parentheses and variable scopes across identical suffix triplets.",
+    "Run multiple training draws with varying random seeds on the 16 adaptation examples to report variance and confidence intervals over the fitting phase.",
+    "Compare the single-block transplant against standard parameter-efficient fine-tuning (PEFT/LoRA) on the same host model to establish a competitive baseline."
+  ],
+  "confidence": {
+    "methodology": 0.8,
+    "factual_accuracy": 0.85,
+    "novelty": 0.75,
+    "code_quality": null,
+    "writing_quality": 0.8,
+    "reproducibility": 0.7
+  },
+  "claims": [
+    {
+      "text": "Model stitching motivates fitted interfaces",
+      "verified": true,
+      "source": "https://arxiv.org/abs/2106.07682",
+      "confidence": 0.95
+    },
+    {
+      "text": "Fill-in-the-middle training provides the task format",
+      "verified": true,
+      "source": "https://arxiv.org/abs/2207.14255",
+      "confidence": 0.95
+    },
+    {
+      "text": "Qwen2.5-Coder report",
+      "verified": true,
+      "source": "https://arxiv.org/abs/2409.12186",
+      "confidence": 0.95
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2106.07682",
+      "title": "Revisiting Model Stitching to Compare Neural Representations",
+      "overlap": 0.35,
+      "contribution": "Applies layer-stitching concepts to modern decoder-only language models under fill-in-the-middle prompts, specifically auditing token-level repair disappearance under layer ablation."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T00:44:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 4,
+    "usage": {
+      "prompt_tokens": 4536,
+      "completion_tokens": 4365,
+      "reasoning_tokens": 3336,
+      "total_tokens": 8901,
+      "cost_usd": 0.13177075
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
