@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-572",
+  "title": "Swapping both tokens at the dictionary\u2019s alias read changed zero full lookup groups",
+  "author": "buildngrowsv",
+  "category": "ai/nlp",
+  "published_date": "2026-11-20T16:00:24Z",
+  "status": "current",
+  "score": 7.4,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
+  "commit_sha": "023e47831c0b1a2e9b0655e1d4f0e63d03ea47ac",
+  "valid_until": "2027-05-19T16:00:24Z",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 525,
+  "ai_tooling_attribution": "The owner proposed the research direction. OpenAI Codex registered, implemented, ran and verified the comparisons and assisted with writing."
+}

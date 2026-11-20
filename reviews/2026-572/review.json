@@ -1,0 +1,83 @@
+{
+  "paper_id": "2026-572",
+  "score": 7.4,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark note evaluates interchange interventions targeting the alias read and closing bracket tokens of a dictionary lookup within Qwen2.5-72B at layer 40. The empirical results show a near-complete null effect across 143 matched groups compared to a strong positive control in relocated declarations. The study provides exceptional precision in environment pinning and experimental parameters, although it remains a concise, single-site mechanistic probing study.",
+  "strengths": [
+    "Rigorous experimental design incorporating positive controls (relocated declaration) and negative/constant-output controls across 143 dual-solved program groups.",
+    "Exemplary documentation of reproduction parameters, including exact model revision commit hash, hardware configuration, and pinned software dependency versions.",
+    "Careful isolation of intervention targets, testing individual token residual streams as well as joint token replacements at the exact residual dimension (8,192).",
+    "Preregistered evaluation criteria and strict thresholding (demanding rank 1 across the full vocabulary across four counterfactual completions)."
+  ],
+  "weaknesses": [
+    "Extremely narrow experimental scope limited to a single midpoint layer (block 40 of 80) and a synthetic dictionary lookup template.",
+    "Dense, abbreviated prose that omits in-line examples of the exact prompt structures and requires familiarity with prior unpublished iterations.",
+    "Does not explore multi-layer interventions or attention head patching to identify where the alias resolution mechanism actually executes if bypassed at block 40."
+  ],
+  "suggestions": [
+    "Include a minimal concrete prompt pair directly in the text to clarify token alignment and counterfactual setups for readers.",
+    "Extend the benchmark sweep across multiple layers (e.g., layers 20 through 60) to map the causal trajectory of the lookup operation across model depth."
+  ],
+  "confidence": {
+    "methodology": 0.88,
+    "factual_accuracy": 0.92,
+    "novelty": 0.75,
+    "code_quality": null,
+    "writing_quality": 0.78,
+    "reproducibility": 0.85
+  },
+  "claims": [
+    {
+      "text": "The frozen checkpoint is unquantized BF16 Qwen2.5-72B at revision efba10c8e54e91e0d9570ab5f7b51a958474d4cb.",
+      "verified": true,
+      "source": "https://huggingface.co/Qwen/Qwen2.5-[REDACTED_SECRET]",
+      "confidence": 0.98
+    },
+    {
+      "text": "Exchange one or both whole 8,192-value residual vectors with the corresponding vectors from the partner prompt.",
+      "verified": true,
+      "source": "https://huggingface.co/Qwen/Qwen2.5-72B/blob/main/config.json",
+      "confidence": 0.99
+    },
+    {
+      "text": "Geiger et al., interchange interventions",
+      "verified": true,
+      "source": "https://arxiv.org/abs/2301.04709",
+      "confidence": 0.99
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "arXiv:2301.04709",
+      "title": "Causal Abstraction: A Theoretical Foundation for Mechanistic Interpretability",
+      "overlap": 0.35,
+      "contribution": "Applies interchange interventions specifically to variable binding and dictionary lookup mechanics in a frontier dense 72B parameter model (Qwen2.5-72B)."
+    }
+  ],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T16:05:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 2,
+    "usage": {
+      "prompt_tokens": 4524,
+      "completion_tokens": 3092,
+      "reasoning_tokens": 2009,
+      "total_tokens": 7616,
+      "cost_usd": 0.112988
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
