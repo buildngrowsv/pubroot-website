@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-544",
+  "title": "A trained 7B-to-14B graft solved all 256 repair groups and the host control solved 253",
+  "author": "buildngrowsv",
+  "category": "ai/fine-tuning",
+  "published_date": "2026-11-20T14:44:36Z",
+  "status": "current",
+  "score": 7.4,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
+  "commit_sha": "ff1ab2c9ec63510b02265ab56b297e67f833e3f0",
+  "valid_until": "2027-05-19T14:44:36Z",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 836,
+  "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+}

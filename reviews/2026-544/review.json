@@ -1,0 +1,90 @@
+{
+  "paper_id": "2026-544",
+  "score": 7.4,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark evaluates a 32-feature learned residual bridge between a frozen Qwen2.5-Coder-7B donor and a frozen Qwen2.5-14B host on a Python delimiter repair task. The authors demonstrate rigorous causal ablations, showing that while the grafted bridge relies causally on donor inputs, a parameter-matched host-feature control achieves near-identical performance (253 vs 256 solves), honestly concluding that no genuine capability transplant advantage was observed.",
+  "strengths": [
+    "Exemplary scientific honesty in reporting a sobering negative result regarding cross-model capability grafting advantages over matched internal adaptation.",
+    "Comprehensive causal ablation suite, including host-activation controls, randomized donor pairing, cyclic donor swaps, and mean-input ablations.",
+    "Precise specification of layer placement, parameter counts (168,960 weights), optimization hyperparameters, and runtime compute measurements.",
+    "Clear grounding in established model stitching and LLM composition literature."
+  ],
+  "weaknesses": [
+    "The evaluation is restricted to a narrow, partially synthetic single-token delimiter repair task with only 256 test groups, creating a strong ceiling effect.",
+    "Scoring is confined to single-token logits over four candidate tokens rather than multi-token generation or broader code synthesis benchmarks.",
+    "No external repository was attached directly through the submission platform, limiting automated reproducibility checking to text evaluation."
+  ],
+  "suggestions": [
+    "Extend the benchmarking harness to complex multi-token generation tasks (e.g., HumanEval or MBPP) where host baselines do not saturate.",
+    "Evaluate multi-layer cross-attention mechanisms across varying token sequences rather than a single residual vector at the prediction position.",
+    "Test cross-architecture or cross-domain pairs under domain distribution shifts where the donor possesses distinct pretraining knowledge absent in the host."
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.9,
+    "novelty": 0.75,
+    "code_quality": null,
+    "writing_quality": 0.85,
+    "reproducibility": 0.8
+  },
+  "claims": [
+    {
+      "text": "This follows prior model stitching and small-interface composition between frozen models.",
+      "verified": true,
+      "source": "https://arxiv.org/abs/2106.07682, https://arxiv.org/abs/2401.02412",
+      "confidence": 0.95
+    },
+    {
+      "text": "The bridge has 32 \u00d7 5,120 + 5,120 = 168,960 trainable FP32 weights.",
+      "verified": true,
+      "source": "https://huggingface.co/Qwen/Qwen2.5-14B/raw/main/config.json",
+      "confidence": 0.95
+    },
+    {
+      "text": "Setting the donor input to its calibration mean while keeping the trained connection in place erased 226 of those solves.",
+      "verified": false,
+      "source": "Empirical benchmark result reported in article; cannot be externally verified without executing the author's internal test artifacts.",
+      "confidence": 0.7
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2401.02412",
+      "title": "LLM Augmented LLMs: Expanding Capabilities through Composition",
+      "overlap": 0.45,
+      "contribution": "Applies frozen cross-model residual patching between Qwen2.5 models and benchmarks matched internal host adaptation controls to measure true capability transfer."
+    },
+    {
+      "id": "2106.07682",
+      "title": "Revisiting Model Stitching to Compare Neural Representations",
+      "overlap": 0.4,
+      "contribution": "Adapts layer stitching concepts to decoder-only LLM residual streams with specific causal ablation controls (cyclic swap and mean ablations)."
+    }
+  ],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20T14:44:00Z",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T14:44:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 2,
+    "usage": {
+      "prompt_tokens": 5088,
+      "completion_tokens": 4980,
+      "reasoning_tokens": 3839,
+      "total_tokens": 10068,
+      "cost_usd": 0.120491
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
