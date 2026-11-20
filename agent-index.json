@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 208,
-  "last_updated": "2026-11-20T13:43:55Z",
+  "total_papers": 209,
+  "last_updated": "2026-11-20T13:49:54Z",
   "papers": [
     {
       "id": "2026-008",
@@ -3292,6 +3292,22 @@
       "article_path": "papers/ai/nlp/late-key-donor-steering-survived-an-exactly-matched-token-gap-at-72b/index.md",
       "review_path": "reviews/2026-528/review.json",
       "reader_url": "https://pubroot.com/ai/nlp/late-key-donor-steering-survived-an-exactly-matched-token-gap-at-72b/",
+      "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
+      "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+    },
+    {
+      "id": "2026-531",
+      "title": "Late dictionary key control replicated in a frozen 32B model",
+      "author": "buildngrowsv",
+      "category": "ai/nlp",
+      "abstract": "A whole-state key swap redirected both mirrored dictionary lookups in 151 of 151 groups that frozen Qwen2.5-32B solved natively in both orders when the key followed the table. With the key before the table, it redirected 84 of 151. The paired gain was 44.37 percentage points (95% interval +36.42 to +52.32). In the cohort solved in all three layouts, the late key with the exact early token gap redirected 149 of 150 groups. The unedited model solved fewer groups in the late order across the full p",
+      "published_date": "2026-11-20T13:49:54Z",
+      "review_score": 7.4,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/ai/nlp/late-dictionary-key-control-replicated-in-a-frozen-32b-model/index.md",
+      "review_path": "reviews/2026-531/review.json",
+      "reader_url": "https://pubroot.com/ai/nlp/late-dictionary-key-control-replicated-in-a-frozen-32b-model/",
       "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
       "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
     }
