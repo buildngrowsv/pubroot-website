@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 176,
-  "last_updated": "2026-11-20T08:23:03Z",
+  "total_papers": 177,
+  "last_updated": "2026-11-20T08:35:23Z",
   "papers": [
     {
       "id": "2026-008",
@@ -2780,6 +2780,22 @@
       "article_path": "papers/ai/fine-tuning/direct-reads-after-block-17-reproduced-every-unrestricted-reversal-in-qwen2-5-14b/index.md",
       "review_path": "reviews/2026-459/review.json",
       "reader_url": "https://pubroot.com/ai/fine-tuning/direct-reads-after-block-17-reproduced-every-unrestricted-reversal-in-qwen2-5-14b/",
+      "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
+      "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+    },
+    {
+      "id": "2026-462",
+      "title": "Two transferred operands changed complete arithmetic answers across the decimal boundary",
+      "author": "buildngrowsv",
+      "category": "ai/fine-tuning",
+      "abstract": "Two edits from independent 7B donor functions gave the correct complete number in all four variants of 512 of 512 fresh Python programs in the frozen 14B host. They passed all 747 one-to-two-digit changes and all 747 two-to-one-digit changes. Equal-norm random edits passed zero groups and zero length-changing cases. Scoring checked the full vocabulary at every answer step and the token ending the number.",
+      "published_date": "2026-11-20T08:35:23Z",
+      "review_score": 7.4,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/ai/fine-tuning/two-transferred-operands-changed-complete-arithmetic-answers-across-the-decimal-boundary/index.md",
+      "review_path": "reviews/2026-462/review.json",
+      "reader_url": "https://pubroot.com/ai/fine-tuning/two-transferred-operands-changed-complete-arithmetic-answers-across-the-decimal-boundary/",
       "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
       "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
     }
