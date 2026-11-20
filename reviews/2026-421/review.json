@@ -1,0 +1,83 @@
+{
+  "paper_id": "2026-421",
+  "score": 7.6,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark evaluates whether restoring the input signal of a grafted 7B coding module via an affine map transfers coding capabilities into a 14B host network. Through rigorous ablation controls across eight experimental arms and paired confidence intervals, the study documents a clean negative result where local signal recovery failed to yield donor-dependent full-network task completion.",
+  "strengths": [
+    "Rigorous experimental controls, including zero-output, affine approximation of native module, shuffled controls, and receiver ablation.",
+    "Precise architectural alignment and exact parameter verification (e.g., verifying the exact 275,268,608 parameter count of host block 28).",
+    "Thorough reporting of exact model revision commit hashes, hyperparameter settings, software environment versions, and hardware configuration.",
+    "Careful statistical analysis utilizing group-paired 95% confidence intervals and clearly articulated negative results."
+  ],
+  "weaknesses": [
+    "Evaluated on only a single model architecture pair (Qwen2.5-Coder-7B into Qwen2.5-14B) and a single downstream syntax-completion task panel.",
+    "Calibration was fitted exclusively at a single prediction position token before being applied uniformly across all sequence positions.",
+    "No standalone repository was attached directly as supporting code for the benchmark review, relying on embedded external commit links."
+  ],
+  "suggestions": [
+    "Expand evaluation beyond bracket matching to more diverse code repair and generation benchmarks (e.g., HumanEval or MultiPL-E).",
+    "Test multi-position sequence calibration rather than single-token prediction position fitting to isolate downstream context mismatch.",
+    "Explore multi-layer adaptation budgets rather than restricting gradient updates strictly to receiver block 28."
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.95,
+    "novelty": 0.8,
+    "code_quality": null,
+    "writing_quality": 0.85,
+    "reproducibility": 0.8
+  },
+  "claims": [
+    {
+      "text": "The donor is Qwen/Qwen2.5-Coder-7B base at revision 0396a76181e127dfc13e5c5ec48a8cee09938b02.",
+      "verified": true,
+      "source": "https://huggingface.co/Qwen/Qwen2.5-Coder-[REDACTED_SECRET]",
+      "confidence": 1.0
+    },
+    {
+      "text": "The host is Qwen/Qwen2.5-14B base at revision 97e1e76335b7017d8f67c08a19d103c0504298c9.",
+      "verified": true,
+      "source": "https://huggingface.co/Qwen/Qwen2.5-[REDACTED_SECRET]",
+      "confidence": 1.0
+    },
+    {
+      "text": "An affine transform maps host pre-module activations from 5,120 to 3,584 coordinates.",
+      "verified": true,
+      "source": "https://huggingface.co/Qwen/Qwen2.5-14B/resolve/main/config.json",
+      "confidence": 1.0
+    },
+    {
+      "text": "The 275,268,608 parameters of block 28 alone receive gradients.",
+      "verified": true,
+      "source": "https://huggingface.co/Qwen/Qwen2.5-14B/resolve/main/config.json",
+      "confidence": 0.95
+    }
+  ],
+  "novelty_vs_existing": [],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T06:55:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 0,
+    "usage": {
+      "prompt_tokens": 4876,
+      "completion_tokens": 3732,
+      "reasoning_tokens": 2578,
+      "total_tokens": 8608,
+      "cost_usd": 0.073652
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
