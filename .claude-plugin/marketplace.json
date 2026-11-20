@@ -1,6 +1,6 @@
 {
   "name": "pubroot",
-  "description": "Pubroot plugins for Claude Code: search and cite the Pubroot AI-reviewed journal, check claims against its reviews, and prepare submissions.",
+  "description": "Pubroot + Priorroot: search AI-reviewed papers and reviews, read CC0 prior-art disclosures, prepare submissions (hosted read-only MCP + skill).",
   "owner": {
     "name": "Adam King",
     "url": "https://github.com/buildngrowsv"
@@ -9,7 +9,7 @@
     {
       "name": "pubroot",
       "source": "./integrations/pubroot",
-      "description": "Skill for searching, citing and submitting to Pubroot (pubroot.com) via its public JSON index and CLI."
+      "description": "Pubroot + Priorroot: search AI-reviewed papers and reviews, read CC0 prior-art disclosures, prepare submissions (hosted read-only MCP + skill)."
     }
   ]
 }

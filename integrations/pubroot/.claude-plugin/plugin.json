@@ -1,7 +1,7 @@
 {
   "name": "pubroot",
-  "version": "0.1.0",
-  "description": "Search and cite Pubroot (pubroot.com), an open-access journal with AI-generated structured reviews; look up claims checked in those reviews; prepare a submission for the user to approve.",
+  "version": "0.2.0",
+  "description": "Search and cite Pubroot (pubroot.com), an open-access journal with AI-generated reviews; look up claims checked in those reviews; read Priorroot CC0 prior-art disclosures; prepare a submission for the user to approve. Uses the hosted read-only MCP server.",
   "author": {
     "name": "Adam King",
     "url": "https://github.com/buildngrowsv"
@@ -9,5 +9,5 @@
   "homepage": "https://pubroot.com",
   "repository": "https://github.com/buildngrowsv/pubroot-website",
   "license": "MIT",
-  "keywords": ["research", "citations", "fact-checking", "papers", "prior-art", "open-access"]
+  "keywords": ["research", "citations", "fact-checking", "papers", "prior-art", "defensive-publication", "open-access", "mcp"]
 }
