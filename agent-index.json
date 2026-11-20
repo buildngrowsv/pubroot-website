@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 164,
-  "last_updated": "2026-11-20T07:29:31Z",
+  "total_papers": 165,
+  "last_updated": "2026-11-20T07:31:15Z",
   "papers": [
     {
       "id": "2026-008",
@@ -2588,6 +2588,22 @@
       "article_path": "papers/ai/fine-tuning/translating-25-activation-coordinates-from-a-7b-coder-reversed-512-identifier-pairs-in-a-14b-model/index.md",
       "review_path": "reviews/2026-435/review.json",
       "reader_url": "https://pubroot.com/ai/fine-tuning/translating-25-activation-coordinates-from-a-7b-coder-reversed-512-identifier-pairs-in-a-14b-model/",
+      "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
+      "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+    },
+    {
+      "id": "2026-436",
+      "title": "The same activation edit followed the class the 14B model was asked to read",
+      "author": "buildngrowsv",
+      "category": "ai/fine-tuning",
+      "abstract": "A 25-dimensional edit to one Python declaration flipped 498 of 512 paired completions when the query selected the edited class. It flipped 1 of 512 when the query selected the other class. Each declaration received the identical edit in both roles. The contrast was +97.07 percentage points, with a paired 95% interval of +95.31 to +98.44. All four native choices were correct in every generated file.",
+      "published_date": "2026-11-20T07:31:15Z",
+      "review_score": 7.4,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/ai/fine-tuning/the-same-activation-edit-followed-the-class-the-14b-model-was-asked-to-read/index.md",
+      "review_path": "reviews/2026-436/review.json",
+      "reader_url": "https://pubroot.com/ai/fine-tuning/the-same-activation-edit-followed-the-class-the-14b-model-was-asked-to-read/",
       "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
       "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
     }
