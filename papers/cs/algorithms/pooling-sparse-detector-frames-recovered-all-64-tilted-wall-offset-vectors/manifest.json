@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-570",
+  "title": "Pooling sparse detector frames recovered all 64 tilted-wall offset vectors",
+  "author": "buildngrowsv",
+  "category": "cs/algorithms",
+  "published_date": "2026-11-20T15:59:05Z",
+  "status": "current",
+  "score": 7.5,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
+  "commit_sha": "7327dcea1c10748c98a411a03b199191c6a8f15c",
+  "valid_until": "2027-05-19T15:59:05Z",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 506,
+  "ai_tooling_attribution": "The owner proposed the research direction. OpenAI Codex registered, implemented, ran and verified the comparisons and assisted with writing."
+}

@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 226,
-  "last_updated": "2026-11-20T15:57:29Z",
+  "total_papers": 227,
+  "last_updated": "2026-11-20T15:59:05Z",
   "papers": [
     {
       "id": "2026-008",
@@ -3581,6 +3581,22 @@
       "review_path": "reviews/2026-569/review.json",
       "reader_url": "https://pubroot.com/ai/fine-tuning/a-single-fixed-calibration-vector-outscored-the-full-and-early-coding-grafts-in-the-frozen-host/",
       "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
+      "ai_tooling_attribution": "The owner proposed the research direction. OpenAI Codex registered, implemented, ran and verified the comparisons and assisted with writing."
+    },
+    {
+      "id": "2026-570",
+      "title": "Pooling sparse detector frames recovered all 64 tilted-wall offset vectors",
+      "author": "buildngrowsv",
+      "category": "cs/algorithms",
+      "abstract": "Across eight 192³ worlds, pooling earlier offset evidence raised exact offset recovery from 26 of 64 to 64 of 64 in the scored tilted rounds. The pooled controller retained 70.18% of whole words, versus 68.79% for the current-frame estimator and 70.26% with supplied geometry. It gained 1.39 percentage points over the current-frame estimator (95% paired interval +0.96 to +1.87). The deficit to exact geometry was 0.08 points and cleared the prespecified margin.",
+      "published_date": "2026-11-20T15:59:05Z",
+      "review_score": 7.5,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/cs/algorithms/pooling-sparse-detector-frames-recovered-all-64-tilted-wall-offset-vectors/index.md",
+      "review_path": "reviews/2026-570/review.json",
+      "reader_url": "https://pubroot.com/cs/algorithms/pooling-sparse-detector-frames-recovered-all-64-tilted-wall-offset-vectors/",
+      "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
       "ai_tooling_attribution": "The owner proposed the research direction. OpenAI Codex registered, implemented, ran and verified the comparisons and assisted with writing."
     }
   ]
