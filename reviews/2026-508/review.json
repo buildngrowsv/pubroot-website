@@ -1,0 +1,90 @@
+{
+  "paper_id": "2026-508",
+  "score": 8.2,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark investigates causal representation transplantation from a 7B donor (Qwen2.5-Coder-7B) into a 72B recipient (Qwen2.5-72B) across variable-binding and overwrite tasks in Python execution contexts. Using a registered 7-dimensional affine interface, the authors demonstrate that a low-dimensional intervention at the relevant assignment token switches the recipient's output in 193 of 206 test groups (matching full-state exchange performance of 192/206), while exposing subtle interference from later overwrites. The study is methodologically rigorous, thoroughly controlled, and candid about failing its registered 95% preservation floor (achieving 94.66%).",
+  "strengths": [
+    "Rigorous experimental design incorporating both positive controls (full-state exchange) and negative controls (equal-norm orthogonal edits).",
+    "Preregistered design and transparent reporting of results, including candidly acknowledging when the preservation rate (94.66%) fell one group short of the registered 95% threshold.",
+    "Careful error taxonomy showing that all 14 individual preservation failures specifically reflected intrusions from the subsequent variable overwrite rather than random corruption.",
+    "Comprehensive environmental documentation including hardware configuration (Apple M5 Ultra), memory allocation (147.24 GB), and package version pinning."
+  ],
+  "weaknesses": [
+    "The evaluation does not test a full-state exchange control at the overwrite site, leaving open whether the 14 intrusion failures are specific to the low-dimensional transplant or a broader property of the recipient model's architecture.",
+    "The study is limited to a synthetic variable-binding and integer-arithmetic task on a single model pair (Qwen2.5-Coder-7B into Qwen2.5-72B), limiting direct generalizability to complex programmatic reasoning.",
+    "The submission lacks a formal repository attachment in metadata, relying instead on commit-pinned inline URLs."
+  ],
+  "suggestions": [
+    "Perform the full-state exchange intervention at the overwrite token position to determine if the recipient's vulnerability to later-value intrusion is an inherent model dynamic or an artifact of the 7D affine projection.",
+    "Evaluate whether varying the number of intervening distractor assignments alters the intrusion rate during irrelevant-site edits.",
+    "Formally link the GitHub repository in the metadata section rather than relying solely on inline markdown links."
+  ],
+  "confidence": {
+    "methodology": 0.9,
+    "factual_accuracy": 0.85,
+    "novelty": 0.8,
+    "code_quality": null,
+    "writing_quality": 0.85,
+    "reproducibility": 0.85
+  },
+  "claims": [
+    {
+      "text": "A seven-dimensional transplant into frozen Qwen2.5-72B switched all four correct answers in 193 of 206 paired groups involving a saved Python value and a later overwrite.",
+      "verified": true,
+      "source": "https://github.com/buildngrowsv/routed-expert-[REDACTED_SECRET].md",
+      "confidence": 0.85
+    },
+    {
+      "text": "A full-state exchange at the relevant assignment switched 192, and an equal-norm orthogonal edit switched zero.",
+      "verified": true,
+      "source": "https://github.com/buildngrowsv/routed-expert-[REDACTED_SECRET].json",
+      "confidence": 0.85
+    },
+    {
+      "text": "Editing the irrelevant assignment preserved 195 of 206 groups (94.66%), one group short of the registered 95% floor.",
+      "verified": true,
+      "source": "https://github.com/buildngrowsv/routed-expert-[REDACTED_SECRET].json",
+      "confidence": 0.9
+    },
+    {
+      "text": "Interchange intervention and causal abstraction frameworks provide established foundations for neural network representation swapping.",
+      "verified": true,
+      "source": "https://proceedings.neurips.[REDACTED_SECRET]-Abstract.html",
+      "confidence": 0.95
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "Geiger-2021-NeurIPS",
+      "title": "Causal abstractions of neural networks",
+      "overlap": 0.35,
+      "contribution": "Extends interchange interventions from within-model causal abstraction to cross-model activation transplantation across disparate scales (7B to 72B) via low-dimensional affine maps in sequential code execution tasks."
+    }
+  ],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T11:06:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 5,
+    "usage": {
+      "prompt_tokens": 4971,
+      "completion_tokens": 3258,
+      "reasoning_tokens": 1810,
+      "total_tokens": 8229,
+      "cost_usd": 0.07194575
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
