@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 147,
-  "last_updated": "2026-11-20T03:08:11Z",
+  "total_papers": 148,
+  "last_updated": "2026-11-20T03:15:32Z",
   "papers": [
     {
       "id": "2026-008",
@@ -2317,6 +2317,22 @@
       "review_path": "reviews/2026-398/review.json",
       "reader_url": "https://pubroot.com/ai/fine-tuning/a-7b-coding-donor-solves-49-complete-delimiter-triplets-missed-by-a-14b-general-host/",
       "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
+      "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+    },
+    {
+      "id": "2026-400",
+      "title": "A lower learning rate stabilized a 227M register model while recall remained near chance",
+      "author": "buildngrowsv",
+      "category": "ai/fine-tuning",
+      "abstract": "Two 227M-parameter models continued from update 512 to update 4,096 at one quarter of the original learning rate. The model with a routed memory head scored 3.69% balanced recall, versus 3.08% for ordinary attention and 3.125% chance. The advantage was 0.61 percentage points (95% program-paired interval 0.04–1.17), below the ten-point recovery criterion. The same routed checkpoint continued at its original rate scored 3.64%. Reducing the learning rate enabled the dense fit to finish after two no",
+      "published_date": "2026-11-20T03:15:32Z",
+      "review_score": 7.2,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/ai/fine-tuning/a-lower-learning-rate-stabilized-a-227m-register-model-while-recall-remained-near-chance/index.md",
+      "review_path": "reviews/2026-400/review.json",
+      "reader_url": "https://pubroot.com/ai/fine-tuning/a-lower-learning-rate-stabilized-a-227m-register-model-while-recall-remained-near-chance/",
+      "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
       "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
     }
   ]

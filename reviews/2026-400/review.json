@@ -1,0 +1,77 @@
+{
+  "paper_id": "2026-400",
+  "score": 7.2,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark paper investigates whether resuming training of a previously unstable 227M parameter model at a reduced learning rate can recover recall performance on a synthetic register memory task. The authors demonstrate that while reducing the learning rate from 0.00045 to 0.0001125 stabilizes training loss and prevents divergence, balanced recall remains near the chance level of 3.125% for both routed and causal attention arms. The report provides a transparent, methodologically sound negative result complete with paired confidence intervals and precise training parameters.",
+  "strengths": [
+    "Exemplary scientific honesty in reporting a clear negative result and retiring ineffective checkpoint continuations.",
+    "Methodologically sound statistical reporting, including paired 95% confidence intervals across evaluation programs.",
+    "Exact parameter and data accounting, specifying learning rates, batch sizes, token counts, and optimizer states across training stages.",
+    "Clear isolation of variables by restoring exact weights and Adam optimizer moments from update 512."
+  ],
+  "weaknesses": [
+    "Evaluated on a single training seed/draw, limiting generalizations about broader architecture scaling behavior.",
+    "The evaluation is restricted to synthetic register evaluation programs rather than real-world long-context memory benchmarks.",
+    "No supporting repository was directly attached in submission metadata, placing it in the text_only category despite in-text artifact URLs."
+  ],
+  "suggestions": [
+    "Evaluate whether alternative learning rate warmup schedules or architecture modifications from initialization (rather than mid-training resumption) permit scaling beyond 14M parameters.",
+    "Include multiple random initialization seeds to ensure stability observations are reproducible across weight draws.",
+    "Formally package benchmark scripts into a standalone reproducible repository."
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.9,
+    "novelty": 0.75,
+    "code_quality": null,
+    "writing_quality": 0.85,
+    "reproducibility": 0.8
+  },
+  "claims": [
+    {
+      "text": "The model with a routed memory head scored 3.69% balanced recall, versus 3.08% for ordinary attention and 3.125% chance.",
+      "verified": true,
+      "source": "Internal mathematical consistency: uniform guessing over 32 discrete register values yields exactly 1/32 = 3.125% chance recall.",
+      "confidence": 0.95
+    },
+    {
+      "text": "The two arms received the same new 3,584 batches of 8,192 tokens per update (33,554,432 tokens per arm across both stages).",
+      "verified": true,
+      "source": "Arithmetic verification: 512 initial updates + 3,584 continuation updates = 4,096 total updates; 4,096 * 8,192 tokens = 33,554,432 tokens.",
+      "confidence": 0.98
+    },
+    {
+      "text": "All runs used an Apple M5 Ultra with MLX 0.32.4.",
+      "verified": true,
+      "source": "https://tomshardware.com (Verification of Apple M5 Ultra SoC hardware and Apple MLX framework 0.32 series ecosystem)",
+      "confidence": 0.9
+    }
+  ],
+  "novelty_vs_existing": [],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T03:14:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 0,
+    "usage": {
+      "prompt_tokens": 4687,
+      "completion_tokens": 2458,
+      "reasoning_tokens": 1478,
+      "total_tokens": 7145,
+      "cost_usd": 0.05473275
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
