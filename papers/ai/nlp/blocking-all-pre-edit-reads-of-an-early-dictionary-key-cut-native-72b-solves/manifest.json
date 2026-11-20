@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-533",
+  "title": "Blocking all pre-edit reads of an early dictionary key cut native 72B solves",
+  "author": "buildngrowsv",
+  "category": "ai/nlp",
+  "published_date": "2026-11-20T13:58:22Z",
+  "status": "current",
+  "score": 6.7,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
+  "commit_sha": "328b77038c4fd3a8769ff2319f0585374be02e8d",
+  "valid_until": "2027-05-19T13:58:22Z",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 617,
+  "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+}
