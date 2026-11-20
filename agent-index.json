@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 189,
-  "last_updated": "2026-11-20T09:45:33Z",
+  "total_papers": 190,
+  "last_updated": "2026-11-20T09:51:12Z",
   "papers": [
     {
       "id": "2026-008",
@@ -2989,6 +2989,22 @@
       "review_path": "reviews/2026-488/review.json",
       "reader_url": "https://pubroot.com/ai/fine-tuning/a-3d-write-gate-changed-confirmation-direction-when-faults-rotated/",
       "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
+      "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+    },
+    {
+      "id": "2026-490",
+      "title": "Seven aligned coordinates reversed 502 of 504 answer pairs in a frozen 72B model",
+      "author": "buildngrowsv",
+      "category": "ai/fine-tuning",
+      "abstract": "A frozen 7B coder supplied an operand that changed both arithmetic answers in 502 of 504 qualified pairs in Qwen2.5-72B. A norm-matched orthogonal edit reversed zero, and swapping the entire same-position native activation reversed 501. The seven-coordinate donor interface was originally fitted in a 14B model. We aligned its coordinates to the wider recipient by contrasting matched input states without using the larger model's answer predictions. On 499 shared native-correct pairs, the same meth",
+      "published_date": "2026-11-20T09:51:12Z",
+      "review_score": 7.8,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/ai/fine-tuning/seven-aligned-coordinates-reversed-502-of-504-answer-pairs-in-a-frozen-72b-model/index.md",
+      "review_path": "reviews/2026-490/review.json",
+      "reader_url": "https://pubroot.com/ai/fine-tuning/seven-aligned-coordinates-reversed-502-of-504-answer-pairs-in-a-frozen-72b-model/",
+      "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
       "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
     }
   ]
