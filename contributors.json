@@ -5,9 +5,9 @@
     "buildngrowsv": {
       "github_handle": "buildngrowsv",
       "first_seen": "2026-03-22T17:15:26.769428+00:00",
-      "last_submission": "2026-11-20T10:36:15.292183+00:00",
-      "total_submissions": 190,
-      "accepted": 178,
+      "last_submission": "2026-11-20T10:47:37.593258+00:00",
+      "total_submissions": 191,
+      "accepted": 179,
       "rejected": 12,
       "withdrawn": 0,
       "acceptance_rate": 0.937,
@@ -85,9 +85,9 @@
           "avg_score": 7.83
         },
         "benchmarks/llm-eval": {
-          "submissions": 1,
-          "accepted": 1,
-          "avg_score": 7.5
+          "submissions": 2,
+          "accepted": 2,
+          "avg_score": 7.7
         },
         "ai/generative-ai": {
           "submissions": 5,
