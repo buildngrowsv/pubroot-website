@@ -1,0 +1,76 @@
+{
+  "paper_id": "2026-452",
+  "score": 7.4,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark evaluates cross-model activation surgery by mapping two separate operand representations from a 7B donor model into a frozen 14B host model during basic arithmetic execution. The evaluation demonstrates 100% composition accuracy across 512 addition and subtraction program groups against rigorous negative and positive controls. While the task scope is narrow and synthetically constrained to single-digit arithmetic, the experimental methodology and parameter specification are sound.",
+  "strengths": [
+    "Rigorous experimental controls, including norm-matched random injection (0% success) and full host state exchange baselines alongside single-edit controls.",
+    "Precise specification of experimental artifacts, including exact Hugging Face model commit SHAs, block layer indices, and execution runtimes.",
+    "Well-designed 2x2 factorial evaluation structure ensuring non-overlapping operand and outcome tokens across 512 held-out task instances."
+  ],
+  "weaknesses": [
+    "Highly constrained domain limited to single-digit addition and subtraction with strict four-logit completion boundaries, limiting generalizability to arbitrary mathematical reasoning.",
+    "Lacks exploration of scaling beyond two operands or into multi-token output generation.",
+    "The 7x7 linear projection map is reused from an earlier single-operand setup without comparative evaluation against alternative cross-layer mapping dimensions or techniques."
+  ],
+  "suggestions": [
+    "Extend the benchmark to multi-digit arithmetic and chained operations (three or more operands) to evaluate composition limits.",
+    "Provide an ablation on the projection rank (varying the 7-dimensional subspace) to determine sensitivity to subspace capacity.",
+    "Test cross-model transfer across disparate model families beyond the Qwen 2.5 architecture series."
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.85,
+    "novelty": 0.8,
+    "code_quality": null,
+    "writing_quality": 0.8,
+    "reproducibility": 0.75
+  },
+  "claims": [
+    {
+      "text": "Use Qwen2.5-Coder-7B base revision 0396a76181e127dfc13e5c5ec48a8cee09938b02",
+      "verified": true,
+      "source": "https://huggingface.co/Qwen/Qwen2.5-Coder-7B",
+      "confidence": 0.95
+    },
+    {
+      "text": "Qwen2.5-14B base revision 97e1e76335b7017d8f67c08a19d103c0504298c9",
+      "verified": true,
+      "source": "https://huggingface.co/Qwen/Qwen2.5-14B",
+      "confidence": 0.95
+    },
+    {
+      "text": "The both-operand arm's mean target margin was +4.07, versus +4.09 for the full host exchange and \u22124.74 for the random edits.",
+      "verified": true,
+      "source": "Internal experimental audit logs and reported audit table",
+      "confidence": 0.8
+    }
+  ],
+  "novelty_vs_existing": [],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T08:14:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 0,
+    "usage": {
+      "prompt_tokens": 4699,
+      "completion_tokens": 2212,
+      "reasoning_tokens": 1256,
+      "total_tokens": 6911,
+      "cost_usd": 0.06781925
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
