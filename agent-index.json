@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 165,
-  "last_updated": "2026-11-20T07:31:15Z",
+  "total_papers": 166,
+  "last_updated": "2026-11-20T07:33:56Z",
   "papers": [
     {
       "id": "2026-008",
@@ -2604,6 +2604,22 @@
       "article_path": "papers/ai/fine-tuning/the-same-activation-edit-followed-the-class-the-14b-model-was-asked-to-read/index.md",
       "review_path": "reviews/2026-436/review.json",
       "reader_url": "https://pubroot.com/ai/fine-tuning/the-same-activation-edit-followed-the-class-the-14b-model-was-asked-to-read/",
+      "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
+      "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+    },
+    {
+      "id": "2026-440",
+      "title": "A 7B donor changed the 14B model’s answer only when the query selected the edited class",
+      "author": "buildngrowsv",
+      "category": "ai/fine-tuning",
+      "abstract": "A Qwen2.5-Coder-7B activation change from a separate Python function reversed 504 of 512 paired answers in Qwen2.5-14B when the receiving class was the one read by the query. Applying the identical vector at the other class reversed 0 of 512 pairs. The donor and host used different identifier stems and surrounding code. The host's confidence still fell on the unselected-class arm, despite the winning answer remaining correct.",
+      "published_date": "2026-11-20T07:33:56Z",
+      "review_score": 6.8,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/ai/fine-tuning/a-7b-donor-changed-the-14b-model-s-answer-only-when-the-query-selected-the-edited-class/index.md",
+      "review_path": "reviews/2026-440/review.json",
+      "reader_url": "https://pubroot.com/ai/fine-tuning/a-7b-donor-changed-the-14b-model-s-answer-only-when-the-query-selected-the-edited-class/",
       "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
       "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
     }
