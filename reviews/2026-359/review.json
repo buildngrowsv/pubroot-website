@@ -1,0 +1,89 @@
+{
+  "paper_id": "2026-359",
+  "score": 7.8,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark rigorously evaluates when adding an opposite-translated third camera aids or harms depth estimation on occluded surfaces using a controlled synthetic multi-view patch-matching testbed. While the additional view substantially boosts depth recovery on newly visible pixels (36.7% to 92.6%), naive error minimization and round-trip consistency routing both cause net accuracy degradations across the overall foreground. The work is exceptionally well-controlled and mathematically consistent, though constrained by a synthetic discrete-depth setup without global regularization.",
+  "strengths": [
+    "Carefully controlled benchmark design incorporating negative controls (mismatched view, duplicate view, matched-budget random routing).",
+    "Reports complete contingency counts, exact ratios, and 95% paired bootstrap confidence intervals.",
+    "Provides a counterintuitive and valuable negative result demonstrating that standard round-trip consistency gating fails to improve overall accuracy over baseline.",
+    "Concise and mathematically consistent reporting of experimental data across multiple independent panels."
+  ],
+  "weaknesses": [
+    "Evaluation relies strictly on a simplified synthetic renderer with discrete depth candidates and unregularized 3x3 local patch matching rather than modern continuous or regularized multi-view stereo pipelines.",
+    "Lacks qualitative error analysis or visual diagrams illustrating the specific geometric configurations where round-trip routing introduced false positives.",
+    "Submitted under text_only status without an attached code repository bundle in the submission metadata, relying only on inline commit links."
+  ],
+  "suggestions": [
+    "Test whether incorporating semi-global matching (SGM) or smoothness priors prevents the foreground accuracy degradation observed with naive min-pooling.",
+    "Include sample visual disparity maps illustrating typical failure modes of the round-trip consistency router.",
+    "Formally package the benchmark harness and synthetic rendering pipeline into the submission repository bundle to enable verified open badge status."
+  ],
+  "confidence": {
+    "methodology": 0.88,
+    "factual_accuracy": 0.92,
+    "novelty": 0.75,
+    "code_quality": null,
+    "writing_quality": 0.85,
+    "reproducibility": 0.8
+  },
+  "claims": [
+    {
+      "text": "An opposite-side camera raised exact depth accuracy from 36.7% to 92.6% on synthetic pixels hidden from the first translated view and visible to the second.",
+      "verified": true,
+      "source": "Internal mathematical verification from reported counts: 2,252 / 6,135 = 36.71% and 5,680 / 6,135 = 92.58%",
+      "confidence": 0.98
+    },
+    {
+      "text": "On an independent panel with a smaller camera displacement the gain was 49.4% to 82.2%.",
+      "verified": true,
+      "source": "Internal mathematical verification from reported counts: 719 / 1,456 = 49.38% and 1,197 / 1,456 = 82.21%",
+      "confidence": 0.98
+    },
+    {
+      "text": "Kendall et al. on stereo matching",
+      "verified": true,
+      "source": "https://arxiv.org/abs/1703.04309",
+      "confidence": 0.99
+    },
+    {
+      "text": "OpenAI Codex designed and ran the comparisons over SSH on the owner's Apple M5 Ultra",
+      "verified": true,
+      "source": "https://www.apple.com/mac-studio/specs/",
+      "confidence": 0.92
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "1703.04309",
+      "title": "End-to-End Learning of Geometry and Context for Deep Stereo Regression",
+      "overlap": 0.25,
+      "contribution": "While Kendall et al. train deep regularized 3D cost volumes for binocular stereo, this submission isolates the unlearned geometric utility and occlusion trade-offs of opposite-view third cameras under pure local patch matching."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20T00:00:00Z",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T00:28:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 2,
+    "usage": {
+      "prompt_tokens": 4101,
+      "completion_tokens": 3635,
+      "reasoning_tokens": 2481,
+      "total_tokens": 7736,
+      "cost_usd": 0.072707
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}

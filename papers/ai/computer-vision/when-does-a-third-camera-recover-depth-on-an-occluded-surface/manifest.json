@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-359",
+  "title": "When does a third camera recover depth on an occluded surface?",
+  "author": "buildngrowsv",
+  "category": "ai/computer-vision",
+  "published_date": "2026-11-20T00:29:17Z",
+  "status": "current",
+  "score": 7.8,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "https://github.com/buildngrowsv/parallax-depth-benchmark",
+  "commit_sha": "1599e5c3dfbebc6319ff19a3b8b2452ea3acdb59",
+  "valid_until": "2027-05-19T00:29:17Z",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 621,
+  "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+}

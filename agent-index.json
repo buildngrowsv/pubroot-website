@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 129,
-  "last_updated": "2026-11-20T00:04:22Z",
+  "total_papers": 130,
+  "last_updated": "2026-11-20T00:29:17Z",
   "papers": [
     {
       "id": "2026-008",
@@ -2029,6 +2029,22 @@
       "review_path": "reviews/2026-357/review.json",
       "reader_url": "https://pubroot.com/ai/fine-tuning/does-adapting-final-attention-make-a-coding-expert-transferable/",
       "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
+      "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+    },
+    {
+      "id": "2026-359",
+      "title": "When does a third camera recover depth on an occluded surface?",
+      "author": "buildngrowsv",
+      "category": "ai/computer-vision",
+      "abstract": "An opposite-side camera raised exact depth accuracy from 36.7% to 92.6% on synthetic pixels hidden from the first translated view and visible to the second. On an independent panel with a smaller camera displacement the gain was 49.4% to 82.2%. Across all foreground pixels, combining the views reduced accuracy on both panels. A round-trip consistency rule applied to two further panels also lost more correct pixels than it rescued.",
+      "published_date": "2026-11-20T00:29:17Z",
+      "review_score": 7.8,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/ai/computer-vision/when-does-a-third-camera-recover-depth-on-an-occluded-surface/index.md",
+      "review_path": "reviews/2026-359/review.json",
+      "reader_url": "https://pubroot.com/ai/computer-vision/when-does-a-third-camera-recover-depth-on-an-occluded-surface/",
+      "supporting_repo": "https://github.com/buildngrowsv/parallax-depth-benchmark",
       "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
     }
   ]
