@@ -1,0 +1,96 @@
+{
+  "paper_id": "2026-567",
+  "score": 8.8,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark conducts an extensive differential evaluation of HTTP precondition handling across fourteen static-file servers in Node.js, Python, Go, and Rust, complemented by an empirical probe of 32 public static URLs. The study reveals significant divergences from RFC 9110 specifications in most tested frameworks\u2014particularly regarding If-Match strong comparison, multi-line headers, and validator precedence\u2014providing an actionable reference matrix for web library maintainers.",
+  "strengths": [
+    "Exemplary benchmarking methodology using differential testing with 54 well-designed test cases covering edge cases, syntactical deviations, and RFC-open scenarios.",
+    "Comprehensive coverage of fourteen mainstream static-file servers across four major language ecosystems with exact version pinning.",
+    "Meticulous grounding in RFC 9110 specifications (sections 8.8.3, 13.1, 13.2.2, and 15.4.5), clearly separating MUST-level violations, SHOULD-level misses, and ambiguous/open cases.",
+    "Empirical cross-validation via real-world measurements on 32 production websites demonstrating that observed lab splits (such as logical AND combination of validators) manifest in wild deployments."
+  ],
+  "weaknesses": [
+    "Evaluates static handlers strictly under default configurations with a single 100-byte file, leaving out dynamic or chunked content, custom ETag generators, and compression middleware.",
+    "While complete reproduction commands and a Git repository commit hash are provided in the text, no repository artifact was attached directly to the submission platform, requiring a text_only badge.",
+    "The real-world evaluation cannot distinguish between edge cache behavior and origin server handling due to black-box network probing."
+  ],
+  "suggestions": [
+    "Expand testing to examine how compression middleware (e.g., gzip/brotli on-the-fly transformations and W/ tag conversion) interacts with precondition evaluation.",
+    "Formalize the test suite into an automated linter or executable harness that upstream framework maintainers can directly embed into their CI pipelines.",
+    "Investigate how range preconditions (If-Range) interplay with entity tag and modification date comparisons across these server implementations."
+  ],
+  "confidence": {
+    "methodology": 0.95,
+    "factual_accuracy": 0.95,
+    "novelty": 0.85,
+    "code_quality": 0.85,
+    "writing_quality": 0.95,
+    "reproducibility": 0.9
+  },
+  "claims": [
+    {
+      "text": "RFC 9110 Section 13.2.2 fixes the order of evaluation: If-Match, then If-Unmodified-Since (origin servers only), then If-None-Match, then If-Modified-Since.",
+      "verified": true,
+      "source": "https://www.rfc-editor.org/rfc/rfc9110#section-13.2.2",
+      "confidence": 1.0
+    },
+    {
+      "text": "Section 8.8.3.2 defines two comparison functions. Strong comparison requires both tags to be strong and their opaque parts to be identical, and it is the one If-Match uses. Weak comparison ignores the W/ prefix, and If-None-Match uses it.",
+      "verified": true,
+      "source": "https://www.rfc-editor.org/rfc/rfc9110#section-8.8.3.2",
+      "confidence": 1.0
+    },
+    {
+      "text": "Section 13.1 says when a recipient MUST ignore a precondition: If-Modified-Since when If-None-Match is present, when the value is not a valid HTTP-date, when it has more than one member, or when the resource has no modification date.",
+      "verified": true,
+      "source": "https://www.rfc-editor.org/rfc/rfc9110#section-13.1",
+      "confidence": 1.0
+    },
+    {
+      "text": "Section 15.4.5 says a 304 MUST carry the ETag a 200 would have carried.",
+      "verified": true,
+      "source": "https://www.rfc-editor.org/rfc/rfc9110#section-15.4.5",
+      "confidence": 1.0
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "http-tests/cache-tests",
+      "title": "HTTP Caching Tests (cache-tests.fyi)",
+      "overlap": 0.35,
+      "contribution": "While cache-tests focuses on proxy, CDN, and browser cache responses against upstream origins, this work evaluates origin-side static file server libraries across four runtime ecosystems and includes write-protecting preconditions (If-Match, If-Unmodified-Since)."
+    },
+    {
+      "id": "10.1007/978-3-031-85960-1_7",
+      "title": "HTTP Conformance vs. Middleboxes: Identifying Where the Rules Actually Break Down",
+      "overlap": 0.25,
+      "contribution": "Focuses on middlebox and intermediary message rewriting and compliance, whereas this paper investigates server-side conditional request evaluation logic in static handlers."
+    }
+  ],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T16:00:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 3,
+    "usage": {
+      "prompt_tokens": 18427,
+      "completion_tokens": 2771,
+      "reasoning_tokens": 1353,
+      "total_tokens": 21198,
+      "cost_usd": 0.06930215
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
