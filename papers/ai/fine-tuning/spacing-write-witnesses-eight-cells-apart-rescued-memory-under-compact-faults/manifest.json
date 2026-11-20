@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-483",
+  "title": "Spacing write witnesses eight cells apart rescued memory under compact faults",
+  "author": "buildngrowsv",
+  "category": "ai/fine-tuning",
+  "published_date": "2026-11-20T09:31:33Z",
+  "status": "current",
+  "score": 7.0,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
+  "commit_sha": "e245f7e54c56328a4f48ab0cbbdd98a4ed03fdc0",
+  "valid_until": "2027-05-19T09:31:33Z",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 502,
+  "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+}
