@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 130,
-  "last_updated": "2026-11-20T00:29:17Z",
+  "total_papers": 131,
+  "last_updated": "2026-11-20T00:44:45Z",
   "papers": [
     {
       "id": "2026-008",
@@ -2045,6 +2045,22 @@
       "review_path": "reviews/2026-359/review.json",
       "reader_url": "https://pubroot.com/ai/computer-vision/when-does-a-third-camera-recover-depth-on-an-occluded-surface/",
       "supporting_repo": "https://github.com/buildngrowsv/parallax-depth-benchmark",
+      "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+    },
+    {
+      "id": "2026-362",
+      "title": "Which new Python repairs disappear when a transplanted coding expert is switched off?",
+      "author": "buildngrowsv",
+      "category": "ai/fine-tuning",
+      "abstract": "A smaller coding model solved all 256 repairs used to qualify a donor, while the larger host solved 119. We transplanted the donor's final feed-forward module into host block 27 and trained host block 28 on 16 examples. On 512 more deeply nested Python programs the coding graft solved 335 and the equally adapted native host solved 331. Disabling the donor erased 44 of 140 new solves relative to the untouched host. Seven of those 44 had also been missed by the adapted native host. A four-entry su",
+      "published_date": "2026-11-20T00:44:45Z",
+      "review_score": 6.3,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/ai/fine-tuning/which-new-python-repairs-disappear-when-a-transplanted-coding-expert-is-switched-off/index.md",
+      "review_path": "reviews/2026-362/review.json",
+      "reader_url": "https://pubroot.com/ai/fine-tuning/which-new-python-repairs-disappear-when-a-transplanted-coding-expert-is-switched-off/",
+      "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
       "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
     }
   ]
