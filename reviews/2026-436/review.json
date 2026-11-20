@@ -1,0 +1,90 @@
+{
+  "paper_id": "2026-436",
+  "score": 7.4,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark evaluates in-context identifier binding in Qwen2.5-14B using causal activation interventions on paired Python class attribute completions. By projecting state differences onto a 25-dimensional subspace derived after block 10, the authors show that swapping this subspace at the queried class declaration reverses the model's completion in 498 of 512 trials (+97.07 percentage points contrast over the unselected class control). The benchmarking setup is rigorous with precise negative and positive controls, though it is limited in scope to a single model architecture and a stylized synthetic code template.",
+  "strengths": [
+    "Rigorous experimental design featuring both an active negative control (applying the same edit to the unselected class declaration, yielding only 1/512 reversals) and a positive control (full-state replacement, yielding 506/512 reversals).",
+    "Precise specification of dependencies and model artifacts, including the exact Hugging Face commit hash for Qwen2.5-14B (`97e1e76335b7017d8f67c08a19d103c0504298c9`) and exact versions for MLX, MLX-LM, NumPy, and Tokenizers.",
+    "Sound statistical evaluation reporting exact paired trial counts, contrast percentages, and paired 95% confidence intervals (+95.31 to +98.44).",
+    "Clean isolation of the causal effect by ensuring prompt states prior to the intervention are identical and conditioning on late selection cues."
+  ],
+  "weaknesses": [
+    "Narrow benchmark scope: restricted to a single model family and size (Qwen2.5-14B) on a templated single-letter Python attribute completion task, leaving generalization to multi-token identifiers or diverse code structures unaddressed.",
+    "The mathematical methodology for identifying the 25 directions (e.g., SVD, PCA, or difference-in-means on calibration pairs) is deferred to external repository links rather than summarized within the text.",
+    "Hardware specifications are slightly informal (referring simply to 'The Studio' without documenting the specific Apple Silicon chip, memory tier, or power profile)."
+  ],
+  "suggestions": [
+    "Briefly describe the linear algebraic technique used to derive the 25 subspace basis vectors directly in the article text.",
+    "Expand testing across multiple model families (e.g., Llama-3 or Mistral) and model scales to benchmark whether the dimensionality and layer localization (block 10) of binding subspaces remain invariant.",
+    "Specify the exact hardware platform details (e.g., Mac Studio M2 Ultra with 192GB unified memory) to improve benchmark reproducibility."
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.9,
+    "novelty": 0.75,
+    "code_quality": null,
+    "writing_quality": 0.8,
+    "reproducibility": 0.85
+  },
+  "claims": [
+    {
+      "text": "We froze Qwen2.5-14B base at revision 97e1e76335b7017d8f67c08a19d103c0504298c9.",
+      "verified": true,
+      "source": "https://huggingface.co/Qwen/Qwen2.5-14B",
+      "confidence": 0.98
+    },
+    {
+      "text": "Prior research has used causal interventions to study entity\u2013attribute binding in text and other symbolic relationships. Feng and Steinhardt on binding in context",
+      "verified": true,
+      "source": "https://arxiv.org/abs/2310.17191",
+      "confidence": 0.95
+    },
+    {
+      "text": "Geiger and colleagues on interchange interventions",
+      "verified": true,
+      "source": "https://arxiv.org/abs/2106.02997",
+      "confidence": 0.95
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "arXiv:2310.17191",
+      "title": "How do Language Models Bind Entities in Context?",
+      "overlap": 0.5,
+      "contribution": "Applies causal subspace projection specifically to executable Python class declarations and query-driven attribute lookup in a modern 14B code-capable model, demonstrating that activation interventions track the selected class rather than lexical position."
+    },
+    {
+      "id": "arXiv:2106.02997",
+      "title": "Causal Abstractions of Neural Networks",
+      "overlap": 0.35,
+      "contribution": "Adapts interchange intervention concepts to evaluate low-rank subspace mediation of variable scoping and identifier binding during code completion."
+    }
+  ],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20T00:00:00Z",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T07:30:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 2,
+    "usage": {
+      "prompt_tokens": 4314,
+      "completion_tokens": 3863,
+      "reasoning_tokens": 2528,
+      "total_tokens": 8177,
+      "cost_usd": 0.08772175
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
