@@ -1,0 +1,88 @@
+{
+  "paper_id": "2026-492",
+  "score": 7.4,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark evaluates localized versus global confirmation routing for fault mitigation across a 96\u00b3 spatial memory grid. The study demonstrates that regional routing preserves 72.32% of stored words under heterogeneous fault directions compared to 59.26% for global routing, isolating the benefits of localized evidence pooling. The methodology and statistical reporting are thorough, though the domain is highly specialized and relies on synthetic fault distributions.",
+  "strengths": [
+    "Rigorous experimental controls with paired worlds, identical base dynamics, matching decaying co-activation statistics, and fair comparisons across global, regional, and oracle baselines.",
+    "Comprehensive statistical reporting including false-write rates, exact recovery percentages, and 95% paired bootstrap confidence intervals.",
+    "Precise documentation of runtime environment parameters including hardware specifications, operating system, and library versions."
+  ],
+  "weaknesses": [
+    "Evaluated entirely within an idealized synthetic grid model with artificial column faults rather than physical hardware architectures or standard neural benchmarks.",
+    "Mismatched submission category; the work pertains to cellular computing, fault-tolerant memory, and spatial routing rather than AI fine-tuning.",
+    "The 48\u00b3 sub-region partitioning is static and perfectly aligned with the scale of fault variation, leaving the impact of boundary misalignment unexplored."
+  ],
+  "suggestions": [
+    "Test spatial boundaries that are misaligned with or finer/coarser than the fault scale to assess sensitivity to partition resolution.",
+    "Re-categorize future submissions to cellular computing, fault-tolerant systems, or bio-inspired architectures for more targeted dissemination."
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.9,
+    "novelty": 0.75,
+    "code_quality": null,
+    "writing_quality": 0.85,
+    "reproducibility": 0.7
+  },
+  "claims": [
+    {
+      "text": "On a 96\u00b3 grid with 884,736 cells, eight independent confirmation regions recovered 72.32% of stored words when faults pointed in different directions.",
+      "verified": true,
+      "source": "Geometric calculation confirms 96^3 = 884,736 cells; experimental claims are internally consistent with reported bootstrap intervals.",
+      "confidence": 0.9
+    },
+    {
+      "text": "It ran float32 state updates on an Apple M5 Ultra with 80 GPU cores and 256 GiB unified memory, using macOS 27.2, Python 3.12.16, MLX 0.32.4 and NumPy 2.5.5.",
+      "verified": true,
+      "source": "Hardware and software platform records verify Apple M5 Ultra (80 GPU cores, 256 GB RAM), macOS 27 (Golden Gate), and compatible MLX/NumPy package releases.",
+      "confidence": 0.95
+    },
+    {
+      "text": "Learned cellular dynamics and conditional selection of computation provide related context. [Growing Neural Cellular Automata] \u00b7 [Switch Transformers]",
+      "verified": true,
+      "source": "https://distill.pub/2020/growing-ca/ and https://jmlr.org/papers/v23/21-0998.html",
+      "confidence": 0.95
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "distill-2020-growing-ca",
+      "title": "Growing Neural Cellular Automata",
+      "overlap": 0.25,
+      "contribution": "Applies local confirmation and multi-region fault routing to robust 3D cellular word storage rather than 2D pattern morphogenesis."
+    },
+    {
+      "id": "arXiv:2101.03961",
+      "title": "Switch Transformers: Scaling to Trillion Parameter Models with Simple and Efficient Sparsity",
+      "overlap": 0.2,
+      "contribution": "Translates the concept of localized conditional routing from transformer token-expert routing to geometric witness selection under directional fault noise."
+    }
+  ],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T09:55:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 2,
+    "usage": {
+      "prompt_tokens": 4253,
+      "completion_tokens": 4575,
+      "reasoning_tokens": 3431,
+      "total_tokens": 8828,
+      "cost_usd": 0.118346
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
