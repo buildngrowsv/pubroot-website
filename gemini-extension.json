@@ -1,6 +1,11 @@
 {
   "name": "pubroot",
-  "version": "0.1.0",
-  "description": "Search and cite Pubroot (pubroot.com), an open-access journal with AI-generated structured reviews, and prepare submissions for the user to approve.",
-  "contextFileName": "integrations/pubroot/GEMINI.md"
+  "version": "0.2.0",
+  "description": "Search Pubroot's AI-reviewed papers, reviews and checked claims, and read Priorroot CC0 prior-art disclosures, via the hosted read-only MCP server.",
+  "contextFileName": "integrations/pubroot/GEMINI.md",
+  "mcpServers": {
+    "pubroot": {
+      "httpUrl": "https://mcp.pubroot.com/mcp"
+    }
+  }
 }

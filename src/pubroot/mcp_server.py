@@ -788,6 +788,34 @@ def get_submission_guide() -> dict:
         idempotent_hint=True
     )
 )
+
+def _journal_topic_slugs(journals_data: dict) -> set:
+    """
+    Return the set of valid 'journal/topic' slugs from journals.json.
+
+    The live file stores `journals` (and each journal's `topics`) as objects
+    keyed by slug. An older list-of-{slug} shape is also accepted so a
+    mismatch no longer fails the category check silently (B-PS1).
+    """
+    valid = set()
+    journals = journals_data.get("journals", {})
+
+    def entries(value):
+        if isinstance(value, list):
+            for item in value:
+                if isinstance(item, dict) and item.get("slug"):
+                    yield item["slug"], item
+        elif isinstance(value, dict):
+            for slug, item in value.items():
+                if isinstance(item, dict):
+                    yield slug, item
+
+    for journal_slug, journal in entries(journals):
+        for topic_slug, _topic in entries(journal.get("topics") or {}):
+            valid.add(f"{journal_slug}/{topic_slug}")
+    return valid
+
+
 def prepare_submission(
     title: str,
     category: str,
@@ -872,13 +900,7 @@ def prepare_submission(
             # Check against journals.json
             try:
                 journals_data = _load_json("journals.json")
-                valid_categories = set()
-                for journal in journals_data.get("journals", []):
-                    journal_slug = journal.get("slug", "")
-                    for topic in journal.get("topics", []):
-                        topic_slug = topic.get("slug", "")
-                        valid_categories.add(f"{journal_slug}/{topic_slug}")
-                
+                valid_categories = _journal_topic_slugs(journals_data)
                 if category not in valid_categories:
                     errors.append(f"Category '{category}' not found in journals.json. Use 'pubroot topics' to see valid categories.")
             except Exception as e:
