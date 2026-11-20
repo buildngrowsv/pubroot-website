@@ -1,0 +1,83 @@
+{
+ "body": "### Article Title\n\nAPI Pagination: 24 Cases for Cursor Loops, Empty Pages, and Duplicate Results\n\n### Category\n\nse/api-design\n\n### Submission Type\n\nbenchmark\n\n### AI / Tooling Attribution (optional)\n\nCodex assisted with research planning, fixture code, analysis, figures, and first-pass prose. Daniel Martin reviewed and approved the final submission. The 24 cases are synthetic and no live provider or production system was tested.\n\n### Abstract\n\nA deterministic 24-case fixture compares four API pagination client policies across empty pages, repeated cursors, and overlapping IDs. Stopping on empty pages made four wrong continuation decisions; blindly following every cursor made eight. A cycle guard made all 24 decisions correctly in this constructed fixture, and stable-ID deduplication removed four remaining duplicate rows. The article maps SerpApi, GitHub REST, and Stripe list contracts and gives a bounded client checklist. No live provider, SDK, production, or customer traffic was tested.\n\n### Article Body\n\n![Four API pagination policies compared across continuation errors and duplicate rows](https://raw.githubusercontent.com/danielmartinSR/api-pagination-24-case-fixture/beb8d8434335d0340d65771dd703a5e4802fc862/pagination-outcomes.svg)\n\n## Introduction\n\nAPI pagination looks simple until an agent or batch job has to keep going without a person watching it. A response may contain fewer items than requested, an empty `items` array, a next-page URL, a cursor token, or a link header. The client has to decide whether to continue, stop, or flag a loop\u2014and then merge records without silently duplicating them.\n\nThis article evaluates a narrow question: what breaks when a client treats page contents as the pagination signal? The evidence is a deterministic local fixture with constructed response states. It is a reproducible check of client policies, not a live comparison of API providers.\n\n## What provider documentation says\n\nPagination metadata is provider-specific. SerpApi documents a `serpapi_pagination.next` URL when another result set exists and omits the next field when no next set exists; for Google results, its default pagination advances `start` by the number of organic results returned. GitHub's REST API uses URLs in the response `Link` header, including `rel=\"next\"` when another page exists; the header can be absent when the response fits on one page. Stripe's v1 list API uses `has_more` and an object ID passed as `starting_after`; its list API does not allow `starting_after` and `ending_before` together.\n\n| API contract | Continuation signal | Next request | Normal end condition |\n|---|---|---|---|\n| SerpApi Google Search | `serpapi_pagination.next` URL | Request the returned URL, or use the documented offset parameters | `next` is omitted |\n| GitHub REST | `Link` response header with `rel=\"next\"` | Follow the relation's URL | No next relation; the `Link` header may be absent |\n| Stripe v1 list | `has_more` plus object IDs | Pass the last object's ID as `starting_after` | `has_more` is `false` |\n\nThese are three different interfaces, not interchangeable evidence about a single provider. A reusable client should normalize them into an internal result such as `{ items, nextRequest }`, while each provider adapter follows its own documented contract. Checking whether `items` is empty or shorter than a requested limit is not a substitute for reading that contract: an empty page can still carry a continuation signal, and a nonempty page can be the final one.\n\n## Method\n\nThe fixture contains 24 constructed response states: six patterns with four identifier variations each. The patterns cover a nonempty page with a new cursor, an empty page with a valid cursor, no continuation, a repeated cursor, a cursor seen earlier in the run, and a page whose next result set is empty even though its cursor advances.\n\nFour policies were evaluated:\n\n1. **Stop on empty page:** stop when the current page has no items; otherwise follow a new cursor.\n2. **Blind follow:** continue whenever a cursor is present, even if it has already appeared.\n3. **Cycle guard:** continue only when the cursor is new, but append every returned row.\n4. **Cycle guard plus deduplication:** use the same continuation rule and merge each stable item ID once.\n\nThe expected continue/stop decision is stated for every case in `cases.json`. The script records whether each policy made that decision and counts duplicate rows in the combined output. Because the fixture includes only the six named patterns and four controlled identifier variants, its accuracy is conditional on this constructed contract; it is not a sample of real API traffic.\n\n## Results\n\n| Policy | Wrong continue/stop decisions | Duplicate rows | What failed |\n|---|---:|---:|---|\n| Stop on empty page | 4 of 24 | 4 | Valid continuation after an empty page was missed |\n| Blind follow | 8 of 24 | 8 | Repeated or previously seen cursors were requested again |\n| Cycle guard | 0 of 24 | 4 | Loop decisions were correct, but overlapping IDs remained |\n| Cycle guard + deduplication | 0 of 24 | 0 | Correct decisions and no duplicate IDs in this fixture |\n\nThe empty-page rule made the wrong stop decision in four cases. Blind following made eight wrong decisions because cursor presence alone did not show that the cursor was new. A cycle guard fixed the decision problem in all 24 constructed cases, but it did not merge overlapping rows safely. Deduplication by stable item ID removed those duplicate rows without changing the cursor decision.\n\nThe counts are additive across the four variations of each relevant pattern: four empty-page cases produce four missed continuations; four repeated-cursor and four previously-seen-cursor cases produce eight blind-follow errors. Four overlapping-ID examples account for the cycle-guard policy's duplicate rows. The deduplicating policy preserves 36 expected unique items across the fixture. Those totals describe these exact files and should not be generalized into a pass rate for pagination libraries.\n\n## A bounded client loop\n\n![Continuation decision flow with cycle guard and stable-ID deduplication](https://raw.githubusercontent.com/danielmartinSR/api-pagination-24-case-fixture/beb8d8434335d0340d65771dd703a5e4802fc862/pagination-loop.svg)\n\nA client can keep a set of visited page URLs or cursor tokens, stop when the provider omits its documented continuation signal, and flag a repeated token as a protocol error. It can merge records by stable provider identity where available, preserve first-seen order, and enforce a maximum page count as a last-resort bound. That cap protects the process if a provider keeps returning new cursors forever; it does not replace the provider's normal end signal.\n\n```text\nseen_cursors = set()\nitems_by_id = ordered_map()\nfor page_number in 1..MAX_PAGES:\n    response = fetch(next_url_or_initial_request)\n    for item in response.items:\n        items_by_id.setdefault(stable_id(item), item)\n    next_cursor = provider_adapter.next_cursor(response)\n    if next_cursor is absent: break\n    if next_cursor in seen_cursors: raise PaginationLoopError(next_cursor)\n    seen_cursors.add(next_cursor)\n    next_url_or_initial_request = provider_adapter.request_for(next_cursor)\nelse:\n    raise PageLimitExceeded(MAX_PAGES)\n```\n\nIn production code, define the merge rule too. Keeping the first version of an ID is suitable for an ordered snapshot, while an updating resource feed may need a version or timestamp comparison. If IDs are only unique within a tenant or provider, use a composite identity such as `(provider, account, object_id)`. And when the API supplies a complete next URL, validate its scheme and host against the provider configuration before attaching credentials. The fixture does not model URL parsing, authentication, mutable datasets, retries, or page limits; those are separate checks to add to a real adapter's test suite.\n\n## Related work and difference\n\nA search of Pubroot's published index and site-restricted results for \u201cAPI pagination,\u201d \u201cpagination cursor next page,\u201d and \u201cpagination cursor API agent\u201d found no direct overlap. The latest index snapshot available during this check contains 112 papers and is dated 11 November 2026; it has no paper about API page-continuation or cursor-loop behavior. The nearest articles by audience, rather than by method, are [\u201cSession-Scoped Discovery, Mutex Discipline, and Full-Output Rules for IDE Terminal Automation\u201d (2026-059)](https://pubroot.com/se/devops/session-scoped-discovery-mutex-discipline-and-full-output-rules-for-ide/) and [\u201cExact-Window Browser Control with VCC \u2014 locate, window_ref, and the read-page to discover loop\u201d (2026-061)](https://pubroot.com/ai/agent-architecture/exact-window-browser-control-with-vcc-locate-window-ref-and-the-read-page-to-discover-loop/). They discuss reliable agent tooling workflows; this fixture isolates API continuation decisions and duplicate-row handling. A new index entry may have appeared since the snapshot, so this overlap check should be repeated immediately before submission.\n\n## What this test does not show\n\nThe 24 cases are synthetic and intentionally small. No SerpApi, GitHub, Stripe, Serper, AgentSEO, SDK, or other live API was called. No provider rankings, response ordering under changing data, rate limits, retries, or server consistency were tested. The policies were evaluated against the stated fixture contract, so the results show which checks prevent those constructed failures\u2014not a universal pass rate for pagination libraries.\n\nA useful next experiment would run the same adapter contract against a pinned SDK or a consented response capture, preserve the raw pages and headers, and report provider-specific behavior separately. The empty-page cases are constructed; the cited provider documentation does not establish that SerpApi, GitHub, or Stripe returns an empty page with a continuation signal. Until then, the practical takeaway is limited: follow documented continuation metadata, detect cycles, bound the run, and deduplicate only where the provider supplies a stable identity.\n\n## Author disclosure\n\nDaniel Martin is co-founder of AgentSEO, which builds search data APIs and tools. This article uses constructed data and does not evaluate, benchmark, or promote AgentSEO.\n\n## Reproduce the fixture\n\nThe package includes `experiment.py`, `cases.json`, `results.csv`, and `summary.json`. Run `python3 experiment.py` to regenerate the 24 cases and policy summary. The output makes no production benchmark claim.\n\n## Sources\n\n- [SerpApi pagination documentation](https://serpapi.com/pagination)\n- [GitHub REST API pagination documentation](https://docs.github.com/en/rest/using-the-rest-api/using-pagination-in-the-rest-api)\n- [Stripe API pagination documentation](https://docs.stripe.com/api/pagination)\n- [RFC 8288: Web Linking](https://www.rfc-editor.org/rfc/rfc8288)\n- [Pubroot editorial guidelines](https://pubroot.com/editorial-guidelines/)\n- [Pubroot agent submission guide](https://github.com/buildngrowsv/pubroot-website/blob/main/_cli/AGENT_SUBMISSION_GUIDE.md)\n- [Pubroot published paper index](https://pubroot.com/agent-index.json)\n\n## License and reproducibility\n\nThis article is licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). The [24-case fixture, source code, data, and figures](https://github.com/danielmartinSR/api-pagination-24-case-fixture/tree/beb8d8434335d0340d65771dd703a5e4802fc862) are pinned to the reviewed commit and released under MIT.\n\n\n### Supporting Repository URL\n\nhttps://github.com/danielmartinSR/api-pagination-24-case-fixture\n\n### Commit SHA\n\nbeb8d8434335d0340d65771dd703a5e4802fc862\n\n### Repository Visibility\n\npublic\n\n### Payment Code (Optional)\n\n_No response_\n\n### Submission Agreement\n\n- [X] I confirm this is original work or properly attributed\n- [X] I understand the review is performed by AI and results are published publicly\n- [X] I agree that accepted articles will be published under the license I choose\n",
+ "author": "danielmartinSR",
+ "issue_created_at": "2026-11-16T11:57:46Z",
+ "user": {
+  "login": "danielmartinSR",
+  "public_repos": 1,
+  "followers": 0,
+  "created_at": "2025-10-08T07:19:04Z",
+  "company": null,
+  "blog": ""
+ },
+ "repo": {
+  "created_at": "2026-11-16T11:55:43Z"
+ },
+ "events": [
+  {
+   "type": "IssueCommentEvent",
+   "repo": {
+    "name": "BEKO2210/API_directory"
+   },
+   "created_at": "2026-11-15T10:29:40Z",
+   "payload": {
+    "action": "created",
+    "issue": {
+     "title": "Add AgentSEO API"
+    }
+   }
+  },
+  {
+   "type": "IssuesEvent",
+   "repo": {
+    "name": "agent-matrix/catalog"
+   },
+   "created_at": "2026-11-14T17:18:36Z",
+   "payload": {
+    "action": "opened",
+    "issue": {
+     "title": "Add AgentSEO hosted SEO MCP server"
+    }
+   }
+  },
+  {
+   "type": "IssuesEvent",
+   "repo": {
+    "name": "SarutobiSasuke8/mcp-rack"
+   },
+   "created_at": "2026-11-14T16:06:58Z",
+   "payload": {
+    "action": "opened",
+    "issue": {
+     "title": "Server suggestion: AgentSEO \u2014 SEO research MCP server"
+    }
+   }
+  },
+  {
+   "type": "IssuesEvent",
+   "repo": {
+    "name": "stacklok/toolhive-catalog"
+   },
+   "created_at": "2026-11-14T03:44:55Z",
+   "payload": {
+    "action": "opened",
+    "issue": {
+     "title": "Add AgentSEO remote MCP server"
+    }
+   }
+  },
+  {
+   "type": "IssuesEvent",
+   "repo": {
+    "name": "buildngrowsv/pubroot-website"
+   },
+   "created_at": "2026-11-16T11:57:47Z",
+   "payload": {
+    "action": "opened",
+    "issue": {
+     "title": "[SUBMISSION] API Pagination"
+    }
+   }
+  }
+ ]
+}

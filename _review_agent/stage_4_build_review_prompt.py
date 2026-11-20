@@ -104,6 +104,7 @@ def build_review_prompt(
     # -----------------------------------------------------------------------
     
     novelty_text = _format_novelty_context(novelty_results)
+    promotion_text = _format_promotion_criterion(parsed_submission.get("promotion_screen"))
     
     # -----------------------------------------------------------------------
     # SECTION 4: Format repo context
@@ -152,6 +153,8 @@ Rate the submission on a scale of 0.0 to 10.0:
 The acceptance threshold is 6.0. Submissions scoring 6.0 or higher are ACCEPTED.
 
 {type_criteria_text}
+
+{promotion_text}
 
 {calibration_text}
 
@@ -218,6 +221,7 @@ You MUST respond with ONLY a JSON object matching this exact schema. Every field
       "contribution": "<what this submission adds beyond the existing work>"
     }}
   ],
+  "promotional_intent": <true if the paper mainly serves an affiliated product, company or person (see PROMOTIONAL INTENT), else false>,
   "supersedes": <"paper-id" or null>,
   "superseded_by": null,
   "valid_until": "<ISO date string, typically 6 months from now>",
@@ -240,6 +244,7 @@ IMPORTANT RULES FOR YOUR RESPONSE:
 6. For novelty assessment, compare against the existing literature listed above.
 7. Set valid_until to 6 months from today for technical content, 12 months for historical/philosophical content.
 8. The verdict MUST be "ACCEPTED" if score >= 6.0, "REJECTED" if score < 6.0.
+9. PROMOTIONAL INTENT OVERRIDES RULE 8: if "promotional_intent" is true, the verdict MUST be "REJECTED" whatever the score, and the first weakness must say "Promotional intent:" followed by the reason.
 
 REMEMBER: Your ENTIRE response must be a single valid JSON object. No text before or after it.
 """
@@ -250,6 +255,29 @@ REMEMBER: Your ENTIRE response must be a single valid JSON object. No text befor
 # ---------------------------------------------------------------------------
 # PRIVATE HELPER FUNCTIONS
 # ---------------------------------------------------------------------------
+
+
+def _format_promotion_criterion(promotion_screen) -> str:
+    """
+    D-26 (Adam King, 17 Nov 2026): reject likely SEO / reputation gaming.
+
+    Always returns the "promotional intent" criterion. If the deterministic
+    screen (seo_gaming_screen.py) fired any signals, they are listed as
+    advisory evidence for the reviewer to weigh; they are not a verdict.
+    """
+    text = """## PROMOTIONAL INTENT (mandatory criterion, decision D-26)
+
+Pubroot policy: submissions whose likely primary purpose is promotion, backlinks, or reputation-building for a product, company or person, rather than a research contribution, are rejected. Disclosure of an affiliation does not cure this.
+
+Set "promotional_intent": true ONLY when the evidence shows the paper mainly serves an affiliated product, company or person, for example: the author is affiliated with a commercial product in the topic area AND the paper restates standard practice on synthetic or constructed data without a real-system evaluation; or it carries brand mentions, product links or backlinks that are not needed for reproducibility; or its main contribution is a pitch, listing or comparison that favours the author's product. A paper by an affiliated author that makes a genuine, verifiable research contribution is NOT promotional. When in doubt, set false and describe the concern in weaknesses."""
+    signals = (promotion_screen or {}).get("signals") or []
+    if signals:
+        lines = [f"- {s.get('id')}: {s.get('name')} — {s.get('evidence')}" for s in signals]
+        text += (
+            "\n\nAutomated screening flagged the following signal(s) for you to check. "
+            "They are evidence to weigh, not a verdict:\n" + "\n".join(lines)
+        )
+    return text
 
 
 def _build_type_specific_criteria(submission_type: str) -> str:

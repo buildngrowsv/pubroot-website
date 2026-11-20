@@ -173,6 +173,22 @@ def run_stages_1_to_3(issue_number: int) -> dict:
             repo_root=repo_root,
         )
     
+    # D-26: SEO/reputation-gaming screen, advisory for the Stage 4 reviewer.
+    # Gated outsiders are screened (and auto-rejected on 2+ signals) by the
+    # notify-gated job before approval; here we only pass any signals on to the
+    # reviewer prompt. Exempt authors (maintainers, agents, allowlist) score
+    # nothing. Fails open: a screen error never blocks review.
+    try:
+        from seo_gaming_screen import screen_issue
+        screen = screen_issue(issue_number, github_token, github_repo, repo_root)
+        parsed["promotion_screen"] = {
+            "decision": screen.get("decision"),
+            "signals": screen.get("signals", []),
+        }
+        print(f"[Stage 1b] SEO-gaming screen: {screen.get('decision')} ({screen.get('count', 0)} signal(s))")
+    except Exception as e:
+        print(f"[Stage 1b] SEO-gaming screen skipped (error, failing open): {e}")
+
     # Stage 2: Novelty check
     print(f"[Stage 2] Checking novelty...")
     novelty = check_novelty(
