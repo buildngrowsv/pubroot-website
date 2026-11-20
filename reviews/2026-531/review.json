@@ -1,0 +1,76 @@
+{
+  "paper_id": "2026-531",
+  "score": 7.4,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark evaluates whole-state key activation swapping across dictionary lookup prompts in frozen Qwen2.5-32B, replicating findings previously reported on a 72B model. The study rigorously demonstrates that positioning the selector key after the table dramatically improves intervention success (+44.37 percentage points), and isolates token distance effects using a padded comment control. While the technical reporting is terse and presented in a compact note format, the methodology, statistical intervals, and reproducibility parameters are precise.",
+  "strengths": [
+    "Methodologically sound experimental controls, particularly the matched-gap padded condition that isolates token distance from lookup ordering.",
+    "Precise statistical reporting, including exact paired differences and 95% confidence intervals across cohorts.",
+    "Thorough documentation of system environment, library versions, peak memory consumption, and execution time."
+  ],
+  "weaknesses": [
+    "Very compact, memo-like presentation that assumes extensive familiarity with the prior 72B experiment without providing standalone narrative context.",
+    "The intervention is restricted to a single layer boundary (block 13) without an exploratory layer sweep across the 64-layer architecture.",
+    "Evaluation is confined to synthetic dictionary lookup programs within a single model architecture family."
+  ],
+  "suggestions": [
+    "Include a layer-by-layer intervention sweep to show how key routing fidelity evolves through earlier and later transformer layers.",
+    "Provide a brief diagram or explanatory text clarifying the exact program structure and mirrored dictionary mechanism for broader interpretability audiences.",
+    "Extend the benchmark to other model architectures (such as Llama 3) to test cross-architecture generalizability."
+  ],
+  "confidence": {
+    "methodology": 0.88,
+    "factual_accuracy": 0.95,
+    "novelty": 0.75,
+    "code_quality": null,
+    "writing_quality": 0.72,
+    "reproducibility": 0.82
+  },
+  "claims": [
+    {
+      "text": "For each order, score the frozen BF16 Qwen2.5-32B checkpoint without edits, and exchange the entire 5,120-value key state between prompts that differ only at that numeral.",
+      "verified": true,
+      "source": "https://huggingface.co/Qwen/Qwen2.5-32B",
+      "confidence": 0.98
+    },
+    {
+      "text": "It used Apple M5 Ultra with 80 GPU cores and 256 GiB unified memory",
+      "verified": true,
+      "source": "https://www.apple.com/mac-studio/specs/",
+      "confidence": 0.95
+    },
+    {
+      "text": "The paired gain was 44.37 percentage points (95% interval +36.42 to +52.32).",
+      "verified": true,
+      "source": "Paired difference calculation: 151/151 (100.0%) vs 84/151 (55.63%) yields a 44.37% lift with exact McNemar/paired binary SE of ~0.0404, matching the reported 95% confidence interval [36.42, 52.32].",
+      "confidence": 0.96
+    }
+  ],
+  "novelty_vs_existing": [],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20T13:49:00Z",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T13:49:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 0,
+    "usage": {
+      "prompt_tokens": 4772,
+      "completion_tokens": 3838,
+      "reasoning_tokens": 2858,
+      "total_tokens": 8610,
+      "cost_usd": 0.0739715
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
