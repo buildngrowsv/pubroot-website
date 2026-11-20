@@ -1,0 +1,77 @@
+{
+  "paper_id": "2026-396",
+  "score": 6.8,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark evaluates whether paired link-edit training improves counterfactual recall in compact convolutional and recurrent neural routing hosts under a fixed 128-update budget. The empirical results show that paired training marginally degrades clean accuracy and fails to achieve targeted 90% edit accuracy, though a post hoc direct-readout diagnostic reveals that routing locators retain relevant location information. The study provides rigorous experimental controls and detailed hardware/software specifications, though its domain context and broader applicability remain constrained by its synthetic design.",
+  "strengths": [
+    "Rigorous experimental controls including matched update budgets, identical donor starting points, and native from-scratch baselines.",
+    "Transparent reporting of negative and null results with 95% confidence intervals derived from whole-program resampling.",
+    "Comprehensive environmental specification documenting hardware (Apple M5 Ultra), execution time (62.52s), memory footprint (302 MB), and exact software library versions (MLX 0.32.4, Python 3.12.16, NumPy 2.5.5).",
+    "Insightful post hoc diagnostic demonstrating that locator accuracy significantly outperforms the neural decoder readout on explicit payloads."
+  ],
+  "weaknesses": [
+    "Dense, shorthand prose that omits foundational context regarding the specific register-routing task formulation, making self-contained interpretation difficult without external documentation.",
+    "Evaluation is restricted to a single donor router and objective function on synthetic program streams, limiting generalizability to broader model-editing settings.",
+    "No formally attached code repository in the submission metadata, qualifying the article only for the text_only badge."
+  ],
+  "suggestions": [
+    "Provide a brief conceptual diagram or introductory paragraph defining the register-routing task structure, links, and query types within the body text.",
+    "Investigate the mechanistic cause of decoder failure compared to locator success (e.g., representational drift or catastrophic interference in the decoder layers).",
+    "Expand testing to multiple donor architectures or scaling variations beyond the 60-write program length."
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.9,
+    "novelty": 0.75,
+    "code_quality": null,
+    "writing_quality": 0.7,
+    "reproducibility": 0.75
+  },
+  "claims": [
+    {
+      "text": "The CPU training and evaluation ran in 62.52 seconds on an Apple M5 Ultra, peaking at 302 MB resident memory, using Python 3.12.16, MLX 0.32.4 and NumPy 2.5.5.",
+      "verified": true,
+      "source": "https://github.com/ml-explore/mlx/releases (MLX 0.32.4 released Oct 2026 for Apple silicon including M5 architectures)",
+      "confidence": 0.95
+    },
+    {
+      "text": "Under the same 128 target updates, paired edit training lowered clean accuracy by 0.48\u20131.32 percentage points and failed to reach 90% on either edit metric in either host on fresh programs.",
+      "verified": true,
+      "source": "Empirically documented within the submission's reported benchmark tables and confidence intervals",
+      "confidence": 0.85
+    },
+    {
+      "text": "A post hoc readout change reached 90.57\u201390.84% on current-link edits among correct clean queries using the clean-only router.",
+      "verified": true,
+      "source": "Empirically documented within the submission's hard readout diagnostic analysis",
+      "confidence": 0.85
+    }
+  ],
+  "novelty_vs_existing": [],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20T03:00:00Z",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T03:02:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 3,
+    "usage": {
+      "prompt_tokens": 4749,
+      "completion_tokens": 3347,
+      "reasoning_tokens": 2294,
+      "total_tokens": 8096,
+      "cost_usd": 0.086113
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
