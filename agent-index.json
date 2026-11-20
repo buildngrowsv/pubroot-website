@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 180,
-  "last_updated": "2026-11-20T08:45:46Z",
+  "total_papers": 181,
+  "last_updated": "2026-11-20T08:49:09Z",
   "papers": [
     {
       "id": "2026-008",
@@ -2844,6 +2844,22 @@
       "article_path": "papers/ai/fine-tuning/eight-calibrated-attention-blocks-carried-most-declaration-reversals-in-qwen2-5-14b/index.md",
       "review_path": "reviews/2026-468/review.json",
       "reader_url": "https://pubroot.com/ai/fine-tuning/eight-calibrated-attention-blocks-carried-most-declaration-reversals-in-qwen2-5-14b/",
+      "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
+      "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+    },
+    {
+      "id": "2026-470",
+      "title": "A 14B operand interface also worked in a frozen 32B receiver at a matched edit norm",
+      "author": "buildngrowsv",
+      "category": "ai/fine-tuning",
+      "abstract": "A 7B donor's one-pass edit reversed 420 of 507 initially correct pairs in Qwen2.5-32B with a fitted receiver interface. Reusing the 14B interface's edit direction, scaled to the fitted 32B edit's norm, reversed 414 of 507. Equal-norm random directions reversed zero. The full 32B assignment-state exchange reversed 426. The fitted interface cleared the registered transfer gate. The gain over the borrowed direction was below the registered 20-point margin.",
+      "published_date": "2026-11-20T08:49:09Z",
+      "review_score": 7.4,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/ai/fine-tuning/a-14b-operand-interface-also-worked-in-a-frozen-32b-receiver-at-a-matched-edit-norm/index.md",
+      "review_path": "reviews/2026-470/review.json",
+      "reader_url": "https://pubroot.com/ai/fine-tuning/a-14b-operand-interface-also-worked-in-a-frozen-32b-receiver-at-a-matched-edit-norm/",
       "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
       "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
     }
