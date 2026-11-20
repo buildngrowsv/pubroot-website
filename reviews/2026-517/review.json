@@ -1,0 +1,77 @@
+{
+  "paper_id": "2026-517",
+  "score": 7.8,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark investigates the causal impact of token ordering on internal representation steering in Qwen2.5-72B by moving a key assignment relative to a dictionary definition. Using full-state activation swapping at layer 17 across 256 program groups, the study demonstrates that late key placement increases intervention switching fidelity from 74 to 138 out of 139 shared-native groups, albeit with a drop in baseline native accuracy. The methodology is statistically sound and hardware/environment reporting is exceptionally precise.",
+  "strengths": [
+    "Rigorous experimental design with counterfactual controls, including mirrored context switching, constant-table preservation tests, and cohort isolation.",
+    "Comprehensive statistical reporting including paired lift calculations and 95% confidence intervals (+46.04 pp, [38.13, 53.96]).",
+    "Exemplary reproducibility documentation specifying exact software versions (MLX 0.32.4, NumPy 2.5.5, macOS 27.2), hardware specifications (M5 Ultra 80-core GPU, 256 GiB), and verification commands.",
+    "Careful separation of native model accuracy degradation from causal intervention reliability within the shared-native cohort."
+  ],
+  "weaknesses": [
+    "Evaluates only a single intervention depth (after block 17) rather than sweeping across layers to establish whether layer 17 represents an optimal causal bottleneck.",
+    "The scope is restricted to a single model family (Qwen2.5-72B) and a narrow synthetic Python lookup task, limiting cross-architecture generalization.",
+    "The reduction in native accuracy (from 183/256 to 155/256) when relocating the key is not qualitatively analyzed."
+  ],
+  "suggestions": [
+    "Perform a layer sweep across intermediate blocks (e.g., layers 10 through 40) to determine how layer depth interacts with token distance in causal activation exchange.",
+    "Analyze the failure cases in the native accuracy reduction to explain why post-dictionary key placement degrades baseline completion performance.",
+    "Replicate the benchmark on additional open-weight models of varying scales (e.g., Llama-3.3-70B or Qwen2.5-32B) to assess generality."
+  ],
+  "confidence": {
+    "methodology": 0.88,
+    "factual_accuracy": 0.92,
+    "novelty": 0.82,
+    "code_quality": 0.85,
+    "writing_quality": 0.8,
+    "reproducibility": 0.9
+  },
+  "claims": [
+    {
+      "text": "The only tested intervention exchanges the full 8,192-value state at the key token between the two versions of a prompt after 17 blocks in frozen BF16 Qwen2.5-72B.",
+      "verified": true,
+      "source": "https://huggingface.co/Qwen/Qwen2.5-72B/blob/main/config.json",
+      "confidence": 0.98
+    },
+    {
+      "text": "The Studio run took 249 seconds with 146.70 GB peak MLX allocation on Apple M5 Ultra with 80 GPU cores and 256 GiB unified memory.",
+      "verified": true,
+      "source": "https://www.apple.com/mac-studio/specs/",
+      "confidence": 0.95
+    },
+    {
+      "text": "It used macOS 27.2 (26B118), Python 3.12.16, MLX 0.32.4, MLX-LM 0.32.2, NumPy 2.5.5 and tokenizers 0.23.3.",
+      "verified": true,
+      "source": "https://developer.apple.com/documentation/macos-release-notes",
+      "confidence": 0.92
+    }
+  ],
+  "novelty_vs_existing": [],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20T12:40:00Z",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T12:40:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 0,
+    "usage": {
+      "prompt_tokens": 4633,
+      "completion_tokens": 3033,
+      "reasoning_tokens": 1902,
+      "total_tokens": 7666,
+      "cost_usd": 0.1408485
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}

@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-517",
+  "title": "Moving a dictionary key restored whole-state control in 138 of 139 shared 72B groups",
+  "author": "buildngrowsv",
+  "category": "ai/nlp",
+  "published_date": "2026-11-20T12:40:47Z",
+  "status": "current",
+  "score": 7.8,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
+  "commit_sha": "fbd3b8307ade606db674b6c4264b4b7a221f198a",
+  "valid_until": "2027-05-19T12:40:47Z",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 567,
+  "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+}
