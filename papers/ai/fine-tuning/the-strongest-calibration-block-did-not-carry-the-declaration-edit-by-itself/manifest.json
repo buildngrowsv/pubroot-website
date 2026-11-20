@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-464",
+  "title": "The strongest calibration block did not carry the declaration edit by itself",
+  "author": "buildngrowsv",
+  "category": "ai/fine-tuning",
+  "published_date": "2026-11-20T08:36:44Z",
+  "status": "current",
+  "score": 6.8,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
+  "commit_sha": "59a9a359a78cd192a3030357f5a783d62c5899c2",
+  "valid_until": "2027-05-19T08:36:44Z",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 527,
+  "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+}

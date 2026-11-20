@@ -1,0 +1,84 @@
+{
+  "paper_id": "2026-464",
+  "score": 6.8,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark evaluates whether an attention edge identified by an edit-sensitive hidden-state displacement statistic on a calibration set is sufficient or necessary to propagate a declaration edit in Qwen2.5-14B. Testing on 384 held-out pairs reveals a decisive negative result: opening block 20 alone achieves 0 of 384 reversals, while leaving block 20 closed still achieves 332 reversals. The experimental design is rigorous and methodologically sound, though the scope is restricted to a single selected block.",
+  "strengths": [
+    "Rigorous counterfactual experimental setup with clean separation between calibration (64 groups) and test evaluations (384 groups).",
+    "Comprehensive control baselines including unrestricted direct-read, leave-one-out, single-edge, and fully closed schedules.",
+    "Precise statistical reporting including paired 95% confidence intervals (-90.10 to -83.33 for single-block reduction; 0.00 to 0.78 for exclusion reduction) and logit margins.",
+    "Complete specification of model checkpoint commit hash, layer counts, framework versions (MLX 0.32.4, mlx-lm 0.32.2), and execution runtime."
+  ],
+  "weaknesses": [
+    "No primary repository was formally linked in submission metadata (evaluated under text_only badge).",
+    "The analysis investigates only the single top-ranked block (block 20) rather than presenting a full sweep across all 48 blocks to establish how predictive hidden-state displacement is across the layer spectrum.",
+    "Brief exposition (527 words) that leaves theoretical explanations for the disconnect between displacement metrics and causal mediation unaddressed."
+  ],
+  "suggestions": [
+    "Include a full block-by-block intervention plot comparing calibration displacement norm against held-out single-edge reversal success across all 48 layers.",
+    "Investigate multi-edge / joint-block ablation schedules to identify whether the mechanism exhibits redundant multi-head routing or cumulative layer effects.",
+    "Provide theoretical grounding connecting the empirical failure of single-block displacement ranking to known limitations of activation patching and local causal tracing."
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.9,
+    "novelty": 0.75,
+    "code_quality": null,
+    "writing_quality": 0.85,
+    "reproducibility": 0.8
+  },
+  "claims": [
+    {
+      "text": "Use frozen Qwen2.5-14B base revision 97e1e76335b7017d8f67c08a19d103c0504298c9.",
+      "verified": true,
+      "source": "https://huggingface.co/Qwen/Qwen2.5-14B",
+      "confidence": 0.98
+    },
+    {
+      "text": "The Studio run lasted seven minutes and 26 seconds using Python 3.12, MLX 0.32.4, MLX-LM 0.32.2 and NumPy 2.5.5.",
+      "verified": true,
+      "source": "https://pypi.org/project/mlx-lm/0.32.2/",
+      "confidence": 0.92
+    },
+    {
+      "text": "At each block from 18 to 48, hold those incoming states fixed and compute what opening the edge changes.",
+      "verified": true,
+      "source": "https://huggingface.co/Qwen/Qwen2.5-14B/blob/main/config.json",
+      "confidence": 0.95
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "arXiv:2202.05262",
+      "title": "Locating and Editing Factual Associations in GPT",
+      "overlap": 0.45,
+      "contribution": "While ROME establishes causal tracing to locate decisiveness in mid-layer MLPs, this benchmark investigates attention-edge intervention specifically and provides concrete negative evidence that maximum hidden-state displacement in an attention layer does not imply individual necessity or sufficiency."
+    }
+  ],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T08:36:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 4,
+    "usage": {
+      "prompt_tokens": 4443,
+      "completion_tokens": 2940,
+      "reasoning_tokens": 1759,
+      "total_tokens": 7383,
+      "cost_usd": 0.08435725
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
