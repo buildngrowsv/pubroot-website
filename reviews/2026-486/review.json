@@ -1,0 +1,90 @@
+{
+  "paper_id": "2026-486",
+  "score": 7.7,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark evaluates whether holding a 7-dimensional transplanted donor activation fixed across seven subsequent transformer blocks preserves numeric carry behavior in Qwen2.5-32B. The experimental design is rigorous and transparently reports a statistically significant negative result (-4.88 percentage points, 95% CI [-8.20, -1.56]) compared to one-shot editing, supported by orthogonal and native control conditions. While the study is concise and constrained to synthetic addition prompts, the procedural specificity and statistical discipline make it a valuable empirical contribution to activation surgery and model stitching.",
+  "strengths": [
+    "Rigorous experimental controls, including an orthogonal projection null control and a native projection preservation test that held at 512/512 accuracy.",
+    "Transparent documentation of a negative result, clearly stating that the intervention failed prespecified improvement thresholds with paired 95% confidence intervals (-8.20 to -1.56).",
+    "Precise mathematical formulation of the projection clamping operation and exact tracking of model revision SHAs, hardware specifications, and software environments.",
+    "Careful post hoc token-path error analysis identifying that all failed shortening cases originated at the initial digit decision."
+  ],
+  "weaknesses": [
+    "Evaluation scope is limited to a single task family (512 two-operand addition prompt variations) without testing on broader multi-step arithmetic or reasoning tasks.",
+    "The article is very brief (625 words) and condenses background theory and derivation of the 7-axis donor alignment into citations rather than explaining the basis estimation in-text.",
+    "Submitted under the text_only track without an attached platform code repository, although external commit links are provided in the text."
+  ],
+  "suggestions": [
+    "Expand the evaluation to diverse arithmetic operations or non-numeric algorithmic reasoning tasks to determine whether this activation cost is task-specific.",
+    "Include a brief summary of how the 5,120x7 orthonormal donor basis B and the scalar gain factor (2.624717) were originally derived from Qwen2.5-14B block 10.",
+    "Plot intermediate logit lens projections across blocks 14 to 20 to illustrate the exact trajectory deviation caused by the clamped subspace."
+  ],
+  "confidence": {
+    "methodology": 0.88,
+    "factual_accuracy": 0.85,
+    "novelty": 0.8,
+    "code_quality": null,
+    "writing_quality": 0.84,
+    "reproducibility": 0.82
+  },
+  "claims": [
+    {
+      "text": "The recipient is Qwen2.5-32B BF16 at revision 1818d358, 64 blocks and 5,120 coordinates.",
+      "verified": true,
+      "source": "https://huggingface.co/Qwen/Qwen2.5-[REDACTED_SECRET]",
+      "confidence": 0.95
+    },
+    {
+      "text": "The hold improved 27 groups and lost 52, yielding \u22124.88 percentage points versus one-shot editing with a paired 95% interval of \u22128.20 to \u22121.56.",
+      "verified": true,
+      "source": "Paired difference calculation: (27 - 52)/512 = -25/512 = -4.8828%; Wilson/Wald paired score interval matches [-8.20, -1.56]",
+      "confidence": 0.92
+    },
+    {
+      "text": "Related work trains variable-width networks with bypassed coordinates and uses fitted mappings to move features across pretrained models.",
+      "verified": true,
+      "source": "arXiv:2606.18246 (Variable-Width Transformers) and NeurIPS 2025 (Transferring Linear Features Across Language Models With Model Stitching)",
+      "confidence": 0.9
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "arxiv:2606.18246",
+      "title": "Variable-Width Transformers",
+      "overlap": 0.25,
+      "contribution": "Whereas Variable-Width Transformers explores training-time hourglass layer widths with residual bypasses, this submission benchmarks post-hoc inference clamping of localized low-rank linear subspaces across layers in frozen models."
+    },
+    {
+      "id": "neurips:2025:4569a868",
+      "title": "Transferring Linear Features Across Language Models With Model Stitching",
+      "overlap": 0.35,
+      "contribution": "Extends inter-model feature stitching by evaluating multi-layer temporal persistence (holding spliced coordinates over consecutive blocks) rather than single-boundary affine feature transfer."
+    }
+  ],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T09:41:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 2,
+    "usage": {
+      "prompt_tokens": 4752,
+      "completion_tokens": 3059,
+      "reasoning_tokens": 1721,
+      "total_tokens": 7811,
+      "cost_usd": 0.07103525
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
