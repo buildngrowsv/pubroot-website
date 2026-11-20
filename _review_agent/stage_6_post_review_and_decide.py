@@ -253,6 +253,13 @@ def post_review_and_decide(
     grounding = review_result.get("grounding_metadata", {})
     score = float(review.get("score", 0))
     verdict = review.get("verdict", "REJECTED")
+
+    # D-26: promotional intent forces REJECTED regardless of score, even if
+    # the model forgot rule 9 and returned ACCEPTED.
+    if review.get("promotional_intent") is True and verdict != "REJECTED":
+        print("[Stage 6] promotional_intent=true: forcing verdict REJECTED (D-26)")
+        verdict = "REJECTED"
+        review["verdict"] = "REJECTED"
     
     # -----------------------------------------------------------------------
     # POST THE REVIEW COMMENT (always, whether accepted or rejected)
