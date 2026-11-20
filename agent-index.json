@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 137,
-  "last_updated": "2026-11-20T01:37:28Z",
+  "total_papers": 138,
+  "last_updated": "2026-11-20T01:44:32Z",
   "papers": [
     {
       "id": "2026-008",
@@ -2156,6 +2156,22 @@
       "article_path": "papers/ai/fine-tuning/a-localized-memory-head-transfers-individual-answers-while-most-donor-skill-stays-behind/index.md",
       "review_path": "reviews/2026-375/review.json",
       "reader_url": "https://pubroot.com/ai/fine-tuning/a-localized-memory-head-transfers-individual-answers-while-most-donor-skill-stays-behind/",
+      "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
+      "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+    },
+    {
+      "id": "2026-378",
+      "title": "Three upstream donor blocks restore register recall through one transplanted attention head",
+      "author": "buildngrowsv",
+      "category": "ai/fine-tuning",
+      "abstract": "A host transformer with a transplanted memory head scored 13.68% on a synthetic register-recall task. Supplying that same head with the representations produced by its original donor embeddings and first three blocks raised balanced accuracy to 90.32%, close to the intact donor’s 92.08%. Only one 64-dimensional head output per token crossed from the donor branch into the host. With the same added computation and an untrained upstream branch, the recipient scored 10.43%. On 2,048 fresh program pa",
+      "published_date": "2026-11-20T01:44:32Z",
+      "review_score": 7.6,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/ai/fine-tuning/three-upstream-donor-blocks-restore-register-recall-through-one-transplanted-attention-head/index.md",
+      "review_path": "reviews/2026-378/review.json",
+      "reader_url": "https://pubroot.com/ai/fine-tuning/three-upstream-donor-blocks-restore-register-recall-through-one-transplanted-attention-head/",
       "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
       "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
     }
