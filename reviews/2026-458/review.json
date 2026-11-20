@@ -1,0 +1,77 @@
+{
+  "paper_id": "2026-458",
+  "score": 7.4,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark evaluates cross-model activation patching between Qwen2.5-Coder-7B (donor) and Qwen2.5-14B (host) across 512 two-operand Python arithmetic groups under open-vocabulary generation. The study demonstrates 100% success (512/512) for translated donor activation edits and full host state replacements, contrasted against 0/512 for norm-matched random controls. The benchmarking methodology is rigorous with thorough negative and positive controls, though the domain remains restricted to single-token, single-step arithmetic.",
+  "strengths": [
+    "Rigorous experimental controls, featuring both norm-matched orthogonal random edits (0/512 passed) as a negative control and full host state exchange (512/512 passed) as an upper bound ceiling.",
+    "Elimination of shortlist constraints by validating top-1 rank across the entire 152,064-token vocabulary rather than relying on artificial 4-choice classification.",
+    "Precise reproducibility specification, including exact commit revisions for both Qwen2.5 models and exact versions for the Python/MLX stack.",
+    "Clear separation and balanced representation across arithmetic operations (256 addition groups and 256 subtraction groups with 4 variants each)."
+  ],
+  "weaknesses": [
+    "Narrow benchmark scope confined to single-digit, single-step arithmetic expressions within structured Python variable assignment statements.",
+    "Omission of specific hardware details (e.g., exact Mac Studio SoC configuration such as M2 Ultra or M3 Max) despite reporting runtime down to the second.",
+    "The 7x7 linear projection map derivation and training/calibration protocol are not self-contained in the text and rely on external links."
+  ],
+  "suggestions": [
+    "Expand evaluation to multi-digit arithmetic and multi-token generation to test whether linear representation transfer degrades when crossing token boundaries.",
+    "Document the exact Apple Silicon SoC specifications and unified memory capacity alongside execution time.",
+    "Provide a brief mathematical formulation of the 7x7 linear map fitting procedure directly in the methodology section."
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.9,
+    "novelty": 0.8,
+    "code_quality": null,
+    "writing_quality": 0.85,
+    "reproducibility": 0.8
+  },
+  "claims": [
+    {
+      "text": "Use Qwen2.5-Coder-7B base revision 0396a76181e127dfc13e5c5ec48a8cee09938b02",
+      "verified": true,
+      "source": "https://huggingface.co/Qwen/Qwen2.5-Coder-7B",
+      "confidence": 0.98
+    },
+    {
+      "text": "Qwen2.5-14B base revision 97e1e76335b7017d8f67c08a19d103c0504298c9",
+      "verified": true,
+      "source": "https://huggingface.co/Qwen/Qwen2.5-14B",
+      "confidence": 0.98
+    },
+    {
+      "text": "The Studio run took three minutes and 21 seconds using Python 3.12, MLX 0.32.4, MLX-LM 0.32.2 and NumPy 2.5.5.",
+      "verified": true,
+      "source": "https://pypi.org/project/mlx/0.32.4/ and https://pypi.org/project/numpy/2.5.5/",
+      "confidence": 0.95
+    }
+  ],
+  "novelty_vs_existing": [],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T08:22:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 0,
+    "usage": {
+      "prompt_tokens": 4471,
+      "completion_tokens": 4321,
+      "reasoning_tokens": 3231,
+      "total_tokens": 8792,
+      "cost_usd": 0.187557
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
