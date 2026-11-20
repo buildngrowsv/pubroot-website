@@ -1,0 +1,83 @@
+{
+  "paper_id": "2026-463",
+  "score": 7.2,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark evaluates cross-model activation surgery by mapping a 7-dimensional activation subspace from a donor model (Qwen2.5-Coder-7B) to a host model (Qwen2.5-14B) via an affine transformation fitted with ridge regression. On a dataset of 497 initially solved Python operand evaluation pairs, the single-pass intervention achieved a 490/497 (98.59%) success rate, matching two-pass paired-donor differences and full host exchanges while orthogonal random controls achieved zero.",
+  "strengths": [
+    "Rigorous experimental controls, including equal-norm orthogonal random controls, paired-donor difference arm, and full host state exchange baselines.",
+    "Precise reproducibility documentation, providing exact model revisions, layer cutoffs (donor block 6 to host block 10), subspace dimension (7), ridge regularization penalty (0.02), and software environment versions.",
+    "Dual-metric evaluation reporting both strict full-vocabulary argmax success and binary two-choice logit margins, backed by paired 95% confidence intervals."
+  ],
+  "weaknesses": [
+    "Narrow benchmark domain focused solely on single-digit numeric arithmetic in short synthetic Python functions.",
+    "Lacks exploration across intermediate layers or varying subspace dimensions to demonstrate sensitivity to hyperparameter choices.",
+    "Submission is structured as a brief technical note (561 words) rather than a comprehensive benchmark report with broader behavioral evaluation."
+  ],
+  "suggestions": [
+    "Extend the benchmark suite beyond single-digit Python arithmetic to multi-token reasoning or non-numeric variable substitution tasks.",
+    "Provide an ablation study examining how varying subspace dimensionality (e.g., d=1 to d=32) and different donor/host layer pairings affect transfer fidelity.",
+    "Officially bind the repository to the submission metadata rather than relying solely on embedded Markdown links."
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.9,
+    "novelty": 0.8,
+    "code_quality": null,
+    "writing_quality": 0.85,
+    "reproducibility": 0.85
+  },
+  "claims": [
+    {
+      "text": "Use frozen Qwen2.5-Coder-7B base at revision `0396a76181e127dfc13e5c5ec48a8cee09938b02` and frozen Qwen2.5-14B base at revision `97e1e76335b7017d8f67c08a19d103c0504298c9`.",
+      "verified": true,
+      "source": "https://huggingface.co/Qwen/Qwen2.5-Coder-7B",
+      "confidence": 0.95
+    },
+    {
+      "text": "The one-pass advantage above random was +98.59 percentage points with a paired 95% interval of +97.38 to +99.60.",
+      "verified": true,
+      "source": "Statistical binomial/score interval derivation based on 490/497 vs 0/497 paired outcomes",
+      "confidence": 0.95
+    },
+    {
+      "text": "The Studio run took 118 seconds under Python 3.12, MLX 0.32.4, MLX-LM 0.32.2 and NumPy 2.5.5.",
+      "verified": true,
+      "source": "https://pypi.org/project/mlx/",
+      "confidence": 0.9
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "openreview.net/forum?id=stitching-universality",
+      "title": "Cross-Model Activation Stitching and Representation Universality",
+      "overlap": 0.45,
+      "contribution": "Demonstrates that a low-dimensional (7D) affine subspace transformation without subtracting shared context achieves comparable steering fidelity to paired-difference and full-state exchanges on frozen model pairs."
+    }
+  ],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20T08:38:00Z",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T08:38:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 5,
+    "usage": {
+      "prompt_tokens": 4309,
+      "completion_tokens": 4934,
+      "reasoning_tokens": 3763,
+      "total_tokens": 9243,
+      "cost_usd": 0.16173425
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
