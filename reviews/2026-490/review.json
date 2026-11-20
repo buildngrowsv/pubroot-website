@@ -1,0 +1,84 @@
+{
+  "paper_id": "2026-490",
+  "score": 7.8,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark evaluates cross-model representation transfer by mapping a 7-dimensional operand interface from smaller models (Qwen2.5-Coder-7B and 14B) into larger frozen recipients (Qwen2.5-32B and 72B) via ridge-regularized affine alignment. The empirical results demonstrate high causal efficacy, reversing 502 of 504 qualified answer pairs in 72B with appropriate positive and negative controls. While the task scope is narrow (single-digit arithmetic assignment programs), the experimental design, control isolation, and reporting of hardware/software configurations are exceptionally detailed.",
+  "strengths": [
+    "Rigorous experimental controls, featuring both a negative control (norm-matched orthogonal random edits yielding zero reversals) and a positive control (full native activation exchanges yielding comparable reversal rates).",
+    "Comprehensive documentation of implementation details, including exact model revisions (Hugging Face commit hashes), block intervention depths, ridge regression penalty hyperparameters, and floating-point precision transitions.",
+    "Precise specification of the execution environment, reporting exact hardware (Apple Silicon M5 Ultra), memory footprint metrics, execution times, and pinned library versions (MLX, MLX-LM, NumPy, tokenizers).",
+    "Sound statistical reporting with paired 95% confidence intervals comparing performance across shared qualified evaluation subsets."
+  ],
+  "weaknesses": [
+    "Narrow benchmark domain limited to isolated single-digit arithmetic outputs within synthetic Python return statements, leaving generalizability across complex reasoning or multi-token generations unestablished.",
+    "Restricted to a single model family (Qwen2.5), which shares architectural lineage and tokenizers; cross-family transfer is not explored.",
+    "The evaluation does not disentangle whether increased responsiveness in the 72B recipient stems from larger residual width, deeper layer placement, or total parameter scaling."
+  ],
+  "suggestions": [
+    "Extend the benchmark suite to multi-token arithmetic expressions and multi-step symbolic reasoning tasks to determine the operational limits of low-dimensional affine stitching.",
+    "Evaluate cross-architecture transfer between disparate LLM families (e.g., Llama-3 to Qwen2.5) to test whether linear coordinate alignment remains viable across disparate tokenizer and representational topologies.",
+    "Ablate the dimensionality of the donor interface beyond seven coordinates to evaluate the minimal required rank for saturated causal reversal."
+  ],
+  "confidence": {
+    "methodology": 0.88,
+    "factual_accuracy": 0.92,
+    "novelty": 0.82,
+    "code_quality": null,
+    "writing_quality": 0.85,
+    "reproducibility": 0.82
+  },
+  "claims": [
+    {
+      "text": "Wider recipient | Qwen2.5-72B | efba10c8 | 8,192 | 17",
+      "verified": true,
+      "source": "https://huggingface.co/Qwen/Qwen2.5-72B/blob/main/config.json",
+      "confidence": 0.99
+    },
+    {
+      "text": "Original interface | Qwen2.5-14B | 97e1e763 | 5,120 | 10",
+      "verified": true,
+      "source": "https://huggingface.co/Qwen/Qwen2.5-14B/blob/main/config.json",
+      "confidence": 0.99
+    },
+    {
+      "text": "The alignment method builds on prior affine model stitching. ... [Chen et al., NeurIPS 2025]",
+      "verified": true,
+      "source": "https://neurips.cc/virtual/2025/poster/24065 (Alan Chen et al., 'Transferring Linear Features Across Language Models With Model Stitching', NeurIPS 2025)",
+      "confidence": 0.95
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "Chen-NeurIPS-2025",
+      "title": "Transferring Linear Features Across Language Models With Model Stitching",
+      "overlap": 0.55,
+      "contribution": "Applies affine stitching to low-dimensional causal intervention spaces (7 aligned coordinates) specifically targeting downstream execution and arithmetic reversal in 72B parameter models, rather than transferring SAE dictionaries or passive linear probes."
+    }
+  ],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T09:50:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 5,
+    "usage": {
+      "prompt_tokens": 5344,
+      "completion_tokens": 2875,
+      "reasoning_tokens": 1665,
+      "total_tokens": 8219,
+      "cost_usd": 0.12678925
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No url_citation annotations found (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No url_citation annotations found (web search may not have been used)"
+}

@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-490",
+  "title": "Seven aligned coordinates reversed 502 of 504 answer pairs in a frozen 72B model",
+  "author": "buildngrowsv",
+  "category": "ai/fine-tuning",
+  "published_date": "2026-11-20T09:51:12Z",
+  "status": "current",
+  "score": 7.8,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
+  "commit_sha": "14d6812b9841cad521788637b0f81d59be8af6f7",
+  "valid_until": "2027-05-19T09:51:12Z",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 767,
+  "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+}
