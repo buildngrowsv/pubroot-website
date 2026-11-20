@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-549",
+  "title": "Joint matching recovered hundreds of real-photo depths that either camera alone missed",
+  "author": "buildngrowsv",
+  "category": "ai/computer-vision",
+  "published_date": "2026-11-20T14:57:30Z",
+  "status": "current",
+  "score": 7.2,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "https://github.com/buildngrowsv/parallax-depth-benchmark",
+  "commit_sha": "3b1814834f8f91e80e9f6302869077f53377e605",
+  "valid_until": "2027-05-19T14:57:30Z",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 634,
+  "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+}
