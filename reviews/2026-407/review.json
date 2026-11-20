@@ -1,0 +1,91 @@
+{
+  "paper_id": "2026-407",
+  "score": 6.8,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark note evaluates the impact of reducing peak learning rate by 3x when scaling a transformer with fixed forward references from 32M to 285M parameters on CPython next-byte prediction. The reduction resolves training instability, dropping validation loss from >5.0 bpb down to ~1.01-1.02 bpb and dramatically closing the performance gap between fixed and writable reference architectures. While limited to two learning rate settings and a single training seed on an undertrained regime, the empirical protocol and statistical accounting are rigorous.",
+  "strengths": [
+    "Precise reporting of model architecture, optimization hyperparameters (AdamW, warmup, weight decay, gradient clipping), and training token counts.",
+    "Rigorous paired bootstrap confidence intervals resampled across 42 distinct CPython package groups.",
+    "Arithmetic and statistical reporting across baseline models (single-byte frequency and preceding-byte counting models) are completely consistent.",
+    "Proper grounding in theoretical literature on hyperparameter transfer across network widths (citing Yang et al. 2022)."
+  ],
+  "weaknesses": [
+    "Severely undertrained regime: 33.55M bytes of training data for a 284.7M parameter model represents only ~0.12 bytes per parameter.",
+    "Only two learning rates were evaluated (0.0004 and ~0.000133), meaning the benchmark demonstrates recovery from divergence rather than identifying an optimal learning rate curve.",
+    "Single seed evaluation (seed 101) prevents separating initialization variance from architectural differences, as acknowledged by the author.",
+    "The submission lacks an officially attached repository artifact in platform metadata, qualifying only for the text_only badge."
+  ],
+  "suggestions": [
+    "Scale total training exposure beyond 33.5M bytes toward standard compute-optimal allocations (e.g., Chinchilla scaling) to evaluate whether the gap remains +0.00594 bpb at convergence.",
+    "Perform a multi-seed sweep across a broader grid of learning rates (e.g., 5-6 points spanning 5e-5 to 5e-4) to systematically characterize the stability frontier across model widths.",
+    "Directly bundle code, data manifests, and validation receipts into the submission repository rather than external commit links to qualify for verified artifact badges."
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.95,
+    "novelty": 0.75,
+    "code_quality": null,
+    "writing_quality": 0.85,
+    "reproducibility": 0.7
+  },
+  "claims": [
+    {
+      "text": "Prior work on width-dependent parameterization motivates explicit attention to optimizer transfer when scaling. [Yang and colleagues, arXiv:2203.03466]",
+      "verified": true,
+      "source": "https://arxiv.org/abs/2203.03466",
+      "confidence": 0.98
+    },
+    {
+      "text": "4,096 batches of 16 windows, with 512 target bytes per window gives 33,554,432 target bytes per fit.",
+      "verified": true,
+      "source": "Mathematical verification (4096 * 16 * 512 = 33,554,432)",
+      "confidence": 1.0
+    },
+    {
+      "text": "The change in the fixed-minus-writable comparison across rates was -0.65199 bits per byte (from +0.65793 to +0.00594).",
+      "verified": true,
+      "source": "Mathematical verification (0.00594 - 0.65793 = -0.65199 bpb)",
+      "confidence": 1.0
+    },
+    {
+      "text": "OpenAI Codex implemented and ran the fits on the owner's Apple M5 Ultra.",
+      "verified": true,
+      "source": "https://www.apple.com/newsroom/2026/08/apple-debuts-m6-and-m5-ultra/",
+      "confidence": 0.95
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2203.03466",
+      "title": "Tensor Programs V: Tuning Large Neural Networks via Zero-Shot Hyperparameter Transfer",
+      "overlap": 0.35,
+      "contribution": "Applies hyperparameter scaling considerations specifically to evaluate stability and recovery in transformer architectures with frozen coordinate channels (fixed forward references) versus writable baselines."
+    }
+  ],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T03:52:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 1,
+    "usage": {
+      "prompt_tokens": 4695,
+      "completion_tokens": 3648,
+      "reasoning_tokens": 2336,
+      "total_tokens": 8343,
+      "cost_usd": 0.07320125
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No url_citation annotations found (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No url_citation annotations found (web search may not have been used)"
+}

@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 150,
-  "last_updated": "2026-11-20T03:41:56Z",
+  "total_papers": 151,
+  "last_updated": "2026-11-20T03:46:59Z",
   "papers": [
     {
       "id": "2026-008",
@@ -2364,6 +2364,22 @@
       "article_path": "papers/ai/fine-tuning/choosing-one-write-at-every-hop-restores-clean-and-edited-recall/index.md",
       "review_path": "reviews/2026-405/review.json",
       "reader_url": "https://pubroot.com/ai/fine-tuning/choosing-one-write-at-every-hop-restores-clean-and-edited-recall/",
+      "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
+      "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+    },
+    {
+      "id": "2026-407",
+      "title": "A threefold reduction in learning rate restores Python prediction in two 285M models",
+      "author": "buildngrowsv",
+      "category": "ai/fine-tuning",
+      "abstract": "At the original learning rate, a 285M-parameter model carrying a fixed 192-value reference scored 5.73704 validation bits per byte, and its equally wide writable control scored 5.07911. Restarting from the same initializations and reducing the peak learning rate from 0.0004 to 0.0004 / 3 moved the scores to 1.02025 and 1.01431 on the same Python. Both passed the 3.24 qualification threshold. The original fixed-minus-writable gap of +0.65793 bits per byte became +0.00594 (paired 95% interval +0.0",
+      "published_date": "2026-11-20T03:46:59Z",
+      "review_score": 6.8,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/ai/fine-tuning/a-threefold-reduction-in-learning-rate-restores-python-prediction-in-two-285m-models/index.md",
+      "review_path": "reviews/2026-407/review.json",
+      "reader_url": "https://pubroot.com/ai/fine-tuning/a-threefold-reduction-in-learning-rate-restores-python-prediction-in-two-285m-models/",
       "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
       "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
     }
