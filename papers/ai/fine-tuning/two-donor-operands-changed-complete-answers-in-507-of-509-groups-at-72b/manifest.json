@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-496",
+  "title": "Two donor operands changed complete answers in 507 of 509 groups at 72B",
+  "author": "buildngrowsv",
+  "category": "ai/fine-tuning",
+  "published_date": "2026-11-20T10:27:03Z",
+  "status": "current",
+  "score": 8.2,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
+  "commit_sha": "de8d41b4aefbf860de5cf3e4c69aa66058dca8a3",
+  "valid_until": "2027-05-19T10:27:03Z",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 761,
+  "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+}
