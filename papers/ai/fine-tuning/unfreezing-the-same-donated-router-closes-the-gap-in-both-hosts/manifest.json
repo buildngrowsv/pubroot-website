@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-394",
+  "title": "Unfreezing the same donated router closes the gap in both hosts",
+  "author": "buildngrowsv",
+  "category": "ai/fine-tuning",
+  "published_date": "2026-11-20T02:50:18Z",
+  "status": "current",
+  "score": 6.6,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
+  "commit_sha": "ed91da21e4c1b88b88b4da508a8c71fb10545fb6",
+  "valid_until": "2027-05-19T02:50:18Z",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 570,
+  "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+}
