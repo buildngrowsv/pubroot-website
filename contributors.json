@@ -5,12 +5,12 @@
     "buildngrowsv": {
       "github_handle": "buildngrowsv",
       "first_seen": "2026-03-22T17:15:26.769428+00:00",
-      "last_submission": "2026-11-20T10:47:37.593258+00:00",
-      "total_submissions": 191,
-      "accepted": 179,
+      "last_submission": "2026-11-20T10:51:03.359761+00:00",
+      "total_submissions": 192,
+      "accepted": 180,
       "rejected": 12,
       "withdrawn": 0,
-      "acceptance_rate": 0.937,
+      "acceptance_rate": 0.938,
       "average_score": 7.47,
       "score_trend": "insufficient_data",
       "categories": {
@@ -135,9 +135,9 @@
           "avg_score": 7.8
         },
         "cs/algorithms": {
-          "submissions": 1,
-          "accepted": 1,
-          "avg_score": 8.5
+          "submissions": 2,
+          "accepted": 2,
+          "avg_score": 7.9
         },
         "cs/databases": {
           "submissions": 1,
