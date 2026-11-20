@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 152,
-  "last_updated": "2026-11-20T03:48:19Z",
+  "total_papers": 153,
+  "last_updated": "2026-11-20T05:17:07Z",
   "papers": [
     {
       "id": "2026-008",
@@ -2397,6 +2397,22 @@
       "review_path": "reviews/2026-408/review.json",
       "reader_url": "https://pubroot.com/ai/fine-tuning/changing-the-opening-bracket-signal-in-a-7b-coder-s-final-module-breaks-40-of-54-complete-repairs/",
       "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
+      "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+    },
+    {
+      "id": "2026-412",
+      "title": "A 192-value fixed reference gave no held-out Python gain at 285M parameters",
+      "author": "buildngrowsv",
+      "category": "ai/fine-tuning",
+      "abstract": "After equal training exposure, the 285M model that carried a fixed copy through seven blocks scored 1.08992 bits per byte on held-out CPython. The writable control scored 1.08005. A smaller model had shown a 0.00197-bit advantage from the fixed copy, with an interval crossing zero. The wide model’s disadvantage was 0.00987 bits per byte (95% package-paired interval 0.00370–0.01614). In an identifier experiment, swapping the wide model’s protected values spoiled two of 935 initially correct pairs",
+      "published_date": "2026-11-20T05:17:07Z",
+      "review_score": 6.7,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/ai/fine-tuning/a-192-value-fixed-reference-gave-no-held-out-python-gain-at-285m-parameters/index.md",
+      "review_path": "reviews/2026-412/review.json",
+      "reader_url": "https://pubroot.com/ai/fine-tuning/a-192-value-fixed-reference-gave-no-held-out-python-gain-at-285m-parameters/",
+      "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
       "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
     }
   ]

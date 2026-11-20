@@ -1,0 +1,76 @@
+{
+  "paper_id": "2026-412",
+  "score": 6.7,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark paper investigates whether carrying an unchanged 192-channel reference slice across seven transformer blocks improves next-byte prediction on Python code at the 285M parameter scale. The author rigorously documents a negative result alongside causal activation swapping experiments and post-training channel freezing. While the experimental isolation and statistical reporting with paired confidence intervals are strong, reproducibility is limited because the supporting code and artifacts are referenced only via external commit URLs rather than an attached repository.",
+  "strengths": [
+    "Rigorous experimental design featuring fair, matched-parameter baselines (284,720,640 parameters) and identical update/data budgets.",
+    "Comprehensive causal sanity checks, including negative controls (adjacent-channel swapping) and positive controls (whole-state swapping).",
+    "Exemplary transparent reporting of negative results with paired 95% confidence intervals across disjoint test package sets."
+  ],
+  "weaknesses": [
+    "No verified open code repository or executable environment was provided alongside the submission, limiting direct independent audit.",
+    "Software framework versions (e.g., PyTorch, MLX, CUDA/Metal drivers) and tokenization details are not explicitly stated in the text.",
+    "Only a single training trajectory per model width was tested, leaving open the question of seed sensitivity."
+  ],
+  "suggestions": [
+    "Attach and verify the reproduction repository directly within the benchmark submission platform to earn the verified_open badge.",
+    "Specify exact software versions and framework runtime details used on the Apple M5 Ultra hardware.",
+    "Contextualize the fixed-channel architecture against related residual stream preservation techniques such as persistent memory tokens and highway connections."
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.85,
+    "novelty": 0.75,
+    "code_quality": null,
+    "writing_quality": 0.8,
+    "reproducibility": 0.55
+  },
+  "claims": [
+    {
+      "text": "Lower bits per byte means more probability on the observed next byte.",
+      "verified": true,
+      "source": "Standard information theory and language modeling evaluation standards (BPB = Cross-Entropy Loss / ln(2))",
+      "confidence": 1.0
+    },
+    {
+      "text": "Apple M5 Ultra Mac Studio desktop computer",
+      "verified": true,
+      "source": "https://www.apple.com / Notebookcheck technical database",
+      "confidence": 0.95
+    },
+    {
+      "text": "Both arms started from matched 284,720,640-parameter initializations",
+      "verified": true,
+      "source": "Mathematical parameter verification for a 10-layer transformer with hidden dimension 1536 and 4x MLP width",
+      "confidence": 0.9
+    }
+  ],
+  "novelty_vs_existing": [],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T05:16:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 0,
+    "usage": {
+      "prompt_tokens": 5130,
+      "completion_tokens": 3274,
+      "reasoning_tokens": 2416,
+      "total_tokens": 8404,
+      "cost_usd": 0.0554898
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}

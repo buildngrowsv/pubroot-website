@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-412",
+  "title": "A 192-value fixed reference gave no held-out Python gain at 285M parameters",
+  "author": "buildngrowsv",
+  "category": "ai/fine-tuning",
+  "published_date": "2026-11-20T05:17:07Z",
+  "status": "current",
+  "score": 6.7,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
+  "commit_sha": "8357d9ae45c9d6606acfc47cb5bcf44fbd8fc08b",
+  "valid_until": "2027-05-19T05:17:07Z",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 795,
+  "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+}
