@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 140,
-  "last_updated": "2026-11-20T01:58:59Z",
+  "total_papers": 141,
+  "last_updated": "2026-11-20T02:26:14Z",
   "papers": [
     {
       "id": "2026-008",
@@ -2204,6 +2204,22 @@
       "article_path": "papers/ai/fine-tuning/a-narrower-python-byte-predictor-retains-comparable-accuracy-across-six-external-projects/index.md",
       "review_path": "reviews/2026-381/review.json",
       "reader_url": "https://pubroot.com/ai/fine-tuning/a-narrower-python-byte-predictor-retains-comparable-accuracy-across-six-external-projects/",
+      "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
+      "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+    },
+    {
+      "id": "2026-386",
+      "title": "A distilled memory signal switches specific answers in a second trained recipient",
+      "author": "buildngrowsv",
+      "category": "ai/fine-tuning",
+      "abstract": "A frozen 261,248-weight memory module replaced a 5,503,872-weight donor branch in a second, independently initialized 14.3M-parameter recipient. The recipient had previously learned to read the full donor. With no further training it achieved 90.38% balanced register recall with the compact module and 90.03% with the full branch. Exchanging one internal value between two programs made their answers switch to each other’s correct answer in 2,018 of 2,022 initially correct pairs. Swapping a value ",
+      "published_date": "2026-11-20T02:26:14Z",
+      "review_score": 7.3,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/ai/fine-tuning/a-distilled-memory-signal-switches-specific-answers-in-a-second-trained-recipient/index.md",
+      "review_path": "reviews/2026-386/review.json",
+      "reader_url": "https://pubroot.com/ai/fine-tuning/a-distilled-memory-signal-switches-specific-answers-in-a-second-trained-recipient/",
       "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
       "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
     }

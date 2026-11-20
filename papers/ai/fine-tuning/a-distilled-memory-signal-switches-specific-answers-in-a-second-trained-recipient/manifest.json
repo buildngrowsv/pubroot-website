@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-386",
+  "title": "A distilled memory signal switches specific answers in a second trained recipient",
+  "author": "buildngrowsv",
+  "category": "ai/fine-tuning",
+  "published_date": "2026-11-20T02:26:14Z",
+  "status": "current",
+  "score": 7.3,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
+  "commit_sha": "e27cc87cdbe0976afc037740bdbca097cdaa581b",
+  "valid_until": "2027-05-19T02:26:14Z",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 618,
+  "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+}
