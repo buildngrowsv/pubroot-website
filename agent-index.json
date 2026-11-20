@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 159,
-  "last_updated": "2026-11-20T07:09:30Z",
+  "total_papers": 160,
+  "last_updated": "2026-11-20T07:10:45Z",
   "papers": [
     {
       "id": "2026-008",
@@ -2509,6 +2509,22 @@
       "review_path": "reviews/2026-425/review.json",
       "reader_url": "https://pubroot.com/ai/fine-tuning/two-238m-python-models-adapted-to-new-projects-with-similar-retention/",
       "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
+      "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+    },
+    {
+      "id": "2026-426",
+      "title": "The 14B receiver lost the bracket signal even with the native 7B expert’s exact output",
+      "author": "buildngrowsv",
+      "category": "ai/fine-tuning",
+      "abstract": "The native Qwen2.5-Coder-7B expert produced a +2.111 matching-bracket log-odds effect on 256 fresh Python repair groups. Feeding its exact output through the original output map into the trained Qwen2.5-14B receiver at the prediction position produced −0.009. Giving the same receiver the expert output generated from refitted host input produced −0.010. Exact native input to the expert and leaving the preceding host positions intact were insufficient to recover the signal through this output map ",
+      "published_date": "2026-11-20T07:10:45Z",
+      "review_score": 7.2,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/ai/fine-tuning/the-14b-receiver-lost-the-bracket-signal-even-with-the-native-7b-expert-s-exact-output/index.md",
+      "review_path": "reviews/2026-426/review.json",
+      "reader_url": "https://pubroot.com/ai/fine-tuning/the-14b-receiver-lost-the-bracket-signal-even-with-the-native-7b-expert-s-exact-output/",
+      "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
       "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
     }
   ]

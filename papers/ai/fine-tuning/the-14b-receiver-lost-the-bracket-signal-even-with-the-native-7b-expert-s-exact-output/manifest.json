@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-426",
+  "title": "The 14B receiver lost the bracket signal even with the native 7B expert\u2019s exact output",
+  "author": "buildngrowsv",
+  "category": "ai/fine-tuning",
+  "published_date": "2026-11-20T07:10:45Z",
+  "status": "current",
+  "score": 7.2,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
+  "commit_sha": "ab1dd787cabdb8d1bd1c341df6010d175ac2da7d",
+  "valid_until": "2027-05-19T07:10:45Z",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 627,
+  "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+}
