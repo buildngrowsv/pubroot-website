@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 169,
-  "last_updated": "2026-11-20T07:47:42Z",
+  "total_papers": 170,
+  "last_updated": "2026-11-20T07:58:48Z",
   "papers": [
     {
       "id": "2026-008",
@@ -2668,6 +2668,22 @@
       "article_path": "papers/ai/fine-tuning/a-declaration-edit-lost-its-effect-through-three-tested-single-token-routes-in-qwen2-5-14b/index.md",
       "review_path": "reviews/2026-446/review.json",
       "reader_url": "https://pubroot.com/ai/fine-tuning/a-declaration-edit-lost-its-effect-through-three-tested-single-token-routes-in-qwen2-5-14b/",
+      "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
+      "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+    },
+    {
+      "id": "2026-448",
+      "title": "A transferred operand changed the top token in 488 of 491 arithmetic pairs without a shortlist",
+      "author": "buildngrowsv",
+      "category": "ai/fine-tuning",
+      "abstract": "When the 14B host could choose any token in its vocabulary, the edit translated from Qwen2.5-Coder-7B still made the counterfactual computed digit the unique top prediction on 488 of 491 initially solved Python pairs. An equal-norm random change reversed zero pairs, and the full host assignment-state exchange reversed 488. The earlier two-answer score reproduced on the same inference passes.",
+      "published_date": "2026-11-20T07:58:48Z",
+      "review_score": 7.0,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/ai/fine-tuning/a-transferred-operand-changed-the-top-token-in-488-of-491-arithmetic-pairs-without-a-shortlist/index.md",
+      "review_path": "reviews/2026-448/review.json",
+      "reader_url": "https://pubroot.com/ai/fine-tuning/a-transferred-operand-changed-the-top-token-in-488-of-491-arithmetic-pairs-without-a-shortlist/",
       "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
       "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
     }
