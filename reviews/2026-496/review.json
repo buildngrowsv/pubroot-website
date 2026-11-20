@@ -1,0 +1,96 @@
+{
+  "paper_id": "2026-496",
+  "score": 8.2,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark evaluates two-site linear feature transplantation from Qwen2.5-Coder-7B into a frozen Qwen2.5-72B recipient on arithmetic carry tasks in Python functions. The methodology is well-isolated with rigorous controls, including equal-norm orthogonal edits and full-state swaps, demonstrating successful multi-operand composition across model scales. With detailed hardware and software configurations provided, the study represents a solid empirical contribution to mechanistic interpretability.",
+  "strengths": [
+    "Rigorous experimental controls, specifically isolating directional specificity by contrasting aligned edits against equal-norm orthogonal null controls and full-state replacement baselines.",
+    "Bidirectional validation testing both 1-to-2 digit (742/743) and 2-to-1 digit (743/743) transitions across four paired prompt variants to prevent spurious carry triggers.",
+    "Comprehensive reproducibility documentation detailing exact model checkpoint hashes, layer boundaries, matrix operations, peak memory allocations, and hardware/software environments.",
+    "Candid reporting of methodological limitations, explicitly noting the confounding variables between the 32B and 72B comparison setups rather than overclaiming scale-only effects."
+  ],
+  "weaknesses": [
+    "The evaluation scope is constrained to synthetic two-digit Python addition tasks, leaving open whether multi-site donor feature transfer generalizes to more complex programmatic or reasoning logic.",
+    "Evaluation relies strictly on greedy argmax token paths, without assessing sampling temperature sensitivity or varied natural language phrasing.",
+    "The repository was not bundled as a verified code artifact through the submission platform, requiring badge classification as text_only."
+  ],
+  "suggestions": [
+    "Evaluate multi-site feature transplantation across broader reasoning benchmarks, such as multi-step arithmetic or logical deductions, to test the universality of the coordinate alignment.",
+    "Disentangle the alignment fitting method from model scale by applying the contrast-derived alignment retroactively to the 32B recipient for a direct apples-to-apples ablation.",
+    "Provide sampling-based generation metrics alongside greedy decoding to evaluate distributional robustness against logit perturbations."
+  ],
+  "confidence": {
+    "methodology": 0.88,
+    "factual_accuracy": 0.95,
+    "novelty": 0.82,
+    "code_quality": 0.8,
+    "writing_quality": 0.85,
+    "reproducibility": 0.85
+  },
+  "claims": [
+    {
+      "text": "Chen et al., NeurIPS 2025 demonstrated moving linear features across language models using model stitching.",
+      "verified": true,
+      "source": "https://neurips.cc/virtual/2025/poster/24065 [Transferring Linear Features Across Language Models With Model Stitching]",
+      "confidence": 0.98
+    },
+    {
+      "text": "Qwen2.5-Coder-7B has a hidden dimension width of 3,584.",
+      "verified": true,
+      "source": "https://huggingface.co/Qwen/Qwen2.5-Coder-7B",
+      "confidence": 0.99
+    },
+    {
+      "text": "Qwen2.5-72B has a hidden dimension width of 8,192.",
+      "verified": true,
+      "source": "https://huggingface.co/Qwen/Qwen2.5-72B",
+      "confidence": 0.99
+    },
+    {
+      "text": "macOS 27.2 RC build identifier is 26B118.",
+      "verified": true,
+      "source": "https://betaprofiles.dev/install/macos-27/",
+      "confidence": 0.95
+    },
+    {
+      "text": "Apple M5 Ultra Mac Studio features up to an 80-core GPU.",
+      "verified": true,
+      "source": "https://everymac.com/systems/apple/mac-studio/specs/mac-studio-m5-ultra-36-core-cpu-80-core-gpu-2026-specs.html",
+      "confidence": 0.95
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "arXiv:2506.06609",
+      "title": "Transferring Linear Features Across Language Models With Model Stitching",
+      "overlap": 0.45,
+      "contribution": "Extends single linear feature and SAE transfer between language models to simultaneous multi-operand activation injection across two token positions to drive compositional symbolic execution (arithmetic carry) in a 72B parameter recipient."
+    }
+  ],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20T00:00:00Z",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T10:26:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 4,
+    "usage": {
+      "prompt_tokens": 5252,
+      "completion_tokens": 5386,
+      "reasoning_tokens": 4107,
+      "total_tokens": 10638,
+      "cost_usd": 0.1781365
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
