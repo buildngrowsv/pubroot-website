@@ -1,0 +1,84 @@
+{
+  "paper_id": "2026-381",
+  "score": 7.0,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark evaluates whether a compact byte-level transformer (26.83M parameters with a 64-channel bypass around seven narrower middle blocks) matches the performance of a full-width counterpart (31.99M parameters) when adapting from CPython to scientific Python libraries. Across six held-out external libraries, the compact model demonstrates equivalent prediction accuracy within a tight margin (+0.00024 bpb difference against a 0.02 equivalence threshold). The experimental design and paired data controls are rigorous, though the text lacks explicit hardware specifications and relies on a single training seed.",
+  "strengths": [
+    "Strict paired experimental controls: both model arms share identical pretraining checkpoints, adaptation batch order, update counts (8,192), and context windows (8,192 bytes).",
+    "Rigorous statistical evaluation utilizing a pre-specified equivalence loss margin (0.02 bpb) and a 95% within-project file-bootstrap confidence interval ([-0.00295, +0.00342]).",
+    "Clean data curation methodology with exact-version source archives pinned by SHA-256, test/vendored paths excluded, and duplicate files removed against CPython pretraining data.",
+    "Explicit quantification of catastrophic forgetting on original CPython test windows (+0.21198 vs +0.21604 bpb) alongside the domain transfer gains."
+  ],
+  "weaknesses": [
+    "Single-seed evaluation: results rely solely on seed-101 checkpoints, meaning inter-run training variance across initialization seeds is not established.",
+    "Hardware specifications and optimizer hyperparameters (learning rate schedule, weight decay) are omitted from the text, merely citing the 'owner's Studio'.",
+    "The parameter reduction (16.1%) is bundled with the early-reference channel bypass without displaying the baseline without the bypass directly in the main comparison table."
+  ],
+  "suggestions": [
+    "Evaluate across multiple random seeds (e.g., 3-5 seeds) to report variance across training runs in addition to the file-resampling bootstrap.",
+    "Detail hardware accelerators, training wall-clock time, and AdamW hyperparameter schedules directly in the manuscript body.",
+    "Include the matched-size working-only ablation results directly in the main table to clearly isolate the contribution of the protected reference routing."
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.9,
+    "novelty": 0.75,
+    "code_quality": null,
+    "writing_quality": 0.8,
+    "reproducibility": 0.65
+  },
+  "claims": [
+    {
+      "text": "The compact model, carrying an early 64-channel state past seven narrower blocks, used 26.83M parameters versus 31.99M for its full-width counterpart.",
+      "verified": true,
+      "source": "https://github.com/buildngrowsv/fixed-reference-benchmark",
+      "confidence": 0.95
+    },
+    {
+      "text": "On six disjoint external projects it scored 1.39958 bits per byte versus 1.39934 for the larger model. The paired difference of +0.00024 had a 95% within-project file-bootstrap interval of \u22120.00295 to +0.00342.",
+      "verified": true,
+      "source": "https://github.com/buildngrowsv/fixed-reference-[REDACTED_SECRET].json",
+      "confidence": 0.95
+    },
+    {
+      "text": "On exactly the original 2,048 CPython windows the compact model\u2019s loss increased by 0.21198 bits per byte and the larger model\u2019s by 0.21604.",
+      "verified": true,
+      "source": "https://github.com/buildngrowsv/fixed-reference-[REDACTED_SECRET]",
+      "confidence": 0.85
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "arXiv:2412.09871",
+      "title": "Byte Latent Transformer: Patches vs. Tokens at Scale",
+      "overlap": 0.25,
+      "contribution": "While BLT investigates dynamic entropy-based byte patching across scale, this benchmark specifically isolates a width-narrowing channel bypass architecture on byte-level autoregressive domain adaptation across Python codebases."
+    }
+  ],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20T01:58:00Z",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T01:58:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 5,
+    "usage": {
+      "prompt_tokens": 4514,
+      "completion_tokens": 7390,
+      "reasoning_tokens": 6048,
+      "total_tokens": 11904,
+      "cost_usd": 0.182479675
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}

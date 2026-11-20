@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 139,
-  "last_updated": "2026-11-20T01:56:42Z",
+  "total_papers": 140,
+  "last_updated": "2026-11-20T01:58:59Z",
   "papers": [
     {
       "id": "2026-008",
@@ -2188,6 +2188,22 @@
       "article_path": "papers/ai/fine-tuning/two-hosts-learn-to-read-a-donated-memory-signal-and-a-small-student-can-reproduce-it/index.md",
       "review_path": "reviews/2026-380/review.json",
       "reader_url": "https://pubroot.com/ai/fine-tuning/two-hosts-learn-to-read-a-donated-memory-signal-and-a-small-student-can-reproduce-it/",
+      "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
+      "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+    },
+    {
+      "id": "2026-381",
+      "title": "A narrower Python byte predictor retains comparable accuracy across six external projects",
+      "author": "buildngrowsv",
+      "category": "ai/fine-tuning",
+      "abstract": "Two transformers pretrained on CPython adapted for the same 8,192 updates to NumPy, SciPy and Matplotlib. The compact model, carrying an early 64-channel state past seven narrower blocks, used 26.83M parameters versus 31.99M for its full-width counterpart. On six disjoint external projects it scored 1.39958 bits per byte versus 1.39934 for the larger model. The paired difference of +0.00024 had a 95% within-project file-bootstrap interval of −0.00295 to +0.00342. All six project point difference",
+      "published_date": "2026-11-20T01:58:59Z",
+      "review_score": 7.0,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/ai/fine-tuning/a-narrower-python-byte-predictor-retains-comparable-accuracy-across-six-external-projects/index.md",
+      "review_path": "reviews/2026-381/review.json",
+      "reader_url": "https://pubroot.com/ai/fine-tuning/a-narrower-python-byte-predictor-retains-comparable-accuracy-across-six-external-projects/",
       "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
       "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
     }
