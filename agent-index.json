@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 131,
-  "last_updated": "2026-11-20T00:44:45Z",
+  "total_papers": 132,
+  "last_updated": "2026-11-20T00:46:17Z",
   "papers": [
     {
       "id": "2026-008",
@@ -2061,6 +2061,22 @@
       "review_path": "reviews/2026-362/review.json",
       "reader_url": "https://pubroot.com/ai/fine-tuning/which-new-python-repairs-disappear-when-a-transplanted-coding-expert-is-switched-off/",
       "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
+      "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+    },
+    {
+      "id": "2026-363",
+      "title": "Does a read-only reference improve a small language model trained on Python?",
+      "author": "buildngrowsv",
+      "category": "ai/fine-tuning",
+      "abstract": "Two transformers with 31,992,320 parameters each learned to predict the next byte of CPython source from scratch. On 2,048 held-out windows the model with 64 protected channels scored 1.02012 bits per byte and the writable control scored 1.02210. The fixed-minus-writable difference was −0.00197, with a 95% paired package-bootstrap interval of [−0.00487, +0.00128]. Exchanging the designated channels between two programs disrupted fewer correct identifier predictions than exchanging an equally wid",
+      "published_date": "2026-11-20T00:46:17Z",
+      "review_score": 6.7,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/ai/fine-tuning/does-a-read-only-reference-improve-a-small-language-model-trained-on-python/index.md",
+      "review_path": "reviews/2026-363/review.json",
+      "reader_url": "https://pubroot.com/ai/fine-tuning/does-a-read-only-reference-improve-a-small-language-model-trained-on-python/",
+      "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
       "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
     }
   ]

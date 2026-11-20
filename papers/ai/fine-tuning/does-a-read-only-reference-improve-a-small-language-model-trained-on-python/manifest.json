@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-363",
+  "title": "Does a read-only reference improve a small language model trained on Python?",
+  "author": "buildngrowsv",
+  "category": "ai/fine-tuning",
+  "published_date": "2026-11-20T00:46:17Z",
+  "status": "current",
+  "score": 6.7,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
+  "commit_sha": "3087aacc62b8dec02905ab204ffbaa6a566f9a2f",
+  "valid_until": "2027-05-19T00:46:17Z",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 881,
+  "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+}

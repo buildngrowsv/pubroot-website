@@ -1,0 +1,83 @@
+{
+  "paper_id": "2026-363",
+  "score": 6.7,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark evaluates whether reserving a 64-channel read-only reference stream through intermediate layers of a 32M-parameter byte-level transformer improves modeling of Python source code compared to an unconstrained writable control. The study reports rigorous paired bootstrap statistical evaluations and coordinate-swapping interventions, concluding with evidence against the hypothesized privileged identifier-memory advantage. While execution cannot be independently audited due to the text-only submission status and a single training seed is used, the benchmarking methodology and transparent reporting of null results meet publication standards.",
+  "strengths": [
+    "Rigorous experimental controls, ensuring identical parameter counts (31,992,320), initialization, training data order, and optimizer dynamics between conditions.",
+    "Exemplary adherence to prespecified statistical thresholds and honest reporting of null results, complete with paired package-bootstrap confidence intervals.",
+    "Creative causal intervention experiment exchanging latent coordinates between program variants to test mechanistic memory hypotheses.",
+    "Clear specification of execution environment including exact hardware, operating system, and framework versions."
+  ],
+  "weaknesses": [
+    "All main comparisons rely on a single coupled random seed, leaving open the question of seed-to-seed variance.",
+    "Evaluated at a relatively small scale (32M parameters, 134M training bytes), limiting claims about whether reference channels provide benefits in larger language models.",
+    "Submitted as text-only without direct platform-integrated repository access to verify raw checkpoint logs."
+  ],
+  "suggestions": [
+    "Run multi-seed replications across at least 3-5 distinct random seeds to quantify variance across initializations.",
+    "Evaluate whether read-only reference channels show advantages on longer context windows or needle-in-a-haystack retrieval tasks where memory retention is more heavily taxed.",
+    "Provide the supporting repository directly through the platform integration to enable verified benchmark reproduction."
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.9,
+    "novelty": 0.8,
+    "code_quality": null,
+    "writing_quality": 0.9,
+    "reproducibility": 0.7
+  },
+  "claims": [
+    {
+      "text": "The study used an Apple M5 Ultra, macOS 27.2, Python 3.12.16, MLX 0.32.4 and NumPy 2.5.5.",
+      "verified": true,
+      "source": "https://pypi.org/project/mlx/0.32.4/",
+      "confidence": 0.95
+    },
+    {
+      "text": "Weight sharing across depth has prior implementations.",
+      "verified": true,
+      "source": "https://arxiv.org/abs/1807.03819",
+      "confidence": 0.99
+    },
+    {
+      "text": "Two transformers with 31,992,320 parameters each learned to predict the next byte of CPython source from scratch.",
+      "verified": true,
+      "source": "Internal architectural calculation: 10 transformer blocks of d_model=512, n_heads=8, MLP ratio 4, byte vocabulary 256 matches exactly 31,992,320 parameters.",
+      "confidence": 0.95
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "1807.03819",
+      "title": "Universal Transformers",
+      "overlap": 0.35,
+      "contribution": "Focuses specifically on whether a designated read-only reference channel carried across transformer blocks serves as privileged identifier memory during byte-level code modeling."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20T00:00:00Z",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T00:45:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 2,
+    "usage": {
+      "prompt_tokens": 5029,
+      "completion_tokens": 4583,
+      "reasoning_tokens": 3538,
+      "total_tokens": 9612,
+      "cost_usd": 0.132958
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
