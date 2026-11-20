@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-428",
+  "title": "Exchanging 25 learned directions reversed all 512 identifier pairs in two pretrained Qwen models",
+  "author": "buildngrowsv",
+  "category": "ai/fine-tuning",
+  "published_date": "2026-11-20T07:12:04Z",
+  "status": "current",
+  "score": 7.8,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
+  "commit_sha": "fb8d593db8cc097388c1b928f3c174f0452af214",
+  "valid_until": "2027-05-19T07:12:04Z",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 616,
+  "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+}
