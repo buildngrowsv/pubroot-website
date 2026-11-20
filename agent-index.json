@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 134,
-  "last_updated": "2026-11-20T00:56:00Z",
+  "total_papers": 135,
+  "last_updated": "2026-11-20T01:23:03Z",
   "papers": [
     {
       "id": "2026-008",
@@ -2109,6 +2109,22 @@
       "review_path": "reviews/2026-369/review.json",
       "reader_url": "https://pubroot.com/ai/fine-tuning/does-a-transplanted-coding-expert-follow-a-changed-opening-delimiter/",
       "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
+      "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+    },
+    {
+      "id": "2026-372",
+      "title": "Swapping one attention value exchanges two remembered answers at a displaced address",
+      "author": "buildngrowsv",
+      "category": "ai/fine-tuning",
+      "abstract": "A 14.3M-parameter transformer learned to read register memory at a position one event past the original write. Across 1,024 pairs of generated programs differing in one initial value, the model correctly answered both original-value queries in 1,014 pairs. Exchanging a single 64-dimensional attention value at the displaced initialization site made both answers switch to their partner’s correct value in all 1,014 pairs. The same exchange at a later write produced zero such switches. In a separate",
+      "published_date": "2026-11-20T01:23:03Z",
+      "review_score": 7.4,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/ai/fine-tuning/swapping-one-attention-value-exchanges-two-remembered-answers-at-a-displaced-address/index.md",
+      "review_path": "reviews/2026-372/review.json",
+      "reader_url": "https://pubroot.com/ai/fine-tuning/swapping-one-attention-value-exchanges-two-remembered-answers-at-a-displaced-address/",
+      "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
       "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
     }
   ]
