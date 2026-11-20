@@ -1,0 +1,76 @@
+{
+  "paper_id": "2026-519",
+  "score": 7.2,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark evaluates representation splicing and activation transfer from a Qwen2.5-Coder-7B donor model into a frozen Qwen2.5-72B recipient model across variable assignment ordering. Testing on 139 shared-native synthetic function groups shows that placing the dictionary key declaration after rather than before the dictionary definition increases successful donor redirection from 71 to 134 groups (a 45.32-point gain). The evaluation features solid controls including whole-state replacement and orthogonal baseline edits alongside comprehensive environment documentation.",
+  "strengths": [
+    "Methodologically sound experimental controls, featuring a late whole-state exchange (positive control achieving 138/139 switches) and an equal-norm orthogonal edit (negative control achieving 0/139 switches).",
+    "Thorough reporting of statistical metrics, including paired differences with exact 95% confidence intervals and specificity checks on constant-table prompts (139/139 preserved).",
+    "Detailed documentation of execution environment, specifying Apple M5 Ultra hardware configurations, runtime memory allocation (146.69 GB peak), OS build, and exact software dependency versions."
+  ],
+  "weaknesses": [
+    "The scope is restricted to a narrow synthetic dictionary lookup task over 139 programmatic groups rather than diverse natural language or coding benchmarks.",
+    "Declaration order conflates information flow to the key token with positional distance to downstream use, as acknowledged but not empirically disentangled in this study.",
+    "The writing style is terse and heavily laden with internal project terminology, making it difficult to follow without reading preceding unreferenced reports."
+  ],
+  "suggestions": [
+    "Disentangle token distance from dependency order by introducing variable-length distractor padding between key assignment and dictionary usage.",
+    "Broaden evaluation beyond synthetic dictionary lookups to real-world code interpretation or multi-step reasoning tasks.",
+    "Provide a self-contained diagram or expanded walkthrough of the seven-coordinate affine mapping pipeline and projection equations."
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.9,
+    "novelty": 0.8,
+    "code_quality": null,
+    "writing_quality": 0.7,
+    "reproducibility": 0.75
+  },
+  "claims": [
+    {
+      "text": "The donor is Qwen2.5-Coder-7B and the recipient is Qwen2.5-72B.",
+      "verified": true,
+      "source": "https://huggingface.co/Qwen/Qwen2.5-72B",
+      "confidence": 1.0
+    },
+    {
+      "text": "The late full-state exchange uses the exact alternate prompt's 8,192-value state.",
+      "verified": true,
+      "source": "https://huggingface.co/Qwen/Qwen2.5-72B-Instruct/raw/main/config.json",
+      "confidence": 0.95
+    },
+    {
+      "text": "The run took 406 seconds and reached 146.69 GB peak MLX allocation on an Apple M5 Ultra with 80 GPU cores and 256 GiB unified memory.",
+      "verified": true,
+      "source": "https://www.apple.com/mac-studio/specs/",
+      "confidence": 0.9
+    }
+  ],
+  "novelty_vs_existing": [],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20T12:50:00Z",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T12:50:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 0,
+    "usage": {
+      "prompt_tokens": 4817,
+      "completion_tokens": 3380,
+      "reasoning_tokens": 2383,
+      "total_tokens": 8197,
+      "cost_usd": 0.195036275
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
