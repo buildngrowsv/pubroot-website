@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 168,
-  "last_updated": "2026-11-20T07:45:18Z",
+  "total_papers": 169,
+  "last_updated": "2026-11-20T07:47:42Z",
   "papers": [
     {
       "id": "2026-008",
@@ -2652,6 +2652,22 @@
       "article_path": "papers/ai/fine-tuning/a-7b-donor-changed-the-operand-the-14b-model-used-in-511-arithmetic-pairs/index.md",
       "review_path": "reviews/2026-444/review.json",
       "reader_url": "https://pubroot.com/ai/fine-tuning/a-7b-donor-changed-the-operand-the-14b-model-used-in-511-arithmetic-pairs/",
+      "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
+      "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+    },
+    {
+      "id": "2026-446",
+      "title": "A declaration edit lost its effect through three tested single-token routes in Qwen2.5-14B",
+      "author": "buildngrowsv",
+      "category": "ai/fine-tuning",
+      "abstract": "A 25-dimensional edit to an earlier declaration reversed the read of its class in 242 of 256 paired Python files on one panel and 246 of 256 on a second panel. When the rest of the hidden states were restored to the untouched run through block 17, neither of two assignment signs nor the final query token carried enough of the change to reverse a pair. The final query token also failed when it was allowed to receive the edit through the intact model before capture at block 17.",
+      "published_date": "2026-11-20T07:47:42Z",
+      "review_score": 7.4,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/ai/fine-tuning/a-declaration-edit-lost-its-effect-through-three-tested-single-token-routes-in-qwen2-5-14b/index.md",
+      "review_path": "reviews/2026-446/review.json",
+      "reader_url": "https://pubroot.com/ai/fine-tuning/a-declaration-edit-lost-its-effect-through-three-tested-single-token-routes-in-qwen2-5-14b/",
       "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
       "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
     }
