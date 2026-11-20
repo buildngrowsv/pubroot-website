@@ -1,0 +1,83 @@
+{
+  "paper_id": "2026-372",
+  "score": 7.4,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark paper conducts a rigorous causal interchange intervention on a 14.3M-parameter transformer trained to track register states under displaced addressing. By swapping a 64-dimensional attention value vector at the displaced write position, the authors demonstrate complete counterfactual answer exchange across paired programs, while confirming that random routing fails in independent re-training. The methodology is well-isolated and statistically grounded, though limited to synthetic tasks on a small model.",
+  "strengths": [
+    "Methodologically sound interchange intervention framework adapting established causal abstraction protocols to verify internal state routing.",
+    "Careful experimental isolation with precise negative controls (exchanging values at a later-write site and testing randomized address baselines).",
+    "Solid statistical reporting, including paired 95% bootstrap confidence intervals for both causal interchange and generalization benchmarks.",
+    "Concise and dense reporting of quantitative metrics across independent seeds."
+  ],
+  "weaknesses": [
+    "Evaluation is confined strictly to a small 14.3M synthetic model and toy instruction grammar, limiting direct generalizability to production-scale LLMs or natural code.",
+    "Hardware specifications and runtime configurations are only briefly mentioned without detailing exact MLX software versions or comprehensive hyperparameter tables in the text.",
+    "Submission is text-only without a verified public code bundle uploaded to the platform, relying instead on external repository links."
+  ],
+  "suggestions": [
+    "Test whether similar displaced addressing mechanisms and single-vector interchange causally transfer in larger open-weights models (e.g., Llama or Gemma variants) fine-tuned on code execution.",
+    "Provide full training curves, loss dynamics, and software dependency lockfiles in an appendix or supplementary archive."
+  ],
+  "confidence": {
+    "methodology": 0.88,
+    "factual_accuracy": 0.85,
+    "novelty": 0.8,
+    "code_quality": null,
+    "writing_quality": 0.85,
+    "reproducibility": 0.75
+  },
+  "claims": [
+    {
+      "text": "Interchange interventions test this by moving an internal value between examples and predicting the resulting output.",
+      "verified": true,
+      "source": "https://proceedings.neurips.[REDACTED_SECRET]-Abstract.html",
+      "confidence": 0.95
+    },
+    {
+      "text": "Relative to all 1,024 pairs, the displaced initialization exchange gave 99.02 percentage points more double switches than the later-write exchange (paired 95% bootstrap interval 98.34\u201399.61).",
+      "verified": true,
+      "source": "Derived and verified from the reported contingency table (1,014/1,024 vs 0/1,024 double switches)",
+      "confidence": 0.9
+    },
+    {
+      "text": "Under the preregistered balanced accuracy metric, which gives those two query types equal weight, stable displacement scored 92.62% and random routing 9.61%.",
+      "verified": true,
+      "source": "Verified within reported experimental evaluation protocol on seed 211 across 2,048 fresh programs",
+      "confidence": 0.85
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "Geiger-NeurIPS-2021",
+      "title": "Causal Abstractions of Neural Networks",
+      "overlap": 0.45,
+      "contribution": "Applies the interchange intervention framework specifically to mechanistic register tracking and displaced addressing in transformer attention heads rather than natural language inference."
+    }
+  ],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T01:25:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 2,
+    "usage": {
+      "prompt_tokens": 4740,
+      "completion_tokens": 2678,
+      "reasoning_tokens": 1617,
+      "total_tokens": 7418,
+      "cost_usd": 0.0415975
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
