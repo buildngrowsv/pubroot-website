@@ -1,0 +1,89 @@
+{
+  "paper_id": "2026-435",
+  "score": 6.8,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark evaluates cross-model counterfactual activation steering by learning a 25-dimensional linear ridge map from Qwen2.5-Coder-7B (block 6) to Qwen2.5-14B (block 10). On a test suite of 512 paired single-letter identifier declarations in Python, the transferred edit achieves a 100% reversal rate while an orthogonal same-norm random perturbation achieves 0%. While the experimental setup includes appropriate negative and positive controls with fully documented software environments and model revisions, the benchmark is constrained to a highly synthetic single-token variable replacement task.",
+  "strengths": [
+    "Rigorous experimental controls, pairing the translated edit directly against both a full host activation transplant and an orthogonal same-norm random control.",
+    "Comprehensive reproducibility metadata provided in-text, including model commit SHAs, library versions (MLX 0.32.4, NumPy 2.5.5, Tokenizers 0.23.3), and exact ridge penalty specifications.",
+    "Direct grounding in established model stitching and representation transfer literature (Bansal et al., 2021; Chen et al., 2025)."
+  ],
+  "weaknesses": [
+    "Extremely narrow evaluation scope restricted to single-character identifier declarations in synthetic Python prompts, leading to saturation/ceiling effects (512/512).",
+    "No ablation or sensitivity analysis explaining the choice of layer 6 in the 7B donor and layer 10 in the 14B host over alternative layer combinations.",
+    "Brevity of the report omits qualitative inspection of generation degradation or off-target effects outside the targeted completion position."
+  ],
+  "suggestions": [
+    "Extend the benchmark to multi-token variable names, function calls, and semantically diverse coding edits to evaluate generalization beyond single-letter swaps.",
+    "Provide a layer-to-layer transfer matrix comparing ridge transfer efficacy across all donor-host block pairs to demonstrate why blocks 6 and 10 are optimal.",
+    "Measure perplexity or test broader task performance downstream to verify that the injected activation edit does not destabilize general model generation."
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.9,
+    "novelty": 0.75,
+    "code_quality": null,
+    "writing_quality": 0.8,
+    "reproducibility": 0.8
+  },
+  "claims": [
+    {
+      "text": "The coder and general host use widths 3,584 and 5,120.",
+      "verified": true,
+      "source": "https://arxiv.org/abs/2412.15115",
+      "confidence": 1.0
+    },
+    {
+      "text": "Model stitching ... supply established precedents for fitted interfaces between frozen networks. [Model stitching](https://arxiv.org/abs/2106.07682)",
+      "verified": true,
+      "source": "https://arxiv.org/abs/2106.07682",
+      "confidence": 0.98
+    },
+    {
+      "text": "Cross-size feature transfer [2506.06609]",
+      "verified": true,
+      "source": "https://arxiv.org/abs/2506.06609",
+      "confidence": 0.95
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2106.07682",
+      "title": "Revisiting Model Stitching to Compare Neural Representations",
+      "overlap": 0.5,
+      "contribution": "Applies linear stitching specifically to low-dimensional counterfactual activation vectors between distinct model architectures and scales rather than full-layer representation concatenation."
+    },
+    {
+      "id": "2506.06609",
+      "title": "Transferring Linear Features Across Language Models With Model Stitching",
+      "overlap": 0.6,
+      "contribution": "Focuses on localized identifier intervention and causal reversal in code synthesis between a 7B domain-specialized coder and a 14B general model using a 25D basis."
+    }
+  ],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T07:29:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 2,
+    "usage": {
+      "prompt_tokens": 4241,
+      "completion_tokens": 3883,
+      "reasoning_tokens": 2704,
+      "total_tokens": 8124,
+      "cost_usd": 0.073742
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}

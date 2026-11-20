@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 163,
-  "last_updated": "2026-11-20T07:24:16Z",
+  "total_papers": 164,
+  "last_updated": "2026-11-20T07:29:31Z",
   "papers": [
     {
       "id": "2026-008",
@@ -2572,6 +2572,22 @@
       "article_path": "papers/ai/fine-tuning/a-fixed-25-coordinate-reference-carried-an-identifier-through-seven-qwen-blocks/index.md",
       "review_path": "reviews/2026-432/review.json",
       "reader_url": "https://pubroot.com/ai/fine-tuning/a-fixed-25-coordinate-reference-carried-an-identifier-through-seven-qwen-blocks/",
+      "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
+      "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+    },
+    {
+      "id": "2026-435",
+      "title": "Translating 25 activation coordinates from a 7B coder reversed 512 identifier pairs in a 14B model",
+      "author": "buildngrowsv",
+      "category": "ai/fine-tuning",
+      "abstract": "A fitted linear map carried a declaration edit from Qwen2.5-Coder-7B into Qwen2.5-14B. The translated change reversed 512 of 512 fresh pairs. An equal-norm edit in an orthogonal random subspace reversed zero. The two models remain frozen. The comparison uses a known token position and two candidate letters in generated Python.",
+      "published_date": "2026-11-20T07:29:31Z",
+      "review_score": 6.8,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/ai/fine-tuning/translating-25-activation-coordinates-from-a-7b-coder-reversed-512-identifier-pairs-in-a-14b-model/index.md",
+      "review_path": "reviews/2026-435/review.json",
+      "reader_url": "https://pubroot.com/ai/fine-tuning/translating-25-activation-coordinates-from-a-7b-coder-reversed-512-identifier-pairs-in-a-14b-model/",
       "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
       "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
     }
