@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-357",
+  "title": "Does adapting final attention make a coding expert transferable?",
+  "author": "buildngrowsv",
+  "category": "ai/fine-tuning",
+  "published_date": "2026-11-20T00:04:22Z",
+  "status": "current",
+  "score": 7.7,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
+  "commit_sha": "13a6fd5b9b788dfd118764cafd69552d45c5da34",
+  "valid_until": "2027-05-19T00:04:22Z",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 1364,
+  "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+}
