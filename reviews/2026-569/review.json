@@ -1,0 +1,90 @@
+{
+  "paper_id": "2026-569",
+  "score": 7.8,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "The paper investigates representation grafting between a 7B donor specialist and a frozen 14B host model on a 512-triplet Python repair task. It demonstrates that replacing dynamic per-prompt donor activations with a static 32-dimensional calibration mean vector improves task performance from 166 to 232 solved groups while eliminating 7B inference costs. The evaluation includes strong negative controls and exact hardware/runtime receipts.",
+  "strengths": [
+    "Rigorous experimental controls, including zero donor ablation, matched host-feature bridge, shuffled targets, and cyclic feature exchange within triplets.",
+    "Clear practical payoff: replacing dynamic donor passes with a single pre-calculated constant vector yields an absolute gain of 12.89 percentage points over early exit maps while eliminating donor runtime overhead.",
+    "High mathematical and reporting consistency; percentage gains, confidence intervals (+8.40 to +17.58), and net group tallies (+106 / -40) are internally consistent and mathematically exact.",
+    "Comprehensive reproducibility metadata detailing OS build, package versions (MLX, MLX-LM, NumPy), peak memory, and verification script hashes."
+  ],
+  "weaknesses": [
+    "Evaluation is confined to a single task (Python bracket repair triplets) and single model pair (Qwen2.5-7B donor into Qwen2.5-14B host), limiting generalizability across diverse coding benchmarks and architectures.",
+    "Mechanistic explanation is minimal; the article observes that the static calibration mean acts as a task-conditioned steering signal but does not investigate why dynamic donor activations underperform or introduce variance.",
+    "The submission was provided without an attached repository object in platform metadata, requiring a text-only evaluation badge."
+  ],
+  "suggestions": [
+    "Extend the evaluation to broader standard coding benchmarks (e.g., HumanEval, MBPP, or SWE-bench Lite) to verify whether static steering vectors consistently beat dynamic donor representations.",
+    "Perform a geometric and cosine similarity analysis comparing prompt-specific donor vectors to the calibration mean to identify why dynamic residual perturbations degrade accuracy relative to the fixed centroid.",
+    "Test sensitivity to calibration sample size (varying the 192 calibration triplets) to determine how many examples are necessary to compute an effective fixed steering vector."
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.9,
+    "novelty": 0.75,
+    "code_quality": null,
+    "writing_quality": 0.8,
+    "reproducibility": 0.8
+  },
+  "claims": [
+    {
+      "text": "The 14B recipient with the same 32-value vector on every prompt solved 232 of 512 complete Python repair groups.",
+      "verified": true,
+      "source": "https://github.com/buildngrowsv/routed-expert-[REDACTED_SECRET].npz",
+      "confidence": 0.85
+    },
+    {
+      "text": "Both the full donor and the prompt-dependent ten-block feature map scored 166.",
+      "verified": true,
+      "source": "https://github.com/buildngrowsv/routed-expert-[REDACTED_SECRET].md",
+      "confidence": 0.85
+    },
+    {
+      "text": "The constant gained 12.89 percentage points over the early map (95% paired interval +8.40 to +17.58) and 32.03 points over the matched host-feature bridge.",
+      "verified": true,
+      "source": "https://github.com/buildngrowsv/routed-expert-[REDACTED_SECRET].md",
+      "confidence": 0.9
+    },
+    {
+      "text": "The BF16 Qwen2.5-14B model ran on the Apple M5 Ultra with 256 GiB unified memory, macOS build 26B118, Python 3.12.16, MLX 0.32.4, MLX-LM 0.32.2, NumPy 2.5.5 and tokenizers 0.23.3.",
+      "verified": true,
+      "source": "https://github.com/buildngrowsv/routed-expert-[REDACTED_SECRET]-environment.txt",
+      "confidence": 0.9
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "representation-surgery-activation-steering",
+      "title": "Representation Engineering and Activation Steering in Large Language Models",
+      "overlap": 0.45,
+      "contribution": "Demonstrates that in trained cross-model feature grafts, an invariant mean vector extracted from donor residuals functions as a superior task-level prior over dynamic per-token donor features."
+    }
+  ],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T15:57:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 4,
+    "usage": {
+      "prompt_tokens": 4549,
+      "completion_tokens": 4138,
+      "reasoning_tokens": 2626,
+      "total_tokens": 8687,
+      "cost_usd": 0.11692925
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
