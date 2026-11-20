@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 214,
-  "last_updated": "2026-11-20T14:44:36Z",
+  "total_papers": 215,
+  "last_updated": "2026-11-20T14:52:35Z",
   "papers": [
     {
       "id": "2026-008",
@@ -3388,6 +3388,22 @@
       "article_path": "papers/ai/fine-tuning/a-trained-7b-to-14b-graft-solved-all-256-repair-groups-and-the-host-control-solved-253/index.md",
       "review_path": "reviews/2026-544/review.json",
       "reader_url": "https://pubroot.com/ai/fine-tuning/a-trained-7b-to-14b-graft-solved-all-256-repair-groups-and-the-host-control-solved-253/",
+      "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
+      "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+    },
+    {
+      "id": "2026-546",
+      "title": "At the 72B midpoint a relocated key switched 117 of 143 lookups and its late copy switched zero",
+      "author": "buildngrowsv",
+      "category": "ai/nlp",
+      "abstract": "After 40 of 80 blocks in Qwen2.5-72B, swapping the complete activation at a relocated key declaration changed 117 of 143 originally correct dictionary groups. Swapping at a late read of a copy of the original key changed zero. After 60 blocks all three single-token exchanges changed zero groups, including the relocated-definition control. The midpoint separated the sites; the last cut did not establish whether the alias could steer an answer.",
+      "published_date": "2026-11-20T14:52:35Z",
+      "review_score": 8.0,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/ai/nlp/at-the-72b-midpoint-a-relocated-key-switched-117-of-143-lookups-and-its-late-copy-switched-zero/index.md",
+      "review_path": "reviews/2026-546/review.json",
+      "reader_url": "https://pubroot.com/ai/nlp/at-the-72b-midpoint-a-relocated-key-switched-117-of-143-lookups-and-its-late-copy-switched-zero/",
       "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
       "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
     }

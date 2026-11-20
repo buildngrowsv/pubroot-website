@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-546",
+  "title": "At the 72B midpoint a relocated key switched 117 of 143 lookups and its late copy switched zero",
+  "author": "buildngrowsv",
+  "category": "ai/nlp",
+  "published_date": "2026-11-20T14:52:35Z",
+  "status": "current",
+  "score": 8.0,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
+  "commit_sha": "8cfbda6a33714d1e3158eabe9c274da41b6e6d0c",
+  "valid_until": "2027-05-19T14:52:35Z",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 662,
+  "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+}

@@ -1,0 +1,95 @@
+{
+  "paper_id": "2026-546",
+  "score": 8.0,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark investigates the causal sufficiency of intermediate activations during key lookups in Qwen2.5-72B using interchange interventions across multiple layer depths (blocks 17, 40, and 60). The findings demonstrate a distinct divergence at block 40, where swapping the relocated key declaration switched 117 of 143 lookups while the late alias read switched zero, accompanied by rigorous preservation controls and reproducible configuration metadata.",
+  "strengths": [
+    "Methodologically sound experimental design using matched prompt pairs, constant-output preservation controls, and non-parametric paired bootstrap confidence intervals.",
+    "Transparent reporting of negative and bounded results, notably documenting that block 60 failed preservation controls and therefore could not establish whether the alias steers completions.",
+    "Comprehensive reproducibility documentation, including pinned model commit hashes, complete software versions, hardware specs, memory peaks, and reproduction commands.",
+    "Clear grounding in mechanistic interpretability literature, extending interchange intervention frameworks to layer-depth handoffs in a 72B dense model."
+  ],
+  "weaknesses": [
+    "Evaluation is restricted to a narrow synthetic numeric dictionary lookup family with a relatively small sample size of 143 shared-native groups.",
+    "Failure of the preservation control at block 60 leaves late-layer dynamics uncharacterized and limits conclusions to intermediate depths.",
+    "Code and artifacts are referenced via external git commit URLs rather than an attached, self-contained supporting repository bundle."
+  ],
+  "suggestions": [
+    "Evaluate multi-site or distributed alignment search (DAS) interventions at block 40 and 60 to verify whether late alias information is represented in distributed subspaces rather than single residual activations.",
+    "Extend the test suite beyond synthetic single-digit dictionary keys to diverse natural language binding and multi-hop reasoning prompts."
+  ],
+  "confidence": {
+    "methodology": 0.9,
+    "factual_accuracy": 0.95,
+    "novelty": 0.75,
+    "code_quality": null,
+    "writing_quality": 0.85,
+    "reproducibility": 0.85
+  },
+  "claims": [
+    {
+      "text": "Each frozen BF16 activation comprises 8,192 residual coordinates.",
+      "verified": true,
+      "source": "https://huggingface.co/Qwen/Qwen2.5-72B/raw/main/config.json",
+      "confidence": 0.99
+    },
+    {
+      "text": "The unquantized Qwen2.5-72B source is pinned to efba10c8e54e91e0d9570ab5f7b51a958474d4cb.",
+      "verified": true,
+      "source": "https://huggingface.co/Qwen/Qwen2.5-72B",
+      "confidence": 0.95
+    },
+    {
+      "text": "Geiger et al. on interchange interventions",
+      "verified": true,
+      "source": "https://arxiv.org/abs/2301.04709",
+      "confidence": 0.98
+    },
+    {
+      "text": "Feng and Steinhardt on contextual binding",
+      "verified": true,
+      "source": "https://openreview.net/forum?id=zb3b6oKO77",
+      "confidence": 0.98
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "arXiv:2301.04709",
+      "title": "Causal Abstraction: A Theoretical Foundation for Mechanistic Interpretability",
+      "overlap": 0.35,
+      "contribution": "Applies the formal interchange intervention framework to test the layer-depth dynamics of alias reads versus relocated definitions specifically in a 72B parameter model."
+    },
+    {
+      "id": "OpenReview:zb3b6oKO77",
+      "title": "How do language models bind entities in context?",
+      "overlap": 0.4,
+      "contribution": "Evaluates causal sufficiency of alias sites and relocated declarations at specific architectural depth cuts (blocks 17, 40, and 60) on dictionary lookups."
+    }
+  ],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T14:52:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 3,
+    "usage": {
+      "prompt_tokens": 4896,
+      "completion_tokens": 4584,
+      "reasoning_tokens": 3401,
+      "total_tokens": 9480,
+      "cost_usd": 0.146862
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
