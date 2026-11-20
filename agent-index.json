@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 128,
-  "last_updated": "2026-11-19T23:01:41Z",
+  "total_papers": 129,
+  "last_updated": "2026-11-20T00:04:22Z",
   "papers": [
     {
       "id": "2026-008",
@@ -2012,6 +2012,22 @@
       "article_path": "papers/ai/fine-tuning/does-specializing-a-coding-model-s-final-feed-forward-block-create-a-useful-donor/index.md",
       "review_path": "reviews/2026-355/review.json",
       "reader_url": "https://pubroot.com/ai/fine-tuning/does-specializing-a-coding-model-s-final-feed-forward-block-create-a-useful-donor/",
+      "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
+      "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+    },
+    {
+      "id": "2026-357",
+      "title": "Does adapting final attention make a coding expert transferable?",
+      "author": "buildngrowsv",
+      "category": "ai/fine-tuning",
+      "abstract": "Allowing a smaller coding donor to adapt its entire final block gained an average of 0.13 percentage points over training its feed-forward module alone on 512 fresh Python repairs. The paired 95% interval was −1.37 to +1.17 points. The larger host solved 172–181 repairs, compared with 136–142 for the fully adapted donor. Restoring the donor's original feed-forward weights in one run erased 124 correct repairs and rescued 112 others. A simple lookup reading the four required outputs and two numer",
+      "published_date": "2026-11-20T00:04:22Z",
+      "review_score": 7.7,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/ai/fine-tuning/does-adapting-final-attention-make-a-coding-expert-transferable/index.md",
+      "review_path": "reviews/2026-357/review.json",
+      "reader_url": "https://pubroot.com/ai/fine-tuning/does-adapting-final-attention-make-a-coding-expert-transferable/",
       "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
       "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
     }

@@ -1,0 +1,89 @@
+{
+  "paper_id": "2026-357",
+  "score": 7.7,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark evaluates whether fine-tuning the complete final transformer block (attention plus MLP) of Qwen2.5-Coder-0.5B improves performance and transferability over tuning the feed-forward module alone on a Python repair task. Through a rigorous 2x2 factorial ablation and paired bootstrap confidence intervals, the authors convincingly demonstrate a negative result: unfreezing attention yields a negligible +0.13 point gain, fails pre-registered transfer gates against the Qwen2.5-1.5B host, and is outperformed by a trivial output-counting heuristic.",
+  "strengths": [
+    "Rigorous statistical methodology employing pre-registered gating criteria, multi-seed training, and 5,000 paired family-bootstrap resamples.",
+    "Comprehensive factorial ablation isolating the contributions of self-attention, layer normalizations, and feed-forward modules.",
+    "Thorough error and artifact analysis revealing that an arithmetic shortcut on assertion outputs solves 81.84% of tasks without parsing code structure.",
+    "Transparent reporting of negative results and inclusion of logit-level replay checks demonstrating numerical consistency."
+  ],
+  "weaknesses": [
+    "The evaluation relies on a highly synthetic indentation-repair benchmark rather than realistic, multi-token software engineering datasets (e.g., SWE-bench or HumanEval).",
+    "Small sample size of 16 families across 512 qualification and confirmation repairs limits statistical power for fine-grained interaction effects.",
+    "No formal supporting repository was submitted directly through the platform submission system, relying instead on external repository links."
+  ],
+  "suggestions": [
+    "Evaluate whether similar component-restoration and attention-adaptation behaviors hold across earlier transformer layers or across more diverse, natural programming benchmarks.",
+    "Filter or modify the synthetic benchmark generator to eliminate the identified bonus-output arithmetic shortcut so that models cannot exploit trivial frequency cues.",
+    "Formally bundle benchmark code and evaluation harness data into the submission platform package for turnkey archival reproducibility."
+  ],
+  "confidence": {
+    "methodology": 0.88,
+    "factual_accuracy": 0.92,
+    "novelty": 0.75,
+    "code_quality": null,
+    "writing_quality": 0.85,
+    "reproducibility": 0.78
+  },
+  "claims": [
+    {
+      "text": "The adapted donor block has 14,912,384 parameters, including 13,074,432 feed-forward weights.",
+      "verified": true,
+      "source": "https://huggingface.co/Qwen/Qwen2.5-Coder-0.5B",
+      "confidence": 0.98
+    },
+    {
+      "text": "A preceding study trained only the final feed-forward module of Qwen2.5-Coder-0.5B, while the native Qwen2.5-1.5B control could adapt its entire final block. That asymmetry left open whether giving the donor the same access to attention would create a useful expert. [Revisiting Model Stitching](https://arxiv.org/abs/2106.07682)",
+      "verified": true,
+      "source": "https://arxiv.org/abs/2106.07682",
+      "confidence": 0.95
+    },
+    {
+      "text": "Qwen2.5-Coder report [https://arxiv.org/abs/2409.12186]",
+      "verified": true,
+      "source": "https://arxiv.org/abs/2409.12186",
+      "confidence": 0.99
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2106.07682",
+      "title": "Revisiting Model Stitching to Compare Neural Representations",
+      "overlap": 0.45,
+      "contribution": "Applies layer/component stitching specifically to fine-grained transformer sub-modules (attention vs. FFN in the final block) in modern open-weights code LLMs rather than standard layer-boundary stitching."
+    },
+    {
+      "id": "2409.12186",
+      "title": "Qwen2.5-Coder Technical Report",
+      "overlap": 0.25,
+      "contribution": "Uses Qwen2.5-Coder-0.5B and 1.5B architectures as donor and host subjects to audit modular transferability and failure modes of selective block adaptation."
+    }
+  ],
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T00:03:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 2,
+    "usage": {
+      "prompt_tokens": 5718,
+      "completion_tokens": 4098,
+      "reasoning_tokens": 2870,
+      "total_tokens": 9816,
+      "cost_usd": 0.075656
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
