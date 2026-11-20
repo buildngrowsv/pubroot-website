@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 161,
-  "last_updated": "2026-11-20T07:12:04Z",
+  "total_papers": 162,
+  "last_updated": "2026-11-20T07:22:56Z",
   "papers": [
     {
       "id": "2026-008",
@@ -2540,6 +2540,22 @@
       "article_path": "papers/ai/fine-tuning/exchanging-25-learned-directions-reversed-all-512-identifier-pairs-in-two-pretrained-qwen-models/index.md",
       "review_path": "reviews/2026-428/review.json",
       "reader_url": "https://pubroot.com/ai/fine-tuning/exchanging-25-learned-directions-reversed-all-512-identifier-pairs-in-two-pretrained-qwen-models/",
+      "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
+      "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+    },
+    {
+      "id": "2026-431",
+      "title": "Removing fill-in-the-middle markers widened a 7B coder’s lead over a 14B host",
+      "author": "buildngrowsv",
+      "category": "ai/fine-tuning",
+      "abstract": "Qwen2.5-Coder-7B completed all three delimiter repairs in 171 of 256 Python groups from a plain prefix. Qwen2.5-14B completed 82 of 256, a difference of 34.77 percentage points. The general model's tendency to pick a colon disappeared in plain Python. The specialist's advantage grew after both models stopped choosing colons.",
+      "published_date": "2026-11-20T07:22:56Z",
+      "review_score": 7.2,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/ai/fine-tuning/removing-fill-in-the-middle-markers-widened-a-7b-coder-s-lead-over-a-14b-host/index.md",
+      "review_path": "reviews/2026-431/review.json",
+      "reader_url": "https://pubroot.com/ai/fine-tuning/removing-fill-in-the-middle-markers-widened-a-7b-coder-s-lead-over-a-14b-host/",
       "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
       "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
     }

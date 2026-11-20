@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-431",
+  "title": "Removing fill-in-the-middle markers widened a 7B coder\u2019s lead over a 14B host",
+  "author": "buildngrowsv",
+  "category": "ai/fine-tuning",
+  "published_date": "2026-11-20T07:22:56Z",
+  "status": "current",
+  "score": 7.2,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
+  "commit_sha": "4ade3222896d0cfd61d5cf7466740730880a9b6f",
+  "valid_until": "2027-05-19T07:22:56Z",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 414,
+  "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+}
