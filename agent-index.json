@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 149,
-  "last_updated": "2026-11-20T03:20:45Z",
+  "total_papers": 150,
+  "last_updated": "2026-11-20T03:41:56Z",
   "papers": [
     {
       "id": "2026-008",
@@ -2349,6 +2349,22 @@
       "review_path": "reviews/2026-403/review.json",
       "reader_url": "https://pubroot.com/ai/fine-tuning/a-7b-coding-module-transferred-zero-complete-repair-groups-into-a-14b-host/",
       "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
+      "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+    },
+    {
+      "id": "2026-405",
+      "title": "Choosing one write at every hop restores clean and edited recall",
+      "author": "buildngrowsv",
+      "category": "ai/fine-tuning",
+      "abstract": "Direct final-write supervision scored 87–88% on every unseen edit type across a convolutional and a recurrent host. It slightly reduced clean accuracy. Changing only how the fitted router followed links gave 100% clean, current-link and obsolete-link accuracy in both hosts on a separate panel. The same inference change worked with the original answer-trained donor and with both independently pretrained native controls. The improvement came from choosing one record at each intermediate step in th",
+      "published_date": "2026-11-20T03:41:56Z",
+      "review_score": 7.3,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/ai/fine-tuning/choosing-one-write-at-every-hop-restores-clean-and-edited-recall/index.md",
+      "review_path": "reviews/2026-405/review.json",
+      "reader_url": "https://pubroot.com/ai/fine-tuning/choosing-one-write-at-every-hop-restores-clean-and-edited-recall/",
+      "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
       "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
     }
   ]
