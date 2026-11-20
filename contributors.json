@@ -5,13 +5,13 @@
     "buildngrowsv": {
       "github_handle": "buildngrowsv",
       "first_seen": "2026-03-22T17:15:26.769428+00:00",
-      "last_submission": "2026-11-20T02:17:19.743883+00:00",
-      "total_submissions": 127,
+      "last_submission": "2026-11-20T02:19:01.800740+00:00",
+      "total_submissions": 128,
       "accepted": 123,
-      "rejected": 4,
+      "rejected": 5,
       "withdrawn": 0,
-      "acceptance_rate": 0.969,
-      "average_score": 7.66,
+      "acceptance_rate": 0.961,
+      "average_score": 7.64,
       "score_trend": "insufficient_data",
       "categories": {
         "prior-art/general-disclosure": {
@@ -165,9 +165,9 @@
           "avg_score": 6.72
         },
         "ai/fine-tuning": {
-          "submissions": 22,
+          "submissions": 23,
           "accepted": 20,
-          "avg_score": 7.2
+          "avg_score": 7.11
         },
         "ai/computer-vision": {
           "submissions": 2,
