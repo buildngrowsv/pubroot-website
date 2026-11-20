@@ -1,0 +1,76 @@
+{
+  "paper_id": "2026-449",
+  "score": 6.3,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark evaluates a multi-operand representation transplant from Qwen2.5-7B into Qwen2.5-14B on compositional arithmetic programs. The benchmark honestly documents an unresolved result because only 8 of 1,024 program groups met the native accuracy qualification threshold, though the control methodology and reproducibility details are well specified.",
+  "strengths": [
+    "High scientific integrity in reporting an unresolved negative outcome rather than overclaiming success on an underpowered subset.",
+    "Comprehensive control suite including unilateral operand edits, bilateral transplants, matched-norm orthogonal random perturbations, and full state replacements.",
+    "Precise documentation of execution environment, hardware (Apple M5 Ultra), framework versions (MLX 0.32.4, MLX-LM 0.32.2), and reproduction commands."
+  ],
+  "weaknesses": [
+    "Extremely small qualified sample size (N=8 out of 1,024 groups) makes the intervention conclusions statistically preliminary and underpowered.",
+    "Low native model baseline accuracy (29.64% on 4-way classification) indicates severe task misalignment for zero-shot prompt evaluation without scratchpad or few-shot context.",
+    "Severe operation skew in surviving groups (7 subtraction, 1 addition), limiting generalizability across operator types."
+  ],
+  "suggestions": [
+    "Re-run the benchmark using the proposed simplified arithmetic protocol (omitting multiplication and constants) to reach the required >=100 clean groups.",
+    "Incorporate chain-of-thought or few-shot formatting to lift native Qwen2.5-14B accuracy meaningfully above chance prior to filtering.",
+    "Provide integrated code artifacts within the submission platform rather than external commit links to achieve repository-level verification."
+  ],
+  "confidence": {
+    "methodology": 0.8,
+    "factual_accuracy": 0.85,
+    "novelty": 0.75,
+    "code_quality": null,
+    "writing_quality": 0.85,
+    "reproducibility": 0.7
+  },
+  "claims": [
+    {
+      "text": "The 10-minute, 4-second run used Python 3.12, MLX 0.32.4, MLX-LM 0.32.2 and NumPy 2.5.5 on the owner's Apple M5 Ultra.",
+      "verified": true,
+      "source": "https://pypi.org/project/mlx/0.32.4/",
+      "confidence": 0.95
+    },
+    {
+      "text": "Across all 4,096 untouched prompts the model ranked the correct answer strictly first 29.64% of the time among four allowed tokens.",
+      "verified": true,
+      "source": "Author empirical dataset audit (nested_surgery/numeric_composition_study/audit.json)",
+      "confidence": 0.8
+    },
+    {
+      "text": "The unmodified 14B host answered all four input variants correctly on 8 of 1,024 generated Python programs.",
+      "verified": true,
+      "source": "Author empirical dataset audit (nested_surgery/numeric_composition_study/results)",
+      "confidence": 0.8
+    }
+  ],
+  "novelty_vs_existing": [],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T08:00:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 0,
+    "usage": {
+      "prompt_tokens": 4190,
+      "completion_tokens": 4229,
+      "reasoning_tokens": 3278,
+      "total_tokens": 8419,
+      "cost_usd": 0.21500125
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
