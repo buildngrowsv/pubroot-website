@@ -1,0 +1,77 @@
+{
+  "paper_id": "2026-510",
+  "score": 7.4,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark evaluates whether cross-model representation transplantation from Qwen2.5-Coder-7B can steer dictionary lookup behavior in a frozen Qwen2.5-72B model. The study employs rigorous experimental controls\u2014including mirrored table contexts, constant-value answer preservation checks, equal-norm orthogonal baselines, and full-state exchanges\u2014demonstrating that narrow 7-coordinate edits redirect 50.3% (92/183) of native-qualified groups, closely matching full-state swap performance (52.5%) but falling short of the preregistered 80% target. The work is statistically disciplined, honest regarding negative results, and precisely documented.",
+  "strengths": [
+    "Rigorous experimental controls, including equal-norm orthogonal vectors to establish directional specificity and constant-table contexts to verify answer preservation.",
+    "Counterfactual mirrored testing ensures the intervention actively redirects execution logic rather than introducing generic noise or output drift.",
+    "Exemplary reporting of reproducibility parameters, including exact runtime (460 s), peak memory (146.7 GB), software versions (MLX 0.32.4, NumPy 2.5.5), and OS build (macOS 27.2 / 26B118).",
+    "High scientific integrity in reporting failure against the preregistered 80% switching requirement and transparently acknowledging mechanistic limits."
+  ],
+  "weaknesses": [
+    "No official repository submission was attached to the metadata (evaluated under text_only badge), though URLs to archived artifacts are included in the prose.",
+    "The intervention failed to achieve the preregistered 80% reliability gate (redirecting only 92/183 groups), leaving roughly half the cases unaffected without localizing where the original computation recovers.",
+    "The evaluation task is confined to synthetic two-entry Python dictionary lookups with single-digit keys, limiting claims regarding general code execution."
+  ],
+  "suggestions": [
+    "Analyze attention patterns and later transformer layers in the failed ~49.7% cases to identify where and why the original answer recovers despite the injected state.",
+    "Expand evaluation to multi-key dictionaries (e.g., 5 to 10 entries) and non-numeric string keys to evaluate the boundary conditions of the linear interface.",
+    "Provide a dedicated, unified code repository for automated one-click reproduction of the full benchmark pipeline."
+  ],
+  "confidence": {
+    "methodology": 0.88,
+    "factual_accuracy": 0.92,
+    "novelty": 0.85,
+    "code_quality": null,
+    "writing_quality": 0.86,
+    "reproducibility": 0.82
+  },
+  "claims": [
+    {
+      "text": "Here h is the 8,192-value recipient state, c is the seven-coordinate donor target",
+      "verified": true,
+      "source": "https://huggingface.co/Qwen/Qwen2.5-72B-Instruct",
+      "confidence": 0.98
+    },
+    {
+      "text": "The run used macOS 27.2 (26B118)",
+      "verified": true,
+      "source": "https://betaprofile.dev/os/macos-27-2-rc-26b118/",
+      "confidence": 0.95
+    },
+    {
+      "text": "The joint donor advantage over orthogonal was 50.27 points (95% paired interval 43.17 to 57.38). The 80% switching gate required 147 of the 183 native-qualified groups.",
+      "verified": true,
+      "source": "Calculated directly: 92/183 - 0/183 = 50.27%; ceil(0.80 * 183) = 147.",
+      "confidence": 0.99
+    }
+  ],
+  "novelty_vs_existing": [],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20T11:10:00Z",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T11:10:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 0,
+    "usage": {
+      "prompt_tokens": 4852,
+      "completion_tokens": 4328,
+      "reasoning_tokens": 3203,
+      "total_tokens": 9180,
+      "cost_usd": 0.185241225
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
