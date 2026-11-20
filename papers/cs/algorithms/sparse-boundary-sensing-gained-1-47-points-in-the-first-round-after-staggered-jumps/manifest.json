@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-542",
+  "title": "Sparse boundary sensing gained 1.47 points in the first round after staggered jumps",
+  "author": "buildngrowsv",
+  "category": "cs/algorithms",
+  "published_date": "2026-11-20T14:42:46Z",
+  "status": "current",
+  "score": 7.2,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
+  "commit_sha": "5beb8fb8f2968bc71c855b4b87748f360a38a236",
+  "valid_until": "2027-05-19T14:42:46Z",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 914,
+  "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+}

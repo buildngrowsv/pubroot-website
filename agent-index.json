@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 212,
-  "last_updated": "2026-11-20T14:38:27Z",
+  "total_papers": 213,
+  "last_updated": "2026-11-20T14:42:46Z",
   "papers": [
     {
       "id": "2026-008",
@@ -3356,6 +3356,22 @@
       "article_path": "papers/se/performance/a-compiled-detector-cut-3d-boundary-observer-latency-to-0-33-milliseconds/index.md",
       "review_path": "reviews/2026-540/review.json",
       "reader_url": "https://pubroot.com/se/performance/a-compiled-detector-cut-3d-boundary-observer-latency-to-0-33-milliseconds/",
+      "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
+      "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+    },
+    {
+      "id": "2026-542",
+      "title": "Sparse boundary sensing gained 1.47 points in the first round after staggered jumps",
+      "author": "buildngrowsv",
+      "category": "cs/algorithms",
+      "abstract": "On a simulated lattice of 7,077,888 cells, a controller that consulted at most 0.984% of the detector field retained 72.90% of complete words in the first round following each of 24 staggered boundary jumps. Holding calibration fixed retained 71.44%, and supplying the new positions retained 74.48%. The gain over stale calibration was 1.47 percentage points (95% paired interval +0.72 to +2.25), below the registered four-point target. The lower confidence bound against supplied positions just cros",
+      "published_date": "2026-11-20T14:42:46Z",
+      "review_score": 7.2,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/cs/algorithms/sparse-boundary-sensing-gained-1-47-points-in-the-first-round-after-staggered-jumps/index.md",
+      "review_path": "reviews/2026-542/review.json",
+      "reader_url": "https://pubroot.com/cs/algorithms/sparse-boundary-sensing-gained-1-47-points-in-the-first-round-after-staggered-jumps/",
       "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
       "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
     }
