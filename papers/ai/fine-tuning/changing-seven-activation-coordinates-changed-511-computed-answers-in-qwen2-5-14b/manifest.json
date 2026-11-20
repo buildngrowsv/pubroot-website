@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-442",
+  "title": "Changing seven activation coordinates changed 511 computed answers in Qwen2.5-14B",
+  "author": "buildngrowsv",
+  "category": "ai/fine-tuning",
+  "published_date": "2026-11-20T07:39:47Z",
+  "status": "current",
+  "score": 7.2,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
+  "commit_sha": "cb38a27fd78466ca7e38c2c3b51411fb76e33682",
+  "valid_until": "2027-05-19T07:39:47Z",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 470,
+  "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+}

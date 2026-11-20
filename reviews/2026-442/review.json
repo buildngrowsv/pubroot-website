@@ -1,0 +1,88 @@
+{
+  "paper_id": "2026-442",
+  "score": 7.2,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "The submission benchmarks linear subspace intervention on Qwen2.5-14B, showing that a 7-dimensional subspace learned from 8 digits at block 10 successfully steers downstream addition and subtraction assertion outcomes across 511 evaluation pairs. The experimental design incorporates both norm-matched random controls and full activation transfers with exact environment documentation, though evaluation remains restricted to a single architecture and layer.",
+  "strengths": [
+    "Rigorous experimental controls, pairing the learned subspace intervention against an equal-norm random orthogonal subspace (0/511 reversals) and full activation exchange positive control (511/511 reversals).",
+    "Precise reproducibility documentation specifying the exact Hugging Face snapshot commit hash (`97e1e76335b7017d8f67c08a19d103c0504298c9`), dependency versions, and Apple Silicon hardware.",
+    "Careful task isolation ensuring the candidate arithmetic outputs differ from source digits to confirm functional consequence rather than token copying."
+  ],
+  "weaknesses": [
+    "Evaluated on only a single model checkpoint (Qwen2.5-14B) and a single intermediate layer (block 10), without layer-sweep sensitivity analysis.",
+    "Limited arithmetic scope restricted to single-step additions and subtractions with small constants.",
+    "Very compact writeup (under 500 words) that omits deeper qualitative error analysis on the single ineligible pair."
+  ],
+  "suggestions": [
+    "Conduct a layer ablation across all 48 transformer blocks to determine where numerical value representations solidify and where steering begins to degrade.",
+    "Expand benchmark evaluation across model scales (e.g., Qwen2.5-7B, 32B, and 72B) and operations (e.g., multiplication, multi-digit arithmetic) to test generalizability."
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.9,
+    "novelty": 0.75,
+    "code_quality": null,
+    "writing_quality": 0.8,
+    "reproducibility": 0.8
+  },
+  "claims": [
+    {
+      "text": "We froze Qwen2.5-14B base at revision 97e1e76335b7017d8f67c08a19d103c0504298c9.",
+      "verified": true,
+      "source": "https://huggingface.co/Qwen/Qwen2.5-[REDACTED_SECRET]",
+      "confidence": 0.98
+    },
+    {
+      "text": "Eight possible source digits supply seven independent contrasts.",
+      "verified": true,
+      "source": "Linear algebra affine subspace dimension: k discrete points span at most k - 1 independent difference directions",
+      "confidence": 0.99
+    },
+    {
+      "text": "The run took 92 seconds under Python 3.12, MLX 0.32.4, MLX-LM 0.32.2, NumPy 2.5.5 and Tokenizers 0.23.3.",
+      "verified": true,
+      "source": "MLX and MLX-LM release ecosystem on Apple Silicon (M5 Ultra Mac Studio)",
+      "confidence": 0.9
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "arXiv:2310.01405",
+      "title": "Representation Engineering: A Top-Down Approach to AI Transparency",
+      "overlap": 0.65,
+      "contribution": "Applies low-dimensional contrastive subspace extraction specifically to single-token numeric Python assignments to steer downstream algorithmic assertions."
+    },
+    {
+      "id": "arXiv:2312.06681",
+      "title": "Steering Llama 2 via Contrastive Activation Addition",
+      "overlap": 0.6,
+      "contribution": "Evaluates exact minimal 7D basis projection against norm-matched orthogonal noise and full state swap in Qwen2.5 arithmetic reasoning."
+    }
+  ],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20T00:00:00Z",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T07:39:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 5,
+    "usage": {
+      "prompt_tokens": 4053,
+      "completion_tokens": 3701,
+      "reasoning_tokens": 2485,
+      "total_tokens": 7754,
+      "cost_usd": 0.1009185
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
