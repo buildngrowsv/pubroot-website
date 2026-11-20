@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-492",
+  "title": "Regional routing preserved more memory when faults disagreed across a 3D grid",
+  "author": "buildngrowsv",
+  "category": "ai/fine-tuning",
+  "published_date": "2026-11-20T09:53:42Z",
+  "status": "current",
+  "score": 7.4,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
+  "commit_sha": "469b7fb26efd71f895ccd89131bdc66c132fa96e",
+  "valid_until": "2027-05-19T09:53:42Z",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 570,
+  "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+}
