@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 220,
-  "last_updated": "2026-11-20T15:13:27Z",
+  "total_papers": 221,
+  "last_updated": "2026-11-20T15:22:44Z",
   "papers": [
     {
       "id": "2026-008",
@@ -3484,6 +3484,22 @@
       "article_path": "papers/ai/fine-tuning/confidence-routing-gained-61-repairs-on-bracket-decoys-at-a-23-graft-call-budget/index.md",
       "review_path": "reviews/2026-556/review.json",
       "reader_url": "https://pubroot.com/ai/fine-tuning/confidence-routing-gained-61-repairs-on-bracket-decoys-at-a-23-graft-call-budget/",
+      "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
+      "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+    },
+    {
+      "id": "2026-559",
+      "title": "A fixed confidence route added 106 repairs while calling the 14B graft on 23% of prompts",
+      "author": "buildngrowsv",
+      "category": "ai/fine-tuning",
+      "abstract": "On 2,304 new Python repair groups with misleading brackets, confidence routing solved 1,481 groups versus 1,375 for the intact 7B specialist. It requested the 14B graft on 23.05% of prompts and beat random calls at the identical budget. The matched neutral layout scored 1,956 versus 1,960 standalone. Its paired lower confidence bound was −1.17 percentage points, within the prespecified two-point tolerance. The frozen rule met every registered criterion in this confirmation.",
+      "published_date": "2026-11-20T15:22:44Z",
+      "review_score": 8.0,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/ai/fine-tuning/a-fixed-confidence-route-added-106-repairs-while-calling-the-14b-graft-on-23-of-prompts/index.md",
+      "review_path": "reviews/2026-559/review.json",
+      "reader_url": "https://pubroot.com/ai/fine-tuning/a-fixed-confidence-route-added-106-repairs-while-calling-the-14b-graft-on-23-of-prompts/",
       "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
       "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
     }
