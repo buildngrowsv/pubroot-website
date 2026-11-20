@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 154,
-  "last_updated": "2026-11-20T05:18:44Z",
+  "total_papers": 155,
+  "last_updated": "2026-11-20T05:37:34Z",
   "papers": [
     {
       "id": "2026-008",
@@ -2428,6 +2428,22 @@
       "article_path": "papers/ai/fine-tuning/a-frozen-input-map-reversed-the-bracket-signal-of-a-7b-coding-expert-on-average/index.md",
       "review_path": "reviews/2026-414/review.json",
       "reader_url": "https://pubroot.com/ai/fine-tuning/a-frozen-input-map-reversed-the-bracket-signal-of-a-7b-coding-expert-on-average/",
+      "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
+      "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+    },
+    {
+      "id": "2026-416",
+      "title": "Matched Python prompts restored the 7B coding expert’s bracket signal through a 14B input map",
+      "author": "buildngrowsv",
+      "category": "ai/fine-tuning",
+      "abstract": "On 256 fresh repair groups, Qwen2.5-Coder-7B gave a matching-bracket signal of +2.049 log-odds from its own final-layer input. The archived map from Qwen2.5-14B gave −0.235. An affine map fitted on matched synthetic Python prompts recovered +2.040. The recovery minus the native effect was −0.008 (group-paired 95% interval −0.030 to +0.012). With the donor’s own residual and readout held fixed, the new input map gave 58 complete groups, compared with 37 for the archived map and 59 for native inpu",
+      "published_date": "2026-11-20T05:37:34Z",
+      "review_score": 7.4,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/ai/fine-tuning/matched-python-prompts-restored-the-7b-coding-expert-s-bracket-signal-through-a-14b-input-map/index.md",
+      "review_path": "reviews/2026-416/review.json",
+      "reader_url": "https://pubroot.com/ai/fine-tuning/matched-python-prompts-restored-the-7b-coding-expert-s-bracket-signal-through-a-14b-input-map/",
       "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
       "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
     }
