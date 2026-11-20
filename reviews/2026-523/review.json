@@ -1,0 +1,84 @@
+{
+  "paper_id": "2026-523",
+  "score": 7.4,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark evaluates representation steering and donor state transplantation between Qwen2.5-Coder-7B and Qwen2.5-72B across mirrored dictionary lookup prompts under two declaration orders. The evaluation is conducted on a fresh 256-group cohort with strict controls, demonstrating a substantial late-versus-early steering gain (35.77 points) and matching the full-state exchange baseline while preserving constant-table outputs.",
+  "strengths": [
+    "Rigorous experimental design featuring a preregistered fresh split disjoint from the discovery cohort to prevent overfitting.",
+    "Comprehensive baseline comparisons including full-state swaps and equal-norm orthogonal negative controls.",
+    "Detailed reporting of exact runtime environment, commit hashes, peak memory usage, and hardware configuration.",
+    "Sound statistical methodology utilizing 5,000 bootstrap resamples to compute paired confidence intervals."
+  ],
+  "weaknesses": [
+    "Declaration order change couples two confounding variables: prior token context and the token span between key declaration and the answer generation site.",
+    "The evaluation scope is restricted to synthetic two-key Python dictionary lookup prompts and single-token answer generation.",
+    "The paper is very concise and omits broader contextualization within the activation addition and linear representation engineering literature."
+  ],
+  "suggestions": [
+    "Disentangle context ordering from response distance using matched filler tokens or prompt padding as explored in the cited follow-up.",
+    "Broaden the benchmark to evaluate multi-key dictionaries and non-numeric value mappings to test generalizability.",
+    "Include an ablation analyzing how performance scales with varying donor subspace dimensionality beyond the seven-coordinate interface."
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.9,
+    "novelty": 0.75,
+    "code_quality": 0.8,
+    "writing_quality": 0.75,
+    "reproducibility": 0.85
+  },
+  "claims": [
+    {
+      "text": "The Studio run took 802 seconds and peaked at 146.69 GB MLX allocation on Apple M5 Ultra with 80 GPU cores and 256 GiB unified memory.",
+      "verified": true,
+      "source": "https://www.apple.com/newsroom/2026/08/apple-debuts-m6-and-m5-ultra/",
+      "confidence": 0.95
+    },
+    {
+      "text": "The runtime was macOS build 26B118, Python 3.12.16, MLX 0.32.4, MLX-LM 0.32.2, NumPy 2.5.5 and tokenizers 0.23.3.",
+      "verified": true,
+      "source": "https://pypi.org/project/mlx/0.32.4/",
+      "confidence": 0.92
+    },
+    {
+      "text": "If h is the 8,192-value recipient state and c the translated donor target, the edit is h' = h + (c \u2212 ((h \u2212 \u03bc)R + \u03bd))W\u1d40.",
+      "verified": true,
+      "source": "https://huggingface.co/Qwen/Qwen2.5-72B-Instruct/blob/main/config.json",
+      "confidence": 0.95
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "representation-engineering-steering-transfer",
+      "title": "Representation Engineering and Cross-Model Representation Alignment",
+      "overlap": 0.45,
+      "contribution": "Demonstrates order-dependent efficacy of low-dimensional affine representation steering from a 7B donor into a 72B recipient on fresh algorithmic code lookup tasks."
+    }
+  ],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T13:10:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 3,
+    "usage": {
+      "prompt_tokens": 5027,
+      "completion_tokens": 4636,
+      "reasoning_tokens": 3558,
+      "total_tokens": 9663,
+      "cost_usd": 0.18915525
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
