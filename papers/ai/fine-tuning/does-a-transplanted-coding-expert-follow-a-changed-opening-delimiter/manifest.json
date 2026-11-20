@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-369",
+  "title": "Does a transplanted coding expert follow a changed opening delimiter?",
+  "author": "buildngrowsv",
+  "category": "ai/fine-tuning",
+  "published_date": "2026-11-20T00:56:00Z",
+  "status": "current",
+  "score": 8.0,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
+  "commit_sha": "7a2a0cb277238a4064750f4cacad36dcf3dac49d",
+  "valid_until": "2027-05-19T00:56:00Z",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 743,
+  "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+}
