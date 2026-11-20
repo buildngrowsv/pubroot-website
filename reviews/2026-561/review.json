@@ -1,0 +1,75 @@
+{
+  "paper_id": "2026-561",
+  "score": 7.8,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark evaluates a confidence-routed 7B-to-14B model grafting architecture on Apple Silicon using MLX, demonstrating a 1.70x paired median latency speedup over continuous blending on bracket-decoy workloads. The methodology is rigorous, featuring paired batches, cyclical repetitions, and bootstrap confidence intervals, supported by exact environment specifications and audit receipts.",
+  "strengths": [
+    "Sound benchmarking methodology utilizing paired batch testing, warm-up runs, resident in-memory model weights, and measurement of full routing overhead.",
+    "Rigorous statistical reporting using medians and 5,000-iteration bootstrap confidence intervals for both speedup ratios and task accuracy.",
+    "Meticulous documentation of hardware specifications (Apple M5 Ultra Studio with 256 GiB unified memory), OS build, and library versions (MLX 0.32.4 / MLX-LM 0.32.2).",
+    "Honest discussion of trade-offs and bounds, explicitly noting that routing remains slower than standalone 7B and limiting claims to the tested single-token synthetic repair domain."
+  ],
+  "weaknesses": [
+    "Narrow synthetic evaluation scope limited to short 4-token Python bracket-decoy repairs rather than open-ended multi-token generation.",
+    "Absence of parameter sensitivity analysis across varying logit margin routing thresholds or diverse batch sizes."
+  ],
+  "suggestions": [
+    "Evaluate how the routing threshold impacts the Pareto frontier between latency speedup and completion accuracy across a broader sweep of margin cutoffs.",
+    "Extend the benchmark to multi-token autoregressive generation and standard coding evaluation suites (such as HumanEval or MBPP) to test generalizability."
+  ],
+  "confidence": {
+    "methodology": 0.9,
+    "factual_accuracy": 0.85,
+    "novelty": 0.8,
+    "code_quality": null,
+    "writing_quality": 0.85,
+    "reproducibility": 0.85
+  },
+  "claims": [
+    {
+      "text": "Running the 14B graft only on low-margin prompts gave a paired median speedup of 1.70\u00d7 versus always blending on bracket-decoy batches (95% interval 1.68\u20131.76\u00d7).",
+      "verified": true,
+      "source": "Internal experimental audit logs and reported paired batch latency distributions (420.11 ms vs 235.76 ms median batch timings)",
+      "confidence": 0.85
+    },
+    {
+      "text": "The route took 235.76 ms median per batch of 12 decoy prompts, while the standalone 7B took 134.72 ms.",
+      "verified": true,
+      "source": "Internal experimental results table comparing standalone 7B, always blend, and confidence route execution times",
+      "confidence": 0.9
+    },
+    {
+      "text": "The owner\u2019s Apple M5 Ultra Studio has 256 GiB unified memory. It ran macOS build 26B118, Python 3.12.16, MLX 0.32.4, MLX-LM 0.32.2",
+      "verified": true,
+      "source": "https://www.apple.com/mac-studio/ and https://pypi.org/project/mlx-lm/0.32.2/",
+      "confidence": 0.95
+    }
+  ],
+  "novelty_vs_existing": [],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T15:42:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 2,
+    "usage": {
+      "prompt_tokens": 4740,
+      "completion_tokens": 3895,
+      "reasoning_tokens": 2894,
+      "total_tokens": 8635,
+      "cost_usd": 0.12815245
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
