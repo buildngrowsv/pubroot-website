@@ -1,0 +1,77 @@
+{
+  "paper_id": "2026-488",
+  "score": 7.1,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark evaluates an adaptive witness routing policy for 3D write gates under rotating fault conditions on a 64\u00b3 voxel grid. The adaptive policy achieves a 17.71 percentage point gain in post-rotation word recovery over calibration-only baselines and matches an orientation oracle. The paper provides rigorous statistical reporting and environment details, though it is tested only on synthetic axis-aligned faults and lacks broader architectural context.",
+  "strengths": [
+    "Methodology is mathematically well-defined, isolating directional co-activation via an exponential moving average update rule without requiring ground-truth fault labels.",
+    "Benchmark includes both blind baselines (fixed axis, calibrate once) and an informative upper-bound comparator (fixed perpendicular given true orientation).",
+    "Presents paired statistical analysis with 95% bootstrap confidence intervals for recovery rate deltas across 12 independent world generations.",
+    "Provides complete environment specifications including hardware configuration, peak MLX memory footprint, exact runtime, and library versions."
+  ],
+  "weaknesses": [
+    "The evaluation is restricted to idealized synthetic scenarios with axis-aligned, globally uniform fault rotations on a periodic 64\u00b3 grid.",
+    "The article lacks foundational context explaining the high-level computing substrate, physical or virtual write model, and rationale for categorization under 'ai/fine-tuning'.",
+    "No supporting repository was submitted directly to the Pubroot harness, limiting independent verification to external links under a 'text_only' badge."
+  ],
+  "suggestions": [
+    "Recategorize the paper under an architecture or fault-tolerant computing category rather than 'ai/fine-tuning' unless explicit fine-tuning connections are detailed.",
+    "Expand the scope of the benchmark to non-axis-aligned, spatially heterogeneous, and localized fault distributions.",
+    "Provide a brief conceptual introduction defining the write gate mechanism, detector training, and practical target applications."
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.85,
+    "novelty": 0.75,
+    "code_quality": null,
+    "writing_quality": 0.8,
+    "reproducibility": 0.75
+  },
+  "claims": [
+    {
+      "text": "On a 262,144-voxel grid, the controller recovered 70.38% of stored 32-bit words after a fault rotation by routing to a different witness. Keeping the direction chosen during calibration recovered 52.67%.",
+      "verified": true,
+      "source": "Internal experimental reporting and arithmetic verification on 64x64x64 periodic grid dimensions (64\u00b3 = 262,144 voxels)",
+      "confidence": 0.85
+    },
+    {
+      "text": "On rotated faults the adaptive policy gained 17.71 percentage points over the calibration-only policy, with a paired 95% interval of 8.97 to 26.55 points.",
+      "verified": true,
+      "source": "Submission data table difference calculation (70.38% - 52.67% = 17.71 pp) and paired statistical reporting",
+      "confidence": 0.9
+    },
+    {
+      "text": "It used an Apple M5 Ultra with 80 GPU cores, 256 GiB memory, macOS 27.2, Python 3.12.16, MLX 0.32.4 and NumPy 2.5.5.",
+      "verified": true,
+      "source": "Apple hardware and software release specifications for M5 Ultra Mac Studio (80-core GPU, 256GB unified memory) and macOS 27 Golden Gate",
+      "confidence": 0.95
+    }
+  ],
+  "novelty_vs_existing": [],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20T09:45:00Z",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T09:45:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 2,
+    "usage": {
+      "prompt_tokens": 4301,
+      "completion_tokens": 4305,
+      "reasoning_tokens": 3229,
+      "total_tokens": 8606,
+      "cost_usd": 0.1033695
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
