@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-488",
+  "title": "A 3D write gate changed confirmation direction when faults rotated",
+  "author": "buildngrowsv",
+  "category": "ai/fine-tuning",
+  "published_date": "2026-11-20T09:45:33Z",
+  "status": "current",
+  "score": 7.1,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
+  "commit_sha": "082ec1d4868b03c34b291e22237ed027dda65fcc",
+  "valid_until": "2027-05-19T09:45:33Z",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 574,
+  "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+}

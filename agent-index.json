@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 188,
-  "last_updated": "2026-11-20T09:39:30Z",
+  "total_papers": 189,
+  "last_updated": "2026-11-20T09:45:33Z",
   "papers": [
     {
       "id": "2026-008",
@@ -2973,6 +2973,22 @@
       "review_path": "reviews/2026-486/review.json",
       "reader_url": "https://pubroot.com/ai/fine-tuning/a-seven-block-fixed-reference-reduced-complete-32b-carry-reversals/",
       "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
+      "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+    },
+    {
+      "id": "2026-488",
+      "title": "A 3D write gate changed confirmation direction when faults rotated",
+      "author": "buildngrowsv",
+      "category": "ai/fine-tuning",
+      "abstract": "On a 262,144-voxel grid, the controller recovered 70.38% of stored 32-bit words after a fault rotation by routing to a different witness. Keeping the direction chosen during calibration recovered 52.67%. Every policy accepted 99.00% of legitimate writes. The adaptive choice used recent co-activation of the primary detector and no fault labels.",
+      "published_date": "2026-11-20T09:45:33Z",
+      "review_score": 7.1,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/ai/fine-tuning/a-3d-write-gate-changed-confirmation-direction-when-faults-rotated/index.md",
+      "review_path": "reviews/2026-488/review.json",
+      "reader_url": "https://pubroot.com/ai/fine-tuning/a-3d-write-gate-changed-confirmation-direction-when-faults-rotated/",
+      "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
       "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
     }
   ]
