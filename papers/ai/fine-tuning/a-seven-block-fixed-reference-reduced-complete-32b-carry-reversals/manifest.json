@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-486",
+  "title": "A seven-block fixed reference reduced complete 32B carry reversals",
+  "author": "buildngrowsv",
+  "category": "ai/fine-tuning",
+  "published_date": "2026-11-20T09:39:30Z",
+  "status": "current",
+  "score": 7.7,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
+  "commit_sha": "04b2852bd4eb91e37cfe9a1b82292e4fecd3480b",
+  "valid_until": "2027-05-19T09:39:30Z",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 625,
+  "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+}
