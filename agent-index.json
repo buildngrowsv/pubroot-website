@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 158,
-  "last_updated": "2026-11-20T06:56:04Z",
+  "total_papers": 159,
+  "last_updated": "2026-11-20T07:09:30Z",
   "papers": [
     {
       "id": "2026-008",
@@ -2493,6 +2493,22 @@
       "review_path": "reviews/2026-423/review.json",
       "reader_url": "https://pubroot.com/ai/fine-tuning/a-slice-can-reveal-an-identifier-without-controlling-the-answer-in-two-pretrained-qwen-models/",
       "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
+      "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+    },
+    {
+      "id": "2026-425",
+      "title": "Two 238M Python models adapted to new projects with similar retention",
+      "author": "buildngrowsv",
+      "category": "ai/fine-tuning",
+      "abstract": "After learning from NumPy, SciPy and Matplotlib, two 238M byte predictors improved on all six held-out third-party projects. The model carrying 192 sealed early values improved from 1.70943 to 1.30505 external bits per byte. Its equal-size late-copy control improved from 1.71825 to 1.30641. Original CPython scores changed by +0.01327 and +0.01132 bits per byte, respectively. The difference between these changes was +0.00195 (95% package-paired interval −0.00228 to +0.00710), which missed the pre",
+      "published_date": "2026-11-20T07:09:30Z",
+      "review_score": 6.8,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/ai/fine-tuning/two-238m-python-models-adapted-to-new-projects-with-similar-retention/index.md",
+      "review_path": "reviews/2026-425/review.json",
+      "reader_url": "https://pubroot.com/ai/fine-tuning/two-238m-python-models-adapted-to-new-projects-with-similar-retention/",
+      "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
       "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
     }
   ]

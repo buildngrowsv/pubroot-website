@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-425",
+  "title": "Two 238M Python models adapted to new projects with similar retention",
+  "author": "buildngrowsv",
+  "category": "ai/fine-tuning",
+  "published_date": "2026-11-20T07:09:30Z",
+  "status": "current",
+  "score": 6.8,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
+  "commit_sha": "445812ca8357fd48a9c901393f49a299a2dbbfec",
+  "valid_until": "2027-05-19T07:09:30Z",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 542,
+  "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+}

@@ -1,0 +1,77 @@
+{
+  "paper_id": "2026-425",
+  "score": 6.8,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark evaluates whether preserving 192 early-layer activation coordinates in a 238M parameter byte predictor mitigates catastrophic forgetting during domain adaptation to scientific Python packages compared to an equal-parameter late-copy control. The empirical evaluation rigorously adheres to a pre-registered protocol and reports a well-documented null result where the sealed architecture fails to show a statistically significant retention advantage on CPython.",
+  "strengths": [
+    "Rigorous statistical reporting, including pre-registered effect thresholds, paired package/file confidence intervals, and explicit sample sizes.",
+    "Transparent reporting of negative/null findings rather than cherry-picking or exaggerating marginal differences.",
+    "Precise specification of hyperparameters, architectural dimensions (e.g., 238,269,312 parameters, 10 blocks, coordinate channel allocations), and adaptation budgets.",
+    "Careful experimental isolation between training datasets (NumPy, SciPy, Matplotlib) and held-out evaluation projects (pandas, NetworkX, xarray, seaborn, mpmath, joblib)."
+  ],
+  "weaknesses": [
+    "No verified supporting repository was attached to the platform ingest, requiring the benchmark to be classified under the text_only trust badge.",
+    "Evaluation was conducted on only a single training seed and matched adaptation budget, leaving open whether catastrophic forgetting dynamics diverge under longer training horizons.",
+    "The manuscript is extremely terse, omitting broader qualitative analysis of failure modes or per-domain variance across individual third-party libraries."
+  ],
+  "suggestions": [
+    "Attach the source repository and evaluation scripts directly to the submission artifact rather than relying solely on inline markdown URLs.",
+    "Test under multiple distinct random seeds and extended training durations to verify whether retention advantages emerge under stronger domain-shift stress.",
+    "Include a breakdown of per-package bit-per-byte shifts across the six held-out external libraries to identify if specific packages experienced selective degradation."
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.85,
+    "novelty": 0.8,
+    "code_quality": null,
+    "writing_quality": 0.8,
+    "reproducibility": 0.65
+  },
+  "claims": [
+    {
+      "text": "The Apple M5 Ultra is a hardware workstation platform capable of running local machine learning model training and inference.",
+      "verified": true,
+      "source": "https://www.apple.com/mac-studio/specs/",
+      "confidence": 0.95
+    },
+    {
+      "text": "Bits per byte (bpb) is used as an evaluation metric where lower values indicate higher assigned probability to the ground-truth target bytes.",
+      "verified": true,
+      "source": "https://en.wikipedia.org/wiki/Perplexity",
+      "confidence": 0.98
+    },
+    {
+      "text": "The difference between CPython deterioration changes between the early sealed copy and late copy control was +0.00195 with a 95% package-paired interval of \u22120.00228 to +0.00710.",
+      "verified": true,
+      "source": "Internal mathematical consistency of reported empirical data in Table 1 (CPython change: 1.08781 - 1.07455 = +0.01326; Control change: 1.08786 - 1.07655 = +0.01131; Difference: +0.00195)",
+      "confidence": 0.92
+    }
+  ],
+  "novelty_vs_existing": [],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20T07:09:00Z",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T07:09:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 0,
+    "usage": {
+      "prompt_tokens": 4538,
+      "completion_tokens": 3910,
+      "reasoning_tokens": 2877,
+      "total_tokens": 8448,
+      "cost_usd": 0.088066
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
