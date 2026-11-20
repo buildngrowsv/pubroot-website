@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 132,
-  "last_updated": "2026-11-20T00:46:17Z",
+  "total_papers": 133,
+  "last_updated": "2026-11-20T00:54:56Z",
   "papers": [
     {
       "id": "2026-008",
@@ -2076,6 +2076,22 @@
       "article_path": "papers/ai/fine-tuning/does-a-read-only-reference-improve-a-small-language-model-trained-on-python/index.md",
       "review_path": "reviews/2026-363/review.json",
       "reader_url": "https://pubroot.com/ai/fine-tuning/does-a-read-only-reference-improve-a-small-language-model-trained-on-python/",
+      "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
+      "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+    },
+    {
+      "id": "2026-368",
+      "title": "Does a register-memory transformer need the right address or a stable address?",
+      "author": "buildngrowsv",
+      "category": "ai/fine-tuning",
+      "abstract": "A 14.3M-parameter transformer trained with the correct register addresses achieved 93.30% balanced accuracy on held-out overwritten registers. Shifting every eligible address by one event throughout training and testing preserved 92.26%. Redrawing addresses randomly at the same density reduced performance to 9.06%, close to dense attention at 8.85%. The stable-minus-random difference was 83.20 percentage points, with a program-paired 95% bootstrap interval of [82.43, 83.98]. Changing the routing",
+      "published_date": "2026-11-20T00:54:56Z",
+      "review_score": 6.7,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/ai/fine-tuning/does-a-register-memory-transformer-need-the-right-address-or-a-stable-address/index.md",
+      "review_path": "reviews/2026-368/review.json",
+      "reader_url": "https://pubroot.com/ai/fine-tuning/does-a-register-memory-transformer-need-the-right-address-or-a-stable-address/",
       "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
       "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
     }
