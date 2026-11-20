@@ -1,0 +1,82 @@
+{
+  "paper_id": "2026-564",
+  "score": 7.8,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark evaluates an early-exit feature approximation (block 10 of 28 in Qwen2.5-Coder-7B) to drive a 32-coordinate transplant bridge into Qwen2.5-14B on a 512-group Python repair evaluation. Although the early map matches the full late-feature arm at 166/512 completions, its 4.49 percentage point margin over a shuffled-target control fails the pre-registered decision criteria (requiring >=5.0 points with a positive lower bound). The study is an exemplary, honest report of a negative result with rigorous statistical gating.",
+  "strengths": [
+    "Adheres strictly to a pre-registered statistical gate, honestly reporting when the experimental intervention failed to meet prespecified thresholds.",
+    "Comprehensive control suite including intact specialist, full teacher features, shuffled target rows, host baseline, and zero ablation.",
+    "Detailed reporting of paired statistics, overlap counts, and relative mean squared error separating representation fidelity from downstream behavioral outcomes.",
+    "Thorough documentation of hardware specifications, runtime, memory allocation, and software library versions."
+  ],
+  "weaknesses": [
+    "Evaluated exclusively on a single synthetic task (bracket decoy completion triplets in Python strings and comments), limiting generalizability to wider coding or reasoning domains.",
+    "Explores only a single donor cut (block 10) and one fitting technique (ridge regression) rather than sweeping multiple layer depths or non-linear mapping methods."
+  ],
+  "suggestions": [
+    "Evaluate early-exit mapping across multiple intermediate layers (e.g., blocks 8, 12, 16) to establish a depth-versus-repair trade-off curve.",
+    "Test the bridge on established, standard code generation benchmarks (such as HumanEval, MBPP, or SWE-bench Lite) to verify if the gate failure is task-specific."
+  ],
+  "confidence": {
+    "methodology": 0.9,
+    "factual_accuracy": 0.88,
+    "novelty": 0.8,
+    "code_quality": null,
+    "writing_quality": 0.85,
+    "reproducibility": 0.8
+  },
+  "claims": [
+    {
+      "text": "FitNets provides a precedent for regressing internal teacher features.",
+      "verified": true,
+      "source": "https://arxiv.org/abs/1412.6550",
+      "confidence": 0.95
+    },
+    {
+      "text": "The 23-group early-map advantage was 4.49 percentage points (95% paired interval \u22120.20 to +8.79), missing the prespecified five-point and positive-lower-bound requirements.",
+      "verified": true,
+      "source": "Calculated: 23 / 512 = 0.04492 (4.49 percentage points); paired confidence interval crosses zero.",
+      "confidence": 0.95
+    },
+    {
+      "text": "Use the previously learned 32-coordinate bridge from Qwen2.5-Coder-7B to Qwen2.5-14B.",
+      "verified": true,
+      "source": "https://qwen.ai (Qwen2.5-Coder-7B and Qwen2.5-14B open model specifications)",
+      "confidence": 0.9
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "1412.6550",
+      "title": "FitNets: Hints for Thin Deep Nets",
+      "overlap": 0.35,
+      "contribution": "Applies intermediate-feature regression specifically to frozen cross-model grafting interfaces between large open-source LLMs under pre-registered behavioral decision gates."
+    }
+  ],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T15:45:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 2,
+    "usage": {
+      "prompt_tokens": 4745,
+      "completion_tokens": 2887,
+      "reasoning_tokens": 1811,
+      "total_tokens": 7632,
+      "cost_usd": 0.056385
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}

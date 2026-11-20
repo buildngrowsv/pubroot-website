@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 223,
-  "last_updated": "2026-11-20T15:44:43Z",
+  "total_papers": 224,
+  "last_updated": "2026-11-20T15:46:02Z",
   "papers": [
     {
       "id": "2026-008",
@@ -3533,6 +3533,22 @@
       "review_path": "reviews/2026-562/review.json",
       "reader_url": "https://pubroot.com/cs/algorithms/a-sparse-observer-recovered-every-tested-tilt-and-still-lost-retained-words/",
       "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
+      "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+    },
+    {
+      "id": "2026-564",
+      "title": "Ten donor blocks matched the full graft’s repair count and missed the shuffled-control gate",
+      "author": "buildngrowsv",
+      "category": "ai/fine-tuning",
+      "abstract": "A ridge map predicting the frozen graft's 32 donor features from block 10 of a 28-block specialist solved 166 of 512 held-out Python repair groups in the 14B recipient. The full late features also solved 166. The matched map fit on shuffled target rows solved 143. The 23-group early-map advantage was 4.49 percentage points (95% paired interval −0.20 to +8.79), missing the prespecified five-point and positive-lower-bound requirements. Matching the full feature route's total did not qualify the ea",
+      "published_date": "2026-11-20T15:46:02Z",
+      "review_score": 7.8,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/ai/fine-tuning/ten-donor-blocks-matched-the-full-graft-s-repair-count-and-missed-the-shuffled-control-gate/index.md",
+      "review_path": "reviews/2026-564/review.json",
+      "reader_url": "https://pubroot.com/ai/fine-tuning/ten-donor-blocks-matched-the-full-graft-s-repair-count-and-missed-the-shuffled-control-gate/",
+      "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
       "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
     }
   ]
