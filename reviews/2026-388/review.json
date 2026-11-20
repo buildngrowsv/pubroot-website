@@ -1,0 +1,102 @@
+{
+  "paper_id": "2026-388",
+  "score": 7.3,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark evaluates whether a frozen attention router trained purely on register keys and write orders can transfer address-selection capability to an independent model with a disjoint value vocabulary. Through controlled baselines and counterfactual value swaps, the study demonstrates payload-independent address transfer (85-88% accuracy vs <0.3% shifted sham), while transparently reporting that the transferred router provides no accuracy advantage over native end-to-end training.",
+  "strengths": [
+    "Rigorous experimental design incorporating multiple negative controls, including cyclically shifted attention scores and frozen untrained routers.",
+    "Careful causal verification using counterfactual interventions on gold and stale writes to confirm that position scores drive value retrieval independently of payload content.",
+    "Transparent and honest reporting of negative findings, including missed pre-registered thresholds and lack of superiority over native local training.",
+    "Clear reporting of statistical confidence intervals resampled across whole programs."
+  ],
+  "weaknesses": [
+    "Evaluated exclusively on a small synthetic register-routing toy task rather than full-scale transformer language models or established natural language benchmarks.",
+    "Exploration is limited to two training seeds and a single routing parameterization without exploring varying context depths or multi-head dynamics.",
+    "The transferred router fails to outperform native training on longer programs, limiting immediate practical utility for fine-tuning pipelines."
+  ],
+  "suggestions": [
+    "Scale the benchmark to standard multi-query associative recall (MQAR) or needle-in-a-haystack tasks within pre-trained open-weight transformer layers.",
+    "Evaluate whether transferring routing distributions across heterogeneous model dimensions or architectures yields computational speedups during fine-tuning.",
+    "Formally register the supporting repository in the submission metadata rather than relying on inline commit links."
+  ],
+  "confidence": {
+    "methodology": 0.88,
+    "factual_accuracy": 0.85,
+    "novelty": 0.78,
+    "code_quality": null,
+    "writing_quality": 0.85,
+    "reproducibility": 0.72
+  },
+  "claims": [
+    {
+      "text": "Pointer Networks (arXiv:1506.03134) use neural attention as a pointer to select discrete elements from an input sequence.",
+      "verified": true,
+      "source": "https://arxiv.org/abs/1506.03134",
+      "confidence": 0.98
+    },
+    {
+      "text": "Dynamic Neural Turing Machines (arXiv:1607.00036) implement a trainable memory addressing scheme maintaining separate content and address vectors.",
+      "verified": true,
+      "source": "https://arxiv.org/abs/1607.00036",
+      "confidence": 0.96
+    },
+    {
+      "text": "Zoology (arXiv:2312.04927) formalizes associative recall benchmarks to evaluate parameter-efficient recall capabilities across attention and gated-convolution models.",
+      "verified": true,
+      "source": "https://arxiv.org/abs/2312.04927",
+      "confidence": 0.95
+    },
+    {
+      "text": "Cyclically shifting the graft's position scores dropped task accuracy to 0.18% and 0.30% across the two test seeds.",
+      "verified": true,
+      "source": "Internal experimental reporting and audit data table (Seed 101/503 and Seed 211/607)",
+      "confidence": 0.85
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "1506.03134",
+      "title": "Pointer Networks",
+      "overlap": 0.45,
+      "contribution": "While Pointer Networks generate pointers to input tokens for variable-length combinatorial tasks, this submission isolates whether a learned pointer distribution can be transplanted across independent models with completely disjoint value vocabularies."
+    },
+    {
+      "id": "1607.00036",
+      "title": "Dynamic Neural Turing Machine with Soft and Hard Addressing Schemes",
+      "overlap": 0.4,
+      "contribution": "D-NTMs train separate address and content representations end-to-end within a single controller; this benchmark specifically tests zero-shot modular transfer of addressing weights between independently trained donor and recipient networks."
+    },
+    {
+      "id": "2312.04927",
+      "title": "Zoology: Measuring and Improving Recall in Efficient Language Models",
+      "overlap": 0.35,
+      "contribution": "Zoology measures associative recall across model families, whereas this benchmark directly tests the causal modularity of position routing weights under key and request counterfactual perturbations."
+    }
+  ],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T02:28:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 3,
+    "usage": {
+      "prompt_tokens": 4697,
+      "completion_tokens": 3904,
+      "reasoning_tokens": 2609,
+      "total_tokens": 8601,
+      "cost_usd": 0.10216275
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
