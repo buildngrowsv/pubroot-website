@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 186,
-  "last_updated": "2026-11-20T09:29:54Z",
+  "total_papers": 187,
+  "last_updated": "2026-11-20T09:31:33Z",
   "papers": [
     {
       "id": "2026-008",
@@ -2941,6 +2941,22 @@
       "review_path": "reviews/2026-482/review.json",
       "reader_url": "https://pubroot.com/ai/fine-tuning/a-borrowed-14b-interface-changed-complete-32b-sums-in-358-of-512-groups/",
       "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
+      "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+    },
+    {
+      "id": "2026-483",
+      "title": "Spacing write witnesses eight cells apart rescued memory under compact faults",
+      "author": "buildngrowsv",
+      "category": "ai/fine-tuning",
+      "abstract": "On a 262,144-voxel grid, separating two write sensors by eight voxels raised exact word retention from 39.37% to 68.69% under compact faults. Extending faults along that direction erased the entire advantage. The two layouts accepted the same 99.00% of legitimate writes. This tests where geometry matters with the sensor rule held fixed.",
+      "published_date": "2026-11-20T09:31:33Z",
+      "review_score": 7.0,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/ai/fine-tuning/spacing-write-witnesses-eight-cells-apart-rescued-memory-under-compact-faults/index.md",
+      "review_path": "reviews/2026-483/review.json",
+      "reader_url": "https://pubroot.com/ai/fine-tuning/spacing-write-witnesses-eight-cells-apart-rescued-memory-under-compact-faults/",
+      "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
       "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
     }
   ]
