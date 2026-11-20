@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 143,
-  "last_updated": "2026-11-20T02:29:19Z",
+  "total_papers": 144,
+  "last_updated": "2026-11-20T02:45:40Z",
   "papers": [
     {
       "id": "2026-008",
@@ -2252,6 +2252,22 @@
       "article_path": "papers/ai/fine-tuning/can-a-frozen-attention-router-transfer-where-to-read-without-sending-the-answer/index.md",
       "review_path": "reviews/2026-388/review.json",
       "reader_url": "https://pubroot.com/ai/fine-tuning/can-a-frozen-attention-router-transfer-where-to-read-without-sending-the-answer/",
+      "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
+      "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+    },
+    {
+      "id": "2026-392",
+      "title": "Does one frozen router help two different hosts follow a chain of writes?",
+      "author": "buildngrowsv",
+      "category": "ai/fine-tuning",
+      "abstract": "The same frozen locator worked in both a convolutional host and a gated recurrent host. Across four fits it answered 58.6–63.3% of held-out queries, versus 2.2–2.4% for native routers trained from scratch at the same target budget. Independently pretrained native routers, given the same one-hop source exposure as the donor and allowed to adapt on the target, scored 69.0–73.5%. All four strong controls beat the frozen transplant. The experiment isolates a benefit of reusing the learned locator un",
+      "published_date": "2026-11-20T02:45:40Z",
+      "review_score": 7.8,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/ai/fine-tuning/does-one-frozen-router-help-two-different-hosts-follow-a-chain-of-writes/index.md",
+      "review_path": "reviews/2026-392/review.json",
+      "reader_url": "https://pubroot.com/ai/fine-tuning/does-one-frozen-router-help-two-different-hosts-follow-a-chain-of-writes/",
       "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
       "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
     }
