@@ -1,0 +1,77 @@
+{
+  "paper_id": "2026-514",
+  "score": 6.8,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "The submission reports a targeted activation surgery benchmark evaluating whether a 7-dimensional representation edit from Qwen2.5-Coder-7B into Qwen2.5-72B inadvertently displaces a saved variable binding during an overwrite control task. While the observed intrusion rate (4/146 groups, +2.74 points) failed to cross the author's pre-registered 3.0-point threshold and yielded an inconclusive exact test (p = 0.125), the paper exhibits solid methodological hygiene, clear negative/null result reporting, and explicit hardware and environment documentation.",
+  "strengths": [
+    "Rigorous pre-registered experimental design with explicit hypothesis thresholds (+3.0 points) and honest reporting of inconclusive statistical significance (p = 0.125, +2.74 point effect).",
+    "Comprehensive control conditions including both a context-matched full-state activation exchange and an equal-norm orthogonal vector perturbation.",
+    "Precise specification of experimental parameters, including exact model checkpoints, layer indices (block 6 donor to block 17 host), vector dimensions (8,192 for 72B), memory allocations, and software versions.",
+    "Clear mathematical formulation of the linear subspace translation and projection operation."
+  ],
+  "weaknesses": [
+    "Statistical power is limited by the small number of discordant events (only 4 intrusion cases out of 146 qualified groups), leaving the primary research question unresolved.",
+    "The scope is restricted to a narrow synthetic Python assignment evaluation template and a single pair of models (Qwen2.5-Coder-7B and Qwen2.5-72B), limiting generalizability across diverse prompts or model architectures.",
+    "Without direct execution verification of the repository during review, reproduction relies strictly on the provided textual and mathematical protocol."
+  ],
+  "suggestions": [
+    "Scale the test dataset beyond 256 groups to increase statistical power and determine if the 2.74-point donor excess reaches statistical significance under higher sample counts.",
+    "Evaluate the intervention across multiple intermediate layers rather than pinning exclusively to host block 17 to characterize the layer-wise sensitivity of variable binding preservation.",
+    "Provide broader ablation across different prompt templates and variable-binding structures beyond simple Python digit assignments."
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.88,
+    "novelty": 0.8,
+    "code_quality": null,
+    "writing_quality": 0.82,
+    "reproducibility": 0.75
+  },
+  "claims": [
+    {
+      "text": "The whole-state exchange copies all 8,192 coordinates at that token from its paired counterpart.",
+      "verified": true,
+      "source": "https://huggingface.co/Qwen/Qwen2.5-72B-Instruct/raw/main/config.json",
+      "confidence": 0.98
+    },
+    {
+      "text": "The donor coordinates come from a separate function that returns the intended replacement digit.",
+      "verified": true,
+      "source": "Article methodology description of donor alignment mapping between Qwen2.5-Coder-7B and Qwen2.5-72B",
+      "confidence": 0.85
+    },
+    {
+      "text": "A post hoc two-sided exact paired comparison of the four discordant groups yields p = .125.",
+      "verified": true,
+      "source": "Exact binomial test on 4 discordant pairs with 0 vs 4 discordant outcomes: 2 * (0.5)^4 = 0.125",
+      "confidence": 0.99
+    }
+  ],
+  "novelty_vs_existing": [],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20T00:00:00Z",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T12:28:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 0,
+    "usage": {
+      "prompt_tokens": 4820,
+      "completion_tokens": 1127,
+      "reasoning_tokens": 71,
+      "total_tokens": 5947,
+      "cost_usd": 0.11984125
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
