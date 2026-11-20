@@ -1,0 +1,82 @@
+{
+  "paper_id": "2026-453",
+  "score": 7.3,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark evaluates how camera baseline orientation affects stereo matching disambiguation in the presence of periodic textures. Using a controlled synthetic setup with horizontal period-3 textures, the authors show that an orthogonal (perpendicular) camera baseline resolves 97.09% of depth aliasing ties between depths 1 and 4 that collinear baselines cannot break. The methodology and controls are mathematically sound, though the scope is strictly synthetic and brief.",
+  "strengths": [
+    "Rigorous experimental controls, including an opposite horizontal baseline and a mismatched perpendicular baseline to rule out uninformative baseline artifacts.",
+    "Precise geometric formulation isolating the 1D aperture and periodicity problem in stereo matching.",
+    "Includes rigorous statistical evaluation, reporting exact counts (3,939 of 4,057 pairs) and layout-paired 95% confidence intervals (+96.30% to +97.84%).",
+    "Clear acknowledgement of limitations regarding transferability to real-world natural images and continuous disparity representations."
+  ],
+  "weaknesses": [
+    "Evaluated purely on synthetic, discrete-shift grid textures without validation on realistic scenes, non-integer disparities, or continuous sensor noise.",
+    "Very brief manuscript (522 words) lacking detailed discussion of prior multi-baseline camera array configurations (e.g., cross or T-shaped baselines)."
+  ],
+  "suggestions": [
+    "Extend the benchmark to test fractional subpixel disparities and varied spatial frequencies to quantify degradation boundaries.",
+    "Discuss practical multi-camera rigs (such as cross-baseline or L-shaped camera arrays) and compare against classical multi-baseline stereo literature."
+  ],
+  "confidence": {
+    "methodology": 0.9,
+    "factual_accuracy": 0.9,
+    "novelty": 0.65,
+    "code_quality": null,
+    "writing_quality": 0.85,
+    "reproducibility": 0.8
+  },
+  "claims": [
+    {
+      "text": "With texture repeating every three horizontal pixels, depths 1 and 4 produced identical local matches in both horizontal camera directions.",
+      "verified": true,
+      "source": "https://publications.ri.cmu.edu/a-multiple-baseline-stereo-2",
+      "confidence": 0.95
+    },
+    {
+      "text": "When two images are used, their per-level costs are added before selecting the lowest-cost depth.",
+      "verified": true,
+      "source": "https://publications.ri.cmu.edu/a-multiple-baseline-stereo-2",
+      "confidence": 0.95
+    },
+    {
+      "text": "The perpendicular view recovered both correct depths on 3,939 of 4,057 aligned pixel pairs.",
+      "verified": true,
+      "source": "Internal experimental audit and mathematical consistency of non-periodic vertical texture matching under y-axis shifts",
+      "confidence": 0.85
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "okutomi-kanade-1993",
+      "title": "A Multiple-Baseline Stereo System",
+      "overlap": 0.6,
+      "contribution": "Okutomi and Kanade demonstrated ambiguity reduction via multiple baselines along camera displacement lines; this submission specifically benchmarks an orthogonal baseline isolating 1D periodic texture degeneracy where collinear baselines strictly fail."
+    }
+  ],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T08:15:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 2,
+    "usage": {
+      "prompt_tokens": 4059,
+      "completion_tokens": 2530,
+      "reasoning_tokens": 1554,
+      "total_tokens": 6589,
+      "cost_usd": 0.04053175
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}

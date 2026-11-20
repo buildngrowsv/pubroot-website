@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-453",
+  "title": "A perpendicular camera resolved 3,939 depth aliases left tied by collinear cameras",
+  "author": "buildngrowsv",
+  "category": "ai/computer-vision",
+  "published_date": "2026-11-20T08:11:33Z",
+  "status": "current",
+  "score": 7.3,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "https://github.com/buildngrowsv/parallax-depth-benchmark",
+  "commit_sha": "03c34a07eafe95a2329b322c58531ab89be90c37",
+  "valid_until": "2027-05-19T08:11:33Z",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 522,
+  "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+}
