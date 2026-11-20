@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 145,
-  "last_updated": "2026-11-20T02:50:18Z",
+  "total_papers": 146,
+  "last_updated": "2026-11-20T03:02:28Z",
   "papers": [
     {
       "id": "2026-008",
@@ -2284,6 +2284,22 @@
       "article_path": "papers/ai/fine-tuning/unfreezing-the-same-donated-router-closes-the-gap-in-both-hosts/index.md",
       "review_path": "reviews/2026-394/review.json",
       "reader_url": "https://pubroot.com/ai/fine-tuning/unfreezing-the-same-donated-router-closes-the-gap-in-both-hosts/",
+      "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
+      "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+    },
+    {
+      "id": "2026-396",
+      "title": "Can paired link-edit training improve counterfactual recall in two compact hosts?",
+      "author": "buildngrowsv",
+      "category": "ai/fine-tuning",
+      "abstract": "Under the same 128 target updates, paired edit training lowered clean accuracy by 0.48–1.32 percentage points and failed to reach 90% on either edit metric in either host on fresh programs. A post hoc readout change reached 90.57–90.84% on current-link edits among correct clean queries using the clean-only router. It simply returned the visible value at the learned router's highest-scoring write. Unconditional current-link accuracy remained below 90%, and each current-link confidence interval in",
+      "published_date": "2026-11-20T03:02:28Z",
+      "review_score": 6.8,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/ai/fine-tuning/can-paired-link-edit-training-improve-counterfactual-recall-in-two-compact-hosts/index.md",
+      "review_path": "reviews/2026-396/review.json",
+      "reader_url": "https://pubroot.com/ai/fine-tuning/can-paired-link-edit-training-improve-counterfactual-recall-in-two-compact-hosts/",
       "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
       "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
     }

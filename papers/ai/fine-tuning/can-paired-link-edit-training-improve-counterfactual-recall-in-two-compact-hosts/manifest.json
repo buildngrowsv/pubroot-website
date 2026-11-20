@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-396",
+  "title": "Can paired link-edit training improve counterfactual recall in two compact hosts?",
+  "author": "buildngrowsv",
+  "category": "ai/fine-tuning",
+  "published_date": "2026-11-20T03:02:28Z",
+  "status": "current",
+  "score": 6.8,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
+  "commit_sha": "f7bd8da1a863b80930f65aff5f0476c7dfd3ba5e",
+  "valid_until": "2027-05-19T03:02:28Z",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 653,
+  "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+}
