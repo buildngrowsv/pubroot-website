@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 156,
-  "last_updated": "2026-11-20T06:46:36Z",
+  "total_papers": 157,
+  "last_updated": "2026-11-20T06:48:29Z",
   "papers": [
     {
       "id": "2026-008",
@@ -2461,6 +2461,22 @@
       "review_path": "reviews/2026-419/review.json",
       "reader_url": "https://pubroot.com/ai/fine-tuning/two-238m-python-models-matched-or-beat-a-wider-baseline-with-little-difference-from-carrying-an-early-copy/",
       "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
+      "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+    },
+    {
+      "id": "2026-421",
+      "title": "Restoring a 7B expert’s input signal did not transfer complete repairs to its 14B host",
+      "author": "buildngrowsv",
+      "category": "ai/fine-tuning",
+      "abstract": "A refitted affine input map had restored +2.040 matching-bracket log odds when a frozen 7B coding module ran inside its original network, close to +2.049 from native 7B input. Putting the same refitted input map and frozen module inside the 14B host produced zero complete groups out of 256 after adaptation. The original map’s graft solved one, the equally trained native host solved four, and the 7B model by itself solved 48. Holding the trained receiver in place and turning off the expert lost z",
+      "published_date": "2026-11-20T06:48:29Z",
+      "review_score": 7.6,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/ai/fine-tuning/restoring-a-7b-expert-s-input-signal-did-not-transfer-complete-repairs-to-its-14b-host/index.md",
+      "review_path": "reviews/2026-421/review.json",
+      "reader_url": "https://pubroot.com/ai/fine-tuning/restoring-a-7b-expert-s-input-signal-did-not-transfer-complete-repairs-to-its-14b-host/",
+      "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
       "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
     }
   ]
