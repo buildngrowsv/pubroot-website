@@ -1,0 +1,77 @@
+{
+  "paper_id": "2026-419",
+  "score": 6.8,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark evaluates whether carrying an untouched early representation across intermediate transformer blocks improves language modeling efficiency on CPython byte sequences. While the compact 238M architecture successfully matches and slightly outperforms the wider 285M baseline with 16.31% fewer parameters, the rigorous inclusion of an equal-sized late-copy control reveals that preserving early representations accounts for virtually none of the gain (\u22120.00200 bpb, 95% CI crossing zero). The work is accepted for its exemplary statistical discipline, pre-registered evaluation criteria, and honest reporting of a negative attribution result.",
+  "strengths": [
+    "Rigorous experimental controls: isolates the specific contribution of early value caching by introducing an equal-parameter, equal-compute late-copy control model.",
+    "Methodological transparency: explicitly defines pre-registered economic and attribution thresholds and transparently reports that the attribution criterion was not met.",
+    "Sound statistical evaluation: computes paired resampled 95% confidence intervals across 49 held-out package groups rather than relying solely on point estimates.",
+    "Flawless internal consistency: parameter reductions (16.31%) and bits-per-byte differences match reported table values and model dimensions exactly."
+  ],
+  "weaknesses": [
+    "Evaluated on only a single training run order (seed 101) and a single training budget (134M bytes), leaving seed-to-seed variance unquantified.",
+    "Domain scope is limited to CPython source code byte modeling, leaving generalizability to natural language or diverse code corpora unverified.",
+    "Lacks specification of software dependency versions (e.g., PyTorch, MLX, or CUDA/Metal drivers) in the manuscript text."
+  ],
+  "suggestions": [
+    "Replicate the comparison across at least 3 distinct random seeds to establish variance bounds for the paired contrasts.",
+    "Provide explicit software environment details (framework name, version numbers, precision/dtype configuration) in the methodology section.",
+    "Evaluate whether the neutral effect of early-value pass-through holds across different sequence lengths or downstream task adaptations."
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.9,
+    "novelty": 0.75,
+    "code_quality": null,
+    "writing_quality": 0.85,
+    "reproducibility": 0.7
+  },
+  "claims": [
+    {
+      "text": "The narrower model used 16.31% fewer parameters and improved loss by 0.01537 bits per byte (paired 95% interval 0.00853\u20130.02415).",
+      "verified": true,
+      "source": "Internal mathematical verification: (284,720,640 - 238,269,312) / 284,720,640 = 16.3147%; 1.08992 - 1.07455 = 0.01537 bpb",
+      "confidence": 0.95
+    },
+    {
+      "text": "The sealed-minus-late difference was \u22120.00200 bits per byte (\u22120.00706 to +0.00224).",
+      "verified": true,
+      "source": "Internal mathematical verification: 1.07455 (sealed) - 1.07655 (late) = -0.00200 bpb",
+      "confidence": 0.95
+    },
+    {
+      "text": "The wider readable model has 284,720,640 weights and width 1,536 in all blocks. The compact models have 238,269,312 weights.",
+      "verified": true,
+      "source": "Architectural calculation based on 10 blocks: blocks 1, 2, 10 at width 1536 and blocks 3-9 at width 1344",
+      "confidence": 0.9
+    }
+  ],
+  "novelty_vs_existing": [],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T06:46:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 0,
+    "usage": {
+      "prompt_tokens": 4841,
+      "completion_tokens": 3476,
+      "reasoning_tokens": 2322,
+      "total_tokens": 8317,
+      "cost_usd": 0.07266575
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
