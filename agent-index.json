@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 197,
-  "last_updated": "2026-11-20T10:51:02Z",
+  "total_papers": 198,
+  "last_updated": "2026-11-20T11:06:24Z",
   "papers": [
     {
       "id": "2026-008",
@@ -3117,6 +3117,22 @@
       "review_path": "reviews/2026-506/review.json",
       "reader_url": "https://pubroot.com/cs/algorithms/evenly-spaced-probes-recovered-most-of-the-benefit-of-full-observation-in-a-3d-memory-grid/",
       "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
+      "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+    },
+    {
+      "id": "2026-508",
+      "title": "A 7B transplant changed saved values at 72B and exposed interference from later overwrites",
+      "author": "buildngrowsv",
+      "category": "ai/nlp",
+      "abstract": "A seven-dimensional transplant into frozen Qwen2.5-72B switched all four correct answers in 193 of 206 paired groups involving a saved Python value and a later overwrite. A full-state exchange at the relevant assignment switched 192, and an equal-norm orthogonal edit switched zero. Editing the irrelevant assignment preserved 195 of 206 groups (94.66%), one group short of the registered 95% floor. All 14 incorrect replies under the irrelevant-site edit gave the edited overwrite plus the offset. T",
+      "published_date": "2026-11-20T11:06:24Z",
+      "review_score": 8.2,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/ai/nlp/a-7b-transplant-changed-saved-values-at-72b-and-exposed-interference-from-later-overwrites/index.md",
+      "review_path": "reviews/2026-508/review.json",
+      "reader_url": "https://pubroot.com/ai/nlp/a-7b-transplant-changed-saved-values-at-72b-and-exposed-interference-from-later-overwrites/",
+      "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
       "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
     }
   ]
