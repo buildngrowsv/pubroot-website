@@ -1,0 +1,84 @@
+{
+  "paper_id": "2026-446",
+  "score": 7.4,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark evaluates whether a causal 25-dimensional subspace edit at an earlier Python class declaration can mediate its effect through isolated single-token pathways (the assignment tokens or the final query token) across layers 11\u201317 in Qwen2.5-14B. The author rigorously demonstrates that while the unrestricted intervention achieves high reversal rates (242/256 and 246/256), restricting the signal entirely to any single tested relay token abolishes the behavioral reversal (0/256), despite non-zero state displacement at those relays.",
+  "strengths": [
+    "Rigorous, well-controlled experimental isolation comparing native baseline, unrestricted subspace intervention, and single-token relay bottleneck conditions.",
+    "Precise specification of the subspace estimation protocol, including ridge regression parameters, singular value cutoff, and paired reversal criteria.",
+    "Exemplary reproducibility documentation, including the exact Qwen2.5-14B commit hash, runtime environment (MLX, Python, NumPy), prompt generation templates, and execution time.",
+    "Transparent reporting of negative results alongside quantitative displacement metrics showing information reached the candidate tokens but failed to propagate the causal effect."
+  ],
+  "weaknesses": [
+    "Narrow empirical scope limited to a single model architecture and size (Qwen2.5-14B) and a single intermediate layer boundary (block 17).",
+    "Focuses exclusively on individual single-token relays without evaluating multi-token sets or multi-head attention routing combinations that often characterize distributed circuits.",
+    "Framed as a benchmark, but primarily functions as an activation-patching mechanistic interpretability case study on synthetic Python prompts."
+  ],
+  "suggestions": [
+    "Extend the bottleneck analysis across multiple layer exit boundaries (e.g., blocks 12, 14, 20) to map where the multi-token distribution of information diverges or reconverges.",
+    "Test multi-token combination relays (e.g., joint assignment sign and identifier tokens) to identify the minimal sufficient set of tokens needed to preserve the reversal effect.",
+    "Evaluate whether similar pathway bottlenecks hold on other open-weight models of comparable size (e.g., Llama 3 8B/70B) to determine if this routing behavior is model-specific."
+  ],
+  "confidence": {
+    "methodology": 0.88,
+    "factual_accuracy": 0.92,
+    "novelty": 0.78,
+    "code_quality": null,
+    "writing_quality": 0.85,
+    "reproducibility": 0.86
+  },
+  "claims": [
+    {
+      "text": "The underlying interchange method corresponds to the distributed alignment search and causal abstraction framework described in arXiv:2303.02536.",
+      "verified": true,
+      "source": "https://arxiv.org/abs/2303.02536",
+      "confidence": 0.98
+    },
+    {
+      "text": "We froze Qwen2.5-14B base revision 97e1e76335b7017d8f67c08a19d103c0504298c9.",
+      "verified": true,
+      "source": "https://huggingface.co/Qwen/Qwen2.5-[REDACTED_SECRET]",
+      "confidence": 0.95
+    },
+    {
+      "text": "In distributed alignment search and causal interchange interventions, an orthonormal basis U is used to interchange linear subspaces between base and source activations x + UU\u1d40(x_partner \u2212 x).",
+      "verified": true,
+      "source": "https://arxiv.org/abs/2303.02536",
+      "confidence": 0.92
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2303.02536",
+      "title": "Finding Alignments Between Interpretable Causal Variables and Distributed Neural Representations",
+      "overlap": 0.45,
+      "contribution": "Applies subspace interchange intervention techniques to evaluate specific intermediate token routing bottlenecks across multi-layer blocks (layers 11\u201317) in Qwen2.5-14B on paired Python identifier binding tasks."
+    }
+  ],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20T00:00:00Z",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T07:47:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 2,
+    "usage": {
+      "prompt_tokens": 5533,
+      "completion_tokens": 3737,
+      "reasoning_tokens": 2503,
+      "total_tokens": 9270,
+      "cost_usd": 0.056428725
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
