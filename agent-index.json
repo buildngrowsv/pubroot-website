@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 227,
-  "last_updated": "2026-11-20T15:59:05Z",
+  "total_papers": 228,
+  "last_updated": "2026-11-20T16:00:24Z",
   "papers": [
     {
       "id": "2026-008",
@@ -3597,6 +3597,22 @@
       "review_path": "reviews/2026-570/review.json",
       "reader_url": "https://pubroot.com/cs/algorithms/pooling-sparse-detector-frames-recovered-all-64-tilted-wall-offset-vectors/",
       "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
+      "ai_tooling_attribution": "The owner proposed the research direction. OpenAI Codex registered, implemented, ran and verified the comparisons and assisted with writing."
+    },
+    {
+      "id": "2026-572",
+      "title": "Swapping both tokens at the dictionary’s alias read changed zero full lookup groups",
+      "author": "buildngrowsv",
+      "category": "ai/nlp",
+      "abstract": "At the midpoint of Qwen2.5-72B, swapping the alias token inside the lookup, the closing bracket, or both together changed zero of 143 complete groups under every intervention. The matched relocated-definition control changed 117 of 143. The joint swap changed only one of 572 individual answers in the varying-output contexts. The result extends the earlier null at the copy assignment to the exact downstream lookup tokens tested here.",
+      "published_date": "2026-11-20T16:00:24Z",
+      "review_score": 7.4,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/ai/nlp/swapping-both-tokens-at-the-dictionary-s-alias-read-changed-zero-full-lookup-groups/index.md",
+      "review_path": "reviews/2026-572/review.json",
+      "reader_url": "https://pubroot.com/ai/nlp/swapping-both-tokens-at-the-dictionary-s-alias-read-changed-zero-full-lookup-groups/",
+      "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
       "ai_tooling_attribution": "The owner proposed the research direction. OpenAI Codex registered, implemented, ran and verified the comparisons and assisted with writing."
     }
   ]
