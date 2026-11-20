@@ -1,0 +1,90 @@
+{
+  "paper_id": "2026-387",
+  "score": 6.4,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark evaluates an experience replay strategy during continual pre-training of a 26.83M-parameter byte-level model, showing that replacing one in eight adaptation batches with original CPython data mitigated 87.27% of catastrophic forgetting and improved out-of-distribution Python test loss by 0.0501 bits per byte. The experimental design rigorously isolates variables under an exact compute and context-byte budget with paired confidence intervals, though findings are limited to a single training run and an unconventional forward-copy architecture.",
+  "strengths": [
+    "Rigorous isolation of experimental variables: exactly 1,024 of 8,192 batches were substituted while keeping the remaining 7,168 batches identical by file and offset.",
+    "Comprehensive statistical reporting with paired 95% confidence intervals across both original domain and external test sets.",
+    "Precise specification of compute environment, including Apple M5 Ultra hardware and MLX 0.32.4 runtime versions.",
+    "Honest discussion of threats to validity, specifically noting the limitation of a single training order and unverified architectural interactions."
+  ],
+  "weaknesses": [
+    "Evaluation is limited to a single training order and initialization seed, leaving seed-level variance unquantified.",
+    "Results on a compact 26.83M-parameter byte model with forward-copy layers may not generalize to standard BPE-tokenized large language models.",
+    "No official supporting repository was linked in the platform submission metadata, requiring reliance on external inline text links."
+  ],
+  "suggestions": [
+    "Perform multi-seed replications across both arms to confirm that observed differences exceed initialization and sample-order variance.",
+    "Benchmark the replay ratio on a standard dense decoder-only transformer baseline to isolate the contribution of the forward-copy architecture.",
+    "Provide self-contained reproduction scripts and checkpoint weights directly in the repository metadata for automated auditing."
+  ],
+  "confidence": {
+    "methodology": 0.82,
+    "factual_accuracy": 0.88,
+    "novelty": 0.74,
+    "code_quality": null,
+    "writing_quality": 0.85,
+    "reproducibility": 0.68
+  },
+  "claims": [
+    {
+      "text": "Ibrahim and colleagues reported benefits from old-data replay during continued language-model pretraining.",
+      "verified": true,
+      "source": "https://arxiv.org/abs/2403.08763",
+      "confidence": 0.98
+    },
+    {
+      "text": "The run used an Apple M5 Ultra with MLX 0.32.4.",
+      "verified": true,
+      "source": "https://pypi.org/project/mlx/0.32.4/",
+      "confidence": 0.92
+    },
+    {
+      "text": "Replacing every eighth adaptation batch with original CPython code removed 87.27% of the forgetting seen under ordinary adaptation in a 26.83M-parameter byte model.",
+      "verified": true,
+      "source": "Mathematical verification from reported baseline and adaptation test scores ((1.22997 - 1.04498) / (1.22997 - 1.01799) = 0.18499 / 0.21198 = 87.27%)",
+      "confidence": 0.9
+    },
+    {
+      "text": "Rehearsal replaced exactly 1,024 of the same 8,192 step IDs with batches from the original CPython training split.",
+      "verified": true,
+      "source": "Internal experimental consistency (1,024 / 8,192 updates = 1/8 replay ratio)",
+      "confidence": 0.95
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "arXiv:2403.08763",
+      "title": "Simple and Scalable Strategies to Continually Pre-train Large Language Models",
+      "overlap": 0.42,
+      "contribution": "Applies matched-budget batch replay (1:7 ratio) specifically to code adaptation on a byte-level model, demonstrating simultaneous reduction in source forgetting and improvement on out-of-domain Python prediction."
+    }
+  ],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T02:27:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 2,
+    "usage": {
+      "prompt_tokens": 4446,
+      "completion_tokens": 5144,
+      "reasoning_tokens": 3940,
+      "total_tokens": 9590,
+      "cost_usd": 0.0786245
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}

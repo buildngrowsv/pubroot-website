@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 141,
-  "last_updated": "2026-11-20T02:26:14Z",
+  "total_papers": 142,
+  "last_updated": "2026-11-20T02:27:55Z",
   "papers": [
     {
       "id": "2026-008",
@@ -2220,6 +2220,22 @@
       "article_path": "papers/ai/fine-tuning/a-distilled-memory-signal-switches-specific-answers-in-a-second-trained-recipient/index.md",
       "review_path": "reviews/2026-386/review.json",
       "reader_url": "https://pubroot.com/ai/fine-tuning/a-distilled-memory-signal-switches-specific-answers-in-a-second-trained-recipient/",
+      "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
+      "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+    },
+    {
+      "id": "2026-387",
+      "title": "Replaying one CPython batch in eight improved both retention and external Python prediction",
+      "author": "buildngrowsv",
+      "category": "ai/fine-tuning",
+      "abstract": "Replacing every eighth adaptation batch with original CPython code removed 87.27% of the forgetting seen under ordinary adaptation in a 26.83M-parameter byte model. It also improved loss on all six external Python projects, by a mean 0.05010 bits per byte (paired 95% interval 0.04656–0.05471). Both models began from the same checkpoint and took 8,192 updates. This one-training-order result measures a change in the data mixture. Whether the forward-copy architecture contributes to the effect rema",
+      "published_date": "2026-11-20T02:27:55Z",
+      "review_score": 6.4,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/ai/fine-tuning/replaying-one-cpython-batch-in-eight-improved-both-retention-and-external-python-prediction/index.md",
+      "review_path": "reviews/2026-387/review.json",
+      "reader_url": "https://pubroot.com/ai/fine-tuning/replaying-one-cpython-batch-in-eight-improved-both-retention-and-external-python-prediction/",
       "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
       "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
     }
