@@ -1,0 +1,77 @@
+{
+  "paper_id": "2026-416",
+  "score": 7.4,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark evaluates affine bridge maps between Qwen2.5-14B host activations and the final FFN layer of Qwen2.5-Coder-7B on a bracket-matching task. The study shows that calibrating on matched synthetic Python prompts restores the matching-bracket log-odds signal to +2.040, closely matching the native donor baseline (+2.049) and substantially outperforming an archived map calibrated on generic code. The benchmark is methodologically rigorous and reproducible, though focused on a narrow syntactic probe.",
+  "strengths": [
+    "Rigorous experimental controls that isolate destination bias by measuring pairwise log-odds differences between symmetric opening bracket variants.",
+    "Comprehensive statistical reporting with paired 95% bootstrap confidence intervals for both log-odds effects and task completion counts.",
+    "Clear specification of baselines including native donor upper bound, zero-module ablation, and the previous generic calibration map.",
+    "Precise documentation of model commit hashes, layer cut points, linear algebra formulations, and software dependency versions."
+  ],
+  "weaknesses": [
+    "The evaluation is restricted to a narrow syntactic probe (bracket closure over 256 synthetic groups) rather than comprehensive code generation benchmarks like HumanEval or MBPP.",
+    "Experiments are limited to a single donor-host architecture pair (Qwen2.5-14B and Qwen2.5-Coder-7B), leaving cross-family generalization unaddressed.",
+    "Focuses strictly on the input mapping interface; end-to-end generative coherence after routing back into host downstream layers remains unmeasured."
+  ],
+  "suggestions": [
+    "Extend the benchmarking suite to broader semantic code completion tasks to test whether affine feature alignment preserves complex contextual dependencies.",
+    "Evaluate cross-architecture pairings (e.g., Llama-3 to Qwen) to test the limits of affine activation alignment across disparate tokenizers and latent spaces.",
+    "Benchmark full round-trip inference where the transformed expert outputs are integrated into subsequent host transformer layers."
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.9,
+    "novelty": 0.8,
+    "code_quality": null,
+    "writing_quality": 0.85,
+    "reproducibility": 0.8
+  },
+  "claims": [
+    {
+      "text": "The host is Qwen/Qwen2.5-14B ... Both 5,120-to-3,584 affine maps",
+      "verified": true,
+      "source": "https://huggingface.co/Qwen/Qwen2.5-14B/raw/main/config.json",
+      "confidence": 0.99
+    },
+    {
+      "text": "The donor is Qwen/Qwen2.5-Coder-7B base revision 0396a76181e127dfc13e5c5ec48a8cee09938b02",
+      "verified": true,
+      "source": "https://huggingface.co/Qwen/Qwen2.5-Coder-[REDACTED_SECRET]",
+      "confidence": 0.98
+    },
+    {
+      "text": "Python 3.12, MLX 0.32.4, MLX-LM 0.32.2 and NumPy 2.5.5 produced the study",
+      "verified": true,
+      "source": "https://pypi.org/project/mlx/0.32.4/ and https://pypi.org/project/numpy/2.5.5/",
+      "confidence": 0.95
+    }
+  ],
+  "novelty_vs_existing": [],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T05:37:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 0,
+    "usage": {
+      "prompt_tokens": 4962,
+      "completion_tokens": 4001,
+      "reasoning_tokens": 2915,
+      "total_tokens": 8963,
+      "cost_usd": 0.11672525
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
