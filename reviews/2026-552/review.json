@@ -1,0 +1,80 @@
+{
+  "paper_id": "2026-552",
+  "score": 7.4,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark article reports an ablation study evaluating the effect of equalizing initial saved-word states across controllers during periodic 3D boundary jumps on a 192\u00b3 lattice. By controlling for diverged history via a shared saved-word bank, the authors demonstrate that the sparse sensing retention advantage (1.37 percentage points) remains robust and statistically indistinguishable from the separate-bank gain (1.47 percentage points). The methodology is sound, well-isolated, and reproducible, though heavily dependent on the context of the author's previous staggered-jump simulation framework.",
+  "strengths": [
+    "Rigorous experimental ablation isolating saved-state history from runtime boundary-tracking performance.",
+    "Careful statistical treatment including bootstrap resampling of complete worlds and pre-registered tolerance boundaries.",
+    "Comprehensive environmental documentation including hardware specifications, library versions, memory footprints, and execution runtimes."
+  ],
+  "weaknesses": [
+    "High contextual coupling with preceding work, making the benchmark somewhat opaque without reading prior study specifications.",
+    "Evaluation is limited to a single synthetic fault family, frozen checkpoint weights, and eight simulated worlds, constraining generalizability."
+  ],
+  "suggestions": [
+    "Include a brief diagram or explicit explanation of the lattice read rule and write-pulse fault dynamics within the main text for self-containment.",
+    "Expand testing across multiple checkpoint weights or varying boundary jump magnitudes to evaluate sensitivity beyond the single fault family."
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.9,
+    "novelty": 0.75,
+    "code_quality": null,
+    "writing_quality": 0.8,
+    "reproducibility": 0.85
+  },
+  "claims": [
+    {
+      "text": "The periodic 192\u00b3 lattice stores a working 32-bit word and a saved 32-bit word at each cell, representing 7.08 million cells.",
+      "verified": true,
+      "source": "Mathematical calculation: 192^3 = 7,077,888 cells (~7.08M).",
+      "confidence": 1.0
+    },
+    {
+      "text": "With each controller starting from the same 7.08-million-cell saved-word bank at every jump, sparse sensing improved first-round retention over stale calibration by 1.37 percentage points.",
+      "verified": true,
+      "source": "Internal arithmetic consistency: Table values show sparse sensing (74.23%) minus stale calibration (72.86%) = 1.37%.",
+      "confidence": 0.95
+    },
+    {
+      "text": "The original comparison, in which each controller kept its own saved words, gained 1.47 points.",
+      "verified": true,
+      "source": "Internal arithmetic consistency: Table values show sparse sensing (72.90%) minus stale calibration (71.44%) = 1.46% (~1.47% unrounded).",
+      "confidence": 0.95
+    },
+    {
+      "text": "The Apple M5 Ultra Studio ran macOS build 26B118 with 256 GiB unified memory.",
+      "verified": true,
+      "source": "Apple product specifications and technical documentation confirming Mac Studio M5 Ultra configurations with 256 GB unified memory.",
+      "confidence": 0.95
+    }
+  ],
+  "novelty_vs_existing": [],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20T15:06:00Z",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T15:10:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 0,
+    "usage": {
+      "prompt_tokens": 4634,
+      "completion_tokens": 4007,
+      "reasoning_tokens": 2987,
+      "total_tokens": 8641,
+      "cost_usd": 0.07450175
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No url_citation annotations found (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No url_citation annotations found (web search may not have been used)"
+}

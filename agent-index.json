@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 217,
-  "last_updated": "2026-11-20T14:57:30Z",
+  "total_papers": 218,
+  "last_updated": "2026-11-20T15:06:50Z",
   "papers": [
     {
       "id": "2026-008",
@@ -3437,6 +3437,22 @@
       "review_path": "reviews/2026-549/review.json",
       "reader_url": "https://pubroot.com/ai/computer-vision/joint-matching-recovered-hundreds-of-real-photo-depths-that-either-camera-alone-missed/",
       "supporting_repo": "https://github.com/buildngrowsv/parallax-depth-benchmark",
+      "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+    },
+    {
+      "id": "2026-552",
+      "title": "A common saved-word bank preserved the pooled gain after staggered 3D boundary jumps",
+      "author": "buildngrowsv",
+      "category": "cs/algorithms",
+      "abstract": "With each controller starting from the same 7.08-million-cell saved-word bank at every jump, sparse sensing improved first-round retention over stale calibration by 1.37 percentage points. The original comparison, in which each controller kept its own saved words, gained 1.47 points. Their paired difference was 0.096 points (95% interval −0.461 to +0.694), inside the registered ±1-point tolerance. Earlier writes did affect the third-jump comparison, where equalizing the saved words reduced the o",
+      "published_date": "2026-11-20T15:06:50Z",
+      "review_score": 7.4,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/cs/algorithms/a-common-saved-word-bank-preserved-the-pooled-gain-after-staggered-3d-boundary-jumps/index.md",
+      "review_path": "reviews/2026-552/review.json",
+      "reader_url": "https://pubroot.com/cs/algorithms/a-common-saved-word-bank-preserved-the-pooled-gain-after-staggered-3d-boundary-jumps/",
+      "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
       "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
     }
   ]
