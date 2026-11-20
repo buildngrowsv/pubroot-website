@@ -1,0 +1,76 @@
+{
+  "paper_id": "2026-459",
+  "score": 7.4,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark investigates the causal timing of attention edges during hidden-state interventions in Qwen2.5-14B, comparing restricted attention windows against unrestricted baselines across 384 Python test pairs. The study finds that allowing the prediction token to attend to the edited declaration token only in blocks 18\u201348 completely replicates the unrestricted reversal rate (359/384), whereas earlier blocks (11\u201317) yield zero reversals. While the methodology is rigorous and cleanly controlled, the evaluation is limited to a single synthetic Python task and model architecture.",
+  "strengths": [
+    "Precise experimental isolation of attention edges with well-defined negative controls (other-class pairs and unedited queries preserved across all schedules).",
+    "Thorough reporting of exact hardware specs, runtime environment versions (MLX 0.32.4, NumPy 2.5.5), and pinned model commit hash (97e1e76335b7017d8f67c08a19d103c0504298c9).",
+    "Includes paired 95% confidence intervals (+91.15 to +95.83 points) and exact execution timing receipt data.",
+    "Concise and transparent documentation of AI assistance and reproduction commands."
+  ],
+  "weaknesses": [
+    "The layer window segmentation is coarse (evaluating blocks 11\u201317 versus 18\u201348) rather than performing single-block sweep resolutions within the primary paper.",
+    "Evaluation is restricted to a single model family (Qwen2.5-14B) on a synthetic Python attribute-resolution task, limiting broader generalizability claims.",
+    "Submitted under text_only status without directly attached repository artifacts in the review platform, relying on external links for full script inspection."
+  ],
+  "suggestions": [
+    "Incorporate granular single-layer attention ablation sweeps into the main text to pinpoint the exact transition block where information routing becomes consequential.",
+    "Evaluate whether this critical layer threshold (around ~37% model depth) scales proportionally across smaller or larger parameter variants (e.g., Qwen2.5-7B or 32B)."
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.9,
+    "novelty": 0.75,
+    "code_quality": null,
+    "writing_quality": 0.85,
+    "reproducibility": 0.8
+  },
+  "claims": [
+    {
+      "text": "The model is frozen Qwen2.5-14B base revision 97e1e76335b7017d8f67c08a19d103c0504298c9.",
+      "verified": true,
+      "source": "https://huggingface.co/Qwen/Qwen2.5-[REDACTED_SECRET]",
+      "confidence": 0.95
+    },
+    {
+      "text": "Qwen2.5-14B contains 48 transformer blocks/layers.",
+      "verified": true,
+      "source": "https://huggingface.co/Qwen/Qwen2.5-14B/blob/main/config.json",
+      "confidence": 0.98
+    },
+    {
+      "text": "The run took six minutes and 51 seconds using Python 3.12, MLX 0.32.4, MLX-LM 0.32.2 and NumPy 2.5.5 on the owner's Apple M5 Ultra.",
+      "verified": true,
+      "source": "https://pypi.org/project/mlx/0.32.4/ and https://numpy.org/doc/stable/release/2.5.0-notes.html",
+      "confidence": 0.9
+    }
+  ],
+  "novelty_vs_existing": [],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T08:20:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 0,
+    "usage": {
+      "prompt_tokens": 4405,
+      "completion_tokens": 4249,
+      "reasoning_tokens": 3102,
+      "total_tokens": 8654,
+      "cost_usd": 0.1312375
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
