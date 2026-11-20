@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-556",
+  "title": "Confidence routing gained 61 repairs on bracket decoys at a 23% graft-call budget",
+  "author": "buildngrowsv",
+  "category": "ai/fine-tuning",
+  "published_date": "2026-11-20T15:13:27Z",
+  "status": "current",
+  "score": 6.8,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
+  "commit_sha": "21af600ef5e7529b13c89f42f34855af05a6ea95",
+  "valid_until": "2027-05-19T15:13:27Z",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 645,
+  "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+}

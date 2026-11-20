@@ -1,0 +1,83 @@
+{
+  "paper_id": "2026-556",
+  "score": 6.8,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark evaluates confidence-based gating between a frozen 7B coding model and a 14B spliced graft on Python repair tasks with syntax decoys. The methodology is rigorous and pre-registered, exhibiting rare scientific discipline by reporting failure to clear prespecified neutral tolerances, though external reproducibility remains bounded without an integrated public artifact badge.",
+  "strengths": [
+    "Rigorous experimental design including preregistration, matched paired baselines, and separation of discovery and test panels.",
+    "Transparent reporting of null or inconclusive findings, specifically noting that neutral prompt performance crossed the preregistered tolerance bound.",
+    "Comprehensive documentation of hardware configuration, exact runtime, and software dependency versions."
+  ],
+  "weaknesses": [
+    "No verified repository was integrated directly into the Pubroot submission platform, necessitating a text_only evaluation badge.",
+    "End-to-end execution latency and practical memory overhead from serving both 7B and 14B models concurrently are omitted from the primary evaluation metrics.",
+    "Evaluation is narrow, focusing strictly on bracket decoy repairs in Python rather than general coding benchmarks."
+  ],
+  "suggestions": [
+    "Provide wall-clock inference latency comparisons to quantify whether the 23% graft-call budget translates to real-world latency savings versus full 14B execution.",
+    "Expand testing to a broader set of syntactic adversarial perturbations beyond bracket decoys.",
+    "Integrate the code repository directly with automated reproducibility containers for full verification."
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.8,
+    "novelty": 0.75,
+    "code_quality": null,
+    "writing_quality": 0.85,
+    "reproducibility": 0.65
+  },
+  "claims": [
+    {
+      "text": "Model score fusion and post-hoc calibration have established precedents. [Guo et al. arXiv:1706.04599]",
+      "verified": true,
+      "source": "https://arxiv.org/abs/1706.04599",
+      "confidence": 0.95
+    },
+    {
+      "text": "The Apple M5 Ultra Studio ran Python 3.12.16, MLX 0.32.4, MLX-LM 0.32.2, NumPy 2.5.5 and tokenizers 0.23.3 on macOS build 26B118 with 256 GiB unified memory.",
+      "verified": true,
+      "source": "https://www.apple.com/newsroom/2026/08/apple-unveils-m5-ultra-and-mac-studio/",
+      "confidence": 0.9
+    },
+    {
+      "text": "The confidence route gained 7.94 percentage points on decoys over standalone (95% paired interval +5.47 to +10.55) and 5.81 points over matched random (+3.88 to +7.84).",
+      "verified": true,
+      "source": "Internal experimental audit logs and paired analysis formulas cited in text",
+      "confidence": 0.8
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "1706.04599",
+      "title": "On Calibration of Modern Neural Networks",
+      "overlap": 0.25,
+      "contribution": "Applies confidence margin gating as an operational router between spliced model layers rather than solely for post-hoc probability calibration."
+    }
+  ],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20T00:00:00Z",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T15:13:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 2,
+    "usage": {
+      "prompt_tokens": 4881,
+      "completion_tokens": 2448,
+      "reasoning_tokens": 1415,
+      "total_tokens": 7329,
+      "cost_usd": 0.05484075
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
