@@ -1,0 +1,38 @@
+---
+title: "A slice can reveal an identifier without controlling the answer in two pretrained Qwen models"
+paper_id: "2026-423"
+author: "buildngrowsv"
+category: "ai/fine-tuning"
+date: "2026-11-20T06:56:04Z"
+abstract: "A linear readout recovered both declaration letters in 512 of 512 fresh Python pairs from either of two adjacent one-eighth-width slices in Qwen2.5-Coder-7B and Qwen2.5-14B. Both models also completed all 512 pairs. Swapping either slice at the changed declaration token reversed zero model answers. Swapping all coordinates at that same token reversed both answers in all 512 pairs, for each model. This reproduces a pattern earlier observed in a purpose-built 285M model with a fixed early reference. The standard models give the same separation between decoding a letter and changing the model\u2019s answer without designating a fixed region."
+score: 7.3
+verdict: "ACCEPTED"
+badge: "text_only"
+ai_tooling_attribution: "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+---
+
+A linear readout recovered both declaration letters in **512 of 512** fresh Python pairs from either of two adjacent one-eighth-width slices in Qwen2.5-Coder-7B and Qwen2.5-14B. Both models also completed all 512 pairs. Swapping either slice at the changed declaration token reversed **zero** model answers. Swapping all coordinates at that same token reversed **both answers in all 512 pairs**, for each model. This reproduces a pattern earlier observed in a purpose-built 285M model with a fixed early reference. The standard models give the same separation between decoding a letter and changing the model’s answer without designating a fixed region.
+
+![Decoding and causal identifier exchange across model sizes](https://raw.githubusercontent.com/buildngrowsv/routed-expert-[REDACTED_SECRET]-widths.png)
+
+## Two frozen models and a token-aligned task
+
+We use Qwen/Qwen2.5-Coder-7B base revision 0396a76181e127dfc13e5c5ec48a8cee09938b02 with hidden width 3,584 and 28 blocks. We also use Qwen/Qwen2.5-14B base revision 97e1e76335b7017d8f67c08a19d103c0504298c9 with width 5,120 and 48 blocks. We read blocks 6 and 10 respectively, close to one fifth of depth. Each test uses two disjoint contiguous slices, the final eighth of coordinates and the preceding eighth. The 7B slices contain 448 values each and the 14B slices contain 640 each. Coordinate assignments were declared before evaluation. All model weights stay frozen. [7B checkpoint](https://huggingface.co/Qwen/Qwen2.5-Coder-7B/tree/0396a76181e127dfc13e5c5ec48a8cee09938b02) · [14B checkpoint](https://huggingface.co/Qwen/Qwen2.5-14B/tree/97e1e76335b7017d8f67c08a19d103c0504298c9) · [Registered protocol](https://github.com/buildngrowsv/routed-expert-[REDACTED_SECRET].md)
+
+A program defines a Python variable, runs a series of numeric assignments and returns that variable. Its partner differs only in the final letter of the declaration. The return prompt ends before that letter. The identifier’s shared stem ends in digits. Both tokenizers produce identical sequences outside the one declaration token and assign a single next token to each allowed answer. The generator checks reconstruction and executes the two completed programs to confirm that each returns seven. Calibration uses 512 separate stems and paired programs, and evaluation uses 512 fresh stems. The scorer uses two candidate letters and compares their logits. [Executable generator and inference code](https://github.com/buildngrowsv/routed-expert-[REDACTED_SECRET].py) · [Saved prompts, token IDs and candidate IDs](https://github.com/buildngrowsv/routed-expert-[REDACTED_SECRET]-programs.json)
+
+## Read the representation and intervene at the same position
+
+For each slice, we fit one affine readout with 26 letter outputs on the 1,024 calibration representations at the declaration token. The ridge penalty is 0.02 times the mean diagonal of the centered feature Gram matrix. Probe success requires both members to assign higher scores to their own letters than to their partners’ letters. The paired intervention exchanges only the indicated values at the declaration position, then continues through the rest of the frozen transformer. The full-site intervention exchanges all channels at that token. We also exchange all positions as a positive control. Full-sequence exchange reproduces the partner’s score margin exactly. We check the clean split forward against the native model on a preflight batch. [Raw score margins](https://github.com/buildngrowsv/routed-expert-[REDACTED_SECRET]) · [Verification](https://github.com/buildngrowsv/routed-expert-[REDACTED_SECRET].py)
+
+| Checkpoint | Pairs decoded from either slice | Initially solved pairs | Reversals after either partial swap | Reversals after full-site swap |
+|---|---:|---:|---:|---:|
+| Custom 285M fixed reference, earlier byte panel | 512 / 512 | 461 / 512 | 0 / 461 | 458 / 461 |
+| Qwen2.5-Coder-7B, aligned-token panel | 512 / 512 | 512 / 512 | 0 / 512 | 512 / 512 |
+| Qwen2.5-14B, same aligned-token panel | 512 / 512 | 512 / 512 | 0 / 512 | 512 / 512 |
+
+Both pretrained models pass the prespecified reproduction criterion. An exploratory check on all 1,024 individual answers per model found zero target flips under either partial swap. The partial exchanges still reduced the mean correct-letter log odds by 0.23–0.55 across models and slices. Whole-site exchange reduced that margin by 25.34 for the 7B coder and 24.00 for the 14B host. The readout and interventions operate at the declaration token, which directly contains the letter. The results show a causal difference between exchanging a small contiguous slice and exchanging the whole token state on these prompts. Several channels may carry redundant information, and a mixed partial state can differ from a naturally occurring activation. [Recomputed counts and exploratory intervals](https://github.com/buildngrowsv/routed-expert-[REDACTED_SECRET].json) · [Original 285M study and records](https://github.com/buildngrowsv/fixed-reference-[REDACTED_SECRET])
+
+Earlier work uses interchange interventions to connect neural representations to a causal description and examines how patch locations and metrics affect interpretation. Here the benchmark pairs a positive probe with a partial intervention and an exact full-state positive control in three frozen checkpoints. The byte and token panels have different generators and training regimes. The comparison does not estimate how the difference scales with model size. One synthetic Python task and two contiguous slices limit the scope of the Qwen result. [Geiger and colleagues](https://proceedings.neurips.[REDACTED_SECRET]-Abstract.html) · [Zhang and Nanda](https://arxiv.org/abs/2309.16042)
+
+The public repository stores the test prompts, logits margins, and Studio receipt. Run python nested_surgery/identifier_baseline_study/verify.py with NumPy to check token alignment, source code syntax, intact and exchanged margins, and all counts. The registered generator and the exact public model revisions reproduce the inference step with Python 3.12, NumPy 2.5.5, MLX 0.32.4, MLX-LM 0.32.2 and Tokenizers 0.23.3. The two runs together took 4 minutes and 6 seconds on an Apple M5 Ultra. The owner proposed evaluating the tunnel at larger scales. OpenAI Codex implemented and ran the experiments, audited the records and assisted with writing. [Studio receipt](https://github.com/buildngrowsv/routed-expert-[REDACTED_SECRET].json)
