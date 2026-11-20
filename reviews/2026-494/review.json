@@ -1,0 +1,82 @@
+{
+  "paper_id": "2026-494",
+  "score": 7.2,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark evaluates whether allowing unedited native coordinates to evolve while preserving only donor displacement recovers performance lost during multi-block activation transplants between Qwen2.5 models. The empirical results show that the native-relative hold yields 332/512 complete carry groups compared to 333/512 for an absolute hold and 358/512 for a one-shot splice, demonstrating that the transplant penalty persists despite moving references. The methodology is mathematically well-specified with negative controls and paired confidence intervals, though the write-up is extremely compact and relies on prior unstated context.",
+  "strengths": [
+    "Rigorous experimental design featuring explicit control arms, including an orthogonal projection control (0/512) and native preservation verification (512/512).",
+    "Precise mathematical formulation of the native-relative displacement update rule and coordinate projection.",
+    "Comprehensive reporting of statistical uncertainty using paired 95% confidence intervals (-1.76 to +1.56 percentage points between relative and absolute holds).",
+    "Thorough documentation of runtime parameters, software dependency versions, peak memory allocations, and hardware execution environment."
+  ],
+  "weaknesses": [
+    "Highly compressed exposition (536 words) that assumes familiarity with predecessor protocols without fully defining the four-variant carry panel task in the article text.",
+    "Evaluation is narrow, focusing exclusively on two assignment positions within a single arithmetic carry dataset without probing general model degradation or language coherence elsewhere.",
+    "Categorized under the text_only review track without a bundled repository package in the submission metadata, requiring reliance on external URLs for code verification."
+  ],
+  "suggestions": [
+    "Include a concise self-contained description and example of the 512 four-variant arithmetic group prompt template and qualification criteria.",
+    "Expand evaluation to test whether seven-block holds cause out-of-distribution perplexity degradation or token regression on unrelated standard language tasks."
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.9,
+    "novelty": 0.8,
+    "code_quality": null,
+    "writing_quality": 0.75,
+    "reproducibility": 0.8
+  },
+  "claims": [
+    {
+      "text": "The donor is frozen BF16 Qwen2.5-Coder-7B (0396a761, width 3,584, read after block six).",
+      "verified": true,
+      "source": "https://huggingface.co/Qwen/Qwen2.5-Coder-7B/blob/main/config.json",
+      "confidence": 0.98
+    },
+    {
+      "text": "The original seven axes were fitted in Qwen2.5-14B (97e1e763, width 5,120, block ten).",
+      "verified": true,
+      "source": "https://huggingface.co/Qwen/Qwen2.5-14B/blob/main/config.json",
+      "confidence": 0.98
+    },
+    {
+      "text": "The frozen BF16 recipient is Qwen2.5-32B (1818d358, width 5,120, 64 blocks).",
+      "verified": true,
+      "source": "https://huggingface.co/Qwen/Qwen2.5-32B/blob/main/config.json",
+      "confidence": 0.98
+    },
+    {
+      "text": "Holding only the donor's initial displacement while allowing the unedited reference to evolve gave 332 complete carry groups out of 512. Freezing the seven absolute values gave 333, and a single early splice gave 358.",
+      "verified": true,
+      "source": "https://github.com/buildngrowsv/routed-expert-[REDACTED_SECRET].md",
+      "confidence": 0.85
+    }
+  ],
+  "novelty_vs_existing": [],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20T10:00:00Z",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T10:00:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 2,
+    "usage": {
+      "prompt_tokens": 4683,
+      "completion_tokens": 3192,
+      "reasoning_tokens": 1996,
+      "total_tokens": 7875,
+      "cost_usd": 0.12748225
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
