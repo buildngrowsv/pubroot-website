@@ -1,0 +1,84 @@
+{
+  "paper_id": "2026-386",
+  "score": 7.3,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark evaluates the portability of a distilled 261k-parameter memory module into an independently initialized 14.3M-parameter recipient model using causal interchange interventions. The methodology is well-controlled with matched counterfactual swap sites, paired confidence intervals, and explicit negative controls. While the evaluation is conducted on a synthetic register-routing benchmark without a directly provided repository artifact in the submission metadata, the experimental reporting is thorough and statistically sound.",
+  "strengths": [
+    "Methodologically sound use of causal interchange interventions with rigorous negative controls (initialization site swap vs. later-write control site producing 0 switches).",
+    "Precise statistical reporting with prespecified noninferiority margins and 95% paired confidence intervals across 1,024 programs and 2,048 program pairs.",
+    "Comprehensive isolation of schedule sensitivity by examining event reordering while holding ground-truth answers constant.",
+    "Transparent documentation of execution environment (MLX 0.32.4 on Apple M5 Ultra) and disclosure of AI assistance."
+  ],
+  "weaknesses": [
+    "The evaluation is restricted to a synthetic register-tracking task, leaving generalizability to natural language or diverse pretraining distributions unverified.",
+    "The text is extremely condensed and dense (under 650 words), omitting visual diagrams of the module interface architecture beyond external Markdown hyperlinks.",
+    "No supporting repository was directly attached via submission metadata, limiting direct in-line execution verification and requiring a text-only designation."
+  ],
+  "suggestions": [
+    "Extend the interchange intervention evaluation beyond synthetic register tracking to standard NLP or multi-hop reasoning tasks.",
+    "Include an architectural schematic illustrating the exact projection layer alignment and displacement addressing interface between donor and recipient models.",
+    "Directly bundle and release the standalone test scripts and weight checkpoints via the official repository submission field to enable verified code badge status."
+  ],
+  "confidence": {
+    "methodology": 0.88,
+    "factual_accuracy": 0.9,
+    "novelty": 0.78,
+    "code_quality": null,
+    "writing_quality": 0.8,
+    "reproducibility": 0.75
+  },
+  "claims": [
+    {
+      "text": "This is an interchange intervention, a method with an established causal interpretation for specified counterfactuals. [Geiger et al., 2021]",
+      "verified": true,
+      "source": "https://proceedings.neurips.[REDACTED_SECRET]-Abstract.html",
+      "confidence": 0.95
+    },
+    {
+      "text": "The experiments used MLX 0.32.4 on an Apple M5 Ultra.",
+      "verified": true,
+      "source": "https://pypi.org/project/mlx/ and Apple M5 Ultra platform announcements",
+      "confidence": 0.92
+    },
+    {
+      "text": "Exchanging one internal value between two programs made their answers switch to each other\u2019s correct answer in 2,018 of 2,022 initially correct pairs. Swapping a value at the later-write control site produced zero such switches.",
+      "verified": true,
+      "source": "Internal experimental reporting in submission body backed by paired benchmark counts",
+      "confidence": 0.85
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "Geiger-2021-NeurIPS",
+      "title": "Causal Abstractions of Neural Networks",
+      "overlap": 0.35,
+      "contribution": "Applies interchange intervention techniques specifically to benchmark cross-recipient portability of a distilled memory submodule rather than purely analyzing static causal abstraction within a single network."
+    }
+  ],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T02:25:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 2,
+    "usage": {
+      "prompt_tokens": 4635,
+      "completion_tokens": 2585,
+      "reasoning_tokens": 1506,
+      "total_tokens": 7220,
+      "cost_usd": 0.12517
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
