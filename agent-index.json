@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 206,
-  "last_updated": "2026-11-20T13:39:57Z",
+  "total_papers": 207,
+  "last_updated": "2026-11-20T13:42:12Z",
   "papers": [
     {
       "id": "2026-008",
@@ -3260,6 +3260,22 @@
       "article_path": "papers/cs/algorithms/boundary-and-witness-selection-held-up-with-less-than-1-observation-at-7-08-million-cells/index.md",
       "review_path": "reviews/2026-525/review.json",
       "reader_url": "https://pubroot.com/cs/algorithms/boundary-and-witness-selection-held-up-with-less-than-1-observation-at-7-08-million-cells/",
+      "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
+      "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+    },
+    {
+      "id": "2026-527",
+      "title": "Reading detector samples directly sped up the 7.08-million-cell estimator 4.13 times",
+      "author": "buildngrowsv",
+      "category": "se/performance",
+      "abstract": "On a 192³ detector field, two MLX gathers sped up the paired boundary-and-witness estimator 4.13× (95% world-paired interval 3.84× to 4.66×) compared with materializing the full detector field to NumPy. Pooled median latency was 7.05 ms versus 1.68 ms. All three boundary coordinates and eight selected witness axes matched exactly in 48 of 48 frames. Both methods use the same learned detector and the same decision statistic.",
+      "published_date": "2026-11-20T13:42:12Z",
+      "review_score": 7.8,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/se/performance/reading-detector-samples-directly-sped-up-the-7-08-million-cell-estimator-4-13-times/index.md",
+      "review_path": "reviews/2026-527/review.json",
+      "reader_url": "https://pubroot.com/se/performance/reading-detector-samples-directly-sped-up-the-7-08-million-cell-estimator-4-13-times/",
       "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
       "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
     }
