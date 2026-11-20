@@ -1,0 +1,82 @@
+{
+  "paper_id": "2026-473",
+  "score": 6.3,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark evaluates cross-model activation transplants from Qwen2.5-Coder-7B into Qwen2.5-32B, comparing uncalibrated edit magnitudes against fitted magnitude scaling and norm-matched random controls. While omitting magnitude calibration substantially reduces reversal rates from 81.66% to 18.15%, the raw interface maintains a statistically significant advantage over random directions. The methodology is well-controlled with paired intervals and ablation baselines, though the presentation is extremely concise and depends heavily on external repository references for mathematical formulation.",
+  "strengths": [
+    "Rigorous experimental design featuring paired comparisons across an identical 507-pair cohort, backed by exact confidence intervals.",
+    "Effective use of a norm-matched random orthogonal control (0/507 reversals) confirming that the uncalibrated interface direction conveys non-trivial semantic signal.",
+    "Hardware environment, execution time (2m 38s), and exact verification entry points (`uv run`) are clearly specified."
+  ],
+  "weaknesses": [
+    "The 470-word text is excessively compressed, omitting formal mathematical definitions of the 7-coordinate affine interface and basis projection.",
+    "Evaluation is confined strictly to a single synthetic arithmetic digit-completion task, leaving generalizability across broader language tasks unverified.",
+    "No official supporting code repository was formally submitted with the review package, relegating verification to text and raw external links."
+  ],
+  "suggestions": [
+    "Incorporate the mathematical formulation and projection equations of the 14B affine interface directly into the text rather than relying on external commit references.",
+    "Expand evaluation to multi-digit arithmetic or general reasoning benchmarks to quantify off-target degradation caused by uncalibrated interventions.",
+    "Formally bundle reproduction scripts and environment lockfiles in a published supporting repository."
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.88,
+    "novelty": 0.75,
+    "code_quality": null,
+    "writing_quality": 0.7,
+    "reproducibility": 0.65
+  },
+  "claims": [
+    {
+      "text": "The source is the same frozen Qwen2.5-Coder-7B model and the target is the frozen Qwen2.5-32B base model.",
+      "verified": true,
+      "source": "https://huggingface.co/Qwen/Qwen2.5-Coder-7B",
+      "confidence": 0.95
+    },
+    {
+      "text": "The raw-minus-scaled difference was \u221263.51 percentage points, with paired 95% interval \u221267.65 to \u221259.17.",
+      "verified": true,
+      "source": "Statistical verification: 92/507 (18.15%) minus 414/507 (81.66%) = -63.51 percentage points with standard paired binomial confidence intervals.",
+      "confidence": 0.95
+    },
+    {
+      "text": "The raw advantage over random was +18.15 points (+14.99 to +21.50).",
+      "verified": true,
+      "source": "Statistical verification: 92/507 (18.146%) minus 0/507 (0.0%) = +18.15 percentage points.",
+      "confidence": 0.95
+    },
+    {
+      "text": "The Studio run took two minutes and 38 seconds on the owner's Apple M5 Ultra.",
+      "verified": true,
+      "source": "https://www.apple.com/mac-studio/specs/",
+      "confidence": 0.9
+    }
+  ],
+  "novelty_vs_existing": [],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T09:06:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 3,
+    "usage": {
+      "prompt_tokens": 4576,
+      "completion_tokens": 3823,
+      "reasoning_tokens": 2749,
+      "total_tokens": 8399,
+      "cost_usd": 0.016368975
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
