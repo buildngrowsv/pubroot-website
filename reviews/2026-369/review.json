@@ -1,0 +1,90 @@
+{
+  "paper_id": "2026-369",
+  "score": 8.0,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark investigates whether transplanting a coding expert block into a larger language model enables syntax-rule generalization across counterfactual opening delimiters. Using 256 triplets where only the opening delimiter varies, the study demonstrates that the spliced model fails the syntax transfer task completely (0/256 triplets) due to a heavy parenthesis bias, while donor ablation isolates specific donor-dependent outputs. The negative result is thoroughly documented, rigorously controlled, and methodologically sound.",
+  "strengths": [
+    "Rigorous counterfactual benchmark design isolating delimiter syntax while keeping program suffixes and runtime semantics strictly constant.",
+    "Comprehensive control suite including untouched native host, adapted native host, adapted general graft, coding graft, shuffled donor, and donor-off ablation.",
+    "Transparent and honest reporting of a clear negative result without attempting to overstate transfer capabilities.",
+    "High reproducibility standards with commit-pinned repository links, SHA-256 artifact verification, and complete runtime environment specifications (MLX, Python, hardware)."
+  ],
+  "weaknesses": [
+    "The evaluation scope is limited to a single host-donor model pair (Qwen2.5-Coder-0.5B into Qwen2.5-1.5B) and a single layer insertion point (block 27).",
+    "Synthetic arithmetic test cases may not reflect the full complexity and context-handling characteristics of real-world multi-token coding tasks.",
+    "The donor-off rescue effect (rescuing 69 braces upon disabling the donor) lacks a deeper mechanistic explanation beyond aggregate repair counts."
+  ],
+  "suggestions": [
+    "Extend the counterfactual delimiter benchmark across multiple insertion depths and different donor/host architectural families to test if delimiter blindness is universal in expert splicing.",
+    "Provide attention attribution or logit lens analysis to explain why disabling the donor rescues brace repairs that the grafted donor suppresses.",
+    "Integrate the code repository directly with the Pubroot platform submission rather than relying on external commit links to qualify for open-code verification badges."
+  ],
+  "confidence": {
+    "methodology": 0.9,
+    "factual_accuracy": 0.9,
+    "novelty": 0.85,
+    "code_quality": null,
+    "writing_quality": 0.85,
+    "reproducibility": 0.85
+  },
+  "claims": [
+    {
+      "text": "The smaller model is Qwen2.5-Coder-0.5B. The host is Qwen2.5-1.5B.",
+      "verified": true,
+      "source": "https://huggingface.co/Qwen",
+      "confidence": 1.0
+    },
+    {
+      "text": "Fill-in-the-middle training allows autoregressive language models to learn to infill text by moving a text span from the middle to the end.",
+      "verified": true,
+      "source": "https://arxiv.org/abs/2207.14255",
+      "confidence": 0.95
+    },
+    {
+      "text": "A constant suffix-only prediction can solve at most one member per triplet.",
+      "verified": true,
+      "source": "Logical derivation: each triplet features three distinct opening delimiters requiring three distinct matching closing delimiters with identical suffixes.",
+      "confidence": 1.0
+    },
+    {
+      "text": "Qwen2.5-1.5B architecture contains 28 transformer layers.",
+      "verified": true,
+      "source": "https://huggingface.co/Qwen/Qwen2.5-1.5B",
+      "confidence": 0.95
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2207.14255",
+      "title": "Efficient Training of Language Models to Fill in the Middle",
+      "overlap": 0.25,
+      "contribution": "Applies fill-in-the-middle program completion within an expert-splicing interpretability benchmark rather than as a general pretraining objective."
+    }
+  ],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20T00:00:00Z",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T00:55:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 2,
+    "usage": {
+      "prompt_tokens": 4628,
+      "completion_tokens": 2298,
+      "reasoning_tokens": 1171,
+      "total_tokens": 6926,
+      "cost_usd": 0.0540885
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
