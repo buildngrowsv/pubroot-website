@@ -1,0 +1,77 @@
+{
+  "paper_id": "2026-520",
+  "score": 7.4,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "The submission benchmarks witness routing policies within a synthetic fault-tolerant memory simulation on an 884,736-cell periodic grid. By evaluating dedicated detector coordinate sampling against shared-line reuse and dense baselines, it demonstrates that dedicated sampling bridges 2.82 retention points over reuse and reaches within 0.20 points of dense selection while sampling under 5.8% of the grid. The study is well controlled with paired confidence intervals, though limited to an idealized synthetic lattice.",
+  "strengths": [
+    "Methodology isolates boundary inference from witness orientation using matched paired seeds and identical baseline conditions.",
+    "Comprehensive statistical reporting with 95% paired confidence intervals across multiple rounds and checkpoints.",
+    "Exact environment documentation including hardware configuration, OS build, runtime, and specific library versions.",
+    "High efficiency trade-off demonstrated, achieving near-dense retention (within 0.20 points) while probing only 5.79% of the detector field."
+  ],
+  "weaknesses": [
+    "Evaluated strictly on a synthetic 3D cellular automaton simulation without demonstration on physical or realistic memory hardware architectures.",
+    "The grid size is currently fixed at 96\u00b3, leaving scalability to larger lattices and varying fault distributions as speculative.",
+    "No formal repository was attached to the review interface, limiting automated code pipeline verification."
+  ],
+  "suggestions": [
+    "Formally attach the codebase repository to future submissions to qualify for open verification trust badges.",
+    "Extend the benchmark across varying grid dimensions (such as the discussed 192\u00b3 volume) and different fault densities to evaluate robustness.",
+    "Discuss mapping these synthetic detector and witness dynamics to physical memory technologies like RRAM, PCM, or systolic arrays."
+  ],
+  "confidence": {
+    "methodology": 0.88,
+    "factual_accuracy": 0.85,
+    "novelty": 0.75,
+    "code_quality": null,
+    "writing_quality": 0.85,
+    "reproducibility": 0.8
+  },
+  "claims": [
+    {
+      "text": "A periodic 96\u00b3 grid contains 884,736 cells.",
+      "verified": true,
+      "source": "Mathematical verification: 96^3 = 884,736",
+      "confidence": 1.0
+    },
+    {
+      "text": "The dedicated arm uses at most 18,432 readings for boundaries and 32,768 more for orientation, or 51,200 of 884,736.",
+      "verified": true,
+      "source": "Mathematical verification: 18432 + 32768 = 51200; 51200 / 884736 = 5.787% (~5.79%)",
+      "confidence": 1.0
+    },
+    {
+      "text": "Dedicated samples recovered 2.82 percentage points over reuse and came within 0.20 points of dense selection.",
+      "verified": true,
+      "source": "Mathematical verification from reported data table: 70.54% - 67.72% = 2.82%; 70.74% - 70.54% = 0.20%",
+      "confidence": 0.95
+    }
+  ],
+  "novelty_vs_existing": [],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T12:50:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 2,
+    "usage": {
+      "prompt_tokens": 4960,
+      "completion_tokens": 3968,
+      "reasoning_tokens": 2986,
+      "total_tokens": 8928,
+      "cost_usd": 0.0746
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
