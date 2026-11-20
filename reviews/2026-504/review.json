@@ -1,0 +1,96 @@
+{
+  "paper_id": "2026-504",
+  "score": 7.9,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark evaluates cross-model causal activation transplantation between a frozen Qwen2.5-Coder-7B donor and a frozen Qwen2.5-72B host on a controlled Python variable-reading task. The experimental design is methodologically sound, employing rigorous control conditions (unused-variable edits, norm-matched orthogonal vectors, and full-state swaps) along with exact hardware, software, and checkpoint documentation.",
+  "strengths": [
+    "Methodologically sound interventional design incorporating proper negative controls, including norm-matched orthogonal perturbations and edits to unused assignment sites.",
+    "Comprehensive documentation of hardware configuration, software package versions, peak memory consumption, and commit-pinned model checkpoints.",
+    "Clear quantitative evaluation using full-vocabulary rank criteria without permissive top-k slack, supported by 5,000-draw bootstrap confidence intervals.",
+    "Directly builds upon and extends established causal abstraction and model stitching frameworks to large-scale (72B) open weights."
+  ],
+  "weaknesses": [
+    "The evaluation scope is restricted to synthetic, single-digit Python arithmetic tasks with rigid prompt structures rather than diverse reasoning benchmarks.",
+    "The intervention is evaluated at only a single layer boundary (donor layer 6 to host layer 17) rather than systematically mapping layer-to-layer transferability.",
+    "As acknowledged by the author, token order and variable position remain coupled, leaving the asymmetric difficulty of the first assignment unexplained."
+  ],
+  "suggestions": [
+    "Expand evaluation beyond single-digit integer assignments to multi-digit arithmetic, string variables, or multi-step logic to test generalizability.",
+    "Conduct a layer-wise intervention grid search across donor and host transformer blocks to characterize where transfer succeeds or degrades.",
+    "Counterbalance variable assignment ordering in the prompt template to eliminate position bias as a confounding factor."
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.9,
+    "novelty": 0.8,
+    "code_quality": null,
+    "writing_quality": 0.85,
+    "reproducibility": 0.85
+  },
+  "claims": [
+    {
+      "text": "The replacement is h' = h + (c \u2212 ((h \u2212 \u03bc)R + \u03bd))W\u1d40.",
+      "verified": true,
+      "source": "https://proceedings.neurips.[REDACTED_SECRET]-Abstract-Conference.html",
+      "confidence": 0.9
+    },
+    {
+      "text": "The experiment extends work on causal abstractions and feature transfer across language models. [Geiger et al., NeurIPS 2021]",
+      "verified": true,
+      "source": "https://proceedings.neurips.[REDACTED_SECRET]-Abstract.html",
+      "confidence": 0.95
+    },
+    {
+      "text": "Chen et al., NeurIPS 2025 ('Transferring Linear Features Across Language Models with Model Stitching')",
+      "verified": true,
+      "source": "https://proceedings.neurips.[REDACTED_SECRET]-Abstract-Conference.html",
+      "confidence": 0.95
+    },
+    {
+      "text": "It ran on the Apple M5 Ultra with 80 GPU cores and 256 GiB of unified memory",
+      "verified": true,
+      "source": "https://www.apple.com/mac-studio/specs/",
+      "confidence": 0.9
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "Geiger-NeurIPS-2021",
+      "title": "Causal Abstractions of Neural Networks",
+      "overlap": 0.45,
+      "contribution": "Applies causal abstraction principles across distinct architectures/sizes (7B donor to 72B host) rather than testing internal abstractions within single models."
+    },
+    {
+      "id": "Chen-NeurIPS-2025",
+      "title": "Transferring Linear Features Across Language Models with Model Stitching",
+      "overlap": 0.55,
+      "contribution": "Evaluates targeted single-token low-dimensional affine causal interventions on read vs. unused computational paths in execution contexts, rather than general representation stitching or probe transfer."
+    }
+  ],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T10:48:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 4,
+    "usage": {
+      "prompt_tokens": 5305,
+      "completion_tokens": 2730,
+      "reasoning_tokens": 1442,
+      "total_tokens": 8035,
+      "cost_usd": 0.11221625
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
