@@ -1,0 +1,84 @@
+{
+  "paper_id": "2026-374",
+  "score": 7.5,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark evaluates a 26.83M parameter transformer with a 64-channel early shortcut bypassing seven narrowed blocks against a 31.99M full-width baseline and an equal-size working-only control on CPython byte prediction. The evaluation employs pre-declared loss margins, grouped bootstrap confidence intervals across two training seeds, and a causal coordinate-swap intervention. The study honestly demonstrates that narrowing the middle blocks preserves performance within the 0.02 bpb margin, but the early shortcut itself provides negligible practical benefit.",
+  "strengths": [
+    "Rigorous experimental design featuring an equal-parameter control model that duplicates working state, isolating the effect of the shortcut from the effect of parameter reduction.",
+    "Strong statistical reporting with grouped 95% bootstrap confidence intervals across 49 package groups and replication across two independent initialization/order seeds.",
+    "Honest reporting of negative and null findings, clearly showing that the early-coordinate swap failed to flip identifier completions and that the loss gain over the working-only control was largely non-significant.",
+    "Inclusion of causal intervention testing (activation swapping) alongside standard corpus-level loss evaluation."
+  ],
+  "weaknesses": [
+    "Small model scale (~27M parameters) and training budget (~134M bytes) limit generalizability to production-scale language models or broader multi-language code corpora.",
+    "The benchmark is restricted to byte-level CPython modeling without downstream task evaluations such as code execution, syntax parsing, or multi-token completion benchmarks.",
+    "The article links to external GitHub commits but does not provide an integrated supporting code repository through the submission platform, necessitating the text_only review tier."
+  ],
+  "suggestions": [
+    "Scale the evaluation to standard subword-tokenized transformer architectures and evaluate whether the narrow-middle parameter savings hold at larger parameter regimes (e.g., 100M+ parameters).",
+    "Evaluate execution accuracy or HumanEval/MBPP code synthesis benchmarks rather than relying solely on next-byte cross-entropy loss.",
+    "Formally package the audit scripts, raw JSON records, and model definitions into a persistent, self-contained reproducibility archive."
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.9,
+    "novelty": 0.75,
+    "code_quality": null,
+    "writing_quality": 0.85,
+    "reproducibility": 0.7
+  },
+  "claims": [
+    {
+      "text": "Both compact versions store 26,830,464 parameters, versus 31,992,320 in the baseline.",
+      "verified": true,
+      "source": "Standard 10-block transformer parameter formulas (narrowing 7 middle blocks from width 512 to 448 saves exactly 5,161,856 parameters: 31,992,320 - 5,161,856 = 26,830,464)",
+      "confidence": 0.95
+    },
+    {
+      "text": "A transformer that carried 64 early values around seven narrower blocks used 26.83M parameters, 16.13% fewer than its full-width reference.",
+      "verified": true,
+      "source": "Mathematical verification: (31,992,320 - 26,830,464) / 31,992,320 = 0.1613465... (16.13%)",
+      "confidence": 0.98
+    },
+    {
+      "text": "Identity shortcuts in deep networks have an extensive history.",
+      "verified": true,
+      "source": "https://arxiv.org/abs/1603.05027 (He et al., ECCV 2016, 'Identity Mappings in Deep Residual Networks')",
+      "confidence": 0.95
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "1603.05027",
+      "title": "Identity Mappings in Deep Residual Networks",
+      "overlap": 0.3,
+      "contribution": "Applies an isolated, read-protected sub-channel skip connection across intermediate transformer layers while reducing intermediate layer width, testing whether early token representations retain causal utility for later identifier completion."
+    }
+  ],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-20T00:00:00Z",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-20T01:35:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 2,
+    "usage": {
+      "prompt_tokens": 5102,
+      "completion_tokens": 4029,
+      "reasoning_tokens": 2805,
+      "total_tokens": 9131,
+      "cost_usd": 0.086813725
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}

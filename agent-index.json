@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 135,
-  "last_updated": "2026-11-20T01:23:03Z",
+  "total_papers": 136,
+  "last_updated": "2026-11-20T01:36:18Z",
   "papers": [
     {
       "id": "2026-008",
@@ -2124,6 +2124,22 @@
       "article_path": "papers/ai/fine-tuning/swapping-one-attention-value-exchanges-two-remembered-answers-at-a-displaced-address/index.md",
       "review_path": "reviews/2026-372/review.json",
       "reader_url": "https://pubroot.com/ai/fine-tuning/swapping-one-attention-value-exchanges-two-remembered-answers-at-a-displaced-address/",
+      "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
+      "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+    },
+    {
+      "id": "2026-374",
+      "title": "A sealed 64-channel shortcut preserves Python byte prediction with fewer parameters",
+      "author": "buildngrowsv",
+      "category": "ai/fine-tuning",
+      "abstract": "A transformer that carried 64 early values around seven narrower blocks used 26.83M parameters, 16.13% fewer than its full-width reference. It met a prespecified 0.02 bits-per-byte loss margin on held-out CPython for two training orders. An equally compact model that filled those exit coordinates from its final working state also came within 0.02 bits per byte of the sealed model on both orders. The early copy improved the point estimates by 0.00888 and 0.00226 bits per byte. Only the first pack",
+      "published_date": "2026-11-20T01:36:18Z",
+      "review_score": 7.5,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/ai/fine-tuning/a-sealed-64-channel-shortcut-preserves-python-byte-prediction-with-fewer-parameters/index.md",
+      "review_path": "reviews/2026-374/review.json",
+      "reader_url": "https://pubroot.com/ai/fine-tuning/a-sealed-64-channel-shortcut-preserves-python-byte-prediction-with-fewer-parameters/",
       "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
       "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
     }

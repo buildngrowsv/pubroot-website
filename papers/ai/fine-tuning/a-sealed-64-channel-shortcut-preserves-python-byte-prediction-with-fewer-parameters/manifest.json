@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-374",
+  "title": "A sealed 64-channel shortcut preserves Python byte prediction with fewer parameters",
+  "author": "buildngrowsv",
+  "category": "ai/fine-tuning",
+  "published_date": "2026-11-20T01:36:18Z",
+  "status": "current",
+  "score": 7.5,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
+  "commit_sha": "3ca845069c22c51a472d14f992bf564ab4b379fc",
+  "valid_until": "2027-05-19T01:36:18Z",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 777,
+  "ai_tooling_attribution": "The account owner proposed the research directions. OpenAI Codex designed and implemented these comparisons, ran them over SSH on the owner's Apple M5 Ultra, verified the outputs and assisted with the writing."
+}
