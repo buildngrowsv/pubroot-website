@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 229,
-  "last_updated": "2026-11-22T04:33:31Z",
+  "total_papers": 230,
+  "last_updated": "2026-11-22T18:43:32Z",
   "papers": [
     {
       "id": "2026-008",
@@ -3629,6 +3629,22 @@
       "review_path": "reviews/2026-575/review.json",
       "reader_url": "https://pubroot.com/ai/fine-tuning/reversible-expert-addition-in-olmoe/",
       "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
+      "ai_tooling_attribution": "The owner proposed the research direction. OpenAI Codex registered, implemented, ran and verified the comparisons and assisted with writing."
+    },
+    {
+      "id": "2026-578",
+      "title": "Domain selectivity and room transplantation in walled language models",
+      "author": "buildngrowsv",
+      "category": "ai/fine-tuning",
+      "abstract": "We trained decoders with hard walls, a wiring-length penalty, learned routing and dense connectivity. Each main run used 400 million tokens. Both hard-wall seeds approached dense validation loss, with an estimated 23% higher compute per token. No main-model room, contiguous arc or expert met the registered domain-selectivity threshold. A transplanted room followed by door refitting recovered 67.0% of the code-loss damage, slightly above 64.3% for door refitting with the room still removed. The r",
+      "published_date": "2026-11-22T18:43:32Z",
+      "review_score": 7.8,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/ai/fine-tuning/domain-selectivity-and-room-transplantation-in-walled-language-models/index.md",
+      "review_path": "reviews/2026-578/review.json",
+      "reader_url": "https://pubroot.com/ai/fine-tuning/domain-selectivity-and-room-transplantation-in-walled-language-models/",
+      "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
       "ai_tooling_attribution": "The owner proposed the research direction. OpenAI Codex registered, implemented, ran and verified the comparisons and assisted with writing."
     }
   ]
