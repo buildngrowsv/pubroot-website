@@ -1,0 +1,96 @@
+{
+  "paper_id": "2026-578",
+  "score": 7.8,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark evaluates whether compartmentalizing autoregressive language models with hard connectivity boundaries ('walls' and 'doors') induces domain selectivity and enables modular module transplantation. Across 400M-token runs on a multilingual/code mix, neither walled compartments, brain-inspired wiring penalties, nor mixture-of-experts baselines developed significant domain selectivity, yielding a well-documented null result with thorough ablation and recovery metrics.",
+  "strengths": [
+    "Preregistered evaluation methodology with explicit quantitative thresholds for selectivity and recovery, resisting publication bias through transparent reporting of null findings.",
+    "Careful experimental controls, including equal token budgets, identical batch compositions across arms, and isolating door refitting from room transplantation.",
+    "Complete internal arithmetic consistency across reported FLOPs, relative loss increases, and damage recovery percentages.",
+    "Comprehensive documentation of hardware configuration, library versions, random seeds, wall-clock runtimes, and training hyperparameters."
+  ],
+  "weaknesses": [
+    "The 400M-token pretraining budget for ~100M\u2013150M parameter decoders is significantly undertrained relative to compute-optimal scaling, leaving open whether domain specialization emerges at higher data-to-parameter ratios.",
+    "Evaluation is restricted to three pretraining domains (English, Python, Welsh) and a single donor-recipient seed pair for module transplantation.",
+    "Lack of confidence intervals or variance estimates across multiple runs due to single-seed serial training."
+  ],
+  "suggestions": [
+    "Scale training tokens to compute-optimal regimes (e.g., 2B+ tokens for 100M parameter models) to assess whether specialization requires saturation.",
+    "Test modular transplantation across additional donor-recipient seed pairs and varying channel bottleneck widths to establish statistical error margins.",
+    "Evaluate task-specific downstream benchmarks in addition to cross-entropy validation loss."
+  ],
+  "confidence": {
+    "methodology": 0.88,
+    "factual_accuracy": 0.92,
+    "novelty": 0.85,
+    "code_quality": null,
+    "writing_quality": 0.88,
+    "reproducibility": 0.82
+  },
+  "claims": [
+    {
+      "text": "TopoLM uses a spatial smoothness objective on activations.",
+      "verified": true,
+      "source": "https://arxiv.org/abs/2410.11516",
+      "confidence": 0.98
+    },
+    {
+      "text": "The circular wiring-length penalty tested here follows a different choice closer to brain-inspired modular training.",
+      "verified": true,
+      "source": "https://arxiv.org/abs/2305.08746",
+      "confidence": 0.95
+    },
+    {
+      "text": "A transplanted room followed by door refitting recovered 67.0% of the code-loss damage, slightly above 64.3% for door refitting with the room still removed.",
+      "verified": true,
+      "source": "Internal arithmetic verification: intact code loss 1.852, removed 2.469 (damage = 0.617); transplant refit 2.056 (recovery = (2.469-2.056)/0.617 = 66.94%); removed refit 2.072 (recovery = (2.469-2.072)/0.617 = 64.34%).",
+      "confidence": 0.99
+    },
+    {
+      "text": "Training the new room alone recovered 86.1% of full fine-tuning's Icelandic gain with smaller loss increases on each old domain.",
+      "verified": true,
+      "source": "Internal arithmetic verification: new room Icelandic gain = 2.140, full fine-tuning gain = 2.486; ratio = 2.140 / 2.486 = 86.08%.",
+      "confidence": 0.99
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2410.11516",
+      "title": "TopoLM: brain-like spatio-functional organization in a topographic language model",
+      "overlap": 0.35,
+      "contribution": "While TopoLM enforces spatial smoothness over continuous activation maps to emulate cortical topography, this submission evaluates discrete structural modularity ('rooms' separated by shared bottleneck channels) and biological wiring-length penalties directly for domain specialization and weight transplantability."
+    },
+    {
+      "id": "2305.08746",
+      "title": "Seeing is Believing: Brain-Inspired Modular Training for Mechanistic Interpretability",
+      "overlap": 0.4,
+      "contribution": "BIMT demonstrated modular self-organization on toy symbolic and algorithmic tasks via connection length penalties; this benchmark applies wiring penalties and explicit architectural walls to 100M-scale autoregressive language models trained on mixed multilingual and code text."
+    }
+  ],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-22T00:00:00Z",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-22T18:43:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 2,
+    "usage": {
+      "prompt_tokens": 5244,
+      "completion_tokens": 3803,
+      "reasoning_tokens": 2440,
+      "total_tokens": 9047,
+      "cost_usd": 0.05665455
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
