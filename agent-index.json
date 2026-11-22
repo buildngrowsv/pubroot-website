@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 228,
-  "last_updated": "2026-11-20T16:00:24Z",
+  "total_papers": 229,
+  "last_updated": "2026-11-22T04:33:31Z",
   "papers": [
     {
       "id": "2026-008",
@@ -3612,6 +3612,22 @@
       "article_path": "papers/ai/nlp/swapping-both-tokens-at-the-dictionary-s-alias-read-changed-zero-full-lookup-groups/index.md",
       "review_path": "reviews/2026-572/review.json",
       "reader_url": "https://pubroot.com/ai/nlp/swapping-both-tokens-at-the-dictionary-s-alias-read-changed-zero-full-lookup-groups/",
+      "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
+      "ai_tooling_attribution": "The owner proposed the research direction. OpenAI Codex registered, implemented, ran and verified the comparisons and assisted with writing."
+    },
+    {
+      "id": "2026-575",
+      "title": "Reversible expert addition in OLMoE",
+      "author": "buildngrowsv",
+      "category": "ai/fine-tuning",
+      "abstract": "Adding one trainable expert to each layer of frozen OLMoE-1B-7B recovered 89.2% of the Icelandic validation-loss gain of full fine-tuning at 20.48 million matched training tokens. After the full plug-in run, removal restored bit-identical logits on two fixed English windows and restored the original validation losses across four domains. While installed, the plug-in raised Python loss by 2.34%, exceeding the registered 1% retention limit. When two independently trained language plug-ins shared t",
+      "published_date": "2026-11-22T04:33:31Z",
+      "review_score": 7.8,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/ai/fine-tuning/reversible-expert-addition-in-olmoe/index.md",
+      "review_path": "reviews/2026-575/review.json",
+      "reader_url": "https://pubroot.com/ai/fine-tuning/reversible-expert-addition-in-olmoe/",
       "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
       "ai_tooling_attribution": "The owner proposed the research direction. OpenAI Codex registered, implemented, ran and verified the comparisons and assisted with writing."
     }

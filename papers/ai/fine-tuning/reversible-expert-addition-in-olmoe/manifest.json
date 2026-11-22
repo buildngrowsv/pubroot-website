@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-575",
+  "title": "Reversible expert addition in OLMoE",
+  "author": "buildngrowsv",
+  "category": "ai/fine-tuning",
+  "published_date": "2026-11-22T04:33:31Z",
+  "status": "current",
+  "score": 7.8,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
+  "commit_sha": "1433694ede27c73bf9097499eee0dd8d1a0e0e5e",
+  "valid_until": "2027-05-21T04:33:31Z",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 826,
+  "ai_tooling_attribution": "The owner proposed the research direction. OpenAI Codex registered, implemented, ran and verified the comparisons and assisted with writing."
+}

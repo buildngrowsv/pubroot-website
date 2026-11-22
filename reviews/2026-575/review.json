@@ -1,0 +1,90 @@
+{
+  "paper_id": "2026-575",
+  "score": 7.8,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark evaluates a parameter-efficient fine-tuning strategy that adds reversible, single-expert plug-ins to each layer of frozen OLMoE-1B-7B. The study rigorously compares the approach against parameter-matched attention LoRA, full fine-tuning, and router ablations across matched token budgets, demonstrating high gain recovery alongside honest reporting of out-of-domain degradation and cross-plug-in interference.",
+  "strengths": [
+    "Rigorous, apples-to-apples experimental controls including parameter-matched attention LoRA (100.7M parameters) and token-matched full fine-tuning.",
+    "Pre-registered evaluation criteria and transparent reporting of negative results, such as the 2.34% Python validation loss increase exceeding the registered 1% retention limit.",
+    "Comprehensive verification of reversibility, confirming bit-identical logit restoration upon module removal.",
+    "Exploration of multi-plug-in interference when installing two independently trained language experts simultaneously."
+  ],
+  "weaknesses": [
+    "Evaluation is restricted to cross-entropy validation loss on fixed windows rather than downstream task or generation benchmarks.",
+    "Single random seed and single base checkpoint (OLMoE-1B-7B-0924), leaving statistical variance unquantified across runs.",
+    "Bit-identical logit restoration was evaluated on only two fixed windows, which is a small sample for numerical drift testing."
+  ],
+  "suggestions": [
+    "Evaluate downstream generation quality or standard NLP benchmark tasks (e.g., translation, question answering) in addition to perplexity/loss.",
+    "Expand validation of bit-identical output restoration to a broader test corpus across different sequence lengths and batch sizes.",
+    "Run multiple training seeds to provide confidence intervals for the gain recovery percentages and retention degradations."
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.9,
+    "novelty": 0.8,
+    "code_quality": null,
+    "writing_quality": 0.85,
+    "reproducibility": 0.75
+  },
+  "claims": [
+    {
+      "text": "OLMoE has 16 layers of 64 experts with eight selected per token.",
+      "verified": true,
+      "source": "https://arxiv.org/abs/2409.02060",
+      "confidence": 1.0
+    },
+    {
+      "text": "Adding experts for continued learning has precedent in Lifelong-MoE",
+      "verified": true,
+      "source": "https://arxiv.org/abs/2305.12281",
+      "confidence": 0.95
+    },
+    {
+      "text": "Branch-Train-MiX combines independently trained branches and then trains routing.",
+      "verified": true,
+      "source": "https://arxiv.org/abs/2403.07816",
+      "confidence": 0.95
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2305.12281",
+      "title": "Lifelong Language Pretraining with Distribution-Specialized Experts",
+      "overlap": 0.45,
+      "contribution": "Applies modular expert expansion to a modern open-weight sparse MoE architecture (OLMoE) with exact bit-level reversibility upon detachment and measures cross-expert routing interference."
+    },
+    {
+      "id": "2403.07816",
+      "title": "Branch-Train-MiX: Mixing Expert LLMs into a Mixture-of-Experts LLM",
+      "overlap": 0.4,
+      "contribution": "Focuses on lightweight, detachable modular plug-ins per layer without full model branching and retraining, specifically analyzing retention limits and out-of-domain degradation."
+    }
+  ],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-22",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-22T04:33:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 2,
+    "usage": {
+      "prompt_tokens": 4648,
+      "completion_tokens": 2395,
+      "reasoning_tokens": 1308,
+      "total_tokens": 7043,
+      "cost_usd": 0.05446725
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
