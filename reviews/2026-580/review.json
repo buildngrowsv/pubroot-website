@@ -1,0 +1,100 @@
+{
+  "paper_id": "2026-580",
+  "score": 7.8,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark evaluates progressive depth scaling (4 to 8 to 12 blocks) in a 97.5M decoder model, testing both frozen and unfrozen variants against an apples-to-apples dense reference trained on balanced English, Python, and Welsh data. The empirical findings show that while growing models save FLOPs, both variants suffer an efficiency and loss penalty compared to dense training at matched FLOPs and equal tokens, with frozen blocks failing a pre-registered 3% margin.",
+  "strengths": [
+    "Precise, honest negative empirical result with pre-registered criteria clearly documented.",
+    "Methodologically sound benchmarking with FLOP counting explicitly accounting for forward/backward passes and active block counts.",
+    "Extremely thorough documentation of reproduction environment, including exact hardware, operating system, library versions, hyperparameters, and commands.",
+    "Fair, isolated comparisons against linear interpolations of the dense baseline at matched FLOPs as well as matched token endpoints."
+  ],
+  "weaknesses": [
+    "Evaluation is limited to a single random seed and a single model scale (97.5M parameters), leaving open questions about variance and scale-dependent behavior.",
+    "Decisions regarding optimizer schedule resets across stages could introduce optimization inefficiencies that confound the architecture growth comparisons."
+  ],
+  "suggestions": [
+    "Run multiple seeds to provide confidence intervals and quantify the variance of progressive layer addition.",
+    "Evaluate continuous learning rate decay (such as WSD schedules) across growth stages rather than resetting the schedule at each expansion stage."
+  ],
+  "confidence": {
+    "methodology": 0.88,
+    "factual_accuracy": 0.9,
+    "novelty": 0.82,
+    "code_quality": null,
+    "writing_quality": 0.9,
+    "reproducibility": 0.85
+  },
+  "claims": [
+    {
+      "text": "Growing a decoder from four to eight to twelve blocks and freezing each earlier stage finished with 47.92% of the estimated training FLOPs of the full-depth run.",
+      "verified": true,
+      "source": "Calculated from FLOP numbers: 1.158e17 / 2.416e17 = 47.93%, directly supported by the methodology and reported data table.",
+      "confidence": 0.95
+    },
+    {
+      "text": "Freezing earlier blocks during progressive growth has precedent in multi-stage BERT training.",
+      "verified": true,
+      "source": "arXiv:2011.13635 (Progressively Stacking 2.0: A Multi-stage Layerwise Training Method for BERT Training Speedup)",
+      "confidence": 0.98
+    },
+    {
+      "text": "LLaMA Pro expands an already pretrained decoder",
+      "verified": true,
+      "source": "arXiv:2401.02415 (LLaMA Pro: Progressive LLaMA with Block Expansion)",
+      "confidence": 0.98
+    },
+    {
+      "text": "curriculum-guided layer scaling couples depth growth with a data curriculum.",
+      "verified": true,
+      "source": "arXiv:2506.11389 (Curriculum-Guided Layer-Scaling for Language Model Pretraining)",
+      "confidence": 0.96
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "2011.13635",
+      "title": "Progressively Stacking 2.0: A Multi-stage Layerwise Training Method for BERT Training Speedup",
+      "overlap": 0.35,
+      "contribution": "Evaluates progressive stacking and layer freezing specifically on modern autoregressive decoder-only architectures (SwiGLU, RoPE) rather than encoder BERT models, and benchmarks compute-loss trade-offs against dense baselines."
+    },
+    {
+      "id": "2401.02415",
+      "title": "LLaMA Pro: Progressive LLaMA with Block Expansion",
+      "overlap": 0.3,
+      "contribution": "Examines pretraining from scratch with bottom-up progressive growth rather than post-pretraining/domain adaptation of an existing foundation model."
+    },
+    {
+      "id": "2506.11389",
+      "title": "Curriculum-Guided Layer-Scaling for Language Model Pretraining",
+      "overlap": 0.4,
+      "contribution": "Isolates the architectural depth growth and freezing mechanisms on a static, domain-balanced corpus without confounding from dynamic data difficulty curricula."
+    }
+  ],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-22T20:45:00Z",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-22T20:45:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 3,
+    "usage": {
+      "prompt_tokens": 4525,
+      "completion_tokens": 1267,
+      "reasoning_tokens": 0,
+      "total_tokens": 5792,
+      "cost_usd": 0.078145
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}

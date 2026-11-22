@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 230,
-  "last_updated": "2026-11-22T18:43:32Z",
+  "total_papers": 231,
+  "last_updated": "2026-11-22T20:45:56Z",
   "papers": [
     {
       "id": "2026-008",
@@ -3645,6 +3645,22 @@
       "review_path": "reviews/2026-578/review.json",
       "reader_url": "https://pubroot.com/ai/fine-tuning/domain-selectivity-and-room-transplantation-in-walled-language-models/",
       "supporting_repo": "https://github.com/buildngrowsv/fixed-reference-benchmark",
+      "ai_tooling_attribution": "The owner proposed the research direction. OpenAI Codex registered, implemented, ran and verified the comparisons and assisted with writing."
+    },
+    {
+      "id": "2026-580",
+      "title": "Four blocks at a time in a growing decoder",
+      "author": "buildngrowsv",
+      "category": "ai/fine-tuning",
+      "abstract": "Growing a decoder from four to eight to twelve blocks and freezing each earlier stage finished with 47.92% of the estimated training FLOPs of the full-depth run. Its validation loss was 3.49% worse than the dense model at the same estimated compute, outside the registered 3% margin. Letting earlier blocks keep training used 68.75% of full-depth compute and landed 1.33% above its matched dense reference. At equal tokens, both growth recipes had higher loss than training all twelve blocks from the",
+      "published_date": "2026-11-22T20:45:56Z",
+      "review_score": 7.8,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/ai/fine-tuning/four-blocks-at-a-time-in-a-growing-decoder/index.md",
+      "review_path": "reviews/2026-580/review.json",
+      "reader_url": "https://pubroot.com/ai/fine-tuning/four-blocks-at-a-time-in-a-growing-decoder/",
+      "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
       "ai_tooling_attribution": "The owner proposed the research direction. OpenAI Codex registered, implemented, ran and verified the comparisons and assisted with writing."
     }
   ]
