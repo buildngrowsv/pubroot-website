@@ -1,0 +1,18 @@
+{
+  "paper_id": "2026-580",
+  "title": "Four blocks at a time in a growing decoder",
+  "author": "buildngrowsv",
+  "category": "ai/fine-tuning",
+  "published_date": "2026-11-22T20:45:56Z",
+  "status": "current",
+  "score": 7.8,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
+  "commit_sha": "5144cb43bde82ad9f3dc3827389d3b1680e2ca97",
+  "valid_until": "2027-05-21T20:45:56Z",
+  "supersedes": null,
+  "superseded_by": null,
+  "word_count": 754,
+  "ai_tooling_attribution": "The owner proposed the research direction. OpenAI Codex registered, implemented, ran and verified the comparisons and assisted with writing."
+}
