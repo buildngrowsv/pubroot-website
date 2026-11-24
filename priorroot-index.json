@@ -4,7 +4,7 @@
   "description": "Machine-readable index of Priorroot defensive disclosures (prior-art/*). Separated from the main agent-index.json to keep the general Pubroot index focused on community submissions while giving Priorroot its own discoverable endpoint. The /priorroot/ page on pubroot.com consumes this file.",
   "search_endpoint": null,
   "total_papers": 13,
-  "last_updated": "2026-11-24T15:47:56Z",
+  "last_updated": "2026-11-24T15:49:31Z",
   "papers": [
     {
       "id": "2026-003",
