@@ -5,12 +5,12 @@
     "buildngrowsv": {
       "github_handle": "buildngrowsv",
       "first_seen": "2026-03-22T17:15:26.769428+00:00",
-      "last_submission": "2026-11-24T15:57:45.533762+00:00",
-      "total_submissions": 248,
-      "accepted": 222,
+      "last_submission": "2026-11-24T16:00:58.791995+00:00",
+      "total_submissions": 249,
+      "accepted": 223,
       "rejected": 26,
       "withdrawn": 0,
-      "acceptance_rate": 0.895,
+      "acceptance_rate": 0.896,
       "average_score": 7.4,
       "score_trend": "insufficient_data",
       "categories": {
@@ -65,9 +65,9 @@
           "avg_score": 7.5
         },
         "prior-art/therapeutic-use": {
-          "submissions": 20,
-          "accepted": 11,
-          "avg_score": 6.82
+          "submissions": 21,
+          "accepted": 12,
+          "avg_score": 6.88
         },
         "prior-art/device-method": {
           "submissions": 1,
