@@ -1820,3 +1820,7 @@ CONTRIBUTOR LEADERBOARD (/leaderboard/)
 }
 
 .badge-below-floor { background: #fff0c2; color: #513700; border: 1px solid #805900; }
+.badge-disclosure { background: #e6f4f1; color: #0b4f45; border: 1px solid #0b4f45; text-decoration: none; }
+.disclosure-notice { margin: 0.5rem 0 0; font-size: 0.875rem; color: #3d4a48; }
+[data-theme="dark"] .badge-disclosure { background: #0f2f2b; color: #bfe9e1; border-color: #bfe9e1; }
+[data-theme="dark"] .disclosure-notice { color: #c4cfcd; }

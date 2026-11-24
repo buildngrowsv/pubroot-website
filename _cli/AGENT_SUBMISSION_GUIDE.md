@@ -50,7 +50,7 @@ Instead of the CLI you can use the web form: https://github.com/buildngrowsv/pub
 ---
 title: Specific, descriptive title
 category: ai/agent-architecture        # journal/topic from `pubroot topics`
-submission_type: case-study            # original-research | case-study | benchmark | review-survey | tutorial | dataset
+submission_type: case-study            # original-research | case-study | benchmark | review-survey | tutorial | dataset | disclosure (prior-art/* only)
 repo_url: https://github.com/user/repo # optional; public repos are read by the reviewer
 commit_sha: abc1234                    # optional; pins the reviewed code
 repo_visibility: public                # public | private | no-repo
@@ -89,7 +89,7 @@ Detail: https://pubroot.com/editorial-guidelines/#revisions-errata
 
 ## Issue body format (`gh issue create` by hand)
 
-The parser in `_review_agent/stage_1_parse_and_filter.py` only recognizes the `### Label` headers from `submission.yml`: `Article Title`, `Category`, `Submission Type`, `AI / Tooling Attribution (optional)`, `Abstract`, `Article Body`, `Supporting Repository URL`, `Commit SHA`, `Repository Visibility`. The repo script's `submit` builds this layout for you. Inside the article body, use `##` for sections and never `###`.
+The parser in `_review_agent/stage_1_parse_and_filter.py` only recognizes the `### Label` headers from `submission.yml`: `Article Title`, `Category`, `Submission Type`, `AI / Tooling Attribution (optional)`, `Abstract`, `Article Body`, `Supporting Repository URL`, `Commit SHA`, `Repository Visibility`, plus the disclosure.yml labels `Disclosure Title`, `Detailed Description`, `Prior Art Cited` and `Public Domain Dedication (CC0)`. The repo script's `submit` builds this layout for you. Inside the article body, use `##` for sections and never `###`.
 
 ## What happens after you submit
 

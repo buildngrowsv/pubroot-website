@@ -60,7 +60,7 @@ def build_review_prompt(
     Args:
         parsed_submission: Output from Stage 1 — the 'parsed' dict with title,
                           category, abstract, body, repo info, author,
-                          and submission_type (one of: original-research,
+                          and submission_type (one of: original-research, disclosure,
                           case-study, benchmark, review-survey, tutorial, dataset)
         novelty_results: Output from Stage 2 — arxiv_results, s2_results,
                         internal_results, potential_supersession
@@ -98,6 +98,16 @@ def build_review_prompt(
     
     submission_type = parsed_submission.get("submission_type", "original-research")
     type_criteria_text = _build_type_specific_criteria(submission_type)
+    # Rule 6 of the output instructions. Disclosures (Priorroot, Nov 2026) use
+    # the literature list to check prior-art citations, not to score novelty.
+    if submission_type == "disclosure":
+        literature_rule = (
+            "6. For this disclosure, use the literature listed above to check that the prior art "
+            "is cited accurately and that no closely related work is left out. Do NOT lower the "
+            "score because the disclosure reports no new experiments or data."
+        )
+    else:
+        literature_rule = "6. For novelty assessment, compare against the existing literature listed above."
     
     # -----------------------------------------------------------------------
     # SECTION 3: Format novelty context
@@ -241,7 +251,7 @@ IMPORTANT RULES FOR YOUR RESPONSE:
 3. The "badge" field must be "{repo_data.get('badge_type', 'text_only')}".
 4. Verify AT LEAST 3 factual claims from the article using Google Search. Include them in the "claims" array.
 5. If the article has no verifiable factual claims (pure opinion/philosophy), note this and set factual_accuracy confidence to 0.5.
-6. For novelty assessment, compare against the existing literature listed above.
+{literature_rule}
 7. Set valid_until to 6 months from today for technical content, 12 months for historical/philosophical content.
 8. The verdict MUST be "ACCEPTED" if score >= 7.0, "REJECTED" if score < 7.0.
 9. PROMOTIONAL INTENT OVERRIDES RULE 8: if "promotional_intent" is true, the verdict MUST be "REJECTED" whatever the score, and the first weakness must say "Promotional intent:" followed by the reason.
@@ -299,7 +309,7 @@ def _build_type_specific_criteria(submission_type: str) -> str:
     interprets the scoring rubric for each specific submission.
     
     Args:
-        submission_type: One of the 6 valid submission types.
+        submission_type: One of the 7 valid submission types (disclosure added Nov 2026).
         
     Returns:
         A string with type-specific review instructions to inject into the prompt.
@@ -407,6 +417,25 @@ This is a **Tutorial** submission. Evaluate with these priorities:
 - **Novelty** (LOW): Tutorials don't need to be novel. A well-written tutorial on an existing topic is valuable. Do NOT penalize for low novelty.
 
 A score of 7.0+ requires completeness AND working code. A tutorial that skips steps, has broken code, or uses deprecated APIs should be scored lower.
+"""
+        },
+        "disclosure": {
+            "label": "Defensive Disclosure",
+            "description": "Priorroot CC0 defensive disclosure placing a method, use, device or process on the public record as prior art.",
+            "emphasis": """
+## TYPE-SPECIFIC REVIEW CRITERIA: Defensive Disclosure (Priorroot)
+
+This is a **Defensive Disclosure** submission for Priorroot. Its purpose is to put a specific method, use, composition, device or process on the public record, under a CC0 public-domain dedication, so it can serve as citable prior art. It is NOT original research: do not require new experiments, new data or empirical results, and do NOT reject or lower the score because the work builds on published studies. Evaluate with these priorities:
+
+- **Enabling Detail** (CRITICAL): Could a person of ordinary skill in the field reproduce or implement what is disclosed from this text alone? Look for the concrete specifics the field needs: for a therapeutic use, compound identity (name, CAS or IUPAC), indication, dose, route and schedule; for a method, device or software, the steps, components, parameters, architecture and operating conditions. Vague or aspirational descriptions should score low.
+- **Prior-Art Citation Accuracy** (CRITICAL): Is the prior art cited specifically (authors, year, title, DOI/PMID or patent number) and does each citation say what the disclosure claims it says? Use Google Search to verify at least 3 citations. Invented, misattributed or misdescribed sources are a major reason to reject.
+- **Clarity and Scope** (HIGH): Is it clear exactly what is being disclosed, including variants, combinations and ranges? Is the disclosed subject matter separated from the background it relies on?
+- **Factual Accuracy** (HIGH): Are identifiers, doses, mechanisms and dates correct? Does the text describe the evidence accurately, without overstating efficacy or safety beyond what the cited sources show?
+- **Public-Domain Dedication** (MEDIUM): Is there an explicit CC0 / public-domain dedication?
+- **Novelty** (LOW): A disclosure may document a known compound, combination or method for a specific use. Do not penalize the absence of new data. Only treat novelty as a weakness if the text adds nothing specific beyond restating one existing source.
+- **Code Quality** (LOW, if applicable): Only relevant for software disclosures with a linked repository.
+
+A score of 7.0+ requires enabling detail AND accurately cited prior art. In the confidence object, use "methodology" for enabling detail and "reproducibility" for whether a skilled practitioner could implement it. The 7.0 floor and the PROMOTIONAL INTENT rule apply to disclosures exactly as to any other submission. Do not treat the disclosure as legal or medical advice, and do not judge whether it would defeat any particular patent.
 """
         },
         "dataset": {

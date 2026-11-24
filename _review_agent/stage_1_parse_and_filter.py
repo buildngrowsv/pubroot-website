@@ -43,6 +43,14 @@ from datetime import datetime, timezone, timedelta
 from typing import Optional
 
 
+# Valid values of the "Submission Type" field. "disclosure" was added in
+# Nov 2026 for Priorroot defensive disclosures (CC0 prior art).
+VALID_SUBMISSION_TYPES = [
+    "original-research", "case-study", "benchmark",
+    "review-survey", "tutorial", "dataset", "disclosure",
+]
+
+
 def parse_and_filter_submission(
     issue_body: str,
     repo_root: str,
@@ -76,7 +84,7 @@ def parse_and_filter_submission(
                 - 'category' (str): full "journal/topic" slug (e.g., "ai/llm-benchmarks")
                 - 'journal' (str): journal slug extracted from category (e.g., "ai")
                 - 'topic' (str): topic slug extracted from category (e.g., "llm-benchmarks")
-                - 'submission_type' (str): one of original-research, case-study, benchmark, review-survey, tutorial, dataset
+                - 'submission_type' (str): one of original-research, case-study, benchmark, review-survey, tutorial, dataset, disclosure
                 - 'abstract' (str)
                 - 'body' (str): full article text
                 - 'supporting_repo' (str or None)
@@ -108,7 +116,11 @@ def parse_and_filter_submission(
 
     # Map form field labels to our internal field names
     # The labels must match EXACTLY what's in submission.yml
-    title = parsed_fields.get("Article Title", "").strip()
+    # "Disclosure Title" is the title label on the disclosure.yml form (Nov 2026).
+    title = (
+        parsed_fields.get("Article Title", "").strip()
+        or parsed_fields.get("Disclosure Title", "").strip()
+    )
     category = parsed_fields.get("Category", "").strip()
     # -----------------------------------------------------------------------
     # SUBMISSION TYPE (added Feb 2026)
@@ -125,14 +137,16 @@ def parse_and_filter_submission(
     # "original-research" as the most conservative/strictest review type.
     # -----------------------------------------------------------------------
     submission_type = parsed_fields.get("Submission Type", "original-research").strip()
-    valid_submission_types = [
-        "original-research", "case-study", "benchmark",
-        "review-survey", "tutorial", "dataset"
-    ]
-    if submission_type not in valid_submission_types:
+    # "disclosure" (Nov 2026) is the Priorroot defensive-disclosure type. It is
+    # judged on clarity, enabling detail and accurate citing of prior art, not
+    # on novel data (see stage_4_build_review_prompt.py). Older Priorroot
+    # issues typed "defensive-disclosure" by hand; treat that as an alias.
+    submission_type_aliases = {"defensive-disclosure": "disclosure"}
+    submission_type = submission_type_aliases.get(submission_type.lower(), submission_type)
+    if submission_type not in VALID_SUBMISSION_TYPES:
         warnings.append(
             f"Unknown submission type '{submission_type}'. Defaulting to 'original-research'. "
-            f"Valid types are: {', '.join(valid_submission_types)}"
+            f"Valid types are: {', '.join(VALID_SUBMISSION_TYPES)}"
         )
         submission_type = "original-research"
     # Accept both "AI / Tooling Attribution (optional)" and "AI / Tooling Attribution"
@@ -144,6 +158,17 @@ def parse_and_filter_submission(
     )
     abstract = parsed_fields.get("Abstract", "").strip()
     body = parsed_fields.get("Article Body", "").strip()
+    # Disclosure form fields (disclosure.yml). The form splits the body into
+    # "Detailed Description" and "Prior Art Cited"; we join them into one
+    # article body so stages 2-6 and the published page see one document.
+    # Issues that use the article layout ("Article Body") keep that body as is.
+    disclosure_description = parsed_fields.get("Detailed Description", "").strip()
+    prior_art_cited = parsed_fields.get("Prior Art Cited", "").strip()
+    cc0_dedication = parsed_fields.get("Public Domain Dedication (CC0)", "").strip()
+    if not body and disclosure_description:
+        body = disclosure_description
+        if prior_art_cited:
+            body += "\n\n## Prior Art Cited\n\n" + prior_art_cited
     supporting_repo = parsed_fields.get("Supporting Repository URL", "").strip() or None
     commit_sha = parsed_fields.get("Commit SHA", "").strip() or None
     repo_visibility = parsed_fields.get("Repository Visibility", "no-repo").strip()
@@ -160,7 +185,8 @@ def parse_and_filter_submission(
     if not abstract:
         errors.append("Missing required field: Abstract")
     if not body:
-        errors.append("Missing required field: Article Body")
+        body_label = "Detailed Description" if "Detailed Description" in parsed_fields else "Article Body"
+        errors.append(f"Missing required field: {body_label}")
 
     # -----------------------------------------------------------------------
     # STEP 3: Validate word counts
@@ -269,6 +295,55 @@ def parse_and_filter_submission(
                     f"Unknown topic '{topic_slug}' in journal '{journal_slug}'. "
                     f"Valid topics for {journal_slug} are: {', '.join(known_topics)}"
                 )
+
+    # -----------------------------------------------------------------------
+    # STEP 4b: Disclosure-type rules (Priorroot, Nov 2026)
+    # -----------------------------------------------------------------------
+    # A disclosure must target a prior-art/* topic, cite prior art, and carry
+    # an explicit CC0 / public-domain dedication. A prior-art/* submission of
+    # another type is still accepted for review (and judged by that type's
+    # rubric, as before), but gets a warning pointing at the disclosure type.
+    # -----------------------------------------------------------------------
+
+    # journals.json marks the Priorroot journal with "submission_type":
+    # "disclosure" (and "license": "CC0-1.0"); fall back to the prior-art slug
+    # if the file could not be read.
+    disclosure_journals = {
+        j_slug for j_slug, j_data in ((journals_data or {}).get("journals", {}) or {}).items()
+        if isinstance(j_data, dict) and j_data.get("submission_type") == "disclosure"
+    } or {"prior-art"}
+    is_disclosure = submission_type == "disclosure"
+    if is_disclosure:
+        if journal_slug and journal_slug not in disclosure_journals:
+            errors.append(
+                f"Submission type 'disclosure' requires a prior-art/* category "
+                f"(got '{category}'). Pick a Defensive Disclosures & Prior Art topic."
+            )
+        if "Prior Art Cited" in parsed_fields:
+            if not prior_art_cited:
+                errors.append("Missing required field: Prior Art Cited")
+        elif not _has_prior_art_citations(body):
+            errors.append(
+                "Disclosures must cite prior art: add a 'Prior Art' or 'References' "
+                "section with links or identifiers (DOI, PMID, patent numbers)."
+            )
+        if "Public Domain Dedication (CC0)" in parsed_fields:
+            if not re.search(r"^\s*-\s*\[[xX]\]", cc0_dedication, flags=re.MULTILINE):
+                errors.append(
+                    "Missing required CC0 public-domain dedication: tick the "
+                    "'Public Domain Dedication (CC0)' box."
+                )
+        elif not re.search(r"\bCC0\b|public[ -]domain", f"{abstract}\n{body}", flags=re.IGNORECASE):
+            errors.append(
+                "Disclosures must include an explicit CC0 / public-domain dedication."
+            )
+    elif journal_slug in disclosure_journals:
+        warnings.append(
+            "This prior-art/* submission is typed "
+            f"'{submission_type}'. Defensive disclosures should use submission type "
+            "'disclosure', which is judged on enabling detail and prior-art citation "
+            "rather than novel data."
+        )
 
     # -----------------------------------------------------------------------
     # STEP 5: Check topic slot availability (refresh rate enforcement)
@@ -423,7 +498,7 @@ def parse_and_filter_submission(
             "category": category,          # Full "journal/topic" slug (e.g., "ai/llm-benchmarks")
             "journal": journal_slug,        # Journal slug only (e.g., "ai")
             "topic": topic_slug,            # Topic slug only (e.g., "llm-benchmarks")
-            "submission_type": submission_type,  # One of: original-research, case-study, benchmark, review-survey, tutorial, dataset
+            "submission_type": submission_type,  # One of: original-research, case-study, benchmark, review-survey, tutorial, dataset, disclosure
             "abstract": abstract,
             "body": body,
             "supporting_repo": supporting_repo,
@@ -436,6 +511,11 @@ def parse_and_filter_submission(
             "word_count_body": word_count_body,
         }
     }
+    if is_disclosure:
+        # Publication metadata for Priorroot disclosures (stage 6 frontmatter,
+        # manifest and index; Hugo shows a "Defensive disclosure · CC0" badge).
+        result["parsed"]["license"] = "CC0-1.0"
+        result["parsed"]["prior_art_cited"] = prior_art_cited or None
 
     return result
 
@@ -692,6 +772,22 @@ def _tfidf_cosine_similarity(words1: list, words2: list) -> float:
     return dot_product / (mag1 * mag2)
 
 
+def _has_prior_art_citations(body: str) -> bool:
+    """
+    True if a disclosure body visibly cites prior art: a Prior Art / References
+    / Citations / Bibliography heading, or at least two links or identifiers
+    (URL, DOI, PMID, or a US/EP/WO patent number). This is a floor check for
+    issues that use the article layout; the reviewer judges citation accuracy.
+    """
+    if not body:
+        return False
+    if re.search(r"^#{1,6}\s*(?:\d+[.)]?\s*)?(prior art|references|citations|bibliography|works cited)\b",
+                 body, flags=re.IGNORECASE | re.MULTILINE):
+        return True
+    ids = re.findall(r"https?://\S+|\b10\.\d{4,9}/\S+|\bPMID:?\s*\d+|\b(?:US|EP|WO)\s?\d{4,}", body)
+    return len(ids) >= 2
+
+
 def _extract_form_fields(issue_body: str) -> dict:
     """
     Parse a GitHub Issue form response into label-value pairs.
@@ -740,6 +836,11 @@ def _extract_form_fields(issue_body: str) -> dict:
         "Repository Visibility",
         "Payment Code (Optional)",
         "Submission Agreement",
+        # disclosure.yml (Priorroot defensive disclosures, Nov 2026)
+        "Disclosure Title",
+        "Detailed Description",
+        "Prior Art Cited",
+        "Public Domain Dedication (CC0)",
     ]
 
     fields = {}

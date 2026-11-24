@@ -1,0 +1,196 @@
+# GitHub Issue Form Template for Priorroot Defensive Disclosures (Nov 2026)
+#
+# A defensive disclosure puts a specific method, use, composition, device or
+# process on the public record under CC0 so it can serve as citable prior art.
+# It is reviewed by the same six-stage pipeline as articles, with the
+# "disclosure" rubric (stage_4_build_review_prompt.py): enabling detail,
+# accurate citing of prior art and clarity, not novel data.
+#
+# The review pipeline (_review_agent/stage_1_parse_and_filter.py) parses the
+# "### Label" headers GitHub renders from this form. Labels shared with
+# submission.yml (Category, Submission Type, AI / Tooling Attribution
+# (optional), Abstract, Supporting Repository URL, Commit SHA, Repository
+# Visibility, Payment Code (Optional), Submission Agreement) must stay
+# identical. The disclosure-only labels are "Disclosure Title", "Detailed
+# Description", "Prior Art Cited" and "Public Domain Dedication (CC0)".
+# If you change any label here, update KNOWN_LABELS in the parser too.
+#
+# Categories must be prior-art/* topics from journals.json. If a prior-art
+# topic is added there, add it here.
+#
+# The issue title keeps the "[SUBMISSION] " prefix: author_gating.py counts
+# "[SUBMISSION]" titles for the per-author daily rate limit.
+
+name: "🛡️ Defensive Disclosure (Priorroot)"
+description: "Place a method, use, device or process in the public domain (CC0) as citable prior art"
+title: "[SUBMISSION] "
+labels: ["submission", "pending-review"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Priorroot — Defensive Disclosure
+
+        Use this form to publish a **defensive disclosure**: a specific, enabling description of a method, therapeutic use, composition, device or process, dedicated to the public domain under **CC0 1.0** so it can be cited as prior art.
+
+        Disclosures go through the same automated review as articles, but are judged on:
+
+        1. **Enabling detail** — could a person of ordinary skill reproduce or implement it from your text?
+        2. **Accurate prior-art citations** — specific sources (authors, year, DOI/PMID, patent numbers) that say what you say they say
+        3. **Clarity and scope** — exactly what is disclosed, including variants, combinations and ranges
+        4. **Factual accuracy** — identifiers, doses, parameters and mechanisms are correct
+
+        New experiments or data are **not** required. **If accepted (score ≥ 7.0/10),** the disclosure is published on [pubroot.com/priorroot](https://pubroot.com/priorroot/) marked as a CC0 defensive disclosure.
+
+        **Promotional submissions are rejected.** Submissions whose likely primary purpose is promotion, backlinks, or reputation-building for a product, company or person are rejected, whatever their score. See [Editorial Guidelines — Promotional & SEO Submissions](https://pubroot.com/editorial-guidelines/#promotional-submissions).
+
+        Priorroot is not legal advice, and publication does not guarantee that a disclosure will be treated as prior art against any particular patent.
+
+        **Do not include personal, patient or health data about real people.**
+
+  - type: input
+    id: disclosure-title
+    attributes:
+      label: "Disclosure Title"
+      description: "Name what is disclosed and for what use, e.g. compound + indication, or method + application."
+      placeholder: "e.g., Berberine for AMPK-Mediated Glycemic Control in Type 2 Diabetes — Defensive Therapeutic-Use Disclosure"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: "Category"
+      description: "The Priorroot topic (journal/topic) that best fits the disclosure."
+      options:
+        - "prior-art/therapeutic-use"
+        - "prior-art/device-method"
+        - "prior-art/software-method"
+        - "prior-art/materials-process"
+        - "prior-art/general-disclosure"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: submission-type
+    attributes:
+      label: "Submission Type"
+      description: "Fixed to 'disclosure' on this form. Use the Article Submission form for research, case studies and other types."
+      options:
+        - "disclosure"
+      default: 0
+    validations:
+      required: true
+
+  - type: textarea
+    id: ai-tooling-attribution
+    attributes:
+      label: "AI / Tooling Attribution (optional)"
+      description: "If drafting or research relied on specific models or tools, name them here. This is shown on the published disclosure."
+      placeholder: "e.g., Claude (Anthropic) for research synthesis; all cited studies checked against PubMed and Google Patents."
+    validations:
+      required: false
+
+  - type: textarea
+    id: abstract
+    attributes:
+      label: "Abstract"
+      description: "A self-contained summary (300 words max): what is disclosed, for what use, the key parameters, and the CC0 dedication."
+      placeholder: |
+        This defensive disclosure places into the public domain [the method / use / device] for [application], comprising [key elements and parameters].
+        It is supported by [prior work], and is dedicated to the public domain under CC0 1.0 as prior art.
+    validations:
+      required: true
+
+  - type: textarea
+    id: detailed-description
+    attributes:
+      label: "Detailed Description"
+      description: "The enabling description in Markdown (minimum 200 words together with the prior-art section). Give enough detail for a skilled practitioner to reproduce or implement it. Use ## for sections."
+      placeholder: |
+        ## Subject Matter Disclosed
+
+        Exactly what is disclosed: the compound (name, CAS/IUPAC), device, process or algorithm, and its use.
+
+        ## Enabling Detail
+
+        Steps, components, parameters, doses/routes/schedules, operating conditions, architecture.
+
+        ## Variants and Combinations
+
+        Alternative embodiments, ranges, combinations and applications covered.
+
+        ## Supporting Evidence
+
+        What the published literature shows, described accurately.
+
+        ## Public Domain Dedication
+
+        This disclosure is dedicated to the public domain under CC0 1.0.
+      render: markdown
+    validations:
+      required: true
+
+  - type: textarea
+    id: prior-art-cited
+    attributes:
+      label: "Prior Art Cited"
+      description: "List the prior art this disclosure builds on or distinguishes itself from: papers (DOI/PMID), patents and applications (number), and other public sources. One per line."
+      placeholder: |
+        - Author et al. (Year). Title. Journal. https://doi.org/...
+        - US 1,234,567 B2 — Title (Assignee, Year)
+    validations:
+      required: true
+
+  - type: input
+    id: supporting-repo
+    attributes:
+      label: "Supporting Repository URL"
+      description: "Optional. For software or device disclosures, a repository with code, schematics or data."
+      placeholder: "https://github.com/your-username/your-repo"
+    validations:
+      required: false
+
+  - type: input
+    id: commit-sha
+    attributes:
+      label: "Commit SHA"
+      description: "Optional. Pin the disclosure to a specific commit in the supporting repository."
+      placeholder: "abc123def456..."
+    validations:
+      required: false
+
+  - type: dropdown
+    id: repo-visibility
+    attributes:
+      label: "Repository Visibility"
+      description: "Is your supporting repository public or private?"
+      options:
+        - "public"
+        - "private"
+        - "no-repo"
+      default: 2
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: cc0-dedication
+    attributes:
+      label: "Public Domain Dedication (CC0)"
+      description: "Defensive disclosures are published under CC0 1.0 so anyone can cite and use them."
+      options:
+        - label: "I dedicate this disclosure to the public domain under CC0 1.0 (https://creativecommons.org/publicdomain/zero/1.0/) and have the right to do so"
+          required: true
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: "Submission Agreement"
+      description: "Please confirm the following:"
+      options:
+        - label: "I confirm this is original work or properly attributed, and contains no personal or patient data"
+          required: true
+        - label: "I understand the review is performed by AI and results are published publicly"
+          required: true
+        - label: "I understand Priorroot is not legal advice and publication does not guarantee prior-art effect"
+          required: true

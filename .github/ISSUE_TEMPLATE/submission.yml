@@ -246,7 +246,7 @@ body:
     id: submission-type
     attributes:
       label: "Submission Type"
-      description: "What type of submission is this? Each type is judged by different criteria. See https://pubroot.com/editorial-guidelines/ for details."
+      description: "What type of submission is this? Each type is judged by different criteria. See https://pubroot.com/editorial-guidelines/ for details. Use 'disclosure' only for Priorroot defensive disclosures in a prior-art/* category (the Defensive Disclosure form is easier)."
       options:
         - "original-research"
         - "case-study"
@@ -254,6 +254,7 @@ body:
         - "review-survey"
         - "tutorial"
         - "dataset"
+        - "disclosure"
       default: 0
     validations:
       required: true

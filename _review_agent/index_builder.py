@@ -207,6 +207,8 @@ def build_index_entry_from_data(
     review_path: str | None = None,
     supporting_repo: str | None = None,
     ai_tooling_attribution: str | None = None,
+    submission_type: str | None = None,
+    license: str | None = None,
 ) -> dict:
     """
     Build an index entry from in-memory data (used by stage 6).
@@ -229,6 +231,8 @@ def build_index_entry_from_data(
         review_path: Path to review.json (e.g., "reviews/2026-042/review.json")
         supporting_repo: GitHub repo URL (optional)
         ai_tooling_attribution: AI tooling attribution text (optional)
+        submission_type: Only set for Priorroot disclosures ("disclosure")
+        license: Only set for Priorroot disclosures ("CC0-1.0")
         
     Returns:
         dict: An index entry with normalized fields in the correct order
@@ -264,6 +268,13 @@ def build_index_entry_from_data(
     if ai_tooling_attribution:
         ai_attr_str = str(ai_tooling_attribution).rstrip() if isinstance(ai_tooling_attribution, str) else str(ai_tooling_attribution)
         entry["ai_tooling_attribution"] = ai_attr_str
+    
+    # Priorroot disclosure metadata (Nov 2026). Omitted for every other type,
+    # matching build_index_entry, which only copies these from frontmatter.
+    if submission_type:
+        entry["submission_type"] = str(submission_type)
+    if license:
+        entry["license"] = str(license)
     
     return entry
 
@@ -389,6 +400,12 @@ def build_index_entry(
         if isinstance(ai_attr, str):
             ai_attr = ai_attr.rstrip()
         entry["ai_tooling_attribution"] = ai_attr
+    
+    # Priorroot disclosure metadata (Nov 2026); absent on all older papers.
+    if fm.get("submission_type"):
+        entry["submission_type"] = str(fm["submission_type"])
+    if fm.get("license"):
+        entry["license"] = str(fm["license"])
     
     return entry
 

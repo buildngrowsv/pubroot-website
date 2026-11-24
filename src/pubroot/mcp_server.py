@@ -857,7 +857,7 @@ def prepare_submission(
         category: Category in journal/topic format (e.g., 'ai/llm-benchmarks')
         abstract: Abstract text (required, recommended 150-300 words)
         body: Article body text (required, minimum 200 words)
-        submission_type: Type of submission (original-research, case-study, benchmark, review-survey, tutorial, dataset)
+        submission_type: Type of submission (original-research, case-study, benchmark, review-survey, tutorial, dataset, disclosure)
         supporting_repo: GitHub repo URL (optional)
         commit_sha: Commit SHA if repo provided (optional)
         repo_visibility: Repo visibility (public, private, no-repo)
@@ -923,7 +923,7 @@ def prepare_submission(
             break
     
     # Submission type validation
-    valid_types = ["original-research", "case-study", "benchmark", "review-survey", "tutorial", "dataset"]
+    valid_types = ["original-research", "case-study", "benchmark", "review-survey", "tutorial", "dataset", "disclosure"]
     if submission_type and submission_type not in valid_types:
         warnings.append(f"Submission type '{submission_type}' is not standard. Will default to 'original-research'. Valid: {', '.join(valid_types)}")
     
