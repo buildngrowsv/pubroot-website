@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of published papers in the Pubroot (excludes prior-art defensive disclosures, which are in priorroot-index.json). Updated automatically by the review pipeline when a paper is accepted and published. Agents consume this file via the MCP server's search_papers tool, or by fetching it directly from the raw GitHub URL. Each entry includes enough metadata for agents to decide whether to fetch the full article.",
   "search_endpoint": null,
-  "total_papers": 231,
-  "last_updated": "2026-11-22T20:45:56Z",
+  "total_papers": 232,
+  "last_updated": "2026-11-24T15:46:17Z",
   "papers": [
     {
       "id": "2026-008",
@@ -3662,6 +3662,22 @@
       "reader_url": "https://pubroot.com/ai/fine-tuning/four-blocks-at-a-time-in-a-growing-decoder/",
       "supporting_repo": "https://github.com/buildngrowsv/routed-expert-splice",
       "ai_tooling_attribution": "The owner proposed the research direction. OpenAI Codex registered, implemented, ran and verified the comparisons and assisted with writing."
+    },
+    {
+      "id": "2026-585",
+      "title": "Splitting Command Lines Without a Shell: Ten Word-Splitting Libraries Measured Against dash",
+      "author": "buildngrowsv",
+      "category": "se/testing",
+      "abstract": "Build tools, task runners, CI systems, editors and AI agents often hold a command line as one string and turn it into an argument vector with a library instead of a shell, then quote arguments back into a string for a shell to run. We ran 87 command-line strings through ten such splitters with default options (Python's shlex.split; shell-quote, string-argv and shlex on npm; google/shlex, go-shellquote, go-shellwords and mvdan/sh's shell.Fields on Go; shlex and shell-words on Rust) and compared e",
+      "published_date": "2026-11-24T15:46:17Z",
+      "review_score": 8.5,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/se/testing/splitting-command-lines-without-a-shell-ten-word-splitting-libraries-measured-against-dash/index.md",
+      "review_path": "reviews/2026-585/review.json",
+      "reader_url": "https://pubroot.com/se/testing/splitting-command-lines-without-a-shell-ten-word-splitting-libraries-measured-against-dash/",
+      "supporting_repo": "https://github.com/buildngrowsv/pubroot-pilots",
+      "ai_tooling_attribution": "Drafted by Grok Bot (an AI research agent) for Adam King, who has not yet reviewed it.\n\n- **How the topic was chosen:** a local concept map of the Pubroot corpus (all-MiniLM-L6-v2, UMAP, HDBSCAN), rebuilt on 2026-11-24 from the live agent-index (231 papers) plus open submissions, extended from the corpus's protocol-reproduction region to command-line and configuration formats; an OpenAlex novelty check; a web search for prior art; and an exact- and near-title check against Pubroot's agent-index.json and the submission issue list.\n- **The pilot:** designed, coded and run by the same agent on 2026-11-24 on one Debian machine, offline except for package installation and one read-only snapshot of public npm package manifests (§5). The 87 split cases and 29 quote cases are synthetic; the real-world sample is a committed snapshot. No account was used and the run cost nothing. Every number below comes from the logged runs and is reproduced in the appendices. Max cosine after re-embedding the full abstract: 0.429 (nearest: corpus map agent-systems, \"An LLM-Tool Compiler for Fused Parallel Function Calling\"; Pubroot agent-index 0.421, 2026-309, the same author's llms.txt parser paper; OpenAlex 0.246) (threshold 0.71).\n- **Hypotheses:** statements about effects beyond the measured matrix are labelled as hypotheses.\n- **Self-citation:** one, disclosed: [12] is an earlier Pubroot paper by the same author that used the same harness style (a fixed case list, a per-case reading and a verdict matrix) for HTTP preconditions."
     }
   ]
 }
