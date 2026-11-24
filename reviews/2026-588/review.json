@@ -1,0 +1,77 @@
+{
+  "paper_id": "2026-588",
+  "score": 8.3,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This benchmark conducts a rigorous differential analysis of seven widely used Git configuration parser libraries across Python, Node.js, Go, and Rust against canonical git config output. Using a 76-file synthetic suite and a 39-repository dotfiles corpus, the authors demonstrate systematic discrepancies in quote stripping, line continuation, and bare boolean handling, particularly in INI-derived parsers.",
+  "strengths": [
+    "Rigorous differential testing methodology treating git config --list -z as the ground-truth oracle.",
+    "Comprehensive test case coverage (76 synthetic edge cases categorized into structure, names, subsections, values, and practical files).",
+    "Empirical grounding via 39 pinned real-world dotfiles repositories demonstrating real-world prevalence of syntax misinterpretations.",
+    "Careful taxonomy of deviations (A, T, W, R, L) distinguishing harmless canonicalizations from functional or potential injection flaws."
+  ],
+  "weaknesses": [
+    "Isomorphic-git is tested by inspecting internal/undocumented fields (parsedConfig) rather than purely public consumer APIs.",
+    "The evaluation is restricted to read operations with default options and ignores include/includeIf directives and configuration writers.",
+    "Only a single reference Git version (2.47.3) is used, leaving historical parser behavior changes untested."
+  ],
+  "suggestions": [
+    "Extend the test harness to evaluate include and includeIf conditional resolution across libraries supporting it.",
+    "Test multi-version Git baselines to document when specific edge-case behaviors (like bare keys or end-of-file backslashes) stabilized.",
+    "Submit upstream bug reports or conformance pull requests to the affected libraries (especially parse-git-config and go-git)."
+  ],
+  "confidence": {
+    "methodology": 0.95,
+    "factual_accuracy": 0.95,
+    "novelty": 0.9,
+    "code_quality": null,
+    "writing_quality": 0.95,
+    "reproducibility": 0.85
+  },
+  "claims": [
+    {
+      "text": "CVE-2023-29007 was a git bug in which a value longer than 1024 bytes, written back during a section rename, was split so that a [ in the remainder started a new section; a malicious .gitmodules could thereby set core.pager or core.sshCommand.",
+      "verified": true,
+      "source": "https://github.com/git/git/security/advisories/GHSA-v48j-4xgg-4844",
+      "confidence": 0.98
+    },
+    {
+      "text": "The git-config documentation defines a variable with no = that means boolean true, which is different from an empty value that means false.",
+      "verified": true,
+      "source": "https://git-scm.com/docs/git-config#_configuration_file",
+      "confidence": 0.99
+    },
+    {
+      "text": "The git-config documentation defines case-insensitive section and variable names but case-sensitive subsection names; double-quoted subsections with their own escapes; values in which double quotes are removed and may appear anywhere, # and ; start a comment only outside quotes, and the escapes \\n, \\t, \\b, \\\" and \\\\ are recognised while any other escape is an error.",
+      "verified": true,
+      "source": "https://git-scm.com/docs/git-config#_syntax",
+      "confidence": 0.98
+    }
+  ],
+  "novelty_vs_existing": [],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-24T15:49:00Z",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-24T15:49:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 0,
+    "usage": {
+      "prompt_tokens": 18106,
+      "completion_tokens": 1960,
+      "reasoning_tokens": 937,
+      "total_tokens": 20066,
+      "cost_usd": 0.066022175
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
