@@ -291,8 +291,20 @@ def post_review_and_decide(
     # submitter gets human-readable feedback directly on their Issue.
     # -----------------------------------------------------------------------
     
-    comment = _format_review_comment(review, grounding, paper_id, score, verdict)
+    comment = _format_review_comment(
+        review, grounding, paper_id, score, verdict,
+        notes=parsed_submission.get("stage1_warnings"),
+    )
     gh.post_comment(issue_number, comment)
+
+    # Priorroot disclosures (explicit or auto-switched in stage 1) carry the
+    # `disclosure` label so they can be filtered in the issue list. Labelling
+    # is cosmetic: a failure here must never block the accept/reject flow.
+    if parsed_submission.get("submission_type") == "disclosure":
+        try:
+            gh.add_labels(issue_number, ["disclosure"])
+        except Exception as e:  # noqa: BLE001
+            print(f"[Stage 6] Could not add 'disclosure' label (non-fatal): {e}")
 
     # -----------------------------------------------------------------------
     # CASE 2: ACCEPTED — Publish to repo (PR with merge, or direct-to-main fallback)
@@ -1796,7 +1808,8 @@ def _update_contributors(
 
 
 def _format_review_comment(
-    review: dict, grounding: dict, paper_id: str, score: float, verdict: str
+    review: dict, grounding: dict, paper_id: str, score: float, verdict: str,
+    notes: Optional[list] = None,
 ) -> str:
     """
     Format the review JSON into a readable Markdown comment for the GitHub Issue.
@@ -1886,6 +1899,14 @@ def _format_review_comment(
             title = src.get("title", "Untitled")
             uri = src.get("uri", "")
             lines.append(f"- [{title}]({uri})")
+        lines.append("")
+    
+    # Stage-1 notes (Nov 2026): validation warnings that did not block review,
+    # e.g. "Submission type switched from 'original-research' to 'disclosure'".
+    if notes:
+        lines.append("## Submission Notes")
+        for note in notes:
+            lines.append(f"- {note}")
         lines.append("")
     
     # Footer

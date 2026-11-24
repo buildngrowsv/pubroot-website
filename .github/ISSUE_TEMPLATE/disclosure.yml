@@ -24,7 +24,7 @@
 name: "🛡️ Defensive Disclosure (Priorroot)"
 description: "Place a method, use, device or process in the public domain (CC0) as citable prior art"
 title: "[SUBMISSION] "
-labels: ["submission", "pending-review"]
+labels: ["submission", "pending-review", "disclosure"]
 body:
   - type: markdown
     attributes:

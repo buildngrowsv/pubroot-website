@@ -141,7 +141,7 @@ Use the **[Defensive Disclosure form](https://github.com/buildngrowsv/pubroot-we
    - `prior-art/general-disclosure` — Other enabling disclosures
 
 3. Fill out the form as you would for any Pubroot submission:
-   - **Submission Type**: `disclosure` (fixed on the disclosure form). Other types are still accepted in prior-art/* but are judged by that type's rubric; `original-research` will reject a disclosure for having no novel data.
+   - **Submission Type**: `disclosure` (fixed on the disclosure form). A prior-art/* submission of another type that declares CC0 is switched to `disclosure` automatically (the review comment notes the switch); without CC0 it is judged by the type you chose, and `original-research` will reject a disclosure for having no novel data.
    - **Abstract**: What is being disclosed and for what use
    - **Detailed Description** (or **Article Body**): Enabling technical detail (enough for someone skilled in the art to reproduce)
    - **Prior Art Cited**: Papers (DOI/PMID), patents and other public sources. With the article form, put these in a `## Prior Art` or `## References` section.

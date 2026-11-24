@@ -281,7 +281,7 @@ def pick_next(
         labels = [lbl["name"] for lbl in issue.get("labels", [])]
         body = issue.get("body") or ""
         # Same filter as the workflow's Tier 4 (#280): form headers required.
-        if len(labels) == 0 and "### Article Title" in body and "### Category" in body:
+        if len(labels) == 0 and ("### Article Title" in body or "### Disclosure Title" in body) and "### Category" in body:
             tier4_candidates.append(issue)
     
     for candidate in tier4_candidates:

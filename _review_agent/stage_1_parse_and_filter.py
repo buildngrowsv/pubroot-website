@@ -300,9 +300,13 @@ def parse_and_filter_submission(
     # STEP 4b: Disclosure-type rules (Priorroot, Nov 2026)
     # -----------------------------------------------------------------------
     # A disclosure must target a prior-art/* topic, cite prior art, and carry
-    # an explicit CC0 / public-domain dedication. A prior-art/* submission of
-    # another type is still accepted for review (and judged by that type's
-    # rubric, as before), but gets a warning pointing at the disclosure type.
+    # an explicit CC0 / public-domain dedication.
+    #
+    # AUTO-SWITCH (follow-up to PR #582): a prior-art/* submission of another
+    # type that declares CC0 is a defensive disclosure in all but name, so it
+    # is switched to "disclosure" (and judged by the disclosure rubric) with a
+    # warning that stage 6 shows in the review comment. Without a CC0
+    # declaration it keeps the type it chose, plus a warning.
     # -----------------------------------------------------------------------
 
     # journals.json marks the Priorroot journal with "submission_type":
@@ -312,6 +316,19 @@ def parse_and_filter_submission(
         j_slug for j_slug, j_data in ((journals_data or {}).get("journals", {}) or {}).items()
         if isinstance(j_data, dict) and j_data.get("submission_type") == "disclosure"
     } or {"prior-art"}
+    has_cc0_field = "Public Domain Dedication (CC0)" in parsed_fields
+    declares_cc0 = _declares_cc0(parsed_fields, abstract, body)
+
+    if (submission_type != "disclosure" and journal_slug in disclosure_journals
+            and declares_cc0):
+        warnings.append(
+            f"Submission type switched from '{submission_type}' to 'disclosure': this "
+            f"{category} submission declares a CC0 public-domain dedication, so it is "
+            "reviewed as a defensive disclosure (enabling detail and prior-art "
+            "citation, not novel data)."
+        )
+        submission_type = "disclosure"
+
     is_disclosure = submission_type == "disclosure"
     if is_disclosure:
         if journal_slug and journal_slug not in disclosure_journals:
@@ -327,16 +344,16 @@ def parse_and_filter_submission(
                 "Disclosures must cite prior art: add a 'Prior Art' or 'References' "
                 "section with links or identifiers (DOI, PMID, patent numbers)."
             )
-        if "Public Domain Dedication (CC0)" in parsed_fields:
-            if not re.search(r"^\s*-\s*\[[xX]\]", cc0_dedication, flags=re.MULTILINE):
+        if not declares_cc0:
+            if has_cc0_field:
                 errors.append(
                     "Missing required CC0 public-domain dedication: tick the "
                     "'Public Domain Dedication (CC0)' box."
                 )
-        elif not re.search(r"\bCC0\b|public[ -]domain", f"{abstract}\n{body}", flags=re.IGNORECASE):
-            errors.append(
-                "Disclosures must include an explicit CC0 / public-domain dedication."
-            )
+            else:
+                errors.append(
+                    "Disclosures must include an explicit CC0 / public-domain dedication."
+                )
     elif journal_slug in disclosure_journals:
         warnings.append(
             "This prior-art/* submission is typed "
@@ -511,6 +528,10 @@ def parse_and_filter_submission(
             "word_count_body": word_count_body,
         }
     }
+    # Stage-1 warnings travel with the parsed submission so stage 6 can show
+    # them in the public review comment ("Submission Notes"), e.g. the
+    # disclosure auto-switch notice.
+    result["parsed"]["stage1_warnings"] = list(warnings)
     if is_disclosure:
         # Publication metadata for Priorroot disclosures (stage 6 frontmatter,
         # manifest and index; Hugo shows a "Defensive disclosure · CC0" badge).
@@ -770,6 +791,21 @@ def _tfidf_cosine_similarity(words1: list, words2: list) -> float:
         return 0.0
     
     return dot_product / (mag1 * mag2)
+
+
+def _declares_cc0(parsed_fields: dict, abstract: str, body: str) -> bool:
+    """
+    True if the submission declares a CC0 / public-domain dedication: the
+    disclosure form's "Public Domain Dedication (CC0)" box is ticked, or (for
+    issues without that field) "CC0" or "public domain" appears in the
+    abstract or body. Shared by disclosure validation and the auto-switch.
+    """
+    if "Public Domain Dedication (CC0)" in parsed_fields:
+        return bool(re.search(r"^\s*-\s*\[[xX]\]",
+                              parsed_fields.get("Public Domain Dedication (CC0)", ""),
+                              flags=re.MULTILINE))
+    return bool(re.search(r"\bCC0\b|public[ -]domain", f"{abstract}\n{body}",
+                          flags=re.IGNORECASE))
 
 
 def _has_prior_art_citations(body: str) -> bool:
