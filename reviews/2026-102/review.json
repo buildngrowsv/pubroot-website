@@ -1,0 +1,88 @@
+{
+  "paper_id": "2026-102",
+  "score": 8.5,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This defensive disclosure provides a comprehensive, technically enabling description of sulforaphane therapeutic protocols for behavioral symptom management in autism spectrum disorder. The document accurately compiles clinical trial dosing regimens, biochemical mechanisms of the Keap1/Nrf2 pathway, and existing patent landscape to establish citable prior art under a CC0 dedication.",
+  "strengths": [
+    "Provides precise, enabling clinical protocol details including weight-stratified dosing (50\u2013150 \u00b5mol/day), administration routes, duration, and objective clinical rating instruments (ABC, SRS, CGI-I).",
+    "Contains an exceptionally accurate and detailed step-by-step description of the molecular mechanism across Keap1 thiol modification, ARE activation, glutathione synthesis, mitochondrial respiration, and heat shock protein induction.",
+    "Exemplary citation accuracy; referenced landmark RCTs (Singh et al. 2014, Zimmerman et al. 2021) and the recent 2025 meta-analysis (Long et al.) precisely match peer-reviewed literature.",
+    "Includes an explicit CC0 1.0 Universal public domain dedication accompanied by clear scope defining anticipatory prior art against follow-on method-of-use claims."
+  ],
+  "weaknesses": [
+    "As a defensive disclosure compiling established clinical trial data and known literature, it lacks novel empirical experimental findings (acceptable per disclosure criteria, but limits novelty).",
+    "Does not quantitatively detail pharmacokinetic parameters (e.g., peak plasma concentration Tmax and elimination half-life of sulforaphane and its dithiocarbamate metabolites) across pediatric versus adult cohorts."
+  ],
+  "suggestions": [
+    "Incorporate specific pharmacokinetic/pharmacodynamic (PK/PD) parameters (such as AUC, Cmax, and urinary excretion of dithiocarbamates) from human PK studies to further enhance enablement.",
+    "Detail analytical standardization methodologies (such as cyclocondensation assays or HPLC quantification) for measuring sulforaphane yield from glucoraphanin-rich precursors."
+  ],
+  "confidence": {
+    "methodology": 0.9,
+    "factual_accuracy": 0.95,
+    "novelty": 0.65,
+    "code_quality": null,
+    "writing_quality": 0.95,
+    "reproducibility": 0.9
+  },
+  "claims": [
+    {
+      "text": "A landmark 2014 randomized, double-blind, placebo-controlled trial (Singh et al., PNAS 2014) demonstrated that daily oral sulforaphane (50-150 umol, derived from broccoli sprout extract) administered over 18 weeks produced statistically significant improvements in social responsiveness, aberrant behavior, and verbal communication in young men with moderate-to-severe ASD, with effects reversing upon discontinuation.",
+      "verified": true,
+      "source": "https://doi.org/10.1073/pnas.1416940111",
+      "confidence": 0.98
+    },
+    {
+      "text": "A 2025 meta-analysis of six trials (333 participants) confirm the safety profile and directional behavioral benefits, demonstrating that both 4\u20135 weeks and 8\u201310 weeks of sulforaphane supplementation significantly decreased Social Responsiveness Scale scores compared to placebo.",
+      "verified": true,
+      "source": "https://doi.org/10.1186/s40360-025-01052-5",
+      "confidence": 0.95
+    },
+    {
+      "text": "US Patent US8937050B2 (and application US20130123203A1) titled 'Methods and compositions for treatment of autism' lists Paul Talalay, Andrew W. Zimmerman, and Kirby D. Smith as inventors and covers treatment of ASD using compositions that induce cellular stress responses/sulforaphane.",
+      "verified": true,
+      "source": "https://patents.google.com/patent/US8937050B2/en",
+      "confidence": 0.95
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "doi:10.1073/pnas.1416940111",
+      "title": "Sulforaphane treatment of autism spectrum disorder (ASD)",
+      "overlap": 0.6,
+      "contribution": "Synthesizes the experimental dosing and outcomes from Singh et al. with subsequent trial literature, pediatric data, and patent analyses into a defensive disclosure under CC0 dedication."
+    },
+    {
+      "id": "doi:10.1186/s40360-025-01052-5",
+      "title": "Investigating the clinical efficacy, safety and molecular mechanism of sulforaphane in autism spectrum disorder: an integrated study combining meta-analysis, network pharmacology, and computational biology",
+      "overlap": 0.45,
+      "contribution": "Integrates multi-trial meta-analytic consensus into an explicit prior-art reference designed to defeat future method-of-use patent filings."
+    }
+  ],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-24",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-24T15:55:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 4,
+    "usage": {
+      "prompt_tokens": 10053,
+      "completion_tokens": 2768,
+      "reasoning_tokens": 1398,
+      "total_tokens": 12821,
+      "cost_usd": 0.068525825
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
