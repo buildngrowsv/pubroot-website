@@ -271,9 +271,12 @@ class TestDisclosureValidation:
         assert any("public-domain dedication" in e for e in result["errors"])
 
     def test_prior_art_category_with_other_type_warns_but_stays_valid(self, repo_root):
-        """Regression: prior-art/* + original-research still validates as before."""
+        """Regression: prior-art/* + original-research without CC0 validates as before.
+        (With a CC0 declaration it is auto-switched; see test_disclosure_followup.py.)"""
         result = parse_and_filter_submission(
-            _article_layout_body(submission_type="original-research"), repo_root, "author")
+            _article_layout_body(submission_type="original-research",
+                                 abstract="A disclosure of a therapeutic use."),
+            repo_root, "author")
         assert result["valid"] is True, result["errors"]
         assert result["parsed"]["submission_type"] == "original-research"
         assert "license" not in result["parsed"]
