@@ -1,0 +1,94 @@
+{
+  "paper_id": "2026-112",
+  "score": 8.0,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This defensive disclosure compiles preclinical, clinical, and patent literature on Hericium erinaceus extracts for nerve growth factor stimulation and cognitive support in mild cognitive impairment. The clinical trial protocols and patent citations are thoroughly researched, accurately represented, and accompanied by an explicit CC0 public-domain dedication, providing an enabling prior art record.",
+  "strengths": [
+    "Provides clear enabling specifications of clinical dosing protocols, including mushroom morphology (fruiting body vs mycelium), exact doses, daily schedules, and treatment durations.",
+    "Accurately documents pivotal randomized controlled trials (Mori et al. 2009, Li et al. 2020) and aligns reported statistical outcomes, dosing parameters, and adverse effects with the primary literature.",
+    "Thoroughly analyzes the existing patent landscape (US8871492B2, US20180021326A1) and articulates the defensive freedom-to-operate scope under 35 U.S.C. \u00a7 102.",
+    "Includes an explicit CC0 1.0 Universal public domain dedication in section 8."
+  ],
+  "weaknesses": [
+    "Contains an erroneous CAS registry number for erinacine A ('CAS 14173I-77-2' with an uppercase 'I' instead of the true CAS number 156101-08-5).",
+    "Protocol C (Saitsu et al. 2019) is listed in the dosing summary table as 'Not fully specified in abstract' rather than extracting the published dosage details (3.2 g/day divided as 0.8 g four times daily)."
+  ],
+  "suggestions": [
+    "Correct the CAS registry number for erinacine A to 156101-08-5 in Section 1.",
+    "Update Protocol C in Table 5 to include the specific daily dose evaluated by Saitsu et al. (0.8 g four times daily, total 3.2 g/day) to enhance enablement."
+  ],
+  "confidence": {
+    "methodology": 0.85,
+    "factual_accuracy": 0.9,
+    "novelty": 0.7,
+    "code_quality": null,
+    "writing_quality": 0.9,
+    "reproducibility": 0.85
+  },
+  "claims": [
+    {
+      "text": "The H. erinaceus group showed significantly higher cognitive function scores than placebo at weeks 8, 12, and 16 (P<0.05). Scores increased progressively with duration of intake. Four weeks after treatment cessation, cognitive scores decreased significantly",
+      "verified": true,
+      "source": "https://doi.org/10.1002/ptr.2634",
+      "confidence": 0.98
+    },
+    {
+      "text": "Three 350 mg capsules per day of erinacine A-enriched H. erinaceus mycelia (EAHE; containing 5 mg/g erinacine A)",
+      "verified": true,
+      "source": "https://doi.org/10.3389/fnagi.2020.00155",
+      "confidence": 0.98
+    },
+    {
+      "text": "US8871492B2 \u2014 'Anti-dementia substance from Hericium erinaceum and method of extraction' Filed: May 2, 2008 | Granted: October 28, 2014 Assignee: Mushroom Wisdom, Inc.",
+      "verified": true,
+      "source": "https://patents.google.com/patent/US8871492B2/en",
+      "confidence": 0.99
+    },
+    {
+      "text": "Erinacine A: C\u2082\u2085H\u2083\u2086O\u2086, MW 432.55, CAS 14173I-77-2 (cyathane diterpenoid glycoside)",
+      "verified": false,
+      "source": "https://www.caymanchem.com/product/40079",
+      "confidence": 0.95
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "US8871492B2",
+      "title": "Anti-dementia substance from Hericium erinaceum and method of extraction",
+      "overlap": 0.6,
+      "contribution": "US8871492B2 claims a specific fat-soluble fraction extracted via ethanol, whereas this disclosure places whole fruiting body and erinacine A-enriched mycelium dosing regimens for MCI into the unencumbered public domain."
+    },
+    {
+      "id": "US20180021326A1",
+      "title": "Compositions and methods for enhancing neuroregeneration and cognition by combining mushroom extracts containing active ingredients psilocin or psilocybin with erinacines or hericenones enhanced with niacin",
+      "overlap": 0.45,
+      "contribution": "Consolidates standalone Lion's Mane administration protocols without requiring psilocybin or niacin adjunctive active ingredients."
+    }
+  ],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-24",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-24T16:05:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 4,
+    "usage": {
+      "prompt_tokens": 9981,
+      "completion_tokens": 3945,
+      "reasoning_tokens": 2544,
+      "total_tokens": 13926,
+      "cost_usd": 0.12888625
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}

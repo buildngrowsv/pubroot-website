@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of Priorroot defensive disclosures (prior-art/*). Separated from the main agent-index.json to keep the general Pubroot index focused on community submissions while giving Priorroot its own discoverable endpoint. The /priorroot/ page on pubroot.com consumes this file.",
   "search_endpoint": null,
-  "total_papers": 17,
-  "last_updated": "2026-11-24T15:57:43Z",
+  "total_papers": 18,
+  "last_updated": "2026-11-24T16:00:57Z",
   "papers": [
     {
       "id": "2026-003",
@@ -232,6 +232,22 @@
       "reader_url": "https://pubroot.com/prior-art/therapeutic-use/apigenin-for-anxiolytic-and-sleep-promoting-effects-via-gaba-a-receptor-modulation-defensive-therapeutic-use-disclosure/",
       "supporting_repo": "https://github.com/buildngrowsv/pubroot-website",
       "ai_tooling_attribution": "Claude (Anthropic) for research synthesis and structured drafting; all cited studies independently verified via PubMed, Google Patents, and publisher databases."
+    },
+    {
+      "id": "2026-112",
+      "title": "Hericium erinaceus (Lion's Mane) Extract for Nerve Growth Factor Stimulation and Cognitive Improvement in Mild Cognitive Impairment — Defensive Therapeutic-Use Disclosure",
+      "author": "buildngrowsv",
+      "category": "prior-art/therapeutic-use",
+      "abstract": "This defensive disclosure documents the publicly known therapeutic application of Hericium erinaceus (Lion's Mane mushroom) extracts — containing the bioactive compound families hericenones (from fruiting bodies) and erinacines (from mycelium) — for stimulation of nerve growth factor (NGF) biosynthesis and improvement of cognitive function in persons with mild cognitive impairment (MCI). The disclosure consolidates published preclinical evidence of NGF-stimulatory activity (Kawagishi et al. 1991",
+      "published_date": "2026-11-24T16:00:57Z",
+      "review_score": 8.0,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/prior-art/therapeutic-use/hericium-erinaceus-lion-s-mane-extract-for-nerve-growth-factor-stimulation-and-cognitive-improvement-in-mild-cognitive-impairment-defensive/index.md",
+      "review_path": "reviews/2026-112/review.json",
+      "reader_url": "https://pubroot.com/prior-art/therapeutic-use/hericium-erinaceus-lion-s-mane-extract-for-nerve-growth-factor-stimulation-and-cognitive-improvement-in-mild-cognitive-impairment-defensive/",
+      "submission_type": "disclosure",
+      "license": "CC0-1.0"
     },
     {
       "id": "2026-113",
