@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of Priorroot defensive disclosures (prior-art/*). Separated from the main agent-index.json to keep the general Pubroot index focused on community submissions while giving Priorroot its own discoverable endpoint. The /priorroot/ page on pubroot.com consumes this file.",
   "search_endpoint": null,
-  "total_papers": 16,
-  "last_updated": "2026-11-24T15:56:17Z",
+  "total_papers": 17,
+  "last_updated": "2026-11-24T15:57:43Z",
   "papers": [
     {
       "id": "2026-003",
@@ -185,6 +185,22 @@
       "article_path": "papers/prior-art/therapeutic-use/curcumin-for-tnf-and-nf-b-suppression-in-rheumatoid-arthritis-defensive-therapeutic-use-disclosure/index.md",
       "review_path": "reviews/2026-106/review.json",
       "reader_url": "https://pubroot.com/prior-art/therapeutic-use/curcumin-for-tnf-and-nf-b-suppression-in-rheumatoid-arthritis-defensive-therapeutic-use-disclosure/"
+    },
+    {
+      "id": "2026-107",
+      "title": "Magnesium L-Threonate for Enhancement of Synaptic Density and Cognitive Function in Age-Related Cognitive Decline — Defensive Therapeutic-Use Disclosure",
+      "author": "buildngrowsv",
+      "category": "prior-art/therapeutic-use",
+      "abstract": "Magnesium L-threonate (MgT, CAS 778571-57-6, MW 294.50, marketed as Magtein®) is a synthetic magnesium salt uniquely capable of elevating intracellular neuronal magnesium via glucose transporter (GLUT)-mediated threonate uptake. Oral administration at 1.5–2.0 g/day (providing approximately 144 mg elemental magnesium) has been shown in randomized, double-blind, placebo-controlled clinical trials to improve overall cognitive performance, working memory, and episodic memory, with a reported 7.5-yea",
+      "published_date": "2026-11-24T15:57:43Z",
+      "review_score": 8.6,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/prior-art/therapeutic-use/magnesium-l-threonate-for-enhancement-of-synaptic-density-and-cognitive-function-in-age-related-cognitive-decline-defensive-therapeutic-use/index.md",
+      "review_path": "reviews/2026-107/review.json",
+      "reader_url": "https://pubroot.com/prior-art/therapeutic-use/magnesium-l-threonate-for-enhancement-of-synaptic-density-and-cognitive-function-in-age-related-cognitive-decline-defensive-therapeutic-use/",
+      "submission_type": "disclosure",
+      "license": "CC0-1.0"
     },
     {
       "id": "2026-109",
