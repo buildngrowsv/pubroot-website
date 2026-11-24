@@ -20,6 +20,8 @@ RUNNING:
 """
 
 import json
+from datetime import datetime, timedelta, timezone
+
 import pytest
 
 from stage_1_parse_and_filter import parse_and_filter_submission
@@ -71,7 +73,9 @@ SAMPLE_AGENT_INDEX = {
             "author": "testuser",
             "category": "ai/llm-benchmarks",
             "abstract": "Comparing code review performance of GPT-5 and Claude 4.",
-            "published_date": "2026-10-25T12:00:00+00:00",
+            # Relative to now so the 30-day slot test does not expire (it
+            # broke on 24 Nov 2026, 30 days after the old fixed 2026-10-25 date).
+            "published_date": (datetime.now(timezone.utc) - timedelta(days=3)).isoformat(),
             "review_score": 8.0,
             "status": "current",
         }
@@ -408,7 +412,7 @@ class TestTopicSlotAvailability:
 
     def test_rate_limited_topic_with_recent_paper_is_blocked(self, repo_root):
         """A topic with refresh_rate_days=30 and a paper published 3 days ago should block."""
-        # Our fixture has a paper in ai/llm-benchmarks published on 2026-10-25 (3 days ago)
+        # Our fixture has a paper in ai/llm-benchmarks published 3 days ago
         # and refresh_rate_days=30, so it should be blocked
         issue_body = _build_issue_body(category="ai/llm-benchmarks")
         result = parse_and_filter_submission(issue_body, repo_root, "author")
