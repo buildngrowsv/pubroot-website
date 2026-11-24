@@ -1,0 +1,82 @@
+{
+  "paper_id": "2026-592",
+  "score": 8.8,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This paper presents a rigorous differential benchmark evaluating seven container image reference parsing libraries across Go, Python, JavaScript/TypeScript, and Rust against the canonical distribution/reference Go package. Through 80 synthetic edge cases and 2,435 real-world image references from popular open-source repositories, the author reveals critical inconsistencies, including tag dropping when digests are present, missing localhost resolution, and permissive validation bypassing. The methodology and reproducibility instructions are exemplary.",
+  "strengths": [
+    "Rigorous differential testing methodology comparing seven active third-party implementations against canonical distribution/reference behavior.",
+    "Comprehensive coverage of synthetic edge cases (Docker Hub defaults, host/port variations, IPv6 literals, compound tag-plus-digest strings, grammar limits) paired with a large real-world corpus of 2,435 image references across six prominent projects.",
+    "High reproducibility with exact compiler versions, package version locks, commit hashes, and detailed step-by-step reproduction instructions.",
+    "Detailed appendices explicitly listing the full verdict matrix and normalized output differences for every deviating parser."
+  ],
+  "weaknesses": [
+    "The evaluation focuses exclusively on user-space library parsing and does not test how runtime daemons (such as dockerd or containerd) or specific registries handle the downstream invalid references accepted by permissive libraries like docker-py.",
+    "The paper notes container_image_dist_ref was excluded due to targeting non-normalizing Parse, but does not benchmark whether other ecosystem parsers (e.g., in Java or C#) exhibit similar divergences."
+  ],
+  "suggestions": [
+    "Extend the analysis to end-to-end impact by testing whether daemons reject the malformed references passed by permissive libraries before network requests are dispatched.",
+    "Submit upstream bug reports or documentation pull requests to libraries with severe behavioral flaws, such as docker-parse-image misrouting localhost/app to Docker Hub and go-containerregistry discarding human-readable tags when digests are pinned."
+  ],
+  "confidence": {
+    "methodology": 0.95,
+    "factual_accuracy": 0.95,
+    "novelty": 0.9,
+    "code_quality": null,
+    "writing_quality": 0.92,
+    "reproducibility": 0.92
+  },
+  "claims": [
+    {
+      "text": "The OCI Distribution Specification defines the repository-name and tag grammars that a registry accepts, but not the short forms that people write. Those are defined by Docker's reference package, now maintained as distribution/reference, which Docker and containerd use.",
+      "verified": true,
+      "source": "https://github.com/distribution/reference and https://github.com/opencontainers/distribution-spec/blob/main/spec.md",
+      "confidence": 0.98
+    },
+    {
+      "text": "go-containerregistry returns a digest reference and drops the tag; the image pulled is the same, because the digest decides, but a tool that reports or re-tags the image loses the tag.",
+      "verified": true,
+      "source": "https://pkg.go.dev/github.com/google/go-containerregistry/pkg/name#ParseReference (godoc notes: 'References that include both a tag and digest parse as Digest references')",
+      "confidence": 0.97
+    },
+    {
+      "text": "docker-py's parse_repository_tag splits off a tag or digest and auth.resolve_repository_name splits the registry from the repository.",
+      "verified": true,
+      "source": "https://github.com/docker/docker-py (docker/utils/utils.py and docker/auth.py)",
+      "confidence": 0.95
+    }
+  ],
+  "novelty_vs_existing": [
+    {
+      "id": "Pubroot-2026-567",
+      "title": "Revalidation Under Test: How Fourteen Static-File Servers Evaluate HTTP Preconditions",
+      "overlap": 0.2,
+      "contribution": "Applies differential specification-conformance testing methodology to container image reference parsing across multilingual client libraries rather than HTTP server preconditions."
+    }
+  ],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-24T15:54:00Z",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-24T15:54:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 1,
+    "usage": {
+      "prompt_tokens": 15299,
+      "completion_tokens": 2087,
+      "reasoning_tokens": 944,
+      "total_tokens": 17386,
+      "cost_usd": 0.0671411
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
