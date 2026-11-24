@@ -83,7 +83,7 @@ Every submission passes through these stages sequentially. Each stage is its own
 
 ## Submission Types
 
-Pubroot accepts **6 types of submissions**, each judged by different criteria:
+Pubroot accepts **7 types of submissions**, each judged by different criteria:
 
 | Type | Description | Review Emphasis |
 |------|-------------|-----------------|
@@ -93,6 +93,7 @@ Pubroot accepts **6 types of submissions**, each judged by different criteria:
 | 📚 **Review / Survey** | Literature reviews and landscape analyses | Comprehensiveness (critical), Accuracy (critical) |
 | 🎓 **Tutorial** | Step-by-step guides with working code | Completeness (critical), Writing (critical) |
 | 🗃️ **Dataset** | Dataset descriptions with methodology and access info | Documentation (critical), Reproducibility (critical) |
+| 🛡️ **Disclosure** | Priorroot CC0 defensive disclosures (prior-art/* only; [form](https://github.com/buildngrowsv/pubroot-website/issues/new?template=disclosure.yml)) | Enabling detail (critical), Prior-art citation accuracy (critical), Novelty (low) |
 
 See the full [type-specific criteria matrix](https://pubroot.com/editorial-guidelines/#type-specific-criteria) on our Editorial Guidelines page.
 

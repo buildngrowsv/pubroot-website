@@ -129,9 +129,9 @@ Priorroot aims to keep known compounds, devices, and software methods in the pub
 
 ### How to Submit
 
-Priorroot uses the **same submission template** as regular Pubroot papers. The key difference is the **category** you select:
+Use the **[Defensive Disclosure form](https://github.com/buildngrowsv/pubroot-website/issues/new?template=disclosure.yml)**. It fixes the submission type to `disclosure` and asks for the enabling description, the prior art you cite, and a CC0 dedication. You can also use the regular [Submit Article](https://github.com/buildngrowsv/pubroot-website/issues/new?template=submission.yml) form with **Submission Type** `disclosure`:
 
-1. Go to [Submit Article](https://github.com/buildngrowsv/pubroot-website/issues/new?template=submission.yml)
+1. Open the Defensive Disclosure form
 
 2. In the **Category** dropdown, select a **Defensive Disclosures & Prior Art** topic:
    - `prior-art/therapeutic-use` — Known compounds for specific medical uses
@@ -141,10 +141,12 @@ Priorroot uses the **same submission template** as regular Pubroot papers. The k
    - `prior-art/general-disclosure` — Other enabling disclosures
 
 3. Fill out the form as you would for any Pubroot submission:
-   - **Submission Type**: Usually `original-research` or `case-study`
-   - **Abstract**: What is being disclosed and why it's already known
-   - **Article Body**: Enabling technical detail (enough for someone skilled in the art to reproduce)
-   - **Supporting Repo**: Code, data, or documentation proving prior knowledge
+   - **Submission Type**: `disclosure` (fixed on the disclosure form). Other types are still accepted in prior-art/* but are judged by that type's rubric; `original-research` will reject a disclosure for having no novel data.
+   - **Abstract**: What is being disclosed and for what use
+   - **Detailed Description** (or **Article Body**): Enabling technical detail (enough for someone skilled in the art to reproduce)
+   - **Prior Art Cited**: Papers (DOI/PMID), patents and other public sources. With the article form, put these in a `## Prior Art` or `## References` section.
+   - **CC0 dedication**: tick the box on the disclosure form, or state the CC0 / public-domain dedication in the text
+   - **Supporting Repo**: Optional; code, schematics or data
 
 4. Submit — The same 6-stage review runs, but:
    - Published disclosures go to `papers/prior-art/{topic}/{slug}/`
@@ -153,14 +155,17 @@ Priorroot uses the **same submission template** as regular Pubroot papers. The k
 
 ### Review Criteria for Disclosures
 
-Today there is **no Priorroot-specific rubric**. Disclosures go through the same pipeline and are scored with the rubric for the **submission type** you choose. The acceptance threshold is the same (7.0/10). To be useful as a disclosure, write it so that:
-- **Enabling detail** — someone skilled in the art could reproduce the method, device, or composition (the [Priorroot page](https://pubroot.com/priorroot/) sets this standard)
-- **Sources** — the citations, dates, or documentation behind each claim are given
-- **Completeness** — the relevant parameters, conditions, and context are documented
+Submissions of type `disclosure` get a Priorroot rubric. New experiments or data are **not** required. The reviewer weighs:
+- **Enabling detail** (critical) — someone skilled in the art could reproduce the method, device, or composition (the [Priorroot page](https://pubroot.com/priorroot/) sets this standard)
+- **Prior-art citation accuracy** (critical) — specific sources that say what the disclosure says they say
+- **Clarity and scope** (high) — exactly what is disclosed, including variants, combinations and ranges
+- **Factual accuracy** (high), **public-domain dedication** (medium), **novelty** (low)
+
+The acceptance threshold is the same (7.0/10), and promotional or SEO-gaming submissions are rejected whatever their score. Accepted disclosures are published with a "Defensive disclosure · CC0 1.0" badge and `submission_type`/`license` fields in their frontmatter, manifest and `priorroot-index.json` entry.
 
 ### Future Development
 
-Priorroot submissions currently follow the standard pipeline. [`ROADMAP.md`](ROADMAP.md) tracks a proposed `disclosure` submission type, with criteria focused on completeness and public availability rather than novelty. It is not built yet.
+The `disclosure` submission type shipped in Nov 2026 (ROADMAP item 3).
 
 For questions about Priorroot, open an issue in this repository.
 

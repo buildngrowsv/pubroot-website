@@ -1143,7 +1143,8 @@ public
    `prior-art/therapeutic-use`, `health/pharmacology`). Old flat slugs like
    `agent-architecture` will be rejected.
 5. Submission Type must be one of: original-research, case-study, benchmark,
-   review-survey, tutorial, dataset.
+   review-survey, tutorial, dataset, disclosure. Use `disclosure` (prior-art/*
+   categories only) for Priorroot CC0 defensive disclosures.
 6. Labels `submission` and `pending-review` must both be present on the Issue.
 
 ### Check Contributor Reputation

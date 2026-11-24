@@ -190,7 +190,7 @@ export const TOOL_DEFINITIONS = [
         category: { type: "string", maxLength: LIMITS.category, description: "Category in journal/topic format (e.g. 'ai/llm-benchmarks')." },
         abstract: { type: "string", maxLength: LIMITS.abstract, description: "Abstract text (recommended 150-300 words, max 350)." },
         body: { type: "string", maxLength: LIMITS.body, description: "Article body text (minimum 200 words)." },
-        submission_type: { type: "string", default: "original-research", maxLength: LIMITS.short, description: "original-research, case-study, benchmark, review-survey, tutorial or dataset." },
+        submission_type: { type: "string", default: "original-research", maxLength: LIMITS.short, description: "original-research, case-study, benchmark, review-survey, tutorial, dataset or disclosure (prior-art/* only)." },
         supporting_repo: { type: "string", default: "", maxLength: LIMITS.short, description: "GitHub repo URL (optional)." },
         commit_sha: { type: "string", default: "", maxLength: LIMITS.short, description: "Commit SHA if a repo is provided (optional)." },
         repo_visibility: { type: "string", default: "no-repo", maxLength: LIMITS.short, description: "public, private or no-repo." },
@@ -569,7 +569,7 @@ const INJECTION_PATTERNS = [
   /new\s+instructions\s*:/i,
   /ignore\s+this\s+document/i,
 ];
-const VALID_TYPES = ["original-research", "case-study", "benchmark", "review-survey", "tutorial", "dataset"];
+const VALID_TYPES = ["original-research", "case-study", "benchmark", "review-survey", "tutorial", "dataset", "disclosure"];
 /** Browsers and GitHub start failing on very long URLs; warn past this length. */
 const LONG_URL_WARNING = 8000;
 

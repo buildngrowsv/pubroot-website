@@ -59,6 +59,7 @@
           {{ end }}
         </span>
         <span class="category-tag">{{ .Params.category }}</span>
+        {{ if eq .Params.submission_type "disclosure" }}<a class="badge badge-disclosure" href="https://creativecommons.org/publicdomain/zero/1.0/" rel="license">Defensive disclosure · CC0 1.0</a>{{ end }}
         {{ with .Params.paper_id }}
         <span class="paper-id-tag">{{ . }}</span>
         {{ end }}
@@ -74,6 +75,9 @@
         <span class="pub-date">Published {{ .Date.Format "January 2, 2006" }}</span>
         {{ end }}
       </div>
+      {{ if eq .Params.submission_type "disclosure" }}
+      <p class="disclosure-notice">Priorroot defensive disclosure, dedicated to the public domain under <a href="https://creativecommons.org/publicdomain/zero/1.0/" rel="license">CC0 1.0</a> as citable prior art. Not legal or medical advice.</p>
+      {{ end }}
       {{ with .Params.ai_tooling_attribution }}
       <div class="ai-tooling-attribution">
         <h4 class="ai-tooling-heading">Author — AI, platform &amp; tooling</h4>

@@ -1023,6 +1023,7 @@ def _compute_updated_indexes(
         review_path=f"reviews/{paper_id}/review.json",
         supporting_repo=scrubbed_supporting_repo,
         ai_tooling_attribution=scrubbed_ai_attr,
+        **_disclosure_metadata(parsed_submission),
     )
     
     # Fetch live indexes
@@ -1428,6 +1429,10 @@ def _build_article_md(
     _ai_attr = parsed.get("ai_tooling_attribution")
     if _ai_attr:
         frontmatter["ai_tooling_attribution"] = _ai_attr
+    # Priorroot disclosures (Nov 2026): single.html shows a "Defensive
+    # disclosure · CC0 1.0" badge from these keys. Other types add nothing,
+    # so existing papers and their index entries are unchanged.
+    frontmatter.update(_disclosure_metadata(parsed))
 
     # Build YAML frontmatter manually. We use json.dumps for safe quoting
     # of strings that might contain colons, newlines, or special YAML chars.
@@ -1511,7 +1516,24 @@ def _build_manifest(
     }
     if parsed.get("ai_tooling_attribution"):
         manifest["ai_tooling_attribution"] = parsed["ai_tooling_attribution"]
+    manifest.update(_disclosure_metadata(parsed))
     return manifest
+
+
+def _disclosure_metadata(parsed: dict) -> dict:
+    """
+    Extra publication keys for a Priorroot defensive disclosure, else {}.
+
+    Returns {"submission_type": "disclosure", "license": "CC0-1.0"} when the
+    Stage 1 submission_type is "disclosure". Used for the article frontmatter,
+    manifest.json and the index entry so all three stay consistent.
+    """
+    if parsed.get("submission_type") != "disclosure":
+        return {}
+    return {
+        "submission_type": "disclosure",
+        "license": parsed.get("license") or "CC0-1.0",
+    }
 
 
 def _update_indexes(
@@ -1587,6 +1609,7 @@ def _update_indexes(
         review_path=f"reviews/{paper_id}/review.json",
         supporting_repo=scrubbed_supporting_repo,
         ai_tooling_attribution=scrubbed_ai_attr,
+        **_disclosure_metadata(parsed_submission),
     )
     
     # Determine which index to update based on category

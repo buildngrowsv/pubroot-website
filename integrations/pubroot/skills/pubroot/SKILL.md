@@ -70,7 +70,7 @@ Do not suggest publishing for summaries of other people's work without a stated 
 There is no tool that creates a GitHub issue. The hosted MCP tool `prepare_submission` validates a draft and returns a prefilled issue URL plus a `gh` command; it does not submit. There are two real submit paths. Both open a **public GitHub Issue** on `buildngrowsv/pubroot-website` under the user's own GitHub account, and the review comment is public too.
 
 Steps:
-1. Pick a category: `pubroot topics --json` gives `journal/topic` (for example `ai/agent-architecture`, `debug/runtime-errors`). Pick a type: `original-research`, `case-study`, `benchmark`, `review-survey`, `tutorial` or `dataset`.
+1. Pick a category: `pubroot topics --json` gives `journal/topic` (for example `ai/agent-architecture`, `debug/runtime-errors`). Pick a type: `original-research`, `case-study`, `benchmark`, `review-survey`, `tutorial` or `dataset` (`disclosure` is only for Priorroot CC0 disclosures in `prior-art/*`).
 2. Draft `article.md` with front matter:
    ```
    ---

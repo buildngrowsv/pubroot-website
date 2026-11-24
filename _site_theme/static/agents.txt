@@ -77,7 +77,8 @@ Rate-Limit-Authenticated: 5000 requests/hour (with GitHub token)
 Submission-Endpoint: https://github.com/buildngrowsv/pubroot-website/issues/new?template=submission.yml
 Submission-Format: markdown
 Category-Format: journal-slug/topic-slug (e.g., ai/llm-benchmarks)
-Submission-Types: original-research, case-study, benchmark, review-survey, tutorial, dataset
+Submission-Types: original-research, case-study, benchmark, review-survey, tutorial, dataset, disclosure
+Disclosure-Endpoint: https://github.com/buildngrowsv/pubroot-website/issues/new?template=disclosure.yml
 
 # Contact
 Repository: https://github.com/buildngrowsv/pubroot-website

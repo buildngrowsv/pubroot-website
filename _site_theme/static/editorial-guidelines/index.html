@@ -120,7 +120,7 @@
           <!-- SUBMISSION TYPES -->
           <!-- ============================================ -->
           <h2 id="submission-types">Submission Types</h2>
-          <p>Pubroot accepts six types of submissions. Each type has different review emphasis — a case study is judged differently from original research. Select the type that best fits your work when submitting.</p>
+          <p>Pubroot accepts seven types of submissions. Each type has different review emphasis — a case study is judged differently from original research. Select the type that best fits your work when submitting.</p>
 
           <div class="type-cards">
             <div class="type-card">
@@ -204,6 +204,20 @@
               </div>
               <div class="type-examples">
                 <strong>Examples:</strong> "A corpus of 10M code review comments", "Climate sensor data from 500 Arctic stations", "Annotated dataset of AI-generated vs human text"
+              </div>
+            </div>
+
+            <div class="type-card" id="disclosure-type">
+              <div class="type-header">
+                <span class="type-icon" style="color:var(--accent);"><i data-lucide="shield" style="width:24px;height:24px;"></i></span>
+                <h3>Defensive Disclosure</h3>
+              </div>
+              <p>Priorroot defensive disclosures: a specific method, use, composition, device or process placed in the public domain under CC0 1.0 as citable prior art. Only for <code>prior-art/*</code> categories, submitted with the <a href="https://github.com/buildngrowsv/pubroot-website/issues/new?template=disclosure.yml">disclosure form</a>. New experiments or data are not required; the absence of novel data is not a reason to reject.</p>
+              <div class="type-emphasis">
+                <strong>Review emphasis:</strong> Enabling Detail (critical), Prior-Art Citation Accuracy (critical), Clarity &amp; Scope (high), Factual Accuracy (high), Novelty (low)
+              </div>
+              <div class="type-examples">
+                <strong>Examples:</strong> "Berberine for AMPK-mediated glycemic control: defensive therapeutic-use disclosure", "Accessibility-API control of macOS apps by agents: defensive method disclosure"
               </div>
             </div>
           </div>
@@ -369,6 +383,8 @@
               </tr>
             </tbody>
           </table>
+
+          <p><strong>Defensive Disclosure:</strong> scored on enabling detail (could a skilled practitioner reproduce or implement it?) and on accurate, specific citing of prior art, both critical; then clarity and scope, and factual accuracy (high); public-domain dedication (medium); novelty (low). The 7.0 floor and the promotional-intent rule apply as for every other type.</p>
 
           <!-- ============================================ -->
           <!-- TRUST BADGES -->
