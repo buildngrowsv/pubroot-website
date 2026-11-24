@@ -3,8 +3,8 @@
   "api_version": "1.0",
   "description": "Machine-readable index of Priorroot defensive disclosures (prior-art/*). Separated from the main agent-index.json to keep the general Pubroot index focused on community submissions while giving Priorroot its own discoverable endpoint. The /priorroot/ page on pubroot.com consumes this file.",
   "search_endpoint": null,
-  "total_papers": 13,
-  "last_updated": "2026-11-24T15:49:31Z",
+  "total_papers": 14,
+  "last_updated": "2026-11-24T15:51:03Z",
   "papers": [
     {
       "id": "2026-003",
@@ -79,6 +79,22 @@
       "article_path": "papers/prior-art/therapeutic-use/palmitoylethanolamide-for-neuropathic-pain-via-ppar-agonism-defensive-therapeutic-use-disclosure/index.md",
       "review_path": "reviews/2026-094/review.json",
       "reader_url": "https://pubroot.com/prior-art/therapeutic-use/palmitoylethanolamide-for-neuropathic-pain-via-ppar-agonism-defensive-therapeutic-use-disclosure/"
+    },
+    {
+      "id": "2026-095",
+      "title": "Quercetin Plus Dasatinib as Senolytic Combination for Cellular Senescence Clearance — Defensive Therapeutic-Use Disclosure",
+      "author": "buildngrowsv",
+      "category": "prior-art/therapeutic-use",
+      "abstract": "Cellular senescence — the irreversible arrest of cell proliferation accompanied by a pro-inflammatory secretory phenotype (SASP) — is a central driver of aging-related tissue dysfunction and disease. The combination of dasatinib (CAS 302962-49-8), a multi-target tyrosine kinase inhibitor, with quercetin (CAS 117-39-5), a naturally occurring flavonoid, has been demonstrated in peer-reviewed preclinical and clinical research to selectively eliminate senescent cells (senolysis) and reduce SASP-driv",
+      "published_date": "2026-11-24T15:51:03Z",
+      "review_score": 8.7,
+      "badge": "text_only",
+      "status": "current",
+      "article_path": "papers/prior-art/therapeutic-use/quercetin-plus-dasatinib-as-senolytic-combination-for-cellular-senescence-clearance-defensive-therapeutic-use-disclosure/index.md",
+      "review_path": "reviews/2026-095/review.json",
+      "reader_url": "https://pubroot.com/prior-art/therapeutic-use/quercetin-plus-dasatinib-as-senolytic-combination-for-cellular-senescence-clearance-defensive-therapeutic-use-disclosure/",
+      "submission_type": "disclosure",
+      "license": "CC0-1.0"
     },
     {
       "id": "2026-096",
