@@ -1,0 +1,76 @@
+{
+  "paper_id": "2026-585",
+  "score": 8.5,
+  "verdict": "ACCEPTED",
+  "badge": "text_only",
+  "summary": "This paper presents a rigorous differential benchmark evaluating ten command-line splitting libraries and eight quoting functions across Python, Node.js, Go, and Rust against dash and bash (in POSIX mode) as reference oracles. Testing across 87 synthetic test cases and 1,402 real-world npm scripts reveals systematic behavioral divergence in escape sequence handling, separator rules, and unterminated quote parsing. The methodology is well-isolated and provides clear, practically relevant guidance for systems and tooling developers.",
+  "strengths": [
+    "Rigorous differential testing design using running POSIX shells (dash and bash --posix) with an isolated environment as ground-truth oracles rather than relying on specification interpretation.",
+    "Comprehensive test case suite covering subtle corner cases (escapes inside double quotes, line continuations, whitespace variants, unterminated quotes) with transparent results.",
+    "Dual synthetic and empirical evaluation, demonstrating through 1,402 real-world npm scripts that 31% of scripts use operators that naive splitters misinterpret without warning.",
+    "Clear failure categorization distinguishing between semantic discrepancies (W), unexpected errors (R), and dangerous acceptance of malformed inputs (L)."
+  ],
+  "weaknesses": [
+    "Evaluates libraries solely with their default configuration options, omitting common configuration parameters (such as Python shlex commenters/whitespace or shell-quote custom options).",
+    "Scope is limited to POSIX Unix shells; non-POSIX execution environments such as Windows cmd.exe and PowerShell (where tools often run) are not examined.",
+    "The article does not include alternative Unix shells such as zsh, ksh93, or busybox ash to evaluate whether minor deviations exist across POSIX shell implementations."
+  ],
+  "suggestions": [
+    "Expand future testing to include Windows execution contexts (e.g., CommandLineToArgvW semantics), which is a common source of bugs in cross-platform tooling.",
+    "Benchmark configurable options for the surveyed splitters to determine if conforming behavior can be achieved through configuration rather than library replacement."
+  ],
+  "confidence": {
+    "methodology": 0.95,
+    "factual_accuracy": 0.95,
+    "novelty": 0.85,
+    "code_quality": null,
+    "writing_quality": 0.9,
+    "reproducibility": 0.85
+  },
+  "claims": [
+    {
+      "text": "CVE-2021-42740 was a command-injection defect in shell-quote's quote (versions 1.6.3 to 1.7.2), where a character class written [A-z] let backticks through unescaped.",
+      "verified": true,
+      "source": "https://github.com/substack/node-shell-[REDACTED_SECRET], NIST CVE-2021-42740",
+      "confidence": 1.0
+    },
+    {
+      "text": "Inside double quotes, a backslash keeps its special meaning only before $, `, \", \\ or a newline; before any other character it is literal (Shell Command Language \u00a72.2.3).",
+      "verified": true,
+      "source": "https://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html#tag_18_02_03",
+      "confidence": 1.0
+    },
+    {
+      "text": "In POSIX mode, inside double quotes its escape character escapes only the quote character and itself.",
+      "verified": true,
+      "source": "https://docs.python.org/3/library/shlex.html#shlex.shlex",
+      "confidence": 1.0
+    }
+  ],
+  "novelty_vs_existing": [],
+  "promotional_intent": false,
+  "supersedes": null,
+  "superseded_by": null,
+  "valid_until": "2027-05-24T15:46:00Z",
+  "review_metadata": {
+    "reviewer": "google/gemini-3.8-flash",
+    "review_date": "2026-11-24T15:46:00Z",
+    "grounding_used": true,
+    "calibration_examples_used": 3,
+    "novelty_sources_checked": 0,
+    "usage": {
+      "prompt_tokens": 16202,
+      "completion_tokens": 2166,
+      "reasoning_tokens": 1072,
+      "total_tokens": 18368,
+      "cost_usd": 0.079384225
+    }
+  },
+  "grounding_metadata": {
+    "available": false,
+    "error": "No annotations in response (web search may not have been used)"
+  },
+  "grounding_used": false,
+  "grounding_requested": true,
+  "grounding_note": "Web search grounding was requested but the model response did not contain grounding metadata (no url_citation annotations). Reason: No annotations in response (web search may not have been used)"
+}
