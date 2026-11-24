@@ -112,7 +112,8 @@ jobs:
     # Only process submissions: cron/dispatch always run, but issues:opened only
     # runs when the issue looks like a submission: it has the 'submission' label
     # (applied by submission.yml and `pubroot submit`), OR its body has the form's
-    # `### Article Title` and `### Category` headers. The body check covers raw
+    # `### Article Title` (or disclosure.yml's `### Disclosure Title`) and
+    # `### Category` headers. The body check covers raw
     # API/gh submissions, and outsiders whose requested labels GitHub drops
     # (only users with push access can set labels on new issues).
     # This keeps bug reports, feature requests and good-first-issue threads
@@ -120,7 +121,7 @@ jobs:
     if: >-
       github.event_name != 'issues' ||
       contains(github.event.issue.labels.*.name, 'submission') ||
-      (contains(github.event.issue.body, '### Article Title') && contains(github.event.issue.body, '### Category'))
+      ((contains(github.event.issue.body, '### Article Title') || contains(github.event.issue.body, '### Disclosure Title')) && contains(github.event.issue.body, '### Category'))
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
@@ -318,7 +319,8 @@ jobs:
 
             # TIER 4: 0-label fallback (rare: submissions with no labels at all)
             # Only issues whose body has the submission form's headers
-            # (`### Article Title` and `### Category`, same marker as the job guard), so an
+            # (`### Article Title` or `### Disclosure Title`, plus `### Category`, same
+            # marker as the job guard), so an
             # unlabeled bug report or question from a trusted author is never
             # reviewed or marked validation-failed. Apply gating loop.
             if [ -z "$ISSUE" ]; then
@@ -328,7 +330,7 @@ jobs:
                 --state open \
                 --limit 500 \
                 --json number,labels,body \
-                --jq 'map(select((.labels | length == 0) and ((.body // "") | contains("### Article Title")) and ((.body // "") | contains("### Category")))) | .[].number' \
+                --jq 'map(select((.labels | length == 0) and (((.body // "") | contains("### Article Title")) or ((.body // "") | contains("### Disclosure Title"))) and ((.body // "") | contains("### Category")))) | .[].number' \
                 2>/dev/null || true)
               
               for C in $CANDIDATES; do
